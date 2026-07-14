@@ -7,3 +7,6 @@ The repo is used for interns of Cloud Fullstack program to practice following th
 ## TechStack
 - **Frontend:** Angular
 - **Backend:** Python, FastAPI
+- **Cloud:** AWS
+- **DevOps:** Docker, Terraform, Kubernetes
+- **Database:** PostgreSQL, MongoDB
