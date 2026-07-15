@@ -41,7 +41,7 @@ jobs:
       #   run: npm run lint
 
       - name: Run unit tests
-        run: npm test -- --watch=false --browsers=ChromeHeadless
+        run: npm test -- --watch=false
         continue-on-error: false
 
       - name: Build application
