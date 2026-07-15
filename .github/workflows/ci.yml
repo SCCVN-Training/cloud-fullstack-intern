@@ -30,9 +30,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24 # Latest Active LTS version
           cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: frontend-angular/package-lock.json # Fixed path mismatch
 
       - name: Install dependencies
         run: npm ci
@@ -57,7 +57,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16
+        image: postgres:18 # Upgraded to the newest stable Postgres major version
 
         env:
           POSTGRES_DB: testdb
@@ -83,7 +83,9 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.14" # Upgraded to the latest stable Python release
+          cache: pip
+          cache-dependency-path: backend-fastapi/requirements.txt # Optional: Added pip caching
 
       - name: Install dependencies
         run: |
