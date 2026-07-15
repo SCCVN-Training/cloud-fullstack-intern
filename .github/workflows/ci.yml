@@ -1,0 +1,50 @@
+name: CI Skeleton
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - dev-nhu
+      - feature/**
+  pull_request:
+    branches:
+      - dev-nhu
+
+jobs:
+  verify-repository:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start workflow
+        run: echo "Starting SkillVerse CI Skeleton..."
+
+      - name: Display workflow information
+        run: |
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Triggered by: ${{ github.actor }}"
+
+      - name: Verify repository structure
+        run: |
+          echo "Checking repository..."
+
+          test -f README.md
+          echo "✓ README.md found"
+
+          test -d .github
+          echo "✓ .github found"
+
+          test -d .github/workflows
+          echo "✓ Workflow directory found"
+
+      - name: List project files
+        run: ls -la
+
+      - name: Workflow completed
+        run: echo "CI Skeleton completed successfully!"
