@@ -12,6 +12,7 @@ jobs:
   draft-release:
     name: Create Draft GitHub Release
     runs-on: ubuntu-latest
+    if: github.actor == 'nguyenhaohongduscc' # Only allow the user "nguyenhaohongduscc" to trigger this workflow
 
     steps:
       - name: Checkout repository
