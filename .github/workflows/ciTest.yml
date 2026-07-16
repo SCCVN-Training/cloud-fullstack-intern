@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "Running Angular Unit Tests..."
           npm test 
-          
+
       - name: Run build
         run: |
           echo "Building Angular project..."
@@ -67,4 +67,4 @@ jobs:
       - name: Run tests
         run: |
           echo "Running pytest for FastAPI..."
-          pytest
+          pPYTHONPATH=. pytest -v
