@@ -67,4 +67,4 @@ jobs:
       - name: Run tests
         run: |
           echo "Running pytest for FastAPI..."
-          pPYTHONPATH=. pytest -v
+          python -m pytest -v
