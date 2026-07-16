@@ -172,11 +172,17 @@ cloud-fullstack-intern/
 ├── frontend/
 ├── backend/
 ├── docs/
-├── tests/
+    └── images/
+├── scripts/
+├── infrastructure/
+    └── aws/
+    └── kubernetes/
+    └── terraform/
 ├── .github/
 │   └── workflows/
 ├── README.md
-└── CHANGELOG.md
+└── .gitignore
+└── CHANGELOG.md    
 ```
 
 ---
