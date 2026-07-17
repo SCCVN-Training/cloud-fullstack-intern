@@ -1,0 +1,51 @@
+// ==========================================================================
+// OTAKUTORY LIGHT DESIGN TOKENS
+// ==========================================================================
+
+$bg-light: #f8fafc;
+$bg-card: #ffffff;
+
+$primary-blue: #2563eb;
+$accent-blue: #3b82f6;
+
+$text-primary: #111827;
+$text-secondary: #6b7280;
+
+$border-color: #e5e7eb;
+
+// ==========================================================================
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+
+  background: $bg-light;
+  color: $text-primary;
+
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Remove the grid for now */
+.global-grid-overlay {
+  display: none;
+}
+
+.snackbar-error {
+  --mdc-snackbar-container-color: #d32f2f;
+  --mdc-snackbar-supporting-text-color: white;
+}
+
+.snackbar-success {
+  --mdc-snackbar-container-color: #2e7d32;
+  --mdc-snackbar-supporting-text-color: white;
+}

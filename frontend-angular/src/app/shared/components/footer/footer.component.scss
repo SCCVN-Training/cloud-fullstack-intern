@@ -1,0 +1,32 @@
+@import '../../../app.scss';
+
+.footer {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+
+  background: white;
+  border-top: 1px solid $border-color;
+  color: $text-secondary;
+
+  p {
+    margin: 0;
+
+    color: $text-secondary;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    transition: color 0.25s ease;
+  }
+
+  &:hover p {
+    color: $text-primary;
+  }
+}
