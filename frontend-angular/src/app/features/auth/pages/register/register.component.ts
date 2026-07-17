@@ -1,13 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
@@ -18,24 +11,6 @@ import { MatInputModule } from '@angular/material/input';
 
 import { AuthEvent } from '../../data-access/with-auth-event';
 import { AuthStore } from '../../data-access/with-auth-store';
-
-export const passwordMatchValidator: ValidatorFn = (
-  control: AbstractControl,
-): ValidationErrors | null => {
-  const passwordControl = control.get('password');
-  const confirmControl = control.get('confirmPassword');
-
-  if (!passwordControl || !confirmControl) {
-    return null;
-  }
-
-  // Don't compare until both controls are valid
-  if (passwordControl.invalid || confirmControl.invalid) {
-    return null;
-  }
-
-  return passwordControl.value === confirmControl.value ? null : { passwordMismatch: true };
-};
 
 @Component({
   selector: 'app-register',
@@ -63,28 +38,31 @@ export class RegisterComponent {
   hidePassword = true;
   hideConfirmPassword = true;
 
-  readonly form = this.fb.nonNullable.group(
-    {
-      username: ['', [Validators.required]],
+  readonly form = this.fb.nonNullable.group({
+    username: ['', [Validators.required]],
 
-      email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.email]],
 
-      password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
 
-      confirmPassword: ['', Validators.required],
-    },
-    {
-      validators: passwordMatchValidator,
-    },
-  );
+    confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
+  });
 
   register(): void {
+    this.form.markAllAsTouched();
+
     if (this.form.invalid) {
-      this.form.markAllAsTouched();
       return;
     }
 
-    const { username, email, password } = this.form.getRawValue();
+    const { username, email, password, confirmPassword } = this.form.getRawValue();
+
+    if (password !== confirmPassword) {
+      this.form.controls.confirmPassword.setErrors({
+        passwordMismatch: true,
+      });
+      return;
+    }
 
     const payload = {
       username,

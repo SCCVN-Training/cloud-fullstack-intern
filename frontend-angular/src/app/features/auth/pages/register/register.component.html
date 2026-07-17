@@ -75,8 +75,11 @@
 
         @if (form.controls.confirmPassword.hasError('required')) {
           <mat-error>Confirm password is required.</mat-error>
-        }
-        @if (form.hasError('passwordMismatch') && form.controls.confirmPassword.touched) {
+
+        } @else if (form.controls.confirmPassword.hasError('minlength')) {
+          <mat-error>Confirm password must be at least 6 characters.</mat-error>
+
+        } @else if (form.controls.confirmPassword.hasError('passwordMismatch')) {
           <mat-error>Passwords do not match.</mat-error>
         }
       </mat-form-field>
