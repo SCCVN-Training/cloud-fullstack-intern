@@ -1,0 +1,75 @@
+@use "../abstracts" as *;
+
+/* ==========================================
+   Global Styles
+   ========================================== */
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-body;
+  line-height: $line-height-body;
+
+  color: $color-text-primary;
+  background: $color-background;
+
+  overflow-x: hidden;
+}
+
+/* Headings */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $color-text-primary;
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: $font-size-display;
+  font-weight: $font-weight-extrabold;
+}
+
+h2 {
+  font-size: $font-size-h1;
+}
+
+h3 {
+  font-size: $font-size-h2;
+}
+
+h4 {
+  font-size: $font-size-h3;
+}
+
+p {
+  color: $color-text-secondary;
+  margin-bottom: $space-5;
+}
+
+a {
+  transition: color $transition-base;
+}
+
+a:hover {
+  color: $color-primary;
+}
+
+button {
+  transition: all $transition-base;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}

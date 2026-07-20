@@ -1,0 +1,73 @@
+@use "../abstracts" as *;
+
+/* ==========================================
+   Surface System
+   ========================================== */
+
+.surface {
+
+  background: $color-surface;
+
+  border-radius: $radius-lg;
+
+}
+
+.surface-elevated {
+
+  background: $color-surface;
+
+  border-radius: $radius-lg;
+
+  box-shadow: $shadow-md;
+
+}
+
+.surface-glass {
+
+  background: rgba(255,255,255,.72);
+
+  backdrop-filter: blur(16px);
+
+  -webkit-backdrop-filter: blur(16px);
+
+  border-radius: $radius-lg;
+
+  border: 1px solid rgba(255,255,255,.4);
+
+  box-shadow: $shadow-md;
+
+}
+
+.surface-hero {
+
+  background: $gradient-primary;
+
+  color: $color-white;
+
+  border-radius: $radius-xl;
+
+  box-shadow: $shadow-lg;
+
+}
+
+.surface-soft {
+
+  background: $color-surface-low;
+
+  border-radius: $radius-lg;
+
+}
+
+.surface-hover {
+
+  transition: all $transition-base;
+
+}
+
+.surface-hover:hover {
+
+  transform: translateY(-4px);
+
+  box-shadow: $shadow-lg;
+
+}

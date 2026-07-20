@@ -1,0 +1,86 @@
+@use "../abstracts" as *;
+
+/* ==========================================
+   Buttons
+   ========================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+
+  padding: $space-3 $space-5;
+
+  border: none;
+  border-radius: $radius-pill;
+
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-body;
+
+  cursor: pointer;
+  transition: all $transition-base;
+}
+
+/* Primary */
+
+.btn-primary {
+  @extend .btn;
+
+  background: $gradient-primary;
+  color: $color-white;
+
+  box-shadow: $shadow-sm;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: $shadow-md;
+}
+
+/* Secondary */
+
+.btn-secondary {
+  @extend .btn;
+
+  background: $color-surface-low;
+  color: $color-primary;
+}
+
+.btn-secondary:hover {
+  background: $color-surface-container;
+}
+
+/* Outline */
+
+.btn-outline {
+  @extend .btn;
+
+  border: 1px solid $color-primary;
+  color: $color-primary;
+  background: transparent;
+}
+
+.btn-outline:hover {
+  background: rgba(244,114,182,.08);
+}
+
+/* Ghost */
+
+.btn-ghost {
+  @extend .btn;
+
+  background: transparent;
+  color: $color-primary;
+}
+
+.btn-ghost:hover {
+  background: rgba(244,114,182,.08);
+}
+
+/* Disabled */
+
+.btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}

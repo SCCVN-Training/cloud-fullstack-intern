@@ -1,0 +1,65 @@
+@use "../abstracts" as *;
+
+/* ==========================================
+   Navigation
+   ========================================== */
+
+.navbar {
+
+  position: sticky;
+
+  top: 0;
+
+  z-index: 1000;
+
+  background: rgba(255,255,255,.72);
+
+  backdrop-filter: blur(16px);
+
+  border-bottom: 1px solid rgba(255,255,255,.4);
+
+}
+
+.navbar-container {
+
+  @include container;
+
+  min-height: 80px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+}
+
+.nav-links {
+
+  display: flex;
+
+  gap: $space-5;
+
+}
+
+.nav-link {
+
+  font-weight: $font-weight-medium;
+
+  transition: color $transition-base;
+
+}
+
+.nav-link:hover {
+
+  color: $color-primary;
+
+}
+
+.nav-link.active {
+
+  color: $color-primary;
+
+  font-weight: $font-weight-bold;
+
+}
