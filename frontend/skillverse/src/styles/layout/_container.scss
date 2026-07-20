@@ -1,0 +1,103 @@
+@use "../abstracts" as *;
+
+/* ==========================================
+   Layout Container
+   ========================================== */
+
+/*
+|--------------------------------------------------------------------------
+| Main Container
+|--------------------------------------------------------------------------
+|
+| Centers page content with a maximum width.
+| Used for Navbar, Footer, Hero, Dashboard, etc.
+|
+*/
+
+.container {
+  width: 100%;
+  max-width: $container-max-width;
+
+  margin-inline: auto;
+
+  padding-inline: $container-padding;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Fluid Container
+|--------------------------------------------------------------------------
+|
+| Takes the full viewport width.
+|
+*/
+
+.container-fluid {
+  width: 100%;
+  padding-inline: $container-padding;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Narrow Container
+|--------------------------------------------------------------------------
+|
+| Ideal for forms, authentication pages,
+| documentation pages, settings pages.
+|
+*/
+
+.container-sm {
+  width: 100%;
+  max-width: 720px;
+
+  margin-inline: auto;
+
+  padding-inline: $container-padding;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Large Container
+|--------------------------------------------------------------------------
+|
+| Used by Dashboard pages.
+|
+*/
+
+.container-lg {
+  width: 100%;
+  max-width: 1440px;
+
+  margin-inline: auto;
+
+  padding-inline: $container-padding;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Section
+|--------------------------------------------------------------------------
+*/
+
+.section {
+  padding-block: $section-spacing;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Responsive
+|--------------------------------------------------------------------------
+*/
+
+@media (max-width: $breakpoint-tablet) {
+
+  .container,
+  .container-fluid,
+  .container-sm,
+  .container-lg {
+
+    padding-inline: $space-4;
+  }
+
+}

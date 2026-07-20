@@ -1,0 +1,57 @@
+@use "../abstracts" as *;
+
+/* ==========================================
+   Cards
+   ========================================== */
+
+.card {
+
+  background: rgba(255,255,255,.72);
+
+  backdrop-filter: blur(16px);
+
+  border: 1px solid rgba(255,255,255,.45);
+
+  border-radius: $radius-lg;
+
+  padding: $space-5;
+
+  box-shadow: $shadow-md;
+
+  transition: all $transition-base;
+
+}
+
+.card:hover {
+
+  transform: translateY(-4px);
+
+  box-shadow: $shadow-lg;
+
+}
+
+.card-header{
+
+    margin-bottom:$space-4;
+
+}
+
+.card-title{
+
+    font-size:$font-size-h3;
+
+    font-weight:$font-weight-bold;
+
+}
+
+.card-content{
+
+    color:$color-text-secondary;
+
+}
+
+.card-footer{
+
+    margin-top:$space-5;
+
+}

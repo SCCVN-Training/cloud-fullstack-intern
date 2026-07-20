@@ -1,0 +1,51 @@
+@use "../abstracts" as *;
+
+/* ==========================================
+   Glassmorphism
+   ========================================== */
+
+/*
+|--------------------------------------------------------------------------
+| Glass Background
+|--------------------------------------------------------------------------
+*/
+
+$glass-background: rgba(255, 255, 255, 0.72);
+
+$glass-border: rgba(255, 255, 255, 0.45);
+
+$glass-blur: blur(16px);
+
+/*
+|--------------------------------------------------------------------------
+| Glass Utility
+|--------------------------------------------------------------------------
+*/
+
+.glass {
+
+  background: $glass-background;
+
+  backdrop-filter: $glass-blur;
+
+  -webkit-backdrop-filter: $glass-blur;
+
+  border: 1px solid $glass-border;
+
+  box-shadow: $shadow-md;
+
+}
+
+.glass-hover {
+
+  transition: all $transition-base;
+
+}
+
+.glass-hover:hover {
+
+  transform: translateY(-4px);
+
+  box-shadow: $shadow-lg;
+
+}

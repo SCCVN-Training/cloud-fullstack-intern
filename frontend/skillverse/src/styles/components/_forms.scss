@@ -1,0 +1,61 @@
+@use "../abstracts" as *;
+
+/* ==========================================
+   Forms
+   ========================================== */
+
+.form-group {
+
+  margin-bottom: $space-5;
+
+}
+
+.form-label {
+
+  display: block;
+
+  margin-bottom: $space-2;
+
+  font-weight: $font-weight-semibold;
+
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+
+  width: 100%;
+
+  padding: $space-3;
+
+  border: 1px solid $color-border;
+
+  border-radius: $radius-md;
+
+  background: rgba(255,255,255,.75);
+
+  transition: all $transition-base;
+
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+
+  outline: none;
+
+  border-color: $color-primary;
+
+  box-shadow: $shadow-focus;
+
+}
+
+.form-error {
+
+  margin-top: $space-2;
+
+  color: $color-error;
+
+  font-size: $font-size-caption;
+
+}

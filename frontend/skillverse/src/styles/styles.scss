@@ -1,0 +1,24 @@
+/* ==========================================
+   SkillVerse Global Styles
+   ========================================== */
+
+/* Design Tokens */
+@use "abstracts";
+
+/* Base */
+@use "base/reset";
+@use "base/global";
+@use "base/utilities";
+
+/* Layout */
+@use "layout/container";
+@use "layout/grid";
+
+/* Theme */
+@use "theme/glassmorphism";
+
+/* Shared Components */
+@use "components/buttons";
+@use "components/cards";
+@use "components/forms";
+@use "components/navigation";

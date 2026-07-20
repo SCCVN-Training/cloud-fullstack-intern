@@ -1,0 +1,40 @@
+/* ==========================================
+   Typography
+   ========================================== */
+
+$font-family-base: "Plus Jakarta Sans", sans-serif;
+
+/* Font Weights */
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-extrabold: 800;
+
+/* Display */
+$font-size-display: 3.5rem;      // 56px
+$line-height-display: 4rem;      // 64px
+
+/* Headings */
+$font-size-h1: 2rem;             // 32px
+$line-height-h1: 2.5rem;
+
+$font-size-h2: 1.75rem;          // 28px
+$line-height-h2: 2.25rem;
+
+$font-size-h3: 1.375rem;         // 22px
+$line-height-h3: 1.75rem;
+
+/* Body */
+$font-size-body-lg: 1.125rem;    // 18px
+$line-height-body-lg: 1.75rem;
+
+$font-size-body: 1rem;           // 16px
+$line-height-body: 1.5rem;
+
+/* Labels */
+$font-size-label: 0.875rem;      // 14px
+$line-height-label: 1.25rem;
+
+$font-size-caption: 0.75rem;     // 12px
+$line-height-caption: 1rem;
