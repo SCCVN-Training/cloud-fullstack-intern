@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { AuthStore } from '../auth/data-access/with-auth-store';
+import { AuthStore } from '../../core/auth/data-access/with-auth-store';
 
 @Component({
   selector: 'app-home',

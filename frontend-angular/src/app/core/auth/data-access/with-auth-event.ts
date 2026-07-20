@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs/internal/Observable';
 import { LoginPayload, RegisterPayload } from './auth.schema';
 import { AuthEffect } from './with-auth-effect';
 
@@ -40,11 +39,6 @@ export class AuthEvent {
   restoreSession(): void {
     console.log('[Auth Event] Restore session triggered'); // Log when restore session is triggered
     this.effect.restoreSession();
-  }
-
-  initializeSession(): Observable<void> {
-    console.log('[Auth Event] Initialize session triggered');
-    return this.effect.initializeSession();
   }
 
   getCurrentUser(): void {

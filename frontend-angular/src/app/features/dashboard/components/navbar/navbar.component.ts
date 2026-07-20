@@ -4,8 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
-import { AuthEvent } from '../../../auth/data-access/with-auth-event';
-import { AuthStore } from '../../../auth/data-access/with-auth-store';
+import { AuthEvent } from '../../../../core/auth/data-access/with-auth-event';
+import { AuthStore } from '../../../../core/auth/data-access/with-auth-store';
 
 @Component({
   selector: 'app-dashboard-navbar',

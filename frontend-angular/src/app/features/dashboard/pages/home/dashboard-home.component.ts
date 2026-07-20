@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { AuthStore } from '../../../auth/data-access/with-auth-store';
+import { AuthStore } from '../../../../core/auth/data-access/with-auth-store';
 
 @Component({
   selector: 'app-dashboard-home',

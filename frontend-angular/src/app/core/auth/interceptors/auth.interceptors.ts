@@ -2,7 +2,7 @@ import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core/primitives/di';
 import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
-import { AuthReducer } from '../../features/auth/data-access/with-auth-reducer';
+import { AuthReducer } from '../data-access/with-auth-reducer';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const http = inject(HttpClient);

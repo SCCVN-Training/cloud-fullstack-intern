@@ -7,9 +7,10 @@ import {
 import { provideRouter } from '@angular/router';
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { routes } from './app.routes';
-import { authInterceptor } from './core/interceptors/auth.interceptors';
-import { AuthEvent } from './features/auth/data-access/with-auth-event';
+import { AppEvent } from './core/app/data-access/with-app-event';
+import { authInterceptor } from './core/auth/interceptors/auth.interceptors';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,8 +18,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideRouter(routes),
     provideAppInitializer(() => {
-      const authEvent = inject(AuthEvent);
-      return authEvent.initializeSession(); //Initialize session restoration before the app starts
+      const appEvent = inject(AppEvent);
+      return firstValueFrom(appEvent.initializeApp()); //Initialize session restoration before the app starts
     }),
   ],
 };

@@ -3,8 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, catchError, map, of, switchMap, tap } from 'rxjs';
 
-import { environment } from '../../../../environments/environment';
-import { NotificationService } from '../../../core/services/notification.service';
+import { NotificationService } from '../../notification/services/notification.service';
 import { AuthApi } from '../api/auth.api';
 import { LoginPayload, RegisterPayload } from './auth.schema';
 import { AuthReducer } from './with-auth-reducer';
@@ -17,8 +16,6 @@ export class AuthEffect {
   private readonly reducer = inject(AuthReducer);
   private readonly router = inject(Router);
   private readonly notification = inject(NotificationService);
-
-  private readonly API_URL = environment.apiUrl + '/auth';
 
   login(payload: LoginPayload): void {
     this.reducer.setLoading(true);
