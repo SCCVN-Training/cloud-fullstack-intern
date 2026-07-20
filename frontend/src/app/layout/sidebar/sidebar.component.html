@@ -2,7 +2,10 @@
   <nav class="nav-list" aria-label="Primary navigation">
     <ul>
       <li *ngFor="let item of navItems">
-        <a [routerLink]="item.path">{{ item.label }}</a>
+        <a [routerLink]="item.path">
+          <span class="material-symbols-outlined">{{ item.icon }}</span>
+          {{ item.label }}
+        </a>
       </li>
     </ul>
   </nav>

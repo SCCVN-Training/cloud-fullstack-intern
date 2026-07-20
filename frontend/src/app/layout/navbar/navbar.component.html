@@ -1,10 +1,23 @@
 <header class="navbar-shell">
-  <div class="navbar-brand">
-    <span class="brand-mark">Syncra</span>
-    <span class="brand-text">Corporate Events</span>
+  <div class="navbar-brand" aria-hidden="false">
+    <div class="brand-mark">
+      <!-- Renders the official Google Flutter Dash glyph from your icon library -->
+      <span class="material-symbols-outlined dash-icon-glyph">flutter_dash</span>
+    </div>
+    <div class="brand-text">
+      <span class="brand-title">Syncra</span>
+      <span class="brand-sub">Corporate Events</span>
+    </div>
   </div>
+
   <div class="navbar-actions">
-    <button class="nav-icon" type="button">🔔</button>
-    <button class="nav-icon" type="button">👤</button>
+    <button class="nav-btn" aria-label="Notifications" type="button">
+      <span class="material-symbols-outlined">notifications</span>
+      <span class="badge" aria-hidden="true"></span>
+    </button>
+
+    <button class="nav-btn" aria-label="Profile" type="button">
+      <span class="material-symbols-outlined">account_circle</span>
+    </button>
   </div>
 </header>
