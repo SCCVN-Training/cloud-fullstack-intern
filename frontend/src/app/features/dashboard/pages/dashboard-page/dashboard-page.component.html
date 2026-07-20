@@ -1,35 +1,166 @@
-<section class="page-header">
-  <div>
-    <p class="eyebrow">Welcome back</p>
-    <h1>Today at Syncra</h1>
+<!-- Main Content Container Grid -->
+<div class="p-lg space-y-xl max-w-[1440px] mx-auto animate-fade-in">
+  
+  <!-- Hero / Welcome Banner -->
+  <section class="bg-gradient-to-r from-primary to-tertiary-container rounded-xl p-xl text-on-primary relative overflow-hidden flex flex-col md:flex-row items-center justify-between min-h-[260px] shadow-sm">
+    <div class="z-10 max-w-xl">
+      <p class="font-label-sm text-label-sm uppercase tracking-wider opacity-75 mb-xs">Welcome back</p>
+      <h1 class="font-h1 text-h1 mb-md tracking-tight">Today at Syncra</h1>
+      <p class="font-body-lg text-body-lg opacity-90 mb-xl">Here is a quick snapshot of your event logistics workspace for today. Track registrations, monitor available inventory, and manage upcoming schedules.</p>
+      
+      <!-- Interactive Global Search Bar Component -->
+      <div class="relative max-w-md">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+        <input class="w-full pl-12 pr-4 py-3 rounded-xl text-on-surface bg-surface-container-lowest border-none shadow-lg focus:ring-4 focus:ring-primary/20 transition-all text-body-md" placeholder="Search workshops, rooms, or registrations..." type="text">
+      </div>
+    </div>
+    
+    <!-- Decorative Ambient Background Circle -->
+    <div class="hidden lg:block absolute right-[-5%] top-[-20%] w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+  </section>
+
+  <!-- Modernized Metrics / Stat Cards Grid Row -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg">
+    
+    <!-- Stat 1: Upcoming Workshops -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between hover:shadow-md hover:border-primary transition-all group cursor-pointer">
+      <div class="flex justify-between items-start">
+        <div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined">event_upcoming</span>
+        </div>
+        <span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+      </div>
+      <div class="mt-xl">
+        <h2 class="text-3xl font-bold font-h1 tracking-tight text-on-surface">12</h2>
+        <p class="font-body-md text-on-surface-variant mt-xs">Upcoming workshops</p>
+      </div>
+    </div>
+
+    <!-- Stat 2: Rooms Available -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between hover:shadow-md hover:border-primary transition-all group cursor-pointer">
+      <div class="flex justify-between items-start">
+        <div class="w-10 h-10 rounded-lg bg-tertiary-fixed flex items-center justify-center text-tertiary">
+          <span class="material-symbols-outlined">meeting_room</span>
+        </div>
+        <span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+      </div>
+      <div class="mt-xl">
+        <h2 class="text-3xl font-bold font-h1 tracking-tight text-on-surface">5</h2>
+        <p class="font-body-md text-on-surface-variant mt-xs">Rooms available</p>
+      </div>
+    </div>
+
+    <!-- Stat 3: Registrations This Week -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between hover:shadow-md hover:border-primary transition-all group cursor-pointer">
+      <div class="flex justify-between items-start">
+        <div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface">
+          <span class="material-symbols-outlined">trending_up</span>
+        </div>
+        <span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+      </div>
+      <div class="mt-xl">
+        <h2 class="text-3xl font-bold font-h1 tracking-tight text-on-surface">23</h2>
+        <p class="font-body-md text-on-surface-variant mt-xs">Registrations this week</p>
+      </div>
+    </div>
+
+    <!-- Stat 4: Pending Speaker Uploads -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between hover:shadow-md hover:border-primary transition-all group cursor-pointer">
+      <div class="flex justify-between items-start">
+        <div class="w-10 h-10 rounded-lg bg-error-container flex items-center justify-center text-on-error-container">
+          <span class="material-symbols-outlined">cloud_upload</span>
+        </div>
+        <span class="material-symbols-outlined text-[18px] text-outline group-hover:text-primary transition-colors">arrow_forward</span>
+      </div>
+      <div class="mt-xl">
+        <h2 class="text-3xl font-bold font-h1 tracking-tight text-error">3</h2>
+        <p class="font-body-md text-on-surface-variant mt-xs">Pending speaker uploads</p>
+      </div>
+    </div>
+    
+  </section>
+
+  <!-- Two Column Content Grid for Core Feeds -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-xl">
+    
+    <!-- Primary Column: Upcoming Events Feed (Takes up 2/3 space) -->
+    <section class="lg:col-span-2 space-y-lg">
+      <div class="flex justify-between items-end pb-xs border-b border-outline-variant">
+        <div>
+          <h3 class="font-h2 text-h2 text-on-surface">Upcoming Events</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">Active calendar schedule and registration queues.</p>
+        </div>
+        <button class="text-primary font-label-md hover:underline flex items-center gap-xs">
+          View All <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+        </button>
+      </div>
+
+      <!-- High-Fidelity Event List Cards Container -->
+      <div class="space-y-md">
+        <!-- Mock Event Card 1 -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center justify-between gap-md hover:shadow-sm transition-shadow">
+          <div class="flex items-center gap-md">
+            <div class="w-12 h-12 bg-surface-container-low rounded-lg flex flex-col items-center justify-center border border-outline-variant shrink-0 text-on-surface">
+              <span class="text-[10px] uppercase font-bold text-primary font-label-sm">Sep</span>
+              <span class="text-body-lg font-bold leading-none">12</span>
+            </div>
+            <div>
+              <h4 class="font-h3 text-h3 text-base leading-snug text-on-surface">Advanced Supply Chain Hubs</h4>
+              <p class="font-body-md text-on-surface-variant">Room 402 • 09:00 AM • 12 Attendees</p>
+            </div>
+          </div>
+          <button class="px-md py-2 bg-primary text-white rounded-lg font-label-md hover:opacity-90 transition-opacity text-sm shrink-0">Manage</button>
+        </div>
+
+        <!-- Mock Event Card 2 -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center justify-between gap-md hover:shadow-sm transition-shadow">
+          <div class="flex items-center gap-md">
+            <div class="w-12 h-12 bg-surface-container-low rounded-lg flex flex-col items-center justify-center border border-outline-variant shrink-0 text-on-surface">
+              <span class="text-[10px] uppercase font-bold text-primary font-label-sm">Sep</span>
+              <span class="text-body-lg font-bold leading-none">24</span>
+            </div>
+            <div>
+              <h4 class="font-h3 text-h3 text-base leading-snug text-on-surface">Global Freight Compliance Standard</h4>
+              <p class="font-body-md text-on-surface-variant">Virtual Meeting • 02:00 PM • 61 Attendees</p>
+            </div>
+          </div>
+          <button class="px-md py-2 border border-outline text-on-surface rounded-lg font-label-md hover:bg-surface-container-low transition-colors text-sm shrink-0">Details</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sidebar Column: Recent Notifications Feed (Takes up 1/3 space) -->
+    <section class="space-y-lg">
+      <div class="flex justify-between items-end pb-xs border-b border-outline-variant">
+        <div>
+          <h3 class="font-h2 text-h2 text-on-surface">Recent Notifications</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">Updates requiring action.</p>
+        </div>
+      </div>
+
+      <!-- High-Fidelity Alert List Stack -->
+      <div class="space-y-sm">
+        <!-- Notification Alert Item 1 -->
+        <div class="p-md rounded-xl bg-surface-container-low border border-outline-variant flex gap-md items-start">
+          <span class="material-symbols-outlined text-primary mt-base">info</span>
+          <div class="flex-1">
+            <h5 class="font-label-md text-label-md text-on-surface">Speaker Bio Pending</h5>
+            <p class="font-body-md text-on-surface-variant text-xs mt-xs">3 speakers haven't uploaded profiles for the upcoming workshop series.</p>
+            <span class="text-[10px] font-medium text-outline block mt-sm">2 hours ago</span>
+          </div>
+        </div>
+
+        <!-- Notification Alert Item 2 -->
+        <div class="p-md rounded-xl bg-surface-container-low border border-outline-variant flex gap-md items-start">
+          <span class="material-symbols-outlined text-error mt-base">warning</span>
+          <div class="flex-1">
+            <h5 class="font-label-md text-label-md text-on-surface">Room Allocation Conflict</h5>
+            <p class="font-body-md text-on-surface-variant text-xs mt-xs">Room 402 double-booked for next Tuesday at 09:00 AM.</p>
+            <span class="text-[10px] font-medium text-outline block mt-sm">Yesterday</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    
   </div>
-</section>
-
-<section class="dashboard-grid">
-  <article class="stat-card">
-    <h2>12</h2>
-    <p>Upcoming workshops</p>
-  </article>
-  <article class="stat-card">
-    <h2>5</h2>
-    <p>Rooms available</p>
-  </article>
-  <article class="stat-card">
-    <h2>23</h2>
-    <p>Registrations this week</p>
-  </article>
-  <article class="stat-card">
-    <h2>3</h2>
-    <p>Pending speaker uploads</p>
-  </article>
-</section>
-
-<section class="content-panel">
-  <h2>Upcoming events</h2>
-  <div class="list-placeholder">Event list placeholder</div>
-</section>
-
-<section class="content-panel">
-  <h2>Recent notifications</h2>
-  <div class="list-placeholder">Notification feed placeholder</div>
-</section>
+</div>
