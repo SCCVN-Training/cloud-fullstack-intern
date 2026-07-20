@@ -1,0 +1,242 @@
+@use "../../shared/styles/brand-logo" as brand;
+
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #fafafa;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+// Header Custom Specifications
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+
+  .logo-area {
+    @include brand.nephos-brand;
+  }
+
+  // .logo-area {
+  //   text-decoration: none;
+  //   color: inherit;
+  //   display: inline-flex;
+  //   align-items: center;
+  // }
+  .logo-area:hover,
+  .logo-area:focus {
+    text-decoration: none;
+    outline: none;
+  }
+
+  .search-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 0;
+    width: 100%;
+    max-width: 500px;
+    background-color: #f1f3f4;
+    padding: 6px 12px;
+    border-radius: 8px;
+    gap: 8px;
+
+    .search-icon {
+      color: #5f6368;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+    input {
+      border: none;
+      background: transparent;
+      width: 100%;
+      outline: none;
+      font-size: 14px;
+      color: #1e293b;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .upload-btn {
+      background-color: #111111 !important; // Minimalist flat dark accent matching theme override rules
+      color: #ffffff !important;
+      border-radius: 4px;
+    }
+
+    .profile-avatar {
+      color: #5f6368;
+      mat-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+      }
+    }
+  }
+}
+
+// Workspace Layout Wrapper
+.workspace-container {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+// Left Nav Sidebar Panel
+.side-panel {
+  width: 240px;
+  background-color: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 8px;
+  box-sizing: border-box;
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 0 24px 24px 0;
+      color: #475569;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 95%;
+      text-align: left;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+      &:hover {
+        background-color: #f1f5f9;
+      }
+      &.active {
+        background-color: #e3f2fd; // Subtle blue highlight mapping back to Nephos color accents
+        color: #1976d2;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .storage-widget {
+    padding: 16px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    margin: 8px;
+
+    .storage-text {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 8px;
+      .bold {
+        color: #1e293b;
+        font-weight: 600;
+      }
+    }
+    ::v-deep .mat-mdc-progress-bar {
+      --mdc-linear-progress-active-indicator-color: #1976d2;
+    }
+  }
+}
+
+// Content Explorer Window Canvas Area
+.main-canvas {
+  flex-grow: 1;
+  padding: 32px;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  .canvas-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 24px 0;
+  }
+}
+
+// Chronological / Alphabetical Grid Layout Blocks
+.items-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: #cbd5e1;
+  }
+  .item-icon {
+    color: #64748b;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  &.folder-card .item-icon {
+    color: #1976d2; // Theme folder identification focus points
+  }
+
+  .item-info {
+    display: flex;
+    flex-direction: column;
+
+    .item-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1e293b;
+    }
+    .item-date {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  color: #94a3b8;
+
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+  }
+  p {
+    font-size: 14px;
+    margin: 0;
+  }
+}

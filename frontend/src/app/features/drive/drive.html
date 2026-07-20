@@ -1,0 +1,99 @@
+<div class="dashboard-wrapper">
+  <!-- 1. HEADER SECTION -->
+  <header class="dashboard-header">
+    <!-- Brand Identity Element with safe linking -->
+    <a routerLink="/drive" class="logo-area">
+      <mat-icon class="logo-icon">cloud_queue</mat-icon>
+      <span class="brand-name">Nephos</span>
+    </a>
+
+    <!-- Global Layout Core Controls -->
+    <div class="search-container">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input type="text" placeholder="Search files, folders, documents..." />
+    </div>
+
+    <div class="header-actions">
+      <button
+        mat-flat-button
+        color="primary"
+        class="upload-btn"
+        (click)="onUploadTrigger()"
+      >
+        <mat-icon>upload</mat-icon>
+        <span>Upload</span>
+      </button>
+
+      <button mat-icon-button class="profile-avatar" title="User Profile">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  <!-- 2. WORKSPACE CONTAINER (Sidebar + Canvas Content) -->
+  <div class="workspace-container">
+    <!-- LEFT SIDEBAR PANEL -->
+    <aside class="side-panel">
+      <nav class="nav-links">
+        <button
+          [class.active]="currentTab() === 'home'"
+          (click)="switchTab('home')"
+          class="nav-item"
+        >
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </button>
+
+        <button
+          [class.active]="currentTab() === 'storage'"
+          (click)="switchTab('storage')"
+          class="nav-item"
+        >
+          <mat-icon>storage</mat-icon>
+          <span>My storage</span>
+        </button>
+      </nav>
+
+      <!-- Storage Summary Block (Adaptable for APIs later) -->
+      <div class="storage-widget">
+        <div class="storage-text">
+          <span class="bold">{{ usedStorage() }} GB</span> used of {{
+          totalStorage() }} GB
+        </div>
+        <mat-progress-bar
+          mode="determinate"
+          [value]="storagePercentage()"
+        ></mat-progress-bar>
+      </div>
+    </aside>
+
+    <!-- MIDDLE MAIN EXPLORER AREA -->
+    <main class="main-canvas">
+      <div class="canvas-header">
+        <h2>
+          {{ currentTab() === 'home' ? 'Recent Activity' : 'All Files & Folders'
+          }}
+        </h2>
+      </div>
+
+      <div class="items-grid">
+        @for (item of displayItems(); track item.name) {
+        <div class="item-card" [class.folder-card]="item.type === 'folder'">
+          <mat-icon class="item-icon">
+            {{ item.type === 'folder' ? 'folder' : 'description' }}
+          </mat-icon>
+          <div class="item-info">
+            <span class="item-name">{{ item.name }}</span>
+            <span class="item-date">Modified {{ item.updated }}</span>
+          </div>
+        </div>
+        } @empty {
+        <div class="empty-state">
+          <mat-icon>cloud_off</mat-icon>
+          <p>Your sky is empty. Upload items to start.</p>
+        </div>
+        }
+      </div>
+    </main>
+  </div>
+</div>
