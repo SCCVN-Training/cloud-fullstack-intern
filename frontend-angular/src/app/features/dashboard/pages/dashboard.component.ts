@@ -1,8 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 
-import { AuthStore } from '../../auth/data-access/with-auth-store';
 import { DashboardNavbarComponent } from '../components/navbar/navbar.component';
 
 @Component({
@@ -12,8 +11,4 @@ import { DashboardNavbarComponent } from '../components/navbar/navbar.component'
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
-export class DashboardComponent {
-  readonly authStore = inject(AuthStore);
-
-  readonly currentUser = this.authStore.currentUser();
-}
+export class DashboardComponent {}

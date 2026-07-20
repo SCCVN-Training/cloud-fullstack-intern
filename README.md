@@ -1,6 +1,6 @@
-# My Wrofile
+# Otakutory
 
-My Wrofile is a web application where users can create a personal profile and share their interests in anime, manga, games, and music. The project uses both internal data and free public APIs to enrich user profiles.
+Otakutory is a web application where users can create a personal profile and share their interests in anime, manga, games, and music. The project uses both internal data and free public APIs to enrich user profiles.
 
 ## Tech Stack
 

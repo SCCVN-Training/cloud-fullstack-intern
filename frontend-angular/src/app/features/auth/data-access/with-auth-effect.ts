@@ -1,24 +1,19 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import { NotificationService } from '../../../core/services/notification.service';
-import {
-  LoginPayload,
-  LoginResponse,
-  RegisterPayload,
-  RegisterResponse,
-  User,
-} from './auth.schema';
+import { AuthApi } from '../api/auth.api';
+import { LoginPayload, RegisterPayload } from './auth.schema';
 import { AuthReducer } from './with-auth-reducer';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthEffect {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(AuthApi);
   private readonly reducer = inject(AuthReducer);
   private readonly router = inject(Router);
   private readonly notification = inject(NotificationService);
@@ -28,22 +23,20 @@ export class AuthEffect {
   login(payload: LoginPayload): void {
     this.reducer.setLoading(true);
 
-    // withCredentials: true ensures cookies are accepted and sent across domains if needed
-    this.http
-      .post<LoginResponse>(`${this.API_URL}/login`, payload, { withCredentials: true })
+    this.api
+      .login(payload)
       .pipe(
         tap((response) => {
-          const { user } = response.data;
-
-          // Token is saved inside HttpOnly cookie automatically by the browser.
-          // We only store non-sensitive state in memory!
           this.reducer.setLoading(false);
           this.reducer.setError(null);
-          this.reducer.loginSuccess(user);
-          this.notification.success(`Welcome back, ${user.username}!`);
+          this.reducer.loginSuccess(response.data.user);
+          this.notification.success(
+            `Login successful! Welcome back, ${response.data.user.username}.`,
+          );
           this.router.navigate(['/dashboard']);
         }),
         catchError((error: HttpErrorResponse) => {
+          this.reducer.setLoading(false);
           const message = error.error?.message || 'Login failed. Please try again.';
           this.reducer.setError(message);
           this.notification.error(message);
@@ -56,10 +49,10 @@ export class AuthEffect {
   register(payload: RegisterPayload): void {
     this.reducer.setLoading(true);
 
-    this.http
-      .post<RegisterResponse>(`${this.API_URL}/register`, payload)
+    this.api
+      .register(payload)
       .pipe(
-        tap(() => {
+        tap((response) => {
           this.reducer.setLoading(false);
           this.reducer.setError(null);
           this.notification.success('Account created successfully! Please log in.');
@@ -77,8 +70,8 @@ export class AuthEffect {
 
   logout(): void {
     // Send request so backend clears the HttpOnly cookie via Set-Cookie header
-    this.http
-      .post(`${this.API_URL}/logout`, {}, { withCredentials: true })
+    this.api
+      .logout()
       .pipe(
         tap(() => {
           this.notification.info('You have been logged out.');
@@ -96,20 +89,10 @@ export class AuthEffect {
   }
 
   restoreSession(): void {
-    this.http
-      .post(
-        `${this.API_URL}/restore-session`,
-        {},
-        {
-          withCredentials: true,
-        },
-      )
+    this.api
+      .restoreSession()
       .pipe(
-        switchMap(() =>
-          this.http.get<{ data: { user: User } }>(`${this.API_URL}/me`, {
-            withCredentials: true,
-          }),
-        ),
+        switchMap(() => this.api.getCurrentUser()),
         tap((response) => {
           this.reducer.setCurrentUser(response.data.user);
         }),
@@ -123,36 +106,22 @@ export class AuthEffect {
 
   //This is Observable version of restoreSession, which can be used in app initializer to ensure session restoration is complete before the app starts.
   initializeSession(): Observable<void> {
-    return this.http
-      .post(
-        `${this.API_URL}/restore-session`,
-        {},
-        {
-          withCredentials: true,
-        },
-      )
-      .pipe(
-        switchMap(() =>
-          this.http.get<{ data: { user: User } }>(`${this.API_URL}/me`, {
-            withCredentials: true,
-          }),
-        ),
-        tap((response) => {
-          this.reducer.setCurrentUser(response.data.user);
-        }),
-        map(() => void 0),
-        catchError(() => {
-          this.reducer.setCurrentUser(null);
-          return of(void 0);
-        }),
-      );
+    return this.api.restoreSession().pipe(
+      switchMap(() => this.api.getCurrentUser()),
+      tap((response) => {
+        this.reducer.setCurrentUser(response.data.user);
+      }),
+      map(() => void 0),
+      catchError(() => {
+        this.reducer.setCurrentUser(null);
+        return of(void 0);
+      }),
+    );
   }
 
   getCurrentUser(): void {
-    this.http
-      .get<{ data: { user: User } }>(`${this.API_URL}/me`, {
-        withCredentials: true,
-      })
+    this.api
+      .getCurrentUser()
       .pipe(
         tap((response) => {
           this.reducer.setCurrentUser(response.data.user);
