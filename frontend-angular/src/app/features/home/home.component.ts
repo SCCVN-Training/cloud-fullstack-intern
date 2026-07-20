@@ -18,10 +18,6 @@ export class HomeComponent {
   readonly authStore = inject(AuthStore);
 
   startCollecting(): void {
-    if (this.authStore.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.router.navigate(['/login']);
-    }
+    this.router.navigate(['/dashboard']);
   }
 }

@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
-import { LoginPayload } from '../../data-access/auth.model';
+import { LoginPayload } from '../../data-access/auth.schema';
 import { AuthEvent } from '../../data-access/with-auth-event';
 import { AuthStore } from '../../data-access/with-auth-store';
 

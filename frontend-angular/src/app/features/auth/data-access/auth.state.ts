@@ -1,9 +1,7 @@
-import { User } from './auth.model';
+import { User } from './auth.schema';
 
 export interface AuthState {
   currentUser: User | null;
-
-  users: User[];
 
   isAuthenticated: boolean;
 
@@ -14,7 +12,6 @@ export interface AuthState {
 
 export const initialState: AuthState = {
   currentUser: null,
-  users: [],
   isAuthenticated: false,
   loading: false,
   error: null,

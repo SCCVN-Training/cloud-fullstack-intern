@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { User } from './auth.model';
+import { User } from './auth.schema';
 import { AuthStore } from './with-auth-store';
 
 @Injectable({
@@ -26,7 +26,6 @@ export class AuthReducer {
   reset() {
     this.store.state.set({
       currentUser: null,
-      users: [],
       isAuthenticated: false,
       loading: false,
       error: null,
@@ -49,15 +48,6 @@ export class AuthReducer {
     this.patch({
       error,
       loading: false,
-    });
-  }
-
-  /**
-   * Replace all registered users.
-   */
-  setUsers(users: User[]) {
-    this.patch({
-      users,
     });
   }
 
@@ -86,9 +76,9 @@ export class AuthReducer {
   }
 
   /**
-   * Restore previous session.
+   * Set the current user.
    */
-  restoreSession(user: User | null) {
+  setCurrentUser(user: User | null) {
     this.patch({
       currentUser: user,
       isAuthenticated: !!user,

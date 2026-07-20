@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { LoginPayload, RegisterPayload } from './auth.model';
+import { Observable } from 'rxjs/internal/Observable';
+import { LoginPayload, RegisterPayload } from './auth.schema';
 import { AuthEffect } from './with-auth-effect';
 
 @Injectable({
@@ -13,23 +14,23 @@ export class AuthEvent {
    * Login user.
    */
   login(payload: LoginPayload): void {
-    console.log('[Event] Login triggered with payload:', payload); // Log the payload to check its structure
-    this.effect.login(payload.email, payload.password);
+    console.log('[Auth Event] Login triggered with payload:', payload); // Log the payload to check its structure
+    this.effect.login(payload);
   }
 
   /**
    * Register new account.
    */
   register(payload: RegisterPayload): void {
-    console.log('[Event] Register triggered with payload:', payload); // Log the payload to check its structure
-    this.effect.register(payload.username, payload.email, payload.password);
+    console.log('[Auth Event] Register triggered with payload:', payload); // Log the payload to check its structure
+    this.effect.register(payload);
   }
 
   /**
    * Logout current user.
    */
   logout(): void {
-    console.log('[Event] Logout triggered'); // Log when logout is triggered
+    console.log('[Auth Event] Logout triggered'); // Log when logout is triggered
     this.effect.logout();
   }
 
@@ -37,7 +38,17 @@ export class AuthEvent {
    * Restore previous session.
    */
   restoreSession(): void {
-    console.log('[Event] Restore session triggered'); // Log when restore session is triggered
+    console.log('[Auth Event] Restore session triggered'); // Log when restore session is triggered
     this.effect.restoreSession();
+  }
+
+  initializeSession(): Observable<void> {
+    console.log('[Auth Event] Initialize session triggered');
+    return this.effect.initializeSession();
+  }
+
+  getCurrentUser(): void {
+    console.log('[Auth Event] Get current user triggered');
+    this.effect.getCurrentUser();
   }
 }

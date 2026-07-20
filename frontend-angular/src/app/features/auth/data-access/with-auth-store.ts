@@ -17,8 +17,6 @@ export class AuthStore {
 
   readonly currentUser = computed(() => this.state().currentUser);
 
-  readonly users = computed(() => this.state().users);
-
   readonly isAuthenticated = computed(() => this.state().isAuthenticated);
 
   readonly loading = computed(() => this.state().loading);
