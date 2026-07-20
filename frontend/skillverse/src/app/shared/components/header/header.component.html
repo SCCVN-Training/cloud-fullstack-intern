@@ -1,0 +1,23 @@
+<nav class="header-nav">
+    <div class="header-main-row">
+        <a routerLink="/" class="header-logo">
+            <img src="/Logo.png" class="header-logo-image">
+            <span>SkillVerse</span>
+        </a>
+
+        <!-- Navigation Links -->
+        <div class="header-links">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="header-link">Home</a>
+            <a routerLink="/browse-skills" routerLinkActive="active" class="header-link">Browse Skills</a>
+            <a routerLink="/how-it-works" routerLinkActive="active" class="header-link">How It Works</a>
+            <a routerLink="/about-us" routerLinkActive="active" class="header-link">About Us</a>
+        </div>
+        
+        <!-- User Actions -->
+        <div class="header-actions">
+            <!-- Unauthenticated -->
+            <a routerLink="/login" class="btn-text">Login</a>
+            <a routerLink="/register" class="btn-primary">Register</a>
+        </div>
+    </div>
+</nav>
