@@ -61,7 +61,11 @@ app.include_router(auth_router)
 
 @app.get("/health", tags=["Health Check"])
 async def application_health_check():
-    return {"status": "healthy", "environment": app_settings.ENVIRONMENT}
+    return {
+        "status": "healthy", 
+        "environment": app_settings.ENVIRONMENT,
+        "version": app_settings.VERSION
+        }
 
 
 if __name__ == "__main__":

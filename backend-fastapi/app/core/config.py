@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class ApplicationSettings(BaseSettings):
     PROJECT_NAME: str = "Otakutory Backend"
     ENVIRONMENT: str = "development"
+    VERSION: str = "0.1.0"
 
     # Database Credentials
     NEON_DATABASE_URL: str
