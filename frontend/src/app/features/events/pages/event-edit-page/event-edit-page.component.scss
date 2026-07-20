@@ -1,0 +1,40 @@
+:host {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.25rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.12em;
+}
+
+.content-panel {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+}
+
+.section-copy {
+  margin: 0 0 1rem;
+  color: var(--text-secondary);
+}
+
+.form-placeholder {
+  min-height: 20rem;
+  display: grid;
+  place-items: center;
+  border-radius: 1rem;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  color: var(--text-secondary);
+}

@@ -1,0 +1,9 @@
+<aside class="sidebar-shell">
+  <nav class="nav-list" aria-label="Primary navigation">
+    <ul>
+      <li *ngFor="let item of navItems">
+        <a [routerLink]="item.path">{{ item.label }}</a>
+      </li>
+    </ul>
+  </nav>
+</aside>
