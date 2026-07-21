@@ -29,12 +29,12 @@ export class FooterComponent {
       route: '/browse-skills'
     },
     {
-      label: 'About Us',
-      route: '/about-us'
-    },
-    {
       label: 'How It Works',
       route: '/how-it-works'
+    },
+    {
+      label: 'About Us',
+      route: '/about-us'
     }
   ];
 
