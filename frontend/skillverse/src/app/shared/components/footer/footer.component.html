@@ -5,10 +5,9 @@
             <span class="footer-copyright">© {{ currentYear}} SkillVerse. Exchange wisdom, grow together.</span>
         </div>
         <div class="footer-links">
-            <a routerLink="/" class="footer-link">Home</a>
-            <a routerLink="/browse-skills" class="footer-link">Browse Skills</a>
-            <a routerLink="/how-it-works" class="footer-link">How It Works</a>
-            <a routerLink="/about-us" class="footer-link">About Us</a>
+            <a *ngFor="let link of quickLinks" [routerLink]="link.route" class="footer-link">
+                {{ link.label }}
+            </a>
         </div>
     </div>
 </footer>
