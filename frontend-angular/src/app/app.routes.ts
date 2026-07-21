@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/guards/auth.guard';
+import { guestGuard } from './core/guards/guest.guard';
 
 export const routes: Routes = [
   // 1. The Default Redirect Rule
@@ -14,11 +15,13 @@ export const routes: Routes = [
   // Other routes (login, register, etc.) go here...
   {
     path: 'login',
+    canActivate: [guestGuard],
     loadComponent: () =>
       import('./features/auth/pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'register',
+    canActivate: [guestGuard],
     loadComponent: () =>
       import('./features/auth/pages/register/register.component').then((m) => m.RegisterComponent),
   },
@@ -30,5 +33,9 @@ export const routes: Routes = [
   },
 
   // 3. The Wildcard Fallback (Always keep this last!)
-  { path: '**', redirectTo: 'home' },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./shared/components/not-found/not-found.component').then((m) => m.NotFoundComponent),
+  },
 ];

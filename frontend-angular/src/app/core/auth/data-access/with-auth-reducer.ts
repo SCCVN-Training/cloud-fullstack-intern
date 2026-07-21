@@ -47,7 +47,6 @@ export class AuthReducer {
   setError(error: string | null) {
     this.patch({
       error,
-      loading: false,
     });
   }
 
@@ -58,8 +57,6 @@ export class AuthReducer {
     this.patch({
       currentUser: user,
       isAuthenticated: true,
-      loading: false,
-      error: null,
     });
   }
 
@@ -70,8 +67,6 @@ export class AuthReducer {
     this.patch({
       currentUser: null,
       isAuthenticated: false,
-      loading: false,
-      error: null,
     });
   }
 

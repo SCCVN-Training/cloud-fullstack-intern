@@ -14,7 +14,7 @@ export class AuthEvent {
    */
   login(payload: LoginPayload): void {
     console.log('[Auth Event] Login triggered with payload:', payload); // Log the payload to check its structure
-    this.effect.login(payload);
+    this.effect.login(payload).subscribe();
   }
 
   /**
@@ -22,7 +22,7 @@ export class AuthEvent {
    */
   register(payload: RegisterPayload): void {
     console.log('[Auth Event] Register triggered with payload:', payload); // Log the payload to check its structure
-    this.effect.register(payload);
+    this.effect.register(payload).subscribe();
   }
 
   /**
@@ -30,7 +30,7 @@ export class AuthEvent {
    */
   logout(): void {
     console.log('[Auth Event] Logout triggered'); // Log when logout is triggered
-    this.effect.logout();
+    this.effect.logout().subscribe();
   }
 
   /**
@@ -38,11 +38,11 @@ export class AuthEvent {
    */
   restoreSession(): void {
     console.log('[Auth Event] Restore session triggered'); // Log when restore session is triggered
-    this.effect.restoreSession();
+    this.effect.restoreSession().subscribe();
   }
 
   getCurrentUser(): void {
     console.log('[Auth Event] Get current user triggered');
-    this.effect.getCurrentUser();
+    this.effect.getCurrentUser().subscribe();
   }
 }

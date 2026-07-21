@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, of, switchMap } from 'rxjs';
+import { catchError, EMPTY, map, Observable, switchMap } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
 import { AuthEffect } from '../../auth/data-access/with-auth-effect';
 import { NotificationService } from '../../notification/services/notification.service';
@@ -20,7 +20,7 @@ export class AppEffect {
       tap((response) => {
         this.reducer.patch({ serverAvailable: true, version: response.version });
       }),
-      switchMap(() => this.authEffect.initializeSession()),
+      switchMap(() => this.authEffect.restoreSession()),
       tap(() => {
         this.reducer.patch({ initialized: true });
       }),
@@ -31,8 +31,9 @@ export class AppEffect {
           initialized: true,
         });
         this.notification.error('Server is unavailable!');
-        return of(void 0);
+        return EMPTY;
       }),
+      map(() => void 0),
     );
   }
 }
