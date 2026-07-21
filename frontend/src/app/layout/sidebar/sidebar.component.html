@@ -1,8 +1,18 @@
 <aside class="sidebar-shell">
+  <!-- Brand Header inside Sidebar -->
+  <div class="sidebar-brand">
+    <div class="brand-text">
+      <span class="brand-title">SCC Management</span>
+      <span class="brand-sub">Enterprise Logistics</span>
+    </div>
+  </div>
   <nav class="nav-list" aria-label="Primary navigation">
     <ul>
       <li *ngFor="let item of navItems">
-        <a [routerLink]="item.path">{{ item.label }}</a>
+        <a [routerLink]="item.path">
+          <span class="material-symbols-outlined">{{ item.icon }}</span>
+          {{ item.label }}
+        </a>
       </li>
     </ul>
   </nav>

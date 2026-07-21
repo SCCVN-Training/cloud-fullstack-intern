@@ -1,35 +1,194 @@
-<section class="page-header">
-  <div>
-    <p class="eyebrow">Welcome back</p>
-    <h1>Today at Syncra</h1>
-  </div>
-</section>
+﻿<div class="dashboard-page">
 
-<section class="dashboard-grid">
-  <article class="stat-card">
-    <h2>12</h2>
-    <p>Upcoming workshops</p>
-  </article>
-  <article class="stat-card">
-    <h2>5</h2>
-    <p>Rooms available</p>
-  </article>
-  <article class="stat-card">
-    <h2>23</h2>
-    <p>Registrations this week</p>
-  </article>
-  <article class="stat-card">
-    <h2>3</h2>
-    <p>Pending speaker uploads</p>
-  </article>
-</section>
+  <!-- Section 1: Registered Workshops -->
+  <section class="dashboard-section">
+    <div class="section-header">
+      <div>
+        <h2>Your Registered Workshops</h2>
+        <p>Manage your upcoming schedule and active learning paths.</p>
+      </div>
+      <a routerLink="/registrations" class="link-btn">View All</a>
+    </div>
 
-<section class="content-panel">
-  <h2>Upcoming events</h2>
-  <div class="list-placeholder">Event list placeholder</div>
-</section>
+    <div class="card-grid four-cols">
+      <!-- Card 1 -->
+      <article class="workshop-card">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop" alt="Supply Chain Hubs" />
+          <span class="badge blue">Next Tuesday</span>
+        </div>
+        <div class="card-content">
+          <h3>Advanced Supply Chain Hubs</h3>
+          <p class="meta">Room 402 • 09:00 AM</p>
+          <div class="card-footer">
+            <div class="avatar-group">
+              <span class="avatar"></span>
+              <span class="avatar"></span>
+              <span class="avatar-more">+12</span>
+            </div>
+            <button class="btn btn-primary">Launch Dashboard</button>
+          </div>
+        </div>
+      </article>
 
-<section class="content-panel">
-  <h2>Recent notifications</h2>
-  <div class="list-placeholder">Notification feed placeholder</div>
-</section>
+      <!-- Card 2 -->
+      <article class="workshop-card">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop" alt="Freight Compliance" />
+          <span class="badge blue">In 2 Weeks</span>
+        </div>
+        <div class="card-content">
+          <h3>Global Freight Compliance</h3>
+          <p class="meta">Virtual Meeting • 02:00 PM</p>
+          <div class="card-footer align-center">
+            <span class="status-tag"><span class="material-symbols-outlined">task_alt</span> Pre-read complete</span>
+            <button class="btn btn-outline">Details</button>
+          </div>
+        </div>
+      </article>
+
+       <!-- Card 3 -->
+      <article class="workshop-card">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&auto=format&fit=crop" alt="Electric Infrastructure" />
+          <span class="badge blue">In 2 Weeks</span>
+        </div>
+        <div class="card-content">
+          <h3>Electric Infrastructure</h3>
+          <p class="meta">Onsite Meeting • 02:00 PM</p>
+          <div class="card-footer align-center">
+            <span class="status-tag"><span class="material-symbols-outlined">task_alt</span> Pre-read complete</span>
+            <button class="btn btn-outline">Details</button>
+          </div>
+        </div>
+      </article>
+
+       <!-- Card 4 -->
+      <article class="workshop-card">
+        <div class="card-media">
+          <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&auto=format&fit=crop" alt="Server Infrastructure" />
+          <span class="badge blue">In 3 Weeks</span>
+        </div>
+        <div class="card-content">
+          <h3>Server Infrastructure & Cloud</h3>
+          <p class="meta">Onsite Meeting • 04:00 PM</p>
+          <div class="card-footer align-center">
+            <span class="status-tag">
+              <span class="material-symbols-outlined">task_alt</span> 
+              <span>Pre-read complete</span>
+            </span>
+            <button class="btn btn-outline">Details</button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Section 2: Recommended For You -->
+  <section class="dashboard-section recommended-wrapper">
+    <div class="section-header">
+      <div>
+        <h2>Recommended For You</h2>
+        <p>Based on your role in Enterprise Logistics and past attendance.</p>
+      </div>
+      <div class="slider-controls">
+        <button class="icon-circle-btn"><span class="material-symbols-outlined">chevron_left</span></button>
+        <button class="icon-circle-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+      </div>
+    </div>
+
+    <div class="card-grid two-cols">
+      <article class="rec-card">
+        <div class="rec-image">
+          <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&auto=format&fit=crop" alt="Predictive Analytics" />
+        </div>
+        <div class="rec-info">
+          <div class="rec-tags">
+            <span class="category">AI & AUTOMATION</span>
+            <span class="rating">★ 4.8 Rating</span>
+          </div>
+          <h3>Predictive Analytics for Last-Mile Delivery</h3>
+          <p>Learn how SCC uses machine learning to optimize delivery windows and reduce fuel consumption...</p>
+          <div class="rec-actions">
+            <button class="btn btn-primary">Register Interest</button>
+            <span class="date">Starts Sep 12</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="rec-card">
+        <div class="rec-image">
+          <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&auto=format&fit=crop" alt="Zero Emission" />
+        </div>
+        <div class="rec-info">
+          <div class="rec-tags">
+            <span class="category">SUSTAINABILITY</span>
+          </div>
+          <h3>Zero-Emission Infrastructure</h3>
+          <p>A deep dive into transitioning commercial fleets to clean energy and smart charging grids...</p>
+          <div class="rec-actions">
+            <button class="btn btn-primary">Register Interest</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Section 3: Trending This Week -->
+  <section class="dashboard-section">
+    <div class="section-header simple">
+      <h2><span class="material-symbols-outlined icon-trend">trending_up</span> Trending This Week</h2>
+    </div>
+
+    <div class="card-grid four-cols">
+      <article class="trending-card">
+        <div class="card-top">
+          <span class="badge-red">TRENDING</span>
+          <button class="bookmark-btn"><span class="material-symbols-outlined">bookmark</span></button>
+        </div>
+        <h4>Port Congestion Management 2024</h4>
+        <div class="card-bottom">
+          <span>842 Joined</span>
+          <span class="material-symbols-outlined arrow">arrow_forward</span>
+        </div>
+      </article>
+
+      <article class="trending-card">
+        <div class="card-top">
+          <span class="badge-red">TRENDING</span>
+          <button class="bookmark-btn"><span class="material-symbols-outlined">bookmark</span></button>
+        </div>
+        <h4>Blockchain for Cargo Tracking</h4>
+        <div class="card-bottom">
+          <span>615 Joined</span>
+          <span class="material-symbols-outlined arrow">arrow_forward</span>
+        </div>
+      </article>
+
+      <article class="trending-card">
+        <div class="card-top">
+          <span class="badge-red">TRENDING</span>
+          <button class="bookmark-btn"><span class="material-symbols-outlined">bookmark</span></button>
+        </div>
+        <h4>Hazardous Material Safety Protocols</h4>
+        <div class="card-bottom">
+          <span>490 Joined</span>
+          <span class="material-symbols-outlined arrow">arrow_forward</span>
+        </div>
+      </article>
+
+      <article class="trending-card">
+        <div class="card-top">
+          <span class="badge-red">TRENDING</span>
+          <button class="bookmark-btn"><span class="material-symbols-outlined">bookmark</span></button>
+        </div>
+        <h4>Cold Chain Storage Solutions</h4>
+        <div class="card-bottom">
+          <span>322 Joined</span>
+          <span class="material-symbols-outlined arrow">arrow_forward</span>
+        </div>
+      </article>
+    </div>
+  </section>
+</div>

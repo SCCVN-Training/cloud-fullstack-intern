@@ -1,29 +1,31 @@
 :host {
   display: block;
   min-height: 100vh;
-  background: var(--surface);
-  color: var(--text-primary);
+  background: #f8fafc;
 }
 
-.app-shell {
+.app-layout {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 260px 1fr;
   min-height: 100vh;
 }
 
-.app-body {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 1.5rem;
-  padding: 1.5rem;
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; // Fixes flex child overflow issues
 }
 
 .app-content {
-  min-height: calc(100vh - 112px);
+  flex: 1;
+  padding: 2rem;
 }
 
-@media (max-width: 1080px) {
-  .app-body {
+@media (max-width: 1024px) {
+  .app-layout {
     grid-template-columns: 1fr;
+  }
+  .sidebar-container {
+    display: none; // Add a mobile toggle drawer if needed
   }
 }

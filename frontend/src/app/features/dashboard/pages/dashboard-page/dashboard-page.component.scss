@@ -1,71 +1,302 @@
-:host {
-  display: block;
-  display: grid;
-  gap: 1.5rem;
-}
-
-.page-header {
+.dashboard-page {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+// Hero Section
+.hero-banner {
+  display: flex;
   align-items: center;
-  gap: 1rem;
-}
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  border: 1px solid #e2e8f0;
+  gap: 2rem;
 
-.eyebrow {
-  margin: 0 0 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-secondary);
-  font-size: 0.78rem;
-}
-
-.page-header h1 {
-  margin: 0;
-  font-size: clamp(2rem, 2.5vw, 2.5rem);
-}
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.stat-card {
-  padding: 1.5rem;
-  border-radius: 1rem;
-  background: var(--surface-strong);
-  border: 1px solid var(--border);
-}
-
-.stat-card h2 {
-  margin: 0 0 0.5rem;
-  font-size: 2rem;
-}
-
-.content-panel {
-  padding: 1.5rem;
-  border-radius: 1rem;
-  background: var(--surface-strong);
-  border: 1px solid var(--border);
-}
-
-.list-placeholder {
-  min-height: 10rem;
-  display: grid;
-  place-items: center;
-  color: var(--text-secondary);
-  background: var(--surface);
-  border-radius: 0.75rem;
-}
-
-@media (max-width: 960px) {
-  .dashboard-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .hero-graphic img {
+    max-height: 140px;
+    border-radius: 8px;
+    object-fit: cover;
   }
 }
 
-@media (max-width: 640px) {
-  .dashboard-grid {
+// Section Header Styling
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.25rem;
+
+  h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.25rem 0;
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .link-btn {
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+}
+
+// Layout Grids
+.card-grid {
+  display: grid;
+  gap: 1.5rem;
+
+  &.two-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &.three-cols {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &.four-cols {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Workshop Cards
+.workshop-card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  .card-media {
+    position: relative;
+    height: 160px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #2563eb;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+    }
+  }
+
+  .card-content {
+    padding: 1.25rem;
+
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0 0 0.35rem 0;
+      color: #0f172a;
+    }
+
+    .meta {
+      font-size: 0.825rem;
+      color: #64748b;
+      margin-bottom: 1.25rem;
+    }
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+// Status Tag Styling
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.status-tag .material-symbols-outlined {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+// Recommended Cards Block
+.recommended-wrapper {
+  background: #f1f5f9;
+  padding: 1.5rem;
+  border-radius: 16px;
+}
+
+.rec-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  gap: 1.25rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  .rec-image {
+    width: 140px;
+    height: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .rec-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .rec-tags {
+      display: flex;
+      gap: 0.75rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      line-height: 1.3;
+    }
+
+    p {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin: 0 0 1rem 0;
+    }
+
+    .rec-actions {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .date {
+        font-size: 0.8rem;
+        color: #64748b;
+      }
+    }
+  }
+}
+
+// Trending Cards
+.trending-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .badge-red {
+      color: #ef4444;
+      font-size: 0.65rem;
+      font-weight: 800;
+    }
+
+    .bookmark-btn {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 0;
+
+      &:hover { color: #0f172a; }
+    }
+  }
+
+  h4 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0.5rem 0;
+    line-height: 1.3;
+  }
+
+  .card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: #64748b;
+
+    .arrow {
+      font-size: 1rem;
+    }
+  }
+}
+
+// Generic Button Styles
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.825rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &-primary {
+    background: #1d4ed8;
+    color: #ffffff;
+
+    &:hover { background: #1e40af; }
+  }
+
+  &-outline {
+    background: transparent;
+    border-color: #cbd5e1;
+    color: #334155;
+
+    &:hover { background: #f8fafc; }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 1024px) {
+  .card-grid.four-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .card-grid.two-cols {
+    grid-template-columns: 1fr;
+  }
+  .card-grid.three-cols {
+    grid-template-columns: 1fr;
+  }
+  .card-grid.four-cols {
     grid-template-columns: 1fr;
   }
 }
