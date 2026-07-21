@@ -1,0 +1,85 @@
+<div class="auth-page">
+  <!-- Animated Ambient Background Blobs -->
+  <div class="ambient-background">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Login Container -->
+  <main class="auth-container glass-card">
+    <!-- Header -->
+    <header class="auth-header">
+      <h1 class="text-headline-lg auth-title">SkillVerse</h1>
+      <p class="text-body-md auth-subtitle">Welcome back. Let's keep growing.</p>
+    </header>
+
+    <!-- Form -->
+    <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Email Input -->
+      <div class="form-group">
+        <label class="text-label-sm form-label" for="email">Email Address</label>
+        <div class="input-wrapper" [class.input-error]="f['email'].invalid && (f['email'].dirty || f['email'].touched)">
+          <span class="material-symbols-outlined input-icon">mail</span>
+          <input class="form-input text-body-md" id="email" formControlName="email" placeholder="you@example.com" type="email">
+        </div>
+        <div *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)" class="error-text">
+          <small *ngIf="f['email'].errors?.['required']">Email is required.</small>
+          <small *ngIf="f['email'].errors?.['email']">Please enter a valid email address.</small>
+        </div>
+      </div>
+
+      <!-- Password Input -->
+      <div class="form-group">
+        <div class="form-group-header">
+          <label class="text-label-sm form-label" for="password">Password</label>
+          <a class="text-label-sm auth-link" href="#">Forgot Password?</a>
+        </div>
+        <div class="input-wrapper" [class.input-error]="f['password'].invalid && (f['password'].dirty || f['password'].touched)">
+          <span class="material-symbols-outlined input-icon">lock</span>
+          <input class="form-input text-body-md" id="password" formControlName="password" placeholder="••••••••" [type]="showPassword ? 'text' : 'password'">
+          <button class="toggle-password" type="button" (click)="togglePasswordVisibility()">
+            <span class="material-symbols-outlined">{{ showPassword ? 'visibility' : 'visibility_off' }}</span>
+          </button>
+        </div>
+        <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)" class="error-text">
+          <small *ngIf="f['password'].errors?.['required']">Password is required.</small>
+          <small *ngIf="f['password'].errors?.['minlength']">Password must be at least 6 characters.</small>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button class="btn-auth-submit" type="submit" [disabled]="isLoading$ | async">
+        <span *ngIf="!(isLoading$ | async)">Login</span>
+        <span *ngIf="isLoading$ | async">Logging in...</span>
+        <span class="material-symbols-outlined icon-light" *ngIf="!(isLoading$ | async)">arrow_forward</span>
+      </button>
+    </form>
+
+    <!-- Divider -->
+    <div class="auth-divider">
+      <div class="divider-line"></div>
+      <span class="text-label-sm divider-text">or</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- Social Login -->
+    <button class="btn-social" type="button">
+      <svg class="social-icon" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.67 15.63 16.89 16.79 15.73 17.57V20.34H19.29C21.37 18.42 22.56 15.59 22.56 12.25Z" fill="#4285F4"></path>
+        <path d="M12 23C14.97 23 17.46 22.02 19.29 20.34L15.73 17.57C14.74 18.24 13.48 18.66 12 18.66C9.13 18.66 6.7 16.72 5.82 14.12H2.15V16.97C3.96 20.57 7.68 23 12 23Z" fill="#34A853"></path>
+        <path d="M5.82 14.12C5.6 13.45 5.47 12.74 5.47 12C5.47 11.26 5.6 10.55 5.82 9.88V7.03H2.15C1.4 8.52 1 10.21 1 12C1 13.79 1.4 15.48 2.15 16.97L5.82 14.12Z" fill="#FBBC05"></path>
+        <path d="M12 5.34C13.62 5.34 15.06 5.89 16.2 6.98L19.38 3.81C17.46 2.01 14.97 1 12 1C7.68 1 3.96 3.43 2.15 7.03L5.82 9.88C6.7 7.28 9.13 5.34 12 5.34Z" fill="#EA4335"></path>
+      </svg>
+      Continue with Google
+    </button>
+
+    <!-- Footer Link -->
+    <div class="auth-footer">
+      <p class="text-body-md">
+        Don't have an account? 
+        <a class="text-label-md auth-link-primary" routerLink="/register">Sign up</a>
+      </p>
+    </div>
+  </main>
+</div>
