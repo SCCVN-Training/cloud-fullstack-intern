@@ -7,7 +7,7 @@
 
   color: $text-primary;
 
-  padding: 5rem 2rem;
+  padding: 2rem;
 
   display: flex;
   flex-direction: column;
@@ -89,7 +89,7 @@
 
 .btn-large {
   background: $primary-blue;
-  color: white;
+  color: white !important;
 
   padding: 1rem 3rem;
 

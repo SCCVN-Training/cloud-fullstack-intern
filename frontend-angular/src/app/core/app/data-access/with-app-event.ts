@@ -14,6 +14,7 @@ export class AppEvent {
   }
 
   initializeAppAsync(): Promise<void> {
+    console.log('[App Event] Initialization (async) triggered');
     return firstValueFrom(this.effect.initializeApp());
   }
 }

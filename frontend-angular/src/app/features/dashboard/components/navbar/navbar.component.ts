@@ -1,26 +1,37 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { RouterModule } from '@angular/router';
-import { AuthEvent } from '../../../../core/auth/data-access/with-auth-event';
 import { AuthStore } from '../../../../core/auth/data-access/with-auth-store';
+import { ClickOutsideDirective } from '../../../../shared/directives/click-outside/click-outside';
+import { DashboardNavbarMenuComponent } from './components/navbar-menu/navbar-menu.component';
 
 @Component({
   selector: 'app-dashboard-navbar',
   standalone: true,
-  imports: [RouterModule, MatIconModule, MatButtonModule, MatMenuModule],
+  imports: [
+    RouterModule,
+    MatIconModule,
+    MatButtonModule,
+    DashboardNavbarMenuComponent,
+    ClickOutsideDirective,
+  ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
 export class DashboardNavbarComponent {
-  protected readonly authStore = inject(AuthStore);
-  private readonly authEvent = inject(AuthEvent);
+  private readonly authStore = inject(AuthStore);
 
-  readonly user = this.authStore.currentUser();
+  readonly userAvatarUrl = this.authStore.currentUser()?.avatarUrl;
 
-  logout(): void {
-    this.authEvent.logout();
+  menuOpen = signal(false);
+
+  toggleMenu() {
+    this.menuOpen.update((v) => !v);
+  }
+
+  closeMenu() {
+    this.menuOpen.set(false);
   }
 }

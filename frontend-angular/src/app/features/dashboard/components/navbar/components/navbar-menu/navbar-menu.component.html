@@ -1,0 +1,47 @@
+@if (open()) {
+  <mat-card class="profile-menu">
+    <div class="profile-header">
+      <img
+        [src]="user()?.avatarUrl || 'assets/default-avatar.png'"
+        class="profile-avatar"
+        alt="Avatar"
+      />
+
+      <div class="profile-info">
+        <h3>{{ user()?.username }}</h3>
+        <p>{{ user()?.email }}</p>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <nav class="menu-list">
+      <a routerLink="/dashboard/profile" class="menu-item">
+        <mat-icon>person</mat-icon>
+        <span>My Profile</span>
+      </a>
+
+      <a routerLink="/dashboard/anime" class="menu-item">
+        <mat-icon>movie</mat-icon>
+        <span>My Anime</span>
+      </a>
+
+      <a routerLink="/dashboard/manga" class="menu-item">
+        <mat-icon>menu_book</mat-icon>
+        <span>My Manga</span>
+      </a>
+
+      <a routerLink="/dashboard/music" class="menu-item">
+        <mat-icon>library_music</mat-icon>
+        <span>My Music</span>
+      </a>
+    </nav>
+
+    <mat-divider></mat-divider>
+
+    <button matButton="filled" class="logout-button" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  </mat-card>
+}
