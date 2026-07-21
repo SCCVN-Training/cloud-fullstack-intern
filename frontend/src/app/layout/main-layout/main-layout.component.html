@@ -1,10 +1,10 @@
-<div class="app-shell">
-  <app-navbar></app-navbar>
-  <div class="app-body">
-    <app-sidebar></app-sidebar>
+<div class="app-layout">
+  <app-sidebar class="sidebar-container"></app-sidebar>
+  <div class="main-wrapper">
+    <app-navbar></app-navbar>
     <main class="app-content">
       <router-outlet></router-outlet>
     </main>
+    <app-footer></app-footer>
   </div>
-  <app-footer></app-footer>
 </div>

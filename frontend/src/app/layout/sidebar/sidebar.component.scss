@@ -1,9 +1,37 @@
 :host {
+  position: sticky; /* 1. Sets sticky positioning */
+  top: 0;            /* 2. Fixes it at the top of the viewport when scrolling */
+  height: 100vh;     /* 3. Ensures it stretches to the full height of the viewport */
+  overflow-y: auto;  /* 4. Allows scrolling inside the sidebar if its own content overflows */
+
   display: block;
   background: black;
-  border-radius: 0.72rem;
   padding: 1.25rem;
-  border: 1px solid var(--border);
+  border: 0px solid var(--border);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem 2rem 0.75rem;
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+  }
 }
 
 .nav-list ul {
@@ -17,10 +45,11 @@
 .nav-list a {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+  font-size: 1rem;
   text-decoration: none;
   padding: 0.85rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: 0rem;
   color: white;
   font-weight: 600;
   transition:
