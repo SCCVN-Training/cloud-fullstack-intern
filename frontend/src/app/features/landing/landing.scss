@@ -1,13 +1,10 @@
-// Import Material mixins for potential advanced color access,
-// but for this simple design, we will use plain CSS/SCSS and some Mat buttons.
 @use "@angular/material" as mat;
 @use "../../shared/styles/brand-logo" as brand;
 
-// Define simple blue/sky color tokens specifically for this page
-$sky-light: #e3f2fd; // Extremely light sky blue
-$sky-medium: #bbdefb; // Soft medium sky blue
-$sky-primary: #1976d2; // The core blue we want (matches default mat palette)
-$text-dark: #1e293b; // Deep navy text (better readability)
+$sky-light: #e3f2fd;
+$sky-medium: #bbdefb;
+$sky-primary: #1976d2;
+$text-dark: #1e293b;
 $white: #ffffff;
 
 .container {
@@ -16,7 +13,6 @@ $white: #ffffff;
   padding: 0 24px;
 }
 
-// 1. The main decorative background (The Sky)
 .nephos-landing-wrapper {
   min-height: 100vh;
   display: flex;
@@ -25,18 +21,17 @@ $white: #ffffff;
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  // A clean vertical gradient: Light blue to softer blue
   background: linear-gradient(180deg, $sky-light 0%, $sky-medium 100%);
 }
 
-// 2. The header/navbar
 .landing-header {
-  background-color: transparent; // Keeps the sky background visible
+  @include brand.nephos-brand;
+  background-color: transparent;
   height: 80px;
   display: flex;
   align-items: center;
-  position: relative; // Allows elevation to work properly
-  box-shadow: none !important; // Override the mat-elevation-z1 shadow we added in HTML for now
+  position: relative;
+  box-shadow: none !important; // override the mat-elevation-z1 shadow for now
 
   .header-content {
     width: 100%;
@@ -46,18 +41,30 @@ $white: #ffffff;
   }
 
   .logo-area {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
     @include brand.nephos-brand;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+
+    .brand-logo-img {
+      height: var(--brand-size, 40px);
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-name {
+      font-size: calc(var(--brand-size, 40px) * var(--brand-name-ratio, 0.65));
+      line-height: 1;
+      font-weight: 700;
+    }
   }
 
   .nav-actions {
     display: flex;
     gap: 16px;
 
-    // Using simple white buttons as "clouds"
     a {
       &.mat-stroked-button {
         color: $sky-primary;
@@ -71,7 +78,6 @@ $white: #ffffff;
   }
 }
 
-// 3. The landing Call to Action
 .landing-section {
   flex-grow: 1;
   display: flex;
@@ -95,7 +101,7 @@ $white: #ffffff;
 
   .landing-subtitle {
     font-size: 20px;
-    color: #475569; // slightly softer text
+    color: #475569;
     line-height: 1.6;
     margin-bottom: 40px;
     font-weight: 400;
@@ -103,16 +109,15 @@ $white: #ffffff;
 
   .landing-actions {
     .cta-button {
-      background-color: $white !important; // A solid white "cloud" button
+      background-color: $white !important;
       color: $sky-primary !important;
       display: inline-flex;
       align-items: center;
       padding: 12px 32px;
       font-weight: 600;
       font-size: 16px;
-      border-radius: 4px; // keep it simple and clean
+      border-radius: 4px;
 
-      // Add a subtle pop: make it look slightly elevated on hover
       box-shadow: 0 4px 12px rgba($sky-primary, 0.15) !important;
 
       &:hover {

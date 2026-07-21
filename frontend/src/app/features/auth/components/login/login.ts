@@ -10,13 +10,14 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth.service';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { HostBinding } from '@angular/core';
 @Component({
-  selector: 'app-register',
+  selector: 'app-login',
   standalone: true,
   imports: [
     CommonModule,
@@ -27,47 +28,57 @@ import { MatCardModule } from '@angular/material/card';
     MatButtonModule,
     MatCardModule,
     MatIconModule,
+    MatCheckboxModule,
   ],
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss'],
+  templateUrl: './login.html',
+  styleUrls: ['./login.scss'],
 })
-export class Register {
+export class Login {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  registerForm: FormGroup = this.fb.group({
-    username: ['', [Validators.required, Validators.minLength(3)]],
+  loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
+    remember: [false],
   });
 
+  showPassword = false;
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
+  brandSize = 50;
+
+  @HostBinding('style.--brand-size') get cssBrandSize() {
+    return this.brandSize + 'px';
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
   onSubmit(): void {
-    if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
       return;
     }
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    const { username, email, password } = this.registerForm.value;
+    const { email, password } = this.loginForm.value;
 
-    this.authService.register(username, email, password).subscribe({
+    this.authService.login(email, password).subscribe({
       next: (response) => {
         this.isLoading.set(false);
         if (response.success) {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/drive']);
         }
       },
-      error: () => {
+      error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set(
-          'Registration failed. Please check your credentials or network connections.',
-        );
+        this.errorMessage.set('Invalid email or password. Please try again.');
       },
     });
   }

@@ -1,18 +1,27 @@
 <div class="dashboard-wrapper">
   <!-- 1. HEADER SECTION -->
   <header class="dashboard-header">
-    <!-- Brand Identity Element with safe linking -->
-    <a routerLink="/drive" class="logo-area">
-      <mat-icon class="logo-icon">cloud_queue</mat-icon>
+    <!-- Preserved Nephos Brand Identity Logo -->
+    <a
+      routerLink="/drive"
+      class="logo-area"
+      [style.--brand-size]="brandSize + 'px'"
+    >
+      <img
+        src="/icon_nephos_logo.png"
+        alt="Nephos Logo"
+        class="brand-logo-img"
+      />
       <span class="brand-name">Nephos</span>
     </a>
 
-    <!-- Global Layout Core Controls -->
+    <!-- Global Search -->
     <div class="search-container">
       <mat-icon class="search-icon">search</mat-icon>
-      <input type="text" placeholder="Search files, folders, documents..." />
+      <input type="text" placeholder="Search files, folders..." />
     </div>
 
+    <!-- Header Right Action Group -->
     <div class="header-actions">
       <button
         mat-flat-button
@@ -20,24 +29,36 @@
         class="upload-btn"
         (click)="onUploadTrigger()"
       >
-        <mat-icon>upload</mat-icon>
-        <span>Upload</span>
+        <mat-icon>cloud_upload</mat-icon>
+        <span class="hide-mobile">Upload</span>
       </button>
 
-      <button mat-icon-button class="profile-avatar" title="User Profile">
+      <button mat-icon-button class="profile-avatar" aria-label="User Profile">
         <mat-icon>account_circle</mat-icon>
       </button>
     </div>
   </header>
 
-  <!-- 2. WORKSPACE CONTAINER (Sidebar + Canvas Content) -->
+  <!-- 2. WORKSPACE CONTAINER -->
   <div class="workspace-container">
-    <!-- LEFT SIDEBAR PANEL -->
+    <!-- SIDEBAR PANEL -->
     <aside class="side-panel">
+      <div class="storage-summary">
+        <h2>Cloud Storage</h2>
+        <p class="storage-text">
+          <span class="bold">{{ usedStorage() }} GB</span> of {{ totalStorage()
+          }} GB used
+        </p>
+        <mat-progress-bar
+          mode="determinate"
+          [value]="storagePercentage()"
+        ></mat-progress-bar>
+      </div>
+
       <nav class="nav-links">
         <button
-          [class.active]="currentTab() === 'home'"
-          (click)="switchTab('home')"
+          [class.active]="currentNav() === 'home'"
+          (click)="switchNav('home')"
           class="nav-item"
         >
           <mat-icon>home</mat-icon>
@@ -45,55 +66,226 @@
         </button>
 
         <button
-          [class.active]="currentTab() === 'storage'"
-          (click)="switchTab('storage')"
+          [class.active]="currentNav() === 'recent'"
+          (click)="switchNav('recent')"
           class="nav-item"
         >
-          <mat-icon>storage</mat-icon>
-          <span>My storage</span>
+          <mat-icon>schedule</mat-icon>
+          <span>Recent</span>
+        </button>
+
+        <button
+          [class.active]="currentNav() === 'starred'"
+          (click)="switchNav('starred')"
+          class="nav-item"
+        >
+          <mat-icon>star</mat-icon>
+          <span>Starred</span>
+        </button>
+
+        <button
+          [class.active]="currentNav() === 'trash'"
+          (click)="switchNav('trash')"
+          class="nav-item"
+        >
+          <mat-icon>delete</mat-icon>
+          <span>Trash</span>
         </button>
       </nav>
 
-      <!-- Storage Summary Block (Adaptable for APIs later) -->
-      <div class="storage-widget">
-        <div class="storage-text">
-          <span class="bold">{{ usedStorage() }} GB</span> used of {{
-          totalStorage() }} GB
-        </div>
-        <mat-progress-bar
-          mode="determinate"
-          [value]="storagePercentage()"
-        ></mat-progress-bar>
+      <div class="sidebar-action">
+        <button mat-stroked-button color="primary" class="upgrade-btn">
+          Upgrade Storage
+        </button>
       </div>
     </aside>
 
-    <!-- MIDDLE MAIN EXPLORER AREA -->
+    <!-- MAIN CANVAS -->
     <main class="main-canvas">
-      <div class="canvas-header">
-        <h2>
-          {{ currentTab() === 'home' ? 'Recent Activity' : 'All Files & Folders'
-          }}
-        </h2>
-      </div>
+      <!-- Suggested Section -->
+      <section class="content-section">
+        <header class="section-header">
+          <h2>Suggested</h2>
+          <p>Based on your recent activity.</p>
+        </header>
 
-      <div class="items-grid">
-        @for (item of displayItems(); track item.name) {
-        <div class="item-card" [class.folder-card]="item.type === 'folder'">
-          <mat-icon class="item-icon">
-            {{ item.type === 'folder' ? 'folder' : 'description' }}
-          </mat-icon>
-          <div class="item-info">
-            <span class="item-name">{{ item.name }}</span>
-            <span class="item-date">Modified {{ item.updated }}</span>
+        <div class="cards-grid">
+          @for (item of suggestedItems(); track item.id) {
+          <div class="drive-card">
+            <div class="card-header">
+              <span class="card-title">{{ item.name }}</span>
+              <button mat-icon-button class="action-btn">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+
+            <div class="card-preview">
+              @if (item.type === 'image' && item.previewUrl) {
+              <img [src]="item.previewUrl" [alt]="item.name" />
+              <div class="hover-overlay">
+                <mat-icon>visibility</mat-icon>
+              </div>
+              } @else if (item.type === 'pdf') {
+              <div class="preview-placeholder">
+                <span class="label">PDF PREVIEW</span>
+                <span class="sub-label">Document</span>
+              </div>
+              }
+            </div>
+
+            <div class="card-footer">
+              <div class="meta-info">
+                <span>{{ item.updated }}</span>
+                <span>{{ item.size }}</span>
+              </div>
+              <mat-icon class="type-icon pdf-color">
+                {{ item.type === 'image' ? 'image' : 'picture_as_pdf' }}
+              </mat-icon>
+            </div>
+          </div>
+          }
+        </div>
+      </section>
+
+      <!-- Favorites Section -->
+      <section class="content-section">
+        <header class="section-header">
+          <h2>Favorites</h2>
+          <p>Your most important assets.</p>
+        </header>
+
+        <div class="cards-grid">
+          @for (item of favoriteItems(); track item.id) {
+          <div class="drive-card">
+            <div class="card-header">
+              <span class="card-title">{{ item.name }}</span>
+              <button mat-icon-button class="action-btn">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+
+            <div class="card-preview">
+              @if (item.type === 'video' && item.previewUrl) {
+              <img [src]="item.previewUrl" [alt]="item.name" />
+              <div class="play-overlay">
+                <div class="play-circle">
+                  <mat-icon>play_arrow</mat-icon>
+                </div>
+              </div>
+              }
+            </div>
+
+            <div class="card-footer">
+              <div class="meta-info">
+                <span>{{ item.updated }}</span>
+                <span>{{ item.size }}</span>
+              </div>
+              <mat-icon class="type-icon">movie</mat-icon>
+            </div>
+          </div>
+          }
+        </div>
+      </section>
+
+      <!-- My Files Section -->
+      <section class="content-section">
+        <header class="section-header">
+          <h2>My Files</h2>
+          <p>Folders and individual items.</p>
+        </header>
+
+        <div class="cards-grid">
+          @for (item of myFiles(); track item.id) {
+          <div class="drive-card">
+            <div class="card-header">
+              <span class="card-title">{{ item.name }}</span>
+              <button mat-icon-button class="action-btn">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+
+            <div class="card-preview" [class.doc-border]="item.type === 'doc'">
+              @if (item.type === 'folder') {
+              <mat-icon class="large-icon">folder</mat-icon>
+              } @else if (item.type === 'zip') {
+              <mat-icon class="large-icon">inventory_2</mat-icon>
+              } @else if (item.type === 'doc') {
+              <div class="doc-skeleton">
+                <div class="line l1"></div>
+                <div class="line l2"></div>
+                <div class="line l3"></div>
+              </div>
+              }
+            </div>
+
+            <div class="card-footer">
+              <div class="meta-info">
+                <span>{{ item.updated }}</span>
+                <span
+                  >{{ item.type === 'folder' ? item.itemsCount + ' items' :
+                  item.size }}</span
+                >
+              </div>
+              <mat-icon
+                class="type-icon"
+                [class.folder-color]="item.type === 'folder'"
+              >
+                @switch (item.type) { @case ('folder') { folder } @case ('zip')
+                { folder_zip } @default { description } }
+              </mat-icon>
+            </div>
+          </div>
+          }
+
+          <!-- Empty Upload Dropzone Tile -->
+          <div class="dropzone-card" (click)="onUploadTrigger()">
+            <div class="plus-circle">
+              <mat-icon>add</mat-icon>
+            </div>
+            <p class="primary-text">Drop files here</p>
+            <p class="secondary-text">or click to browse</p>
           </div>
         </div>
-        } @empty {
-        <div class="empty-state">
-          <mat-icon>cloud_off</mat-icon>
-          <p>Your sky is empty. Upload items to start.</p>
-        </div>
-        }
-      </div>
+      </section>
     </main>
   </div>
+
+  <!-- 3. MOBILE BOTTOM NAVIGATION -->
+  <nav class="mobile-bottom-nav">
+    <button
+      class="nav-tab"
+      [class.active]="currentNav() === 'home'"
+      (click)="switchNav('home')"
+    >
+      <mat-icon>home</mat-icon>
+      <span>HOME</span>
+    </button>
+
+    <button
+      class="nav-tab"
+      [class.active]="currentNav() === 'recent'"
+      (click)="switchNav('recent')"
+    >
+      <mat-icon>schedule</mat-icon>
+      <span>RECENT</span>
+    </button>
+
+    <button class="fab-upload" (click)="onUploadTrigger()">
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <button
+      class="nav-tab"
+      [class.active]="currentNav() === 'starred'"
+      (click)="switchNav('starred')"
+    >
+      <mat-icon>star</mat-icon>
+      <span>STARRED</span>
+    </button>
+
+    <button class="nav-tab">
+      <mat-icon>account_circle</mat-icon>
+      <span>PROFILE</span>
+    </button>
+  </nav>
 </div>

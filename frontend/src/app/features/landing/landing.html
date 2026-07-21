@@ -1,11 +1,14 @@
 <div class="nephos-landing-wrapper">
-  <!-- Minimal Navbar/Header -->
   <header class="landing-header mat-elevation-z1">
     <div class="container header-content">
-      <div class="logo-area">
-        <mat-icon color="primary" class="logo-icon">cloud_queue</mat-icon>
+      <a class="logo-area" [style.--brand-size]="brandSize + 'px'">
+        <img
+          src="/icon_nephos_logo.png"
+          alt="Nephos Logo"
+          class="brand-logo-img"
+        />
         <span class="brand-name">Nephos</span>
-      </div>
+      </a>
       <div class="nav-actions">
         <a routerLink="/login" mat-stroked-button color="white">Sign in</a>
         <a routerLink="/register" mat-flat-button color="white"
@@ -15,7 +18,7 @@
     </div>
   </header>
 
-  <!-- landing / Introduction Section -->
+  <!-- Landing Section -->
   <main class="landing-section container">
     <div class="landing-content">
       <h1>Cloud Storage, as light as air.</h1>

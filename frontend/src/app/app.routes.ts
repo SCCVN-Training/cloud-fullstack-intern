@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { Login } from './features/auth/components/login/login.component';
-import { Register } from './features/auth/components/register/register.component';
+import { Login } from './features/auth/components/login/login';
+import { Register } from './features/auth/components/register/register';
 import { Landing } from './features/landing/landing';
 import { Drive } from './features/drive/drive';
 

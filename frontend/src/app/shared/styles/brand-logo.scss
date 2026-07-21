@@ -1,4 +1,11 @@
 // Reusable Brand Identity Styles
+:root {
+  --brand-size: 40px; /* single control for logo height */
+  --brand-name-ratio: 0.65; /* brand name size = brand-size * ratio */
+  --brand-name-min: 18px;
+  --brand-name-max: 36px;
+}
+
 @mixin nephos-brand {
   display: flex;
   align-items: center;
@@ -6,16 +13,15 @@
   white-space: nowrap;
   text-decoration: none !important;
 
-  .logo-icon {
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
-    // Hardcoded sky-primary tone for identity safety
-    color: #1976d2 !important;
+  .brand-logo-img {
+    height: var(--brand-size, 40px);
+    width: auto; // Keeps aspect ratio intact
+    object-fit: contain;
+    flex-shrink: 0;
   }
 
   .brand-name {
-    font-size: 22px;
+    font-size: calc(var(--brand-size, 40px) * var(--brand-name-ratio, 40px));
     font-weight: 700;
     color: #1e293b;
     letter-spacing: -1px;

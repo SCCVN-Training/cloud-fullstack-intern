@@ -2,29 +2,36 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
-import { Login } from './login.component';
+import { Register } from './register';
 import { AuthService } from '@core/auth/services/auth.service';
 
-describe('Login', () => {
-  let component: Login;
-  let fixture: ComponentFixture<Login>;
+describe('Register', () => {
+  let component: Register;
+  let fixture: ComponentFixture<Register>;
 
   const mockAuthService = {
-    login: () => of({ success: true }),
+    register: () => of({ success: true }),
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Login, RouterTestingModule],
+      imports: [Register, RouterTestingModule],
       providers: [{ provide: AuthService, useValue: mockAuthService }],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Login);
+    fixture = TestBed.createComponent(Register);
     component = fixture.componentInstance;
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should expose default brandSize and bind it to the host style', () => {
+    expect(component.brandSize).toBe(50);
+    const hostElement = fixture.nativeElement as HTMLElement;
+    expect(hostElement.style.getPropertyValue('--brand-size')).toBe('50px');
   });
 });
