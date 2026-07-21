@@ -1,17 +1,16 @@
 ﻿<div class="sign-in-page">
   <!-- Left Panel: Login Form -->
   <section class="sign-in-panel">
-    
     <!-- Branding Header -->
-    <header class="sign-in-header">
-      <div class="sign-in-brand-icon">
-        <span class="material-symbols-outlined">hub</span>
+    <div class="sign-in-header">
+      <div class="brand-icon">
+        <span class="material-symbols-outlined">flutter_dash</span>
       </div>
       <div class="brand-text">
-        <h1>SCC Event Portal</h1>
-        <p>Enterprise Logistics Management</p>
+        <h1>Syncra</h1>
+        <p>Sync your work. Share your world.</p>
       </div>
-    </header>
+    </div>
 
     <!-- Main Content -->
     <main class="sign-in-main">
@@ -21,7 +20,6 @@
       </div>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="sign-in-form">
-        
         <!-- Email Input -->
         <div class="form-field">
           <label for="email">Email Address</label>
@@ -39,7 +37,12 @@
           </div>
           <div class="input-group">
             <span class="material-symbols-outlined icon">lock</span>
-            <input id="password" type="password" formControlName="password" placeholder="••••••••" />
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              placeholder="••••••••"
+            />
           </div>
         </div>
 
@@ -81,9 +84,7 @@
         <a href="#">Terms of Service</a>
         <a href="#">Support</a>
       </div>
-      <div class="copyright">
-        © 2024 SCC Enterprise Logistics. All rights reserved.
-      </div>
+      <div class="copyright">© 2024 SCC Enterprise Logistics. All rights reserved.</div>
     </footer>
   </section>
 
