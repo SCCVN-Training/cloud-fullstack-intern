@@ -1,0 +1,147 @@
+<main class="how-main">
+  <!-- Hero Section -->
+  <section class="container hero-section relative overflow-hidden text-center">
+    <div class="hero-glow-1 absolute"></div>
+    <div class="hero-glow-2 absolute"></div>
+    <div class="relative z-10 max-w-3xl mx-auto">
+      <span class="badge text-primary bg-primary-container-light inline-block mb-md"
+        >Skill Exchange Revolution</span
+      >
+      <h1 class="text-display-lg text-on-background mb-md hero-title">
+        Master New Skills, <span class="gradient-text">No Money<br />Needed.</span>
+      </h1>
+      <p class="text-body-lg text-on-surface-variant mb-lg max-w-2xl mx-auto">
+        SkillVerse is a global community where time and knowledge are the only currency. Share what
+        you know, learn what you don't, and grow exponentially without opening your wallet.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-start primary-gradient text-white">Start Your Journey</button>
+        <button class="btn-watch text-primary bg-secondary-container-light">
+          <span class="material-symbols-outlined">play_circle</span> Watch the Story
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step-by-Step Guide -->
+  <section class="container py-xl">
+    <div class="text-center mb-lg">
+      <h2 class="text-headline-lg text-on-surface mb-xs">The Skill Exchange Cycle</h2>
+      <p class="text-body-md text-on-surface-variant">
+        Simple, rewarding, and built for a community of lifelong learners.
+      </p>
+    </div>
+ <div class="grid-4 gap-md relative">
+
+  <div
+    *ngFor="let step of steps"
+    class="step-card glass-card glass-stroke rounded-lg p-md ambient-shadow-md text-center group">
+
+    <div
+      class="icon-wrapper mx-auto mb-md"
+      [ngClass]="step.color">
+
+      <span class="material-symbols-outlined text-white text-[32px]">
+        {{ step.icon }}
+      </span>
+
+    </div>
+
+    <h3 class="text-title-lg text-on-surface mb-sm">
+      {{ step.title }}
+    </h3>
+
+    <p class="text-body-md text-on-surface-variant">
+      {{ step.description }}
+    </p>
+
+  </div>
+
+</div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="benefits-section py-xl bg-surface-container-low-50">
+    <div class="container flex-lg items-center gap-xl">
+      <div class="benefits-images flex-1 relative" style="padding-right: 48px;">
+        <!-- Soft background glow -->
+        <div class="absolute" style="top: 10%; left: 10%; right: 10%; bottom: 10%; background: radial-gradient(circle, rgba(164, 48, 115, 0.08) 0%, rgba(255,255,255,0) 70%); z-index: 0;"></div>
+        
+        <div class="grid-2 relative z-10" style="gap: 24px;">
+          <div class="img-wrapper overflow-hidden" style="margin-top: 64px; border-radius: 32px; height: 220px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2_kIcJPuCg8dysTc7vsYz6aoc8VbPLpAmt0r6MqtDQjUHC8BwuvJdMcPcwTbGyhdbM6FgFDkM23WANszKXWJi-rfrXR67xnlNvGIJhQts5NgBcTm21omYLGgfxoQABJ84kxJ0W0ZjWWN7-Bh2SH2c-MzlgRYpFdYb51z3ORj4WuXNJEmvGrpZYnLau6UddjFW5Q0w8V75_3lBt0R6nYx49-Uidbv0nu2dg1TWgUGptcR3nNS3xv1yFzYA2GUkKV5BP0TXXOvxaGzP" alt="Collaborative learning" style="border-radius: 32px; width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div class="img-wrapper overflow-hidden" style="border-radius: 32px; height: 220px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXJ8VxJ2HFgOIOQRMwMy_XWgfiyoTZCYKrY7YshwNpyhji7gunyaB3a9go98EzBeGfjks7sbWwQbAGBEBfFHG6nP8xiGXlmz6gY3xY9biAklCfRHm08N5WVulxZFzuA_cEzhHOmYSZLj-SikhwrfRqeqsdBJA_ahvx_sceSXnrr1NhVYI6Q_W31kMllP6H-L-IJ8JAJsYpWNgSMfWISGsza1qcSDZJvE34PVizLtO7fOSCkdGP2LZZ6S9Zxk_mWsbApcrcFJMTRm27" alt="Digital sketching" style="border-radius: 32px; width: 100%; height: 100%; object-fit: cover;">
+          </div>
+          <div class="img-wrapper col-span-2 overflow-hidden" style="border-radius: 32px; height: 280px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHB91EmWQUJnIzZX3ZHGogJT-OdRL_pvZqZF3SIF92W7n2kR6cmHVmMDtBdOEIQ0FQRJKpA9X4cGy9r0NiSmBDV0qE87lO0jImcUoinF0CJVS6ZBI7H63s_tFeuYqbJhq5K6c_IEwjmrzvEGVCsMGjI--lmhcYItg6unV0SLbpxjxsgEHdS6S972EeXekrbPMePGW_uQDUQKngrJmbhU2DkyNfPWLAzThY4oDleYcFjj7wT3RaeSw44x6FBDUIZGontfVV_n1n07bR" alt="Video mentorship" style="border-radius: 32px; width: 100%; height: 100%; object-fit: cover;">
+          </div>
+        </div>
+      </div>
+      <div class="benefits-content flex-1 space-y-lg">
+        <div>
+          <h2 class="text-headline-lg text-on-surface mb-md">Why Peer-to-Peer?</h2>
+          <p class="text-body-md text-on-surface-variant mb-lg">
+            Traditional education is expensive and rigid. Peer-to-peer exchange is dynamic,
+            personalized, and built on mutual respect.
+          </p>
+        </div>
+        <div class="space-y-md">
+
+  <div
+    *ngFor="let benefit of benefits"
+    class="benefit-item flex items-center gap-md">
+
+    <div
+      class="benefit-icon shrink-0 flex items-center justify-center rounded-full">
+
+      <span class="material-symbols-outlined text-primary">
+        {{ benefit.icon }}
+      </span>
+
+    </div>
+
+    <div>
+
+      <h4 class="text-title-lg mb-xs">
+        {{ benefit.title }}
+      </h4>
+
+      <p class="text-label-md text-on-surface-variant font-normal">
+        {{ benefit.description }}
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="container py-xl">
+    <div class="cta-card rounded-xl p-lg text-center relative overflow-hidden mx-auto">
+      <div class="cta-glow-1 absolute"></div>
+      <div class="cta-glow-2 absolute"></div>
+      <div class="relative z-10 max-w-2xl mx-auto">
+        <h2 class="text-headline-lg text-on-surface mb-md cta-title">Ready to Exchange Wisdom?</h2>
+        <p class="text-body-lg text-on-surface-variant mb-lg">
+          Join 50,000+ experts and learners already leveling up on SkillVerse. Your first 5 Skill
+          Coins <br />
+          are on us!
+        </p>
+        <div class="cta-actions">
+          <button class="btn-primary primary-gradient text-white shadow-lg btn-large">
+            Start Your Journey
+          </button>
+          <button class="btn-outline bg-white text-on-surface-variant btn-large">
+            Contact Community Support
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
