@@ -1,0 +1,95 @@
+@import '../../../app.scss';
+
+.not-found-container {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  background: $bg-light;
+
+  color: $text-primary;
+
+  text-align: center;
+}
+
+.hero-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+
+  margin-bottom: 3rem;
+}
+
+.jp-subtitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+
+  color: $primary-blue;
+
+  margin-bottom: 0.75rem;
+}
+
+.hero-title {
+  margin: 0;
+
+  font-size: clamp(3.5rem, 8vw, 5rem);
+  font-weight: 900;
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 2rem;
+
+  max-width: 640px;
+}
+
+.error-code {
+  font-size: 4rem;
+  font-weight: 800;
+
+  color: $primary-blue;
+}
+
+h2 {
+  margin: 0;
+
+  font-size: 2rem;
+}
+
+p {
+  color: $text-secondary;
+
+  line-height: 1.8;
+
+  margin-bottom: 2rem;
+}
+
+.btn-large {
+  background: $primary-blue;
+  color: white;
+
+  padding: 1rem 3rem;
+
+  border-radius: 999px;
+
+  font-weight: 700;
+
+  transition: 0.2s;
+
+  &:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+      0 12px 30px rgba(25, 118, 210, 0.35),
+      0 0 24px rgba(0, 229, 255, 0.15);
+  }
+}

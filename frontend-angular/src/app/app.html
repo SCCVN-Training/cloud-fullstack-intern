@@ -1,5 +1,9 @@
 <main class="app-container">
-  <!-- Angular injects the active page (Home, Login, etc.) right here -->
-  <router-outlet></router-outlet>
-  <app-footer></app-footer>
+  <section class="page-content">
+    <router-outlet />
+  </section>
+
+  @if (appStore.initialized()) {
+    <app-footer />
+  }
 </main>

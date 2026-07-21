@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { AuthStore } from '../auth/data-access/with-auth-store';
+import { AuthStore } from '../../core/auth/data-access/with-auth-store';
 
 @Component({
   selector: 'app-home',
@@ -18,10 +18,6 @@ export class HomeComponent {
   readonly authStore = inject(AuthStore);
 
   startCollecting(): void {
-    if (this.authStore.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.router.navigate(['/login']);
-    }
+    this.router.navigate(['/dashboard']);
   }
 }

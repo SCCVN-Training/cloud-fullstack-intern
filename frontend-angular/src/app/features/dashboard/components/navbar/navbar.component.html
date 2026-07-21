@@ -1,0 +1,25 @@
+<header class="navbar">
+  <div class="navbar__brand">
+    <button class="brand-button" routerLink="/dashboard">
+      <span class="logo-dot"></span>
+      <h2>OTAKUTORY</h2>
+    </button>
+  </div>
+
+  <div class="navbar__actions">
+    <button class="profile-button" mat-button>
+      @if (user?.avatarUrl) {
+        <img [src]="user.avatarUrl" alt="Profile" />
+      } @else {
+        <mat-icon>account_circle</mat-icon>
+      }
+      <span>{{ user?.username }}</span>
+    </button>
+
+    <button mat-flat-button color="primary" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+
+      Logout
+    </button>
+  </div>
+</header>

@@ -9,8 +9,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
-import { AuthEvent } from '../../data-access/with-auth-event';
-import { AuthStore } from '../../data-access/with-auth-store';
+import { RegisterPayload } from '../../../../core/auth/data-access/auth.schema';
+import { AuthEvent } from '../../../../core/auth/data-access/with-auth-event';
+import { AuthStore } from '../../../../core/auth/data-access/with-auth-store';
 
 @Component({
   selector: 'app-register',
@@ -64,11 +65,10 @@ export class RegisterComponent {
       return;
     }
 
-    const payload = {
+    const payload: RegisterPayload = {
       username,
       email,
       password,
-      avatarUrl: null,
     };
 
     this.authEvent.register(payload);
