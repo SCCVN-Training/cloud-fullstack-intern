@@ -1,12 +1,7 @@
 import { Routes } from '@angular/router';
-import { SignIn } from '../pages/sign-in/sign-in';
+import { SignInComponent } from '../pages/sign-in/sign-in.component';
 
 export const authRoutes: Routes = [
-  {
-    path: 'auth',
-    children: [
-      { path: 'sign-in', component: SignIn },
-      { path: '', redirectTo: 'sign-in', pathMatch: 'full' }
-    ]
-  }
+  { path: 'sign-in', component: SignInComponent },
+  { path: '', redirectTo: 'sign-in', pathMatch: 'full' }
 ];

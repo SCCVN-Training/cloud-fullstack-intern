@@ -1,0 +1,14 @@
+﻿:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: #eef2f8;
+}
+
+.auth-layout-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}

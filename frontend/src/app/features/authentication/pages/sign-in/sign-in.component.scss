@@ -1,0 +1,357 @@
+:host {
+  display: block;
+  height: 100vh;
+  width: 100vw;
+  background: #ffffff;
+  overflow: hidden;
+  color: #0f172a;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+.sign-in-page {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+/* --- Left Panel (Form) --- */
+.sign-in-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 2.5rem 2rem;
+  background: #ffffff;
+}
+
+.sign-in-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.sign-in-brand-icon {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.5rem;
+  background: #0052cc;
+  color: #ffffff;
+
+  .material-symbols-outlined {
+    font-size: 1.75rem;
+  }
+}
+
+.brand-text h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+}
+
+.brand-text p {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.sign-in-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.sign-in-copy {
+  margin-bottom: 2rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  p {
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+}
+
+.sign-in-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0f172a;
+  }
+}
+
+.field-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .forgot-link {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0052cc;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.input-group {
+  position: relative;
+
+  .icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 1.25rem;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    color: #0f172a;
+    transition: all 0.2s;
+
+    &::placeholder {
+      color: #94a3b8;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #0052cc;
+      box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
+    }
+  }
+}
+
+.form-footer-row {
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #475569;
+    cursor: pointer;
+
+    input {
+      width: 1rem;
+      height: 1rem;
+      accent-color: #0052cc;
+      cursor: pointer;
+    }
+  }
+}
+
+.btn-primary,
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  .icon-sm {
+    font-size: 1.125rem;
+  }
+}
+
+.btn-primary {
+  background: #0052cc;
+  color: #ffffff;
+  border: none;
+
+  &:hover:not(:disabled) {
+    background: #0043a6;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: #0052cc;
+  border: 1px solid #cbd5e1;
+
+  &:hover {
+    background: #f8fafc;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  &::before {
+    margin-right: 1rem;
+  }
+  &::after {
+    margin-left: 1rem;
+  }
+}
+
+.sign-in-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.75rem;
+
+    .icon-sm {
+      font-size: 1rem;
+    }
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+
+    a {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #64748b;
+      text-decoration: none;
+
+      &:hover {
+        color: #0f172a;
+      }
+    }
+  }
+
+  .copyright {
+    font-size: 0.75rem;
+    color: #94a3b8;
+  }
+}
+
+/* --- Right Panel (Image) --- */
+.sign-in-aside {
+  display: none;
+}
+
+/* Desktop Breakpoint */
+@media (min-width: 1024px) {
+  .sign-in-panel {
+    width: 40%;
+    min-width: 400px;
+    padding: 3rem 4rem;
+  }
+
+  .sign-in-aside {
+    display: block;
+    width: 60%;
+    height: 100%;
+    position: relative;
+    /* Replace with your specific asset */
+    background: url('https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop')
+      center/cover no-repeat;
+    /* Use 'cover' to fill the space, or change to 'contain' if you absolutely cannot have cropping */
+    background-size: cover;
+
+    /* Change 'center' to 'top', 'bottom', 'left', or 'right' to adjust WHICH part gets cropped */
+    background-position: center center;
+
+    background-repeat: no-repeat;
+  }
+
+  .aside-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0) 40%);
+  }
+
+  .aside-content {
+    position: absolute;
+    bottom: 3rem;
+    left: 3rem;
+    right: 3rem;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    color: #ffffff;
+  }
+
+  .aside-logo-text {
+    font-size: 3rem;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    margin: 0;
+  }
+
+  .aside-copy {
+    border-left: 2px solid rgba(255, 255, 255, 0.3);
+    padding-left: 1rem;
+
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    p {
+      font-size: 0.875rem;
+      margin: 0.25rem 0 0;
+      opacity: 0.9;
+    }
+  }
+}
