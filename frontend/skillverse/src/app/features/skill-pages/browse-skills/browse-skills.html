@@ -1,0 +1,215 @@
+<main class="browse-main container">
+  <!-- Header & Search Section -->
+  <header class="browse-header text-center mb-md">
+    <h1 class="text-display-lg text-on-surface">Discover & Exchange<br><span class="gradient-text">Wisdom</span></h1>
+    <p class="text-body-lg text-on-surface-variant">Find experts, learn new skills, and share your own knowledge in a thriving community.</p>
+
+    <!-- Search & Filter Bar -->
+    <div class="search-bar mt-lg">
+      <div class="search-input-wrapper relative">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input class="search-input bg-surface-container-low text-body-md text-on-surface" placeholder="Search for skills (e.g., Watercolor, React, Leadership)..." type="text" #searchInput (input)="onSearch(searchInput.value)">
+      </div>
+      <div class="filters-wrapper">
+        <button class="filter-btn text-on-surface-variant text-label-md">
+          Category <span class="material-symbols-outlined icon-sm">expand_more</span>
+        </button>
+        <button class="filter-btn text-on-surface-variant text-label-md">
+          Rating <span class="material-symbols-outlined icon-sm">star_outline</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Skill Grid -->
+  @if (!isSearchEmpty) {
+    <section class="skill-grid grid-3 gap-md">
+      <!-- Card 1 -->
+      <article class="skill-card group">
+        <div class="card-image-wrapper">
+          <div class="card-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCO8QtBoZttw73ARZ5iA4FrRepEwnAxlLXqKrWNsEUNJxRh6DmgSR9ChvCvDwL0n5Gc3tPj4Q7q63Kd4fVzjb8lgl09Qjt2TCuhreHBbjVM3kpEanLCl93lyf-hPh75OlkeZPPQFoVKKVe_gQl6aOv4X0LlOKUPBKbBnQ7YLeC9vRFB8J1K6vubmFdYEmTLTqXj3n7oP_lNgGJqtLhYmwml0ClJycmeoBdMZRiRbAHfSmlcLNpp9gCk_OaWRNQoxN0cqtuY_D-2XFpM')"></div>
+          <div class="coin-badge text-primary text-label-sm">
+            <span class="material-symbols-outlined icon-sm">toll</span> 50
+          </div>
+        </div>
+        <div class="card-content">
+          <div>
+            <h3 class="text-title-lg text-on-surface card-title">Advanced Ceramic Sculpting</h3>
+            <div class="rating-info text-on-surface-variant text-label-sm">
+              <span class="material-symbols-outlined star-icon icon-sm">star</span>
+              <span class="font-bold text-on-surface">4.9</span> (128 reviews) • 4 hours
+            </div>
+          </div>
+          <div class="instructor-info">
+            <img class="instructor-avatar shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_25olcfLj3Oxu55I119vf8FL1vqRoNTNkw4JL6RUnF76f2kOQ5bgCzMW7erRiANwYycp1wB989YF6k_XNYAos8cSR12ylfAVZhRF-uXkYjCQJPMAd0_fIOP7lOx7EWgjqlQTYAoMC__ppbLbCwc1HagQKirj-JbPpp-wG6Jnag45BnmeeEOww9kFm_IFGAa5wk-bUdL9SDmR3V8XMp2MB6D_CdD3lMk-GnovwwPbdo5ESWNUvymhtxVSx-2cQ3Z_0aRivQ14ao45z" alt="Elena Rodriguez">
+            <div class="instructor-details">
+              <span class="text-label-md text-on-surface">Elena Rodriguez</span>
+              <span class="text-label-sm text-on-surface-variant">Master Ceramist</span>
+            </div>
+          </div>
+          <button class="btn-view text-primary text-label-md">View Details</button>
+        </div>
+      </article>
+
+      <!-- Card 2 -->
+      <article class="skill-card group">
+        <div class="card-image-wrapper">
+          <div class="card-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCa2IOXqYOb5fl4hwmtwyhCOUHvUpJS3gA8I-kaAkhMzSZ33IKDEZJSTMm6TeuNiFFD2OAliI2DqYiYPCt9POvN3iZBo0v7cs3gq7QDSwoCv-fV02eYMmm_yhVDSffqflkuNje27-xcbTCgREoqfjsOl6kN7Vz2yg65jnbIVx83jFHsScSrs6M0IlKtvNR3OXmoDDeJMPpUiOe53f9L97HLdANXbrrbS_DhsVGCwUBtHWRKAEreHtCpziuf5j_QVmhZKZkOf-oNebDM')"></div>
+          <div class="coin-badge text-primary text-label-sm">
+            <span class="material-symbols-outlined icon-sm">toll</span> 35
+          </div>
+        </div>
+        <div class="card-content">
+          <div>
+            <h3 class="text-title-lg text-on-surface card-title">React Architecture Patterns</h3>
+            <div class="rating-info text-on-surface-variant text-label-sm">
+              <span class="material-symbols-outlined star-icon icon-sm">star</span>
+              <span class="font-bold text-on-surface">4.8</span> (85 reviews) • 2 hours
+            </div>
+          </div>
+          <div class="instructor-info">
+            <img class="instructor-avatar shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6U3IayQ-2FJXuu-2rm4LwFMSB6yWIlj7_ncC9GhyofL4CylOfrMHnkc3fldmJ_2VSNExmsPrjj9jQFu7siiVPgfPb1LNimi6q_p06pwmFmusTbAfY1cO7AIDLTZ7rm_Zn570wFGaDfm_wX9vV_qPdFzB-qatjVk2ECNt_k6ItZg_KVJ7jOckmzV438OXJYSsGPIV4s3lh1NE9PK9BJzOv28gSSAsBdrITuAcOiwlT4Q0lUjnNJNVWWS2WJYwtceJbo-wCkwPqCaEi" alt="Marcus Chen">
+            <div class="instructor-details">
+              <span class="text-label-md text-on-surface">Marcus Chen</span>
+              <span class="text-label-sm text-on-surface-variant">Senior Engineer</span>
+            </div>
+          </div>
+          <button class="btn-view text-primary text-label-md">View Details</button>
+        </div>
+      </article>
+
+      <!-- Card 3 -->
+      <article class="skill-card group">
+        <div class="card-image-wrapper">
+          <div class="card-image" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAqO05mK_fCjIaHz3B4IGzmPVqcYldY0e6THoK14hrrDRn7TIespycXSA9hqZh52p0k4Xdq0d89bpcs6TKvsAYy_EgmXyqlH7Zwb5MmjJFZ7SpKIJpw-c6tw2hMrsy4wDOQ2NOb0ew7_USUeZ_WSiGZ0EKCOnoRM5FdA5T5_d3sqE5BbDURCphWh38FMbsSKy2EQF-Ym2_CyABBDcMFl4vR4VJjuFhwRuZnSLBM9bIRdIh6iiLI0_DVAqUfDCQEWvv-3gi0qK9NyjQP')"></div>
+          <div class="coin-badge text-primary text-label-sm">
+            <span class="material-symbols-outlined icon-sm">toll</span> 40
+          </div>
+        </div>
+        <div class="card-content">
+          <div>
+            <h3 class="text-title-lg text-on-surface card-title">Artisanal Sourdough Baking</h3>
+            <div class="rating-info text-on-surface-variant text-label-sm">
+              <span class="material-symbols-outlined star-icon icon-sm">star</span>
+              <span class="font-bold text-on-surface">5.0</span> (210 reviews) • 3 days
+            </div>
+          </div>
+          <div class="instructor-info">
+            <img class="instructor-avatar shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpTQHhYcieeVAKGAIOgOWY9a8yBga_zjx0eyEN-7L7No8-moEFZD_KWP5FbkbBgfKXUMWgUXYjnIY7lW1yP_78Such-shHCztJwAx31COaNEiXFuKwSQwXo707vr5Ou_MHyXwpOYCELmwL68jcuzfpyWDrfKaCRak8tRNHC8_IJZgzqGxpL1NK-abuN9q3pAeIJbhh5Q_xNcya_r95D5-UkHhaXExlNVB43YouVDpo5qgC3B4lMPUj7qHM04ITnm96rQnC52lAOVoz" alt="Sarah Jenkins">
+            <div class="instructor-details">
+              <span class="text-label-md text-on-surface">Sarah Jenkins</span>
+              <span class="text-label-sm text-on-surface-variant">Pastry Chef</span>
+            </div>
+          </div>
+          <button class="btn-view text-primary text-label-md">View Details</button>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article class="skill-card group">
+        <div class="card-image-wrapper">
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&q=80')"></div>
+          <div class="coin-badge text-primary text-label-sm">
+            <span class="material-symbols-outlined icon-sm">toll</span> 45
+          </div>
+        </div>
+        <div class="card-content">
+          <div>
+            <h3 class="text-title-lg text-on-surface card-title">Abstract Watercolor Painting</h3>
+            <div class="rating-info text-on-surface-variant text-label-sm">
+              <span class="material-symbols-outlined star-icon icon-sm">star</span>
+              <span class="font-bold text-on-surface">4.7</span> (92 reviews) • 3 hours
+            </div>
+          </div>
+          <div class="instructor-info">
+            <img class="instructor-avatar shadow-sm" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="Sofia Chen">
+            <div class="instructor-details">
+              <span class="text-label-md text-on-surface">Sofia Chen</span>
+              <span class="text-label-sm text-on-surface-variant">Visual Artist</span>
+            </div>
+          </div>
+          <button class="btn-view text-primary text-label-md">View Details</button>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article class="skill-card group">
+        <div class="card-image-wrapper">
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80')"></div>
+          <div class="coin-badge text-primary text-label-sm">
+            <span class="material-symbols-outlined icon-sm">toll</span> 60
+          </div>
+        </div>
+        <div class="card-content">
+          <div>
+            <h3 class="text-title-lg text-on-surface card-title">Strategic Leadership</h3>
+            <div class="rating-info text-on-surface-variant text-label-sm">
+              <span class="material-symbols-outlined star-icon icon-sm">star</span>
+              <span class="font-bold text-on-surface">4.9</span> (156 reviews) • 5 hours
+            </div>
+          </div>
+          <div class="instructor-info">
+            <img class="instructor-avatar shadow-sm" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80" alt="David Miller">
+            <div class="instructor-details">
+              <span class="text-label-md text-on-surface">David Miller</span>
+              <span class="text-label-sm text-on-surface-variant">Executive Coach</span>
+            </div>
+          </div>
+          <button class="btn-view text-primary text-label-md">View Details</button>
+        </div>
+      </article>
+
+      <!-- Card 6 -->
+      <article class="skill-card group">
+        <div class="card-image-wrapper">
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1541844053589-346841d0b34c?w=600&q=80')"></div>
+          <div class="coin-badge text-primary text-label-sm">
+            <span class="material-symbols-outlined icon-sm">toll</span> 25
+          </div>
+        </div>
+        <div class="card-content">
+          <div>
+            <h3 class="text-title-lg text-on-surface card-title">Public Speaking Mastery</h3>
+            <div class="rating-info text-on-surface-variant text-label-sm">
+              <span class="material-symbols-outlined star-icon icon-sm">star</span>
+              <span class="font-bold text-on-surface">4.6</span> (74 reviews) • 2 hours
+            </div>
+          </div>
+          <div class="instructor-info">
+            <img class="instructor-avatar shadow-sm" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80" alt="James Wilson">
+            <div class="instructor-details">
+              <span class="text-label-md text-on-surface">James Wilson</span>
+              <span class="text-label-sm text-on-surface-variant">Communication Expert</span>
+            </div>
+          </div>
+          <button class="btn-view text-primary text-label-md">View Details</button>
+        </div>
+      </article>
+    </section>
+
+    <!-- Pagination -->
+    <nav class="pagination">
+      <button class="page-btn text-on-surface-variant" disabled>
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button class="page-btn bg-primary text-white text-label-md">1</button>
+      <button class="page-btn text-on-surface text-label-md">2</button>
+      <button class="page-btn text-on-surface text-label-md">3</button>
+      <span class="text-on-surface-variant">...</span>
+      <button class="page-btn text-on-surface text-label-md">8</button>
+      <button class="page-btn text-on-surface-variant">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </nav>
+  } @else {
+    <!-- Empty State -->
+    <section class="empty-state">
+      <div class="empty-icon-wrapper bg-primary-fixed">
+        <span class="material-symbols-outlined text-primary">search_off</span>
+      </div>
+      <h2 class="text-title-lg text-on-surface mb-xs">No skills found</h2>
+      <p class="text-body-md text-on-surface-variant mb-md">We couldn't find any skills matching your current filters. Try adjusting your search criteria or explore other categories.</p>
+      <button class="btn-clear text-primary text-label-md bg-surface-variant" (click)="clearFilters()">Clear Filters</button>
+    </section>
+  }
+</main>
