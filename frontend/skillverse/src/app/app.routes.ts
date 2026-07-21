@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth/auth-guard';
 
 import { PublicLayoutComponent } from './shared/components/layout/public-layout/public-layout.component';
 
 import { HomepageComponent } from './features/homepage/homepage.component';
+import { Login } from './features/auth/login/login';
 
 import { HowItWorksPage } from './features/how-it-works/how-it-works';
 import { AboutUsPage } from './features/about-us/about-us';
@@ -27,9 +29,14 @@ export const routes: Routes = [
       },
       {
         path: 'browse-skills',
-        component: BrowseSkillsPage
+        component: BrowseSkillsPage,
+        canActivate: [authGuard]
       }
     ]
+  },
+  {
+    path: 'login',
+    component: Login
   },
   {
     path: '**',
