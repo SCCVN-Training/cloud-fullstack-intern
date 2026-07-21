@@ -59,6 +59,10 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  &.three-cols {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   &.four-cols {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -67,9 +71,10 @@
 // Workshop Cards
 .workshop-card {
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid #e2e8f0;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   .card-media {
     position: relative;
@@ -118,6 +123,19 @@
   }
 }
 
+// Status Tag Styling
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.status-tag .material-symbols-outlined {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
 // Recommended Cards Block
 .recommended-wrapper {
   background: #f1f5f9;
@@ -132,6 +150,7 @@
   display: flex;
   gap: 1.25rem;
   border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   .rec-image {
     width: 140px;
@@ -272,6 +291,12 @@
     grid-template-columns: repeat(2, 1fr);
   }
   .card-grid.two-cols {
+    grid-template-columns: 1fr;
+  }
+  .card-grid.three-cols {
+    grid-template-columns: 1fr;
+  }
+  .card-grid.four-cols {
     grid-template-columns: 1fr;
   }
 }
