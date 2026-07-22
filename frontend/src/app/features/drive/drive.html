@@ -1,104 +1,18 @@
 <div class="dashboard-wrapper">
   <!-- 1. HEADER SECTION -->
-  <header class="dashboard-header">
-    <!-- Preserved Nephos Brand Identity Logo -->
-    <a
-      routerLink="/drive"
-      class="logo-area"
-      [style.--brand-size]="brandSize + 'px'"
-    >
-      <img
-        src="/icon_nephos_logo.png"
-        alt="Nephos Logo"
-        class="brand-logo-img"
-      />
-      <span class="brand-name">Nephos</span>
-    </a>
-
-    <!-- Global Search -->
-    <div class="search-container">
-      <mat-icon class="search-icon">search</mat-icon>
-      <input type="text" placeholder="Search files, folders..." />
-    </div>
-
-    <!-- Header Right Action Group -->
-    <div class="header-actions">
-      <button
-        mat-flat-button
-        color="primary"
-        class="upload-btn"
-        (click)="onUploadTrigger()"
-      >
-        <mat-icon>cloud_upload</mat-icon>
-        <span class="hide-mobile">Upload</span>
-      </button>
-
-      <button mat-icon-button class="profile-avatar" aria-label="User Profile">
-        <mat-icon>account_circle</mat-icon>
-      </button>
-    </div>
-  </header>
+  <app-dashboard-header
+    [brandSize]="brandSize"
+    (upload)="onUploadTrigger()"
+  ></app-dashboard-header>
 
   <!-- 2. WORKSPACE CONTAINER -->
   <div class="workspace-container">
-    <!-- SIDEBAR PANEL -->
-    <aside class="side-panel">
-      <div class="storage-summary">
-        <h2>Cloud Storage</h2>
-        <p class="storage-text">
-          <span class="bold">{{ usedStorage() }} GB</span> of {{ totalStorage()
-          }} GB used
-        </p>
-        <mat-progress-bar
-          mode="determinate"
-          [value]="storagePercentage()"
-        ></mat-progress-bar>
-      </div>
-
-      <nav class="nav-links">
-        <button
-          [class.active]="currentNav() === 'home'"
-          (click)="switchNav('home')"
-          class="nav-item"
-        >
-          <mat-icon>home</mat-icon>
-          <span>Home</span>
-        </button>
-
-        <button
-          [class.active]="currentNav() === 'recent'"
-          (click)="switchNav('recent')"
-          class="nav-item"
-        >
-          <mat-icon>schedule</mat-icon>
-          <span>Recent</span>
-        </button>
-
-        <button
-          [class.active]="currentNav() === 'starred'"
-          (click)="switchNav('starred')"
-          class="nav-item"
-        >
-          <mat-icon>star</mat-icon>
-          <span>Starred</span>
-        </button>
-
-        <button
-          [class.active]="currentNav() === 'trash'"
-          (click)="switchNav('trash')"
-          class="nav-item"
-        >
-          <mat-icon>delete</mat-icon>
-          <span>Trash</span>
-        </button>
-      </nav>
-
-      <div class="sidebar-action">
-        <button mat-stroked-button color="primary" class="upgrade-btn">
-          Upgrade Storage
-        </button>
-      </div>
-    </aside>
+    <app-side-panel
+      [usedStorage]="usedStorage()"
+      [totalStorage]="totalStorage()"
+      [activeNav]="currentNav()"
+      (navChange)="switchNav($event)"
+    ></app-side-panel>
 
     <!-- MAIN CANVAS -->
     <main class="main-canvas">

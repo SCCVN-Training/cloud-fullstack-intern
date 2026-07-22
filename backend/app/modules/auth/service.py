@@ -38,7 +38,7 @@ class AuthService:
         )
 
     @staticmethod
-    async def register_user(conn: asyncpg.Connection, data: UserRegisterRequest) -> UserResponse:
+    async def register_user(conn: asyncpg.Connection, data: UserRegisterRequest, response: Response) -> UserResponse:
         existing_user = await AuthRepository.get_by_email(conn, data.email)
         if existing_user:
             raise HTTPException(
@@ -53,6 +53,8 @@ class AuthService:
             hashed_password=hashed_pwd,
             full_name=data.full_name,
         )
+
+        AuthService._set_token_cookies(response, str(new_user["id"]))
 
         return UserResponse(**new_user)
 

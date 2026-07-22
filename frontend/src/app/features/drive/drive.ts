@@ -1,11 +1,12 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
-import { HostBinding } from '@angular/core';
+import { DashboardHeader } from '../../shared/components/dashboard-header/dashboard-header';
+import { SidePanel } from '../../shared/components/side-panel/side-panel';
 
 export interface DriveItem {
   id: string;
@@ -27,6 +28,8 @@ export interface DriveItem {
     MatButtonModule,
     MatProgressBarModule,
     MatMenuModule,
+    DashboardHeader,
+    SidePanel,
   ],
   templateUrl: './drive.html',
   styleUrls: ['./drive.scss'],

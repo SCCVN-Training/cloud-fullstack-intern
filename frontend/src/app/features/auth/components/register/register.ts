@@ -117,9 +117,9 @@ export class Register {
     const { username, email, password } = this.registerForm.value;
 
     this.authService.register(username, email, password).subscribe({
-      next: (response) => {
+      next: (user) => {
         this.isLoading.set(false);
-        if (response.success) {
+        if (user && user.email) {
           this.router.navigate(['/login']);
         }
       },

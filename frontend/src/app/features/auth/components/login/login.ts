@@ -70,9 +70,9 @@ export class Login {
     const { email, password } = this.loginForm.value;
 
     this.authService.login(email, password).subscribe({
-      next: (response) => {
+      next: (user) => {
         this.isLoading.set(false);
-        if (response.success) {
+        if (user && user.email) {
           this.router.navigate(['/drive']);
         }
       },
