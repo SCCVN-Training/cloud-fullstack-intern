@@ -5,6 +5,7 @@ import { PublicLayoutComponent } from './shared/components/layout/public-layout/
 
 import { HomepageComponent } from './features/homepage/homepage.component';
 import { Login } from './features/auth/login/login';
+import { Register } from './features/auth/register/register';
 
 import { HowItWorksPage } from './features/how-it-works/how-it-works';
 import { AboutUsPage } from './features/about-us/about-us';
@@ -37,6 +38,10 @@ export const routes: Routes = [
   {
     path: 'login',
     component: Login
+  },
+  {
+    path: 'register',
+    component: Register
   },
   {
     path: '**',
