@@ -31,4 +31,9 @@ export class SignInComponent {
       this.router.navigate(['/dashboard']); 
     }
   }
+
+  onSSOClick(): void {
+    // Navigate to the SSO sign-in page
+    this.router.navigate(['/auth/sign-in-sso']);
+  }
 }

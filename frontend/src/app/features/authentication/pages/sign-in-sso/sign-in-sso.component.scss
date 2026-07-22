@@ -25,10 +25,10 @@
   display: flex;
   overflow-y: auto;
   flex-direction: column;
-  justify-content: space-between; /* Pushes header up, footer down */
+  justify-content: space-between;
   height: 100%;
   box-sizing: border-box;
-  padding: 1.25rem; /* Compact padding for small screens */
+  padding: 1.25rem;
 }
 
 .sign-in-header {
@@ -37,7 +37,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5em;
-  margin-bottom: 0.75rem; /* Down from 1rem */
+  margin-bottom: 0.75rem;
   width: 100%;
 }
 
@@ -45,12 +45,11 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  /* Scaled down box dimensions */
-  width: 2.25em; /* Down from 3.5em */
+  width: 2.25em;
   height: 2.25em;
   color: black;
   .material-symbols-outlined {
-    font-size: 1.75em; /* Down from 3em */
+    font-size: 1.75em;
   }
 }
 
@@ -58,7 +57,7 @@
   display: flex;
   flex-direction: column;
   h1 {
-    font-size: clamp(0.95rem, 1.1vw, 1.15rem); /* Downscaled clamp range */
+    font-size: clamp(0.95rem, 1.1vw, 1.15rem);
     font-weight: 700;
     margin: 0;
     line-height: 1.2;
@@ -66,7 +65,7 @@
   }
   p {
     margin: 0.15rem 0 0;
-    font-size: clamp(0.7rem, 0.8vw, 0.8rem); /* Downscaled clamp range */
+    font-size: clamp(0.7rem, 0.8vw, 0.8rem);
     color: #64748b;
   }
 }
@@ -76,15 +75,15 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 360px; /* Tightened from 400px for a more compact form width */
+  max-width: 360px;
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
 
   .sign-in-welcome-box {
-    margin-bottom: 0.75rem; /* Down from 1rem */
+    margin-bottom: 0.75rem;
     h2 {
-      font-size: clamp(1.15rem, 1.35vw, 1.35rem); /* Down from fixed 1.5rem */
+      font-size: clamp(1.15rem, 1.35vw, 1.35rem);
       font-weight: 700;
       margin: 0;
     }
@@ -95,35 +94,33 @@
     }
   }
 
-  .sign-in-form {
+  .domain-form {
     display: flex;
     flex-direction: column;
-    gap: 0.875rem; /* Reduced gap between form fields from 1.25rem */
+    gap: 0.875rem;
   }
 
   .form-field {
     display: flex;
     flex-direction: column;
-    gap: 0.375rem; /* Down from 0.5rem */
+    gap: 0.375rem;
     label {
-      font-size: clamp(0.75rem, 0.85vw, 0.8125rem); /* Scaled down from 0.875rem */
+      font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
       font-weight: 600;
       color: #0f172a;
     }
   }
 
-  .field-label-row {
+  .form-error {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    .forgot-link {
-      font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
-      font-weight: 600;
-      color: #0052cc;
-      text-decoration: none;
-      &:hover {
-        text-decoration: underline;
-      }
+    gap: 0.375rem;
+    font-size: clamp(0.7rem, 0.8vw, 0.75rem);
+    color: #dc2626;
+    margin-top: 0.25rem;
+    .icon-sm {
+      font-size: 0.875rem;
+      flex-shrink: 0;
     }
   }
 
@@ -135,11 +132,11 @@
       top: 50%;
       transform: translateY(-50%);
       color: #94a3b8;
-      font-size: 1.125rem; /* Slightly smaller icon inside field */
+      font-size: 1.125rem;
     }
     input {
       width: 100%;
-      padding: 0.4rem 0.625rem 0.4rem 2.25rem; /* Slimmer vertical input padding */
+      padding: 0.4rem 0.625rem 0.4rem 2.25rem;
       border: 1px solid #cbd5e1;
       border-radius: 0.375rem;
       font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
@@ -153,35 +150,24 @@
         border-color: #0052cc;
         box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
       }
+      &:disabled {
+        background-color: #f8fafc;
+        cursor: not-allowed;
+      }
     }
   }
 }
 
-.form-footer-row {
-  .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
-    color: #475569;
-    cursor: pointer;
-    input {
-      width: 0.875rem;
-      height: 0.875rem;
-      accent-color: #0052cc;
-      cursor: pointer;
-    }
-  }
-}
-
+/* --- Buttons --- */
 .btn-primary,
-.btn-secondary {
+.btn-secondary,
+.btn-tertiary {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.375rem;
   width: 100%;
-  padding: 0.5rem 0.75rem; /* Slimmer button height down from 0.75rem 1rem */
+  padding: 0.5rem 0.75rem;
   border-radius: 0.375rem;
   font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
   font-weight: 600;
@@ -214,6 +200,24 @@
   }
 }
 
+.btn-tertiary {
+  background: #f8fafc;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  &:hover:not(:disabled) {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-back {
+  margin-top: 0.75rem;
+}
+
 .divider {
   display: flex;
   align-items: center;
@@ -235,14 +239,136 @@
   }
 }
 
+/* --- SSO Providers Section --- */
+.providers-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .providers-header {
+    margin-bottom: 0.5rem;
+    h2 {
+      font-size: clamp(1.15rem, 1.35vw, 1.35rem);
+      font-weight: 700;
+      margin: 0;
+      word-break: break-word;
+    }
+    p {
+      margin: 0.25rem 0 0;
+      font-size: clamp(0.725rem, 0.85vw, 0.8125rem);
+      color: #64748b;
+    }
+  }
+
+  .providers-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .provider-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.875rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.375rem;
+    background: #ffffff;
+    color: #0f172a;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: inherit;
+
+    &:hover:not(:disabled) {
+      border-color: #0052cc;
+      background: #f0f7ff;
+      box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.05);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .provider-icon-wrapper {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 2.5rem;
+      height: 2.5rem;
+      background: #f1f5f9;
+      border-radius: 0.375rem;
+      color: #0052cc;
+    }
+
+    .provider-icon {
+      font-size: 1.5rem;
+    }
+
+    .provider-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+
+      h3 {
+        font-size: clamp(0.8rem, 0.9vw, 0.875rem);
+        font-weight: 600;
+        margin: 0;
+        color: #0f172a;
+      }
+
+      p {
+        font-size: clamp(0.7rem, 0.8vw, 0.75rem);
+        margin: 0;
+        color: #64748b;
+      }
+    }
+
+    .arrow-icon {
+      flex-shrink: 0;
+      color: #94a3b8;
+      font-size: 1.25rem;
+      transition: transform 0.2s;
+    }
+
+    &:hover:not(:disabled) .arrow-icon {
+      transform: translateX(2px);
+      color: #0052cc;
+    }
+  }
+}
+
+/* --- Loading Spinner --- */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
 .sign-in-footer {
-  margin-top: 0.5rem; /* Cut in half from 2rem */
-  padding-top: 1.5rem; /* Cut in half from 1.5rem */
+  margin-top: 0.5rem;
+  padding-top: 1.5rem;
   border-top: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem; /* Down from 0.75rem */
+  gap: 0.3rem;
   .status-row {
     display: flex;
     align-items: center;
@@ -282,7 +408,6 @@
   .sign-in-panel {
     width: 38%;
     min-width: 360px;
-    /* Responsive padding scaling dynamically with both viewport height (vh) and width (vw) */
     padding: clamp(1.25rem, 2.5vh, 2.25rem) clamp(1.5rem, 2.5vw, 2.75rem);
   }
   .sign-in-aside {

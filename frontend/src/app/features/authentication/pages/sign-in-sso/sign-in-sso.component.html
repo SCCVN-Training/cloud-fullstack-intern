@@ -1,0 +1,102 @@
+<div class="sign-in-page">
+  <section class="sign-in-panel">
+    <!-- Header (pinned top) -->
+    <div class="sign-in-header">
+      <div class="brand-icon"><span class="material-symbols-outlined">flutter_dash</span></div>
+      <div class="brand-text">
+        <h1>Syncra</h1>
+        <p>Sync your work. Share your world.</p>
+      </div>
+    </div>
+
+    <!-- Main (grows, centers itself) -->
+    <main class="sign-in-main">
+      <!-- Step 1: Enter Company Domain -->
+      <div *ngIf="currentStep === 'domain'" class="sign-in-welcome-box">
+        <h2>Company Sign In</h2>
+        <p>Sign in with your company's SSO account</p>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmitDomain()" class="sign-in-form domain-form">
+          <div class="form-field">
+            <label for="domain">Company Domain</label>
+            <div class="input-group">
+              <span class="material-symbols-outlined icon">business</span>
+              <input
+                id="domain"
+                type="text"
+                formControlName="domain"
+                placeholder="company.com"
+                [disabled]="isLoading"
+              />
+            </div>
+            <div class="form-error" *ngIf="form.get('domain')?.hasError('invalidDomain') && form.get('domain')?.touched">
+              <span class="material-symbols-outlined icon-sm">error</span>
+              <span>Please enter a valid company domain</span>
+            </div>
+          </div>
+
+          <button class="btn-primary" type="submit" [disabled]="form.invalid || isLoading">
+            <span *ngIf="!isLoading">Continue</span>
+            <span *ngIf="isLoading" class="loading-spinner"></span>
+            <span class="material-symbols-outlined icon-sm">arrow_forward</span>
+          </button>
+        </form>
+
+        <div class="divider"><span>OR</span></div>
+
+        <button type="button" class="btn-tertiary" (click)="onBackClick()" [disabled]="isLoading">
+          <span class="material-symbols-outlined icon-sm">arrow_back</span>
+          <span>Back to Regular Sign In</span>
+        </button>
+      </div>
+
+      <!-- Step 2: Select SSO Provider -->
+      <div *ngIf="currentStep === 'providers'" class="providers-section">
+        <div class="providers-header">
+          <h2>Sign in to {{ selectedCompanyDomain }}</h2>
+          <p>Choose your authentication method</p>
+        </div>
+
+        <div class="providers-list">
+          <button
+            *ngFor="let provider of ssoProviders"
+            type="button"
+            class="provider-card"
+            (click)="onSelectProvider(provider)"
+            [disabled]="isLoading"
+          >
+            <div class="provider-icon-wrapper">
+              <span class="material-symbols-outlined provider-icon">{{ provider.icon }}</span>
+            </div>
+            <div class="provider-info">
+              <h3>{{ provider.name }}</h3>
+              <p>{{ provider.description }}</p>
+            </div>
+            <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
+          </button>
+        </div>
+
+        <button type="button" class="btn-tertiary btn-back" (click)="onBackClick()" [disabled]="isLoading">
+          <span class="material-symbols-outlined icon-sm">arrow_back</span>
+          <span>Change Domain</span>
+        </button>
+      </div>
+    </main>
+
+    <!-- Footer (pinned bottom) -->
+    <footer class="sign-in-footer">
+      <div class="status-row">
+        <span class="material-symbols-outlined icon-sm">shield</span>
+        <span>Secure 256-bit SSL Encrypted Connection</span>
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a> <a href="#">Terms of Service</a> <a href="#">Support</a>
+      </div>
+      <div class="copyright">© 2024 SCC Enterprise Logistics. All rights reserved.</div>
+    </footer>
+  </section>
+
+  <aside class="sign-in-aside">
+    <div class="aside-overlay"></div>
+  </aside>
+</div>
