@@ -1,17 +1,36 @@
 import asyncpg
-from fastapi import Depends
+from fastapi import Depends, HTTPException, Request, status
 from app.core.database import get_db_connection
-from app.modules.auth.repository import AuthRepository
+from app.core.security import decode_token
 
 
-async def get_auth_repository() -> AuthRepository:
-    """Dependency injector for AuthRepository."""
-    return AuthRepository()
-
-
-# Placeholder for JWT validation dependency (coming in the next step)
 async def get_current_user(
+    request: Request,
     conn: asyncpg.Connection = Depends(get_db_connection),
-):
-    """Dependency to extract & validate JWT session from cookies."""
-    pass
+) -> dict:
+    """FastAPI Dependency: Ensures request is authenticated via access_token cookie."""
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication token missing.",
+        )
+
+    payload = decode_token(token)
+    if not payload or payload.get("type") != "access":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired access token.",
+        )
+
+    user_id = payload.get("sub")
+    query = "SELECT * FROM nephos.users WHERE id = $1"
+    row = await conn.fetchrow(query, user_id)
+
+    if not row:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found.",
+        )
+
+    return dict(row)
