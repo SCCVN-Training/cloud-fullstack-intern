@@ -1,26 +1,22 @@
 ﻿<div class="sign-in-page">
-  <!-- Left Panel: Login Form -->
   <section class="sign-in-panel">
-    <!-- Branding Header -->
+    <!-- Header (pinned top) -->
     <div class="sign-in-header">
-      <div class="brand-icon">
-        <span class="material-symbols-outlined">flutter_dash</span>
-      </div>
+      <div class="brand-icon"><span class="material-symbols-outlined">flutter_dash</span></div>
       <div class="brand-text">
         <h1>Syncra</h1>
         <p>Sync your work. Share your world.</p>
       </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- Main (grows, centers itself) -->
     <main class="sign-in-main">
-      <div class="sign-in-copy">
-        <h2>Welcome Back</h2>
+      <div class="sign-in-welcome-box">
+        <h2>Welcome Back!</h2>
         <p>Please enter your details to sign in.</p>
       </div>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="sign-in-form">
-        <!-- Email Input -->
         <div class="form-field">
           <label for="email">Email Address</label>
           <div class="input-group">
@@ -29,7 +25,6 @@
           </div>
         </div>
 
-        <!-- Password Input -->
         <div class="form-field">
           <div class="field-label-row">
             <label for="password">Password</label>
@@ -37,35 +32,22 @@
           </div>
           <div class="input-group">
             <span class="material-symbols-outlined icon">lock</span>
-            <input
-              id="password"
-              type="password"
-              formControlName="password"
-              placeholder="••••••••"
-            />
+            <input id="password" type="password" formControlName="password" placeholder="••••••••" />
           </div>
         </div>
 
-        <!-- Remember Device -->
         <div class="form-footer-row">
           <label class="checkbox-label">
-            <input type="checkbox" formControlName="remember" />
-            Remember this device
+            <input type="checkbox" formControlName="remember" /> Remember this device
           </label>
         </div>
 
-        <!-- Primary CTA -->
         <button class="btn-primary" type="submit" [disabled]="form.invalid">
-          <span>Sign in</span>
-          <span class="material-symbols-outlined icon-sm">login</span>
+          <span>Sign in</span> <span class="material-symbols-outlined icon-sm">login</span>
         </button>
 
-        <!-- Divider -->
-        <div class="divider">
-          <span>OR</span>
-        </div>
+        <div class="divider"><span>OR</span></div>
 
-        <!-- Secondary CTA -->
         <button type="button" class="btn-secondary">
           <span class="material-symbols-outlined icon-sm">verified_user</span>
           <span>Sign in with Company SSO</span>
@@ -73,24 +55,20 @@
       </form>
     </main>
 
-    <!-- Footer Links -->
+    <!-- Footer (pinned bottom) -->
     <footer class="sign-in-footer">
       <div class="status-row">
         <span class="material-symbols-outlined icon-sm">shield</span>
         <span>Secure 256-bit SSL Encrypted Connection</span>
       </div>
       <div class="footer-links">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        <a href="#">Support</a>
+        <a href="#">Privacy Policy</a> <a href="#">Terms of Service</a> <a href="#">Support</a>
       </div>
       <div class="copyright">© 2024 SCC Enterprise Logistics. All rights reserved.</div>
     </footer>
   </section>
 
-  <!-- Right Panel: Feature Image -->
   <aside class="sign-in-aside">
-    <!-- Note: Replace the background-image url in the CSS with the actual architectural image path -->
     <div class="aside-overlay"></div>
   </aside>
 </div>
