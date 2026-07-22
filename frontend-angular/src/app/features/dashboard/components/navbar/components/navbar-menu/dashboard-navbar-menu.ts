@@ -17,6 +17,7 @@ import { UserProfileStore } from '../../../../../user-profile/data-access/with-u
 })
 export class DashboardNavbarMenu {
   readonly open = input.required<boolean>();
+
   private readonly profileStore = inject(UserProfileStore);
   private readonly authEvent = inject(AuthEvent);
 

@@ -14,6 +14,10 @@ describe('DashboardNavbarMenu', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardNavbarMenu);
+
+    fixture.componentRef.setInput('open', true);
+    fixture.detectChanges();
+
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
