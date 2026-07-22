@@ -12,12 +12,18 @@ from app.core.security import (
     verify_password_hash,
 )
 
-from app.modules.auth.models import UserAccountModel
+from app.modules.auth.schemas import UserAccountSchema
 from app.modules.auth.repository import AuthRepository
 from app.modules.auth.schemas import (
     UserLoginRequestSchema,
     UserRegistrationRequestSchema,
 )
+
+from app.modules.auth.models import UserAccountModel
+
+from app.modules.profile.service import ProfileService
+
+from app.modules.profile.schemas import UserProfileCreateRequestModel
 
 
 class AuthService:
@@ -77,18 +83,7 @@ class AuthService:
         registration: UserRegistrationRequestSchema,
         postgres: AsyncSession,
         mongo: AsyncIOMotorDatabase,
-    ) -> UserAccountModel:
-        
-        existing_user_by_username = await AuthRepository.get_user_by_username(
-            postgres,
-            username=registration.username,
-        )
-
-        if existing_user_by_username:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="A user with this username already exists.",
-            )
+    ) -> UserAccountSchema:
 
         existing_user_by_email = await AuthRepository.get_user_by_email(
             postgres,
@@ -100,10 +95,9 @@ class AuthService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="A user with this email address already exists.",
             )
-
+        
         new_user = UserAccountModel(
             email=registration.email,
-            username=registration.username,
             hashed_password=hash_raw_password(registration.password),
         )
 
@@ -112,10 +106,22 @@ class AuthService:
             new_user,
         )
 
+        new_profile = UserProfileCreateRequestModel(
+                user_id = new_user.id,
+                display_name = registration.display_name
+            )
+
+        new_profile = await ProfileService.create_user_profile(
+                credentials = new_profile,
+                postgres = postgres,
+            )
+
+        await postgres.commit()
+
         await AuthRepository.create_registration_audit_log(
             mongo,
             str(new_user.id),
-            new_user.username,
+            new_profile.display_name,
             new_user.email,
         )
 
@@ -124,10 +130,8 @@ class AuthService:
             "data": {
                 "user": {
                     "id": str(new_user.id),
-                    "username": new_user.username,
                     "email": new_user.email,
                     "isActive": new_user.is_active_account,
-                    "avatarUrl": new_user.avatar_url,
                     "createdAt": new_user.created_at_utc.isoformat(),
                 }
             }
@@ -165,10 +169,8 @@ class AuthService:
             "data": {
                 "user": {
                     "id": str(user.id),
-                    "username": user.username,
                     "email": user.email,
                     "isActive": user.is_active_account,
-                    "avatarUrl": user.avatar_url,
                     "createdAt": user.created_at_utc.isoformat(),
                 },
             }
@@ -236,10 +238,8 @@ class AuthService:
             "data": {
                 "user": {
                     "id": str(user.id),
-                    "username": user.username,
                     "email": user.email,
                     "isActive": user.is_active_account,
-                    "avatarUrl": user.avatar_url,
                     "createdAt": user.created_at_utc.isoformat(),
                 }
             }

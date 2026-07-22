@@ -23,19 +23,6 @@ class AuthRepository:
         )
 
         return result.scalars().first()
-    
-    @staticmethod
-    async def get_user_by_username(
-        postgres: AsyncSession,
-        username: str,
-    ) -> UserAccountModel | None:
-        result = await postgres.execute(
-            select(UserAccountModel).where(
-                UserAccountModel.username == username
-            )
-        )
-
-        return result.scalars().first()
 
     @staticmethod
     async def create_user(
@@ -53,7 +40,7 @@ class AuthRepository:
     async def create_registration_audit_log(
         mongo: AsyncIOMotorDatabase,
         user_id: str,
-        username: str,
+        display_name: str,
         email: str,
     ) -> None:
         await mongo["auth_audit_logs"].insert_one(
@@ -61,7 +48,7 @@ class AuthRepository:
                 "event_type": "USER_REGISTERED",
                 "associated_user_id": user_id,
                 "email": email,
-                "username": username,
+                "display_name": display_name,
                 "timestamp_utc": datetime.now(timezone.utc),
             }
         )

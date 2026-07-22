@@ -7,15 +7,17 @@ from app.core.database import (
     get_neon_db_session,
 )
 
-from app.modules.auth.dependencies import (
+from app.shared.dependencies.verify_token import (
     extract_authenticated_user_payload,
 )
 
 from app.modules.auth.schemas import (
     UserRegistrationRequestSchema,
     UserLoginRequestSchema,
-    UserAccountResponseSchema,
+    UserDataSchema,
 )
+
+from app.shared.models.responses import ApiResponse
 
 from app.modules.auth.service import AuthService
 
@@ -27,7 +29,7 @@ auth_router = APIRouter(
 
 @auth_router.post(
     "/register",
-    response_model=UserAccountResponseSchema,
+    response_model=ApiResponse[UserDataSchema],
     status_code=status.HTTP_201_CREATED,
 )
 async def register(
@@ -42,7 +44,11 @@ async def register(
     )
 
 
-@auth_router.post("/login")
+@auth_router.post(
+    "/login",
+    response_model=ApiResponse[UserDataSchema],
+    status_code=status.HTTP_200_OK,
+)
 async def login(
     payload: UserLoginRequestSchema,
     response: Response,
@@ -55,7 +61,11 @@ async def login(
     )
 
 
-@auth_router.post("/restore-session")
+@auth_router.post(
+    "/restore-session",
+    response_model=ApiResponse,
+    status_code=status.HTTP_200_OK,
+)
 async def restore_session(
     request: Request,
     response: Response,
@@ -66,14 +76,22 @@ async def restore_session(
     )
 
 
-@auth_router.post("/logout")
+@auth_router.post(
+    "/logout",
+    response_model=ApiResponse,
+    status_code=status.HTTP_200_OK,
+)
 async def logout(
     response: Response,
 ):
     return await AuthService.logout(response)
 
 
-@auth_router.get("/me")
+@auth_router.get(
+    "/me",
+    response_model=ApiResponse[UserDataSchema],
+    status_code=status.HTTP_200_OK,
+)
 async def me(
     payload: dict = Depends(extract_authenticated_user_payload),
     postgres: AsyncSession = Depends(get_neon_db_session),
