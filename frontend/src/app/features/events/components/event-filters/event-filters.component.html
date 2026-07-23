@@ -1,0 +1,64 @@
+<aside class="event-filters" [formGroup]="form">
+  <h2 class="filters-title">Find Workshops</h2>
+
+  <div class="filter-group">
+    <label for="keyword">Keywords</label>
+    <input id="keyword" type="text" formControlName="keyword" placeholder="e.g. Logistics 4.0" />
+  </div>
+
+  <div class="filter-group">
+    <label for="timeline">Timeline</label>
+    <select id="timeline" formControlName="timeline">
+      <option value="today">Today</option>
+      <option value="this-week">This week</option>
+      <option value="next-week">Next week</option>
+      <option value="this-month">This month</option>
+      <option value="all">All</option>
+    </select>
+  </div>
+
+  <div class="filter-group" formGroupName="formats">
+    <label>Format</label>
+    <label class="checkbox-row">
+      <input type="checkbox" formControlName="in-person" />
+      <span>In-person</span>
+    </label>
+    <label class="checkbox-row">
+      <input type="checkbox" formControlName="virtual" />
+      <span>Virtual</span>
+    </label>
+  </div>
+
+  <div class="filter-group">
+    <label>Difficulty</label>
+    <label class="radio-row">
+      <input type="radio" formControlName="difficulty" value="beginner" />
+      <span>Beginner</span>
+    </label>
+    <label class="radio-row">
+      <input type="radio" formControlName="difficulty" value="intermediate" />
+      <span>Intermediate</span>
+    </label>
+    <label class="radio-row">
+      <input type="radio" formControlName="difficulty" value="advanced" />
+      <span>Advanced</span>
+    </label>
+  </div>
+
+  <div class="filter-group">
+    <label>Topics</label>
+    <div class="topic-chips">
+      <button
+        type="button"
+        class="chip"
+        *ngFor="let topic of availableTopics"
+        [class.selected]="isTopicSelected(topic)"
+        (click)="toggleTopic(topic)"
+      >
+        {{ topic }}
+      </button>
+    </div>
+  </div>
+
+  <button class="btn-apply" type="button" (click)="applyFilters()">Apply Filters</button>
+</aside>

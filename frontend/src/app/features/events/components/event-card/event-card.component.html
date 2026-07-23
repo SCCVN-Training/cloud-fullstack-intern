@@ -1,0 +1,42 @@
+<article class="event-card">
+  <div class="card-thumb">
+    <img [src]="workshop.thumbnailUrl" [alt]="workshop.title" />
+    <span class="format-badge" [class.virtual]="workshop.format === 'virtual'">
+      {{ workshop.format === 'in-person' ? 'In-person' : 'Virtual' }}
+    </span>
+  </div>
+
+  <div class="card-body">
+    <div class="tag-row">
+      <span class="tag" *ngFor="let tag of workshop.categoryTags">{{ tag }}</span>
+    </div>
+
+    <h3 class="card-title">{{ workshop.title }}</h3>
+
+    <div class="speaker-row">
+      <span class="material-symbols-outlined icon-sm">account_circle</span>
+      <span>{{ workshop.speakerName }}</span>
+    </div>
+
+    <div class="meta-row">
+      <span class="material-symbols-outlined icon-sm">calendar_today</span>
+      <span>{{ workshop.dateLabel }}</span>
+    </div>
+    <div class="meta-row">
+      <span class="material-symbols-outlined icon-sm">location_on</span>
+      <span>{{ workshop.location }}</span>
+    </div>
+
+    <div class="capacity-block">
+      <div class="capacity-label">
+        <span>Capacity</span>
+        <span>{{ seatsLabel }}</span>
+      </div>
+      <div class="capacity-bar">
+        <div class="capacity-fill" [style.width.%]="capacityPercent"></div>
+      </div>
+    </div>
+
+    <button class="btn-register" type="button">Register</button>
+  </div>
+</article>

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { EventListPageComponent } from '../pages/event-list-page/event-list-page.component';
+import { EventsComponentList } from '../pages/event-list-page/event-list-page.component';
 import { EventDetailPageComponent } from '../pages/event-detail-page/event-detail-page.component';
 import { EventCreatePageComponent } from '../pages/event-create-page/event-create-page.component';
 import { EventEditPageComponent } from '../pages/event-edit-page/event-edit-page.component';
@@ -11,7 +11,7 @@ export const eventRoutes: Routes = [
     children: [
       {
         path: '',
-        component: EventListPageComponent
+        component: EventsComponentList
       },
       {
         path: 'new',
