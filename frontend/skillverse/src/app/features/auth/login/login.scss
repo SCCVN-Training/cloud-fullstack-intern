@@ -109,15 +109,6 @@
   color: var(--color-on-surface);
 }
 
-.auth-link {
-  color: var(--color-primary);
-  transition: all 0.2s;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
 .input-wrapper {
   position: relative;
 }
@@ -288,4 +279,57 @@
   font-size: 14px;
   font-weight: 500;
   text-align: center;
+}
+
+.google-signin-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.google-custom-btn {
+  width: 100%;
+  max-width: 400px;
+  min-height: 56px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #202124;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 18px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12);
+  z-index: 1;
+}
+
+.google-custom-btn:hover {
+  background: #f7f7f7;
+}
+
+.google-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.google-signin-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 2;
+  border-radius: 9999px;
+  pointer-events: auto;
+  background: transparent !important;
+}
+
+.google-signin-overlay * {
+  opacity: 0 !important;
 }

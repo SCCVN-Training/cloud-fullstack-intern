@@ -15,9 +15,32 @@
         
         <!-- User Actions -->
         <div class="header-actions">
-            <!-- Unauthenticated -->
-            <a routerLink="/login" class="btn-text">Login</a>
-            <a routerLink="/register" class="btn-primary">Register</a>
+            <ng-container *ngIf="authService.currentUser() as user; else guestActions">
+                <div class="user-profile-menu">
+                    <a class="header-profile-trigger">
+                        <span class="header-username">
+                            {{ user.name }}
+                        </span>
+                        <ng-container *ngIf="user.avatar; else initialsAvatar">
+                            <img
+                                class="header-avatar"
+                                [src]="user.avatar"
+                                alt="User avatar"
+                            />
+                        </ng-container>
+                        <ng-template #initialsAvatar>
+                            <span class="header-avatar header-avatar-initials">
+                                {{ user.name.charAt(0).toUpperCase() }}
+                            </span>
+                        </ng-template>
+                    </a>
+                </div>
+            </ng-container>
+
+            <ng-template #guestActions>
+                <a routerLink="/login" class="btn-text">Login</a>
+                <a routerLink="/register" class="btn-primary">Register</a>
+            </ng-template>
         </div>
     </div>
 </nav>

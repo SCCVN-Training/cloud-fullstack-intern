@@ -5,14 +5,21 @@ import { BehaviorSubject, delay, finalize, of } from 'rxjs';
 import { RouterLink, Router } from '@angular/router';
 import { ToastService } from '../../../shared/services/toast.service';
 import { AuthService } from '../../../core/services/auth/auth';
+import {
+  SocialAuthService,
+  GoogleSigninButtonModule,
+  SocialUser
+} from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
-    RouterLink],
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    GoogleSigninButtonModule
+  ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
@@ -23,14 +30,27 @@ export class Login {
   showPassword = false;
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private toastService: ToastService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private socialAuthService: SocialAuthService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+
+    this.socialAuthService.authState.subscribe((user: SocialUser | null) => {
+      if (user) {
+        this.authService.loginWithGoogle({
+          firstName: user.firstName,
+          email: user.email,
+          photoUrl: user.photoUrl
+        });
+        this.toastService.showSuccess(`Welcome ${user.firstName}!`);
+        this.router.navigate(['/']);
+      }
     });
   }
 
@@ -43,45 +63,31 @@ export class Login {
   }
 
 onSubmit() {
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
-      return;
-    }
-
-    this.isLoading$.next(true);
-    this.errorMessage$.next(null);
-
-    const { email, password } = this.loginForm.value;
-
-    of(null).pipe(
-      delay(1500),
-      finalize(() => this.isLoading$.next(false))
-    ).subscribe({
-      next: () => {
-        // 1. CASE: BOTH EMAIL AND PASSWORD ARE CORRECT
-        if (email === 'admin@gmail.com' && password === '123456') {
-          console.log('Login success!');
-          this.authService.login();
-          this.toastService.showSuccess('Login successful!'); 
-          // this.router.navigate(['/']); 
-        } 
-        // 2. CASE: INCORRECT EMAIL
-        else if (email !== 'admin@gmail.com') {
-          console.warn('Login failed: Incorrect email');
-          this.errorMessage$.next('Email does not exist in the system.');
-          this.toastService.showError('Incorrect email. Please check again!');
-        }
-        // 3. CASE: CORRECT EMAIL BUT INCORRECT PASSWORD
-        else if (password !== '123456') {
-          console.warn('Login failed: Incorrect password');
-          this.errorMessage$.next('Password is not correct.');
-          this.toastService.showError('Incorrect password. Please try again!');
-        }
-      },
-      error: (err) => {
-        console.error('Connection error', err);
-        this.toastService.showError('System connection error!');
-      }
-    });
+  if (this.loginForm.invalid) {
+    this.loginForm.markAllAsTouched();
+    return;
   }
-}
+
+  this.isLoading$.next(true);
+  this.errorMessage$.next(null);
+
+  const { email, password } = this.loginForm.value;
+
+  this.authService.authenticate(email, password).subscribe({
+    next: (success) => {
+      this.isLoading$.next(false);
+      if (success) {
+        this.toastService.showSuccess('Login successful!');
+        this.router.navigate(['/']);
+      } else {
+        this.errorMessage$.next('Invalid email or password.');
+        this.toastService.showError('Email or password is incorrect.');
+      }
+    },
+    error: (err) => {
+      this.isLoading$.next(false);
+      console.error('Connection error', err);
+      this.toastService.showError('System connection error!');
+    }
+  });
+}}

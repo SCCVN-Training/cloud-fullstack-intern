@@ -78,7 +78,7 @@
 }
 
 .header-actions {
-  display: none;
+  display: flex;
   align-items: center;
   gap: var(--spacing-sm);
 
@@ -112,6 +112,27 @@
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid white;
+}
+
+.header-avatar-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+  border: 2px solid white;
+}
+
+.header-username {
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
 }
 
 .header-dropdown {

@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { RouterLink } from '@angular/router';
 import { ToastService } from '../../../shared/services/toast.service';
 import { AuthService } from '../../../core/services/auth/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +22,8 @@ export class Register {
   constructor(
     private fb: FormBuilder, 
     private toastService: ToastService,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private router: Router) {
     
       this.registerForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -48,30 +50,21 @@ onSubmit() {
 
   const { name, email, password } = this.registerForm.value;
 
-  this.authService
-    .register({
-      name,
-      email,
-      password
-    })
-    .subscribe({
-      next: () => {
-        this.toastService.showSuccess(
-          'Account created successfully! Please log in.'
-        );
+  this.authService.register({ name, email, password }).subscribe({
+    next: (success) => {
+      this.isLoading$.next(false);
 
+      if (success) {
+        this.toastService.showSuccess('Account created successfully!');
         this.registerForm.reset();
-
-        this.isLoading$.next(false);
-      },
-
-      error: () => {
-        this.toastService.showError(
-          'Connection error! Please try again.'
-        );
-
-        this.isLoading$.next(false);
+        this.router.navigate(['/login']);
+      } else {
+        this.toastService.showError('Email is already registered.');
       }
-    });
-}
-}
+    },
+    error: () => {
+      this.isLoading$.next(false);
+      this.toastService.showError('Connection error! Please try again.');
+    }
+  });
+}}

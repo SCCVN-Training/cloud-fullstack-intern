@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService, UserRecord } from '../../core/services/auth/auth';
 
 interface Feature {
   title: string;
@@ -30,6 +31,24 @@ interface SkillCard {
 })
 
 export class HomepageComponent {
+  
+  constructor(private authService: AuthService) {}
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
+  }
+  
+  get user(): UserRecord | null {
+    return this.authService.currentUser();
+  }
+
+  get userName(): string {
+    return this.user?.name ?? 'Guest';
+  }
+
+  get userAvatar(): string {
+    return this.user?.avatar ?? 'https://ui-avatars.com/api/?name=' + encodeURIComponent(this.userName);
+  }
 
   features: Feature[] = [
     {

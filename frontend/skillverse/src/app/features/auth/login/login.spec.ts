@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-
+import { BehaviorSubject, of }  from 'rxjs';
 import { vi } from 'vitest';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 
 import { Login } from './login';
 import { ToastService } from '../../../shared/services/toast.service';
@@ -14,6 +15,10 @@ describe('Login', () => {
   let toastService: ToastService;
   let authService: AuthService;
 
+  const socialAuthServiceMock = {
+  authState: new BehaviorSubject(null)
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Login],
@@ -25,7 +30,15 @@ describe('Login', () => {
         {
           provide: AuthService,
           useValue: {
-            login: vi.fn()
+            login: vi.fn(),
+            logout: vi.fn()
+          }
+        },
+
+        {
+          provide: SocialAuthService,
+          useValue: {
+            authState: new BehaviorSubject(null)
           }
         }
       ]
@@ -127,62 +140,63 @@ describe('Login', () => {
   // Login Logic
   // =====================================
 
-  it('should login successfully', async () => {
-    const loginSpy = vi.spyOn(authService, 'login');
-    const successSpy = vi.spyOn(toastService, 'showSuccess');
+it('should login successfully', async () => {
+  const loginSpy = vi.spyOn(authService, 'login');
+  const successSpy = vi.spyOn(toastService, 'showSuccess');
 
-    component.loginForm.setValue({
-      email: 'admin@gmail.com',
-      password: '123456'
-    });
-
-    component.onSubmit();
-
-    await new Promise(resolve => setTimeout(resolve, 1700));
-
-    expect(loginSpy).toHaveBeenCalled();
-    expect(successSpy).toHaveBeenCalledWith('Login successful!');
+  component.loginForm.setValue({
+    email: 'admin@gmail.com',
+    password: '123456'
   });
 
-  it('should show error for wrong email', async () => {
-    const errorSpy = vi.spyOn(toastService, 'showError');
+  component.onSubmit();
 
-    component.loginForm.setValue({
-      email: 'wrong@gmail.com',
-      password: '123456'
-    });
+  await new Promise(resolve => setTimeout(resolve, 1700));
 
-    component.onSubmit();
+  expect(loginSpy).toHaveBeenCalled();
+  expect(successSpy).toHaveBeenCalledWith('Login successful!');
+});
 
-    await new Promise(resolve => setTimeout(resolve, 1700));
+it('should show error for wrong email', async () => {
+  const errorSpy = vi.spyOn(toastService, 'showError');
 
-    expect(component.errorMessage$.value).toBe(
-      'Email does not exist in the system.'
-    );
-
-    expect(errorSpy).toHaveBeenCalledWith(
-      'Incorrect email. Please check again!'
-    );
+  component.loginForm.setValue({
+    email: 'wrong@gmail.com',
+    password: '123456'
   });
 
-  it('should show error for wrong password', async () => {
-    const errorSpy = vi.spyOn(toastService, 'showError');
+  component.onSubmit();
 
-    component.loginForm.setValue({
-      email: 'admin@gmail.com',
-      password: '654321'
-    });
+  await new Promise(resolve => setTimeout(resolve, 1700));
 
-    component.onSubmit();
+  expect(component.errorMessage$.value).toBe(
+    'Email does not exist in the system.'
+  );
 
-    await new Promise(resolve => setTimeout(resolve, 1700));
+  expect(errorSpy).toHaveBeenCalledWith(
+    'Incorrect email. Please check again!'
+  );
+});
 
-    expect(component.errorMessage$.value).toBe(
-      'Password is not correct.'
-    );
+it('should show error for wrong password', async () => {
+  const errorSpy = vi.spyOn(toastService, 'showError');
 
-    expect(errorSpy).toHaveBeenCalledWith(
-      'Incorrect password. Please try again!'
-    );
+  component.loginForm.setValue({
+    email: 'admin@gmail.com',
+    password: '654321'
   });
+
+  component.onSubmit();
+
+  await new Promise(resolve => setTimeout(resolve, 1700));
+
+  expect(component.errorMessage$.value).toBe(
+    'Password is not correct.'
+  );
+
+  expect(errorSpy).toHaveBeenCalledWith(
+    'Incorrect password. Please try again!'
+  );
+});
+
 });
