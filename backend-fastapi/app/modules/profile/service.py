@@ -59,7 +59,7 @@ class ProfileService:
         postgres: AsyncSession
     ):
         user_id = payload["sub"]
-        changes = credentials.model_dump(exclue_none = True)
+        changes = credentials.model_dump(exclude_none = True)
 
         updated = await ProfileRepository.patch_profile_by_id(
             postgres,

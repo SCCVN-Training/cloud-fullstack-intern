@@ -53,7 +53,7 @@ class ProfileRepository:
         
         result = await postgres.execute(
             update(UserProfileModel)
-            .where(UserProfileModel.id == user_id)
+            .where(UserProfileModel.user_id == user_id)
             .values(**changes)
         )
 
