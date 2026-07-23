@@ -78,4 +78,40 @@ export class AuthService {
       )
       .pipe(tap(() => this.currentUser.set(null)));
   }
+
+  deleteAccount(): Observable<{ message: string }> {
+    return this.http
+      .delete<{ message: string }>(`${this.API_BASE}/api/v1/auth/me`, {
+        withCredentials: true,
+      })
+      .pipe(tap(() => this.currentUser.set(null)));
+  }
+
+  changePassword(
+    current: string,
+    newPassword: string,
+  ): Observable<{ message: string }> {
+    return this.http.put<{ message: string }>(
+      `${this.API_BASE}/api/v1/auth/change-password`,
+      { current_password: current, new_password: newPassword },
+      { withCredentials: true },
+    );
+  }
+
+  forgotPassword(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${this.API_BASE}/api/v1/auth/forgot-password`,
+      { email },
+    );
+  }
+
+  resetPassword(
+    token: string,
+    newPassword: string,
+  ): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${this.API_BASE}/api/v1/auth/reset-password`,
+      { token, new_password: newPassword },
+    );
+  }
 }

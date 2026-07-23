@@ -83,6 +83,9 @@
 
     .profile-avatar {
       color: #0058bc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       mat-icon {
         font-size: 32px;

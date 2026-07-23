@@ -1,10 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
-type SidePanelNavKey = 'home' | 'recent' | 'starred' | 'trash';
+type SidePanelNavKey = 'home' | 'recent' | 'starred' | 'trash' | '';
+
+export type { SidePanelNavKey };
 
 export interface SidePanelNavItem {
   key: SidePanelNavKey;
@@ -20,13 +22,11 @@ export interface SidePanelNavItem {
   styleUrls: ['./side-panel.scss'],
 })
 export class SidePanel {
-  @Input() usedStorage = 0;
-  @Input() totalStorage = 1;
-  @Input() activeNav: 'home' | 'recent' | 'starred' | 'trash' = 'home';
-  @Output() navChange = new EventEmitter<
-    'home' | 'recent' | 'starred' | 'trash'
-  >();
-  @Output() upgrade = new EventEmitter<void>();
+  usedStorage = input(0);
+  totalStorage = input(1);
+  activeNav = input<SidePanelNavKey>('home');
+  navChange = output<SidePanelNavKey>();
+  upgrade = output<void>();
 
   navItems: SidePanelNavItem[] = [
     { key: 'home', icon: 'home', label: 'Home' },
@@ -36,6 +36,6 @@ export class SidePanel {
   ];
 
   storagePercentage(): number {
-    return Math.round((this.usedStorage / this.totalStorage) * 100);
+    return Math.round((this.usedStorage() / this.totalStorage()) * 100);
   }
 }

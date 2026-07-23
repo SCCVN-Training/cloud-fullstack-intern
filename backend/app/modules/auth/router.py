@@ -2,7 +2,7 @@ import asyncpg
 from fastapi import APIRouter, Depends, Request, Response, status, HTTPException
 from app.core.database import get_db_connection
 from app.modules.auth.dependencies import get_current_user
-from app.modules.auth.schemas import UserRegisterRequest, UserLoginRequest, UserResponse
+from app.modules.auth.schemas import UserRegisterRequest, UserLoginRequest, UserResponse, ForgotPasswordRequest, ResetPasswordRequest, ChangePasswordRequest, MessageResponse
 from app.modules.auth.service import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -47,3 +47,38 @@ async def logout(response: Response):
 async def get_me(current_user: dict = Depends(get_current_user)):
     """Protected endpoint: Returns current user profile."""
     return UserResponse(**current_user)
+
+@router.delete("/me", status_code=status.HTTP_200_OK)
+async def delete_me(
+    response: Response,
+    current_user: dict = Depends(get_current_user),
+    conn: asyncpg.Connection = Depends(get_db_connection),
+):
+    """Protected endpoint: Permanently deletes current user account."""
+    return await AuthService.delete_account(conn, current_user["id"], response)
+
+@router.post("/forgot-password", response_model=MessageResponse)
+async def forgot_password(
+    payload: ForgotPasswordRequest,
+    conn: asyncpg.Connection = Depends(get_db_connection),
+):
+    """Requests a password reset link for a given email address."""
+    return await AuthService.request_password_reset(conn, payload)
+
+
+@router.post("/reset-password", response_model=MessageResponse)
+async def reset_password(
+    payload: ResetPasswordRequest,
+    conn: asyncpg.Connection = Depends(get_db_connection),
+):
+    """Resets user password using a valid reset token."""
+    return await AuthService.reset_password(conn, payload)
+
+@router.put("/change-password", response_model=MessageResponse)
+async def change_password(
+    payload: ChangePasswordRequest,
+    current_user: dict = Depends(get_current_user),
+    conn: asyncpg.Connection = Depends(get_db_connection),
+):
+    """Protected endpoint: Allows logged-in users to update their password."""
+    return await AuthService.change_password(conn, current_user["id"], payload)

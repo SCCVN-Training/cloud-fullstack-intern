@@ -1,9 +1,6 @@
 <div class="dashboard-wrapper">
   <!-- 1. HEADER SECTION -->
-  <app-dashboard-header
-    [brandSize]="brandSize"
-    (upload)="onUploadTrigger()"
-  ></app-dashboard-header>
+  <app-dashboard-header (upload)="onUploadTrigger()"></app-dashboard-header>
 
   <!-- 2. WORKSPACE CONTAINER -->
   <div class="workspace-container">
@@ -197,7 +194,7 @@
       <span>STARRED</span>
     </button>
 
-    <button class="nav-tab">
+    <button class="nav-tab" routerLink="/profile">
       <mat-icon>account_circle</mat-icon>
       <span>PROFILE</span>
     </button>

@@ -2,8 +2,8 @@
   <div class="storage-summary">
     <h2>Cloud Storage</h2>
     <p class="storage-text">
-      <span class="bold">{{ usedStorage }} GB</span> of {{ totalStorage }} GB
-      used
+      <span class="bold">{{ usedStorage() }} GB</span> of {{ totalStorage() }}
+      GB used
     </p>
     <mat-progress-bar
       mode="determinate"
@@ -14,7 +14,7 @@
   <nav class="nav-links">
     <button
       *ngFor="let item of navItems"
-      [class.active]="activeNav === item.key"
+      [class.active]="activeNav() === item.key"
       (click)="navChange.emit(item.key)"
       class="nav-item"
     >

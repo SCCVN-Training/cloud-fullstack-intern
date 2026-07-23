@@ -1,4 +1,3 @@
-# app/modules/auth/models.py
 from dataclasses import dataclass
 from datetime import datetime
 import uuid
@@ -49,4 +48,15 @@ CREATE TABLE IF NOT EXISTS nephos.users (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+CREATE TABLE IF NOT EXISTS nephos.password_resets (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES nephos.users(id) ON DELETE CASCADE,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    is_used BOOLEAN DEFAULT FALSE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_reset_token ON nephos.password_resets(token);
 """

@@ -12,7 +12,7 @@
     <mat-icon class="search-icon">search</mat-icon>
     <input
       type="text"
-      [placeholder]="searchPlaceholder"
+      [placeholder]="searchPlaceholder()"
       (input)="onSearchChange($event)"
     />
   </div>
@@ -32,7 +32,7 @@
       mat-icon-button
       class="profile-avatar"
       aria-label="User Profile"
-      (click)="profile.emit()"
+      routerLink="/profile"
     >
       <mat-icon>account_circle</mat-icon>
     </button>

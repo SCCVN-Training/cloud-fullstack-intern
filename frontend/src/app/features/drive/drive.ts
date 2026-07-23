@@ -6,7 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { DashboardHeader } from '../../shared/components/dashboard-header/dashboard-header';
-import { SidePanel } from '../../shared/components/side-panel/side-panel';
+import {
+  SidePanel,
+  SidePanelNavKey,
+} from '../../shared/components/side-panel/side-panel';
 
 export interface DriveItem {
   id: string;
@@ -36,14 +39,14 @@ export interface DriveItem {
 })
 export class Drive {
   brandSize = 36;
-  currentNav = signal<'home' | 'recent' | 'starred' | 'trash'>('home');
-
-  usedStorage = signal<number>(4.2);
-  totalStorage = signal<number>(15);
-
   @HostBinding('style.--brand-size') get cssBrandSize() {
     return this.brandSize + 'px';
   }
+
+  currentNav = signal<SidePanelNavKey>('home');
+
+  usedStorage = signal<number>(4.2);
+  totalStorage = signal<number>(15);
 
   storagePercentage = computed(() =>
     Math.round((this.usedStorage() / this.totalStorage()) * 100),
@@ -108,7 +111,7 @@ export class Drive {
     // Upload logic trigger
   }
 
-  switchNav(nav: 'home' | 'recent' | 'starred' | 'trash') {
+  switchNav(nav: SidePanelNavKey) {
     this.currentNav.set(nav);
   }
 }

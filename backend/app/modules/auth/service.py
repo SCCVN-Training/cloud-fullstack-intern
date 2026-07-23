@@ -1,10 +1,13 @@
+import secrets
+
 import asyncpg
-from datetime import timedelta
+import uuid
+from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, Response, status
 from app.core.config import settings
 from app.core.security import hash_password, verify_password, create_token, decode_token
 from app.modules.auth.repository import AuthRepository
-from app.modules.auth.schemas import UserRegisterRequest, UserLoginRequest, UserResponse
+from app.modules.auth.schemas import UserRegisterRequest, UserLoginRequest, UserResponse, ForgotPasswordRequest, ResetPasswordRequest, ChangePasswordRequest, MessageResponse
 
 class AuthService:
 
@@ -110,3 +113,86 @@ class AuthService:
         response.delete_cookie(key="access_token")
         response.delete_cookie(key="refresh_token")
         return {"message": "Successfully logged out"}
+
+    @staticmethod
+    async def delete_account(conn: asyncpg.Connection, user_id: uuid.UUID, response: Response) -> dict:
+        deleted = await AuthRepository.delete_user(conn, user_id)
+        if not deleted:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found.",
+            )
+
+        # Clear active session cookies
+        AuthService.logout_user(response)
+
+        return {"message": "Account successfully deleted."}
+
+    @staticmethod
+    async def request_password_reset(conn: asyncpg.Connection, data: ForgotPasswordRequest) -> dict:
+        user = await AuthRepository.get_by_email(conn, data.email)
+        
+        # Security Best Practice: Don't reveal if email exists or not
+        if not user:
+            return {"message": "If that email is registered, a password reset link has been sent."}
+
+        # Generate secure random token
+        reset_token = secrets.token_urlsafe(32)
+        expires_at = datetime.now(timezone.utc) + timedelta(minutes=15)
+
+        await AuthRepository.create_reset_token(conn, user["id"], reset_token, expires_at)
+
+        # TODO: Integrate Email Service (Resend/SMTP) here
+        # E.g., await send_reset_email(user["email"], reset_token)
+        print(f" RESET TOKEN for {user['email']}: {reset_token}")
+
+        return {"message": "If that email is registered, a password reset link has been sent."}
+
+    @staticmethod
+    async def reset_password(conn: asyncpg.Connection, data: ResetPasswordRequest) -> dict:
+        token_record = await AuthRepository.get_valid_reset_token(conn, data.token)
+        if not token_record:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid or expired reset token.",
+            )
+
+        new_hashed_password = hash_password(data.new_password)
+        await AuthRepository.update_password_and_invalidate_token(
+            conn,
+            user_id=token_record["user_id"],
+            new_hashed_password=new_hashed_password,
+            token_id=token_record["id"],
+        )
+
+        return {"message": "Password successfully reset. You can now log in with your new password."}
+
+    @staticmethod
+    async def change_password(
+        conn: asyncpg.Connection,
+        user_id: uuid.UUID,
+        payload: ChangePasswordRequest,
+    ) -> dict:
+        # Fetch current user record from DB
+        query = "SELECT hashed_password FROM nephos.users WHERE id = $1"
+        row = await conn.fetchrow(query, user_id)
+        if not row:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+        # 1. Verify current password
+        if not verify_password(payload.current_password, row["hashed_password"]):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Incorrect current password.",
+            )
+
+        # 2. Hash and update new password
+        new_hashed = hash_password(payload.new_password)
+        update_query = """
+            UPDATE nephos.users 
+            SET hashed_password = $1, updated_at = CURRENT_TIMESTAMP 
+            WHERE id = $2
+        """
+        await conn.execute(update_query, new_hashed, user_id)
+
+        return {"message": "Password updated successfully."}
