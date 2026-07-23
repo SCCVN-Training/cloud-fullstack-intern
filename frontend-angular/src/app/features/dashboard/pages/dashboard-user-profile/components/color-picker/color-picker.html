@@ -1,0 +1,24 @@
+<div class="color-picker-wrapper">
+  <div class="color-input-group">
+    <label class="color-label">{{ label() }}</label>
+    <div class="color-inputs">
+      <input
+        type="color"
+        class="color-input-native"
+        [value]="value"
+        (change)="onColorChange($event)"
+        (blur)="onBlur()"
+      />
+      <input
+        type="text"
+        class="color-input-hex"
+        [value]="value"
+        placeholder="#2563eb"
+        (change)="onHexInputChange($event)"
+        (blur)="onBlur()"
+        maxlength="7"
+      />
+      <div class="color-preview" [style.background-color]="value"></div>
+    </div>
+  </div>
+</div>

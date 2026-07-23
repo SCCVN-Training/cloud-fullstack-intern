@@ -40,9 +40,11 @@ export class UserProfileEffect {
     this.reducer.setLoading(true);
 
     return this.api.updateMyProfile(payload).pipe(
-      tap(() => {
+      tap((response) => {
         this.reducer.setError(null);
+        this.reducer.patch({ profile: response.data });
         this.notification.success('Profile updated successfully');
+        this.router.navigate(['/dashboard', 'profile']);
       }),
       map(() => void 0),
       catchError((error: HttpErrorResponse) => {

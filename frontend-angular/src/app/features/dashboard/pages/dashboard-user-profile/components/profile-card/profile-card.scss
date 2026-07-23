@@ -1,0 +1,195 @@
+.profile-card {
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+  background-color: var(--bg-color, #ffffff);
+  border: 2px solid var(--accent-color, #2563eb);
+
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+  }
+
+  mat-card-header {
+    padding: 2rem;
+    background: linear-gradient(
+      135deg,
+      var(--accent-color, #2563eb),
+      color-mix(in srgb, var(--accent-color, #2563eb), transparent 20%)
+    );
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .avatar,
+  .avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .avatar {
+    border: 3px solid white;
+  }
+
+  .avatar-placeholder {
+    color: white;
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+    }
+  }
+
+  .profile-info {
+    color: white;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .display-name {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    word-break: break-word;
+  }
+
+  .bio {
+    margin: 0.5rem 0 0;
+    font-size: 0.95rem;
+    opacity: 0.95;
+    word-break: break-word;
+  }
+
+  mat-card-content {
+    padding: 2rem;
+  }
+
+  .stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .stat-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-color, #2563eb);
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--mat-sys-on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .privacy-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: var(--mat-sys-surface-container-low);
+    border-radius: 12px;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.9rem;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+// Card style variations
+.card-style-minimal {
+  border: 1px solid var(--mat-sys-outline-variant);
+  box-shadow: none;
+
+  mat-card-header {
+    background: transparent;
+    border-bottom: 2px solid var(--accent-color, #2563eb);
+    padding: 1.5rem;
+
+    .profile-info {
+      color: var(--mat-sys-on-surface);
+    }
+  }
+
+  .avatar-placeholder {
+    color: var(--accent-color, #2563eb);
+  }
+}
+
+.card-style-gradient {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--bg-color, #ffffff), var(--accent-color, #2563eb) 20%),
+    var(--bg-color, #ffffff)
+  );
+
+  mat-card-header {
+    background: linear-gradient(135deg, var(--accent-color, #2563eb), transparent);
+  }
+}
+
+.card-style-modern {
+  border: none;
+  border-left: 6px solid var(--accent-color, #2563eb);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  mat-card-header {
+    background: linear-gradient(90deg, var(--accent-color, #2563eb) 0%, transparent 100%);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .profile-card {
+    mat-card-header {
+      padding: 1.5rem;
+    }
+
+    .profile-header {
+      gap: 1rem;
+    }
+
+    .avatar,
+    .avatar-placeholder {
+      width: 64px;
+      height: 64px;
+    }
+
+    .display-name {
+      font-size: 1.25rem;
+    }
+
+    mat-card-content {
+      padding: 1.5rem;
+    }
+
+    .stats {
+      gap: 1.5rem;
+    }
+  }
+}
