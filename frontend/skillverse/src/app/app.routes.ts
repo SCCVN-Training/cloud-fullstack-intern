@@ -10,6 +10,7 @@ import { Register } from './features/auth/register/register';
 import { HowItWorksPage } from './features/how-it-works/how-it-works';
 import { AboutUsPage } from './features/about-us/about-us';
 import { BrowseSkillsPage } from './features/skill-pages/browse-skills/browse-skills';
+import { SkillDetailsPage } from './features/skill-pages/skill-details/skill-details';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,11 @@ export const routes: Routes = [
       {
         path: 'browse-skills',
         component: BrowseSkillsPage,
+        canActivate: [authGuard]
+      },
+      {
+        path: 'skill-details/:id',
+        component: SkillDetailsPage,
         canActivate: [authGuard]
       }
     ]
