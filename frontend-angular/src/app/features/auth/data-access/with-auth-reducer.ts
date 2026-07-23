@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { User } from './auth.schema';
 import { AuthStore } from './with-auth-store';
@@ -7,7 +7,7 @@ import { AuthStore } from './with-auth-store';
   providedIn: 'root',
 })
 export class AuthReducer {
-  constructor(private readonly store: AuthStore) {}
+  private readonly store = inject(AuthStore);
 
   /**
    * Generic state patcher.

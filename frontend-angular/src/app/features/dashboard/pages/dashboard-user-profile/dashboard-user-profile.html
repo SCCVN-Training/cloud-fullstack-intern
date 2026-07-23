@@ -37,24 +37,24 @@
 
         <div class="details-grid">
           <div class="detail-item">
-            <label>Display Name</label>
+            <label for="displayName">Display Name</label>
             <p>{{ profile.displayName }}</p>
           </div>
 
           @if (profile.bio) {
             <div class="detail-item full-width">
-              <label>Bio</label>
+              <label for="bio">Bio</label>
               <p>{{ profile.bio }}</p>
             </div>
           }
 
           <div class="detail-item">
-            <label>Card Style</label>
+            <label for="cardStyle">Card Style</label>
             <p class="badge">{{ profile.profileCardStyle }}</p>
           </div>
 
           <div class="detail-item">
-            <label>Accent Color</label>
+            <label for="accentColor">Accent Color</label>
             <div class="color-display">
               <div class="color-dot" [style.background-color]="profile.accentColor"></div>
               <code>{{ profile.accentColor }}</code>
@@ -62,7 +62,7 @@
           </div>
 
           <div class="detail-item">
-            <label>Background Color</label>
+            <label for="backgroundColor">Background Color</label>
             <div class="color-display">
               <div class="color-dot" [style.background-color]="profile.backgroundColor"></div>
               <code>{{ profile.backgroundColor }}</code>
@@ -70,7 +70,7 @@
           </div>
 
           <div class="detail-item">
-            <label>Profile Visibility</label>
+            <label for="profileVisibility">Profile Visibility</label>
             <p class="badge" [class.public]="profile.isProfilePublic">
               @if (profile.isProfilePublic) {
                 <mat-icon>public</mat-icon>
@@ -83,12 +83,12 @@
           </div>
 
           <div class="detail-item">
-            <label>Joined</label>
+            <label for="joined">Joined</label>
             <p>{{ profile.createdAt | date: 'medium' }}</p>
           </div>
 
           <div class="detail-item">
-            <label>Last Updated</label>
+            <label for="lastUpdated">Last Updated</label>
             <p>{{ profile.updatedAt | date: 'medium' }}</p>
           </div>
         </div>

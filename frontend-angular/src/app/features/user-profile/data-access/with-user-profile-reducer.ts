@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { UserProfileStore } from './with-user-profile-store';
 
@@ -6,7 +6,7 @@ import { UserProfileStore } from './with-user-profile-store';
   providedIn: 'root',
 })
 export class UserProfileReducer {
-  constructor(private readonly store: UserProfileStore) {}
+  private readonly store = inject(UserProfileStore);
 
   /**
    * Generic state patcher.

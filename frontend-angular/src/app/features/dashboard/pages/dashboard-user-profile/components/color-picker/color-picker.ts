@@ -18,11 +18,12 @@ import { MatInputModule } from '@angular/material/input';
   ],
 })
 export class ColorPickerComponent implements ControlValueAccessor {
+  readonly inputId = `color-picker-${Math.random().toString(36).slice(2)}`;
   readonly label = input<string>('Color');
-  value: string = '#2563eb';
+  value = '#2563eb';
 
-  private onChange: (value: string) => void = () => {};
-  private onTouched: () => void = () => {};
+  private onChange: (value: string) => void = () => void 0;
+  private onTouched: () => void = () => void 0;
 
   writeValue(value: string): void {
     if (value) {

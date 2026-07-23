@@ -51,7 +51,7 @@ export class AuthEffect {
     this.reducer.setLoading(true);
 
     return this.api.register(payload).pipe(
-      tap((response) => {
+      tap(() => {
         this.reducer.setError(null);
         this.notification.success('Account created successfully! Please log in.');
         this.router.navigate(['/login']);

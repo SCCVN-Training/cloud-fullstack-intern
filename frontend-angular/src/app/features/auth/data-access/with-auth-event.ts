@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { LoginPayload, RegisterPayload } from './auth.schema';
 import { AuthEffect } from './with-auth-effect';
@@ -7,7 +7,7 @@ import { AuthEffect } from './with-auth-effect';
   providedIn: 'root',
 })
 export class AuthEvent {
-  constructor(private readonly effect: AuthEffect) {}
+  private readonly effect = inject(AuthEffect);
 
   /**
    * Login user.
