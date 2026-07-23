@@ -75,7 +75,7 @@ export class EventService {
         topics: ['Leadership'],
         seatsFilled: 12,
         seatsTotal: 25,
-        thumbnailUrl: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&auto=format&fit=crop',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1580674684081-7617fbf3d745?w=800&auto=format&fit=crop',
       },
       {
         id: 'wk-4',
@@ -89,7 +89,7 @@ export class EventService {
         topics: ['Supply Chain', 'Sustainability'],
         seatsFilled: 22,
         seatsTotal: 30,
-        thumbnailUrl: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop',
+        thumbnailUrl: 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=800&auto=format&fit=crop',
       },
     ];
 

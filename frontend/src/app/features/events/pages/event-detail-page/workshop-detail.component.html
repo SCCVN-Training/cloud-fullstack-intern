@@ -1,0 +1,30 @@
+<main class="detail-page" *ngIf="workshop as w; else stateBlock">
+  <app-workshop-hero [workshop]="w"></app-workshop-hero>
+
+  <div class="detail-grid">
+    <!-- Left column: main content -->
+    <div class="main-column">
+      <app-workshop-meta-grid [workshop]="w"></app-workshop-meta-grid>
+      <app-workshop-speaker [speaker]="w.speaker"></app-workshop-speaker>
+      <app-workshop-tabs [workshop]="w"></app-workshop-tabs>
+    </div>
+
+    <!-- Right column: registration -->
+    <div class="side-column">
+      <app-workshop-registration-card
+        [workshop]="w"
+        (register)="onRegister($event)"
+      ></app-workshop-registration-card>
+      <app-help-card
+        message="Contact the event logistics team for any special requirements or grouping requests."
+      ></app-help-card>
+    </div>
+  </div>
+</main>
+
+<ng-template #stateBlock>
+  <div class="state-block" *ngIf="isLoading">Loading workshop…</div>
+  <div class="state-block error" *ngIf="loadError">
+    Couldn't load this workshop. It may have been removed, or check your connection and try again.
+  </div>
+</ng-template>

@@ -1,0 +1,39 @@
+<div class="tabs-nav" role="tablist">
+  <button
+    *ngFor="let tab of tabs"
+    class="tab-btn"
+    type="button"
+    role="tab"
+    [class.active]="activeTab === tab.id"
+    [attr.aria-selected]="activeTab === tab.id"
+    (click)="selectTab(tab.id)"
+  >
+    {{ tab.label }}
+  </button>
+</div>
+
+<article class="tab-panel" *ngIf="activeTab === 'overview'">
+  <section class="content-section">
+    <h4>Session Overview</h4>
+    <p class="body-lg">{{ workshop.description }}</p>
+  </section>
+
+  <section class="content-section">
+    <h4>Key Learning Objectives</h4>
+    <ul class="objectives-list">
+      <li *ngFor="let objective of workshop.learningObjectives">
+        <span class="material-symbols-outlined icon-check">check_circle</span>
+        <span>{{ objective }}</span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="prerequisites-block">
+    <h5>Prerequisites</h5>
+    <p>{{ workshop.prerequisites }}</p>
+  </section>
+</article>
+
+<div class="tab-panel placeholder" *ngIf="activeTab !== 'overview'">
+  <p>{{ activeTabLabel }} content is coming soon.</p>
+</div>
