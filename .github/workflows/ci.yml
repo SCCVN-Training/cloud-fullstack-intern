@@ -1,4 +1,4 @@
-name: CI Skeleton
+name: SkillVerse CI
 
 permissions:
   contents: read
@@ -13,38 +13,28 @@ on:
       - dev-nhu
 
 jobs:
-  verify-repository:
+  frontend:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: frontend/skillverse
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Start workflow
-        run: echo "Starting SkillVerse CI Skeleton..."
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/skillverse/package-lock.json
 
-      - name: Display workflow information
-        run: |
-          echo "Repository: ${{ github.repository }}"
-          echo "Branch: ${{ github.ref_name }}"
-          echo "Commit: ${{ github.sha }}"
-          echo "Triggered by: ${{ github.actor }}"
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Verify repository structure
-        run: |
-          echo "Checking repository..."
+      - name: Build Angular
+        run: npm run build
 
-          test -f README.md
-          echo "✓ README.md found"
-
-          test -d .github
-          echo "✓ .github found"
-
-          test -d .github/workflows
-          echo "✓ Workflow directory found"
-
-      - name: List project files
-        run: ls -la
-
-      - name: Workflow completed
-        run: echo "CI Skeleton completed successfully!"
+      - name: Run unit tests
+        run: npm test -- --watch=false 
