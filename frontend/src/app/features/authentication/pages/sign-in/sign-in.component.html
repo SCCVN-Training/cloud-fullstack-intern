@@ -1,0 +1,74 @@
+﻿<div class="sign-in-page">
+  <section class="sign-in-panel">
+    <!-- Header (pinned top) -->
+    <div class="sign-in-header">
+      <div class="brand-icon"><span class="material-symbols-outlined">flutter_dash</span></div>
+      <div class="brand-text">
+        <h1>Syncra</h1>
+        <p>Sync your work. Share your world.</p>
+      </div>
+    </div>
+
+    <!-- Main (grows, centers itself) -->
+    <main class="sign-in-main">
+      <div class="sign-in-welcome-box">
+        <h2>Welcome Back!</h2>
+        <p>Please enter your details to sign in.</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="sign-in-form">
+        <div class="form-field">
+          <label for="email">Email Address</label>
+          <div class="input-group">
+            <span class="material-symbols-outlined icon">mail</span>
+            <input id="email" type="email" formControlName="email" placeholder="name@company.com" />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <div class="field-label-row">
+            <label for="password">Password</label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+          <div class="input-group">
+            <span class="material-symbols-outlined icon">lock</span>
+            <input id="password" type="password" formControlName="password" placeholder="••••••••" />
+          </div>
+        </div>
+
+        <div class="form-footer-row">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="remember" /> Remember this device
+          </label>
+        </div>
+
+        <button class="btn-primary" type="submit" [disabled]="form.invalid">
+          <span>Sign in</span> <span class="material-symbols-outlined icon-sm">login</span>
+        </button>
+
+        <div class="divider"><span>OR</span></div>
+
+        <button type="button" class="btn-secondary" (click)="onSSOClick()">
+          <span class="material-symbols-outlined icon-sm">verified_user</span>
+          <span>Sign in with Company SSO</span>
+        </button>
+      </form>
+    </main>
+
+    <!-- Footer (pinned bottom) -->
+    <footer class="sign-in-footer">
+      <div class="status-row">
+        <span class="material-symbols-outlined icon-sm">shield</span>
+        <span>Secure 256-bit SSL Encrypted Connection</span>
+      </div>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a> <a href="#">Terms of Service</a> <a href="#">Support</a>
+      </div>
+      <div class="copyright">© 2024 SCC Enterprise Logistics. All rights reserved.</div>
+    </footer>
+  </section>
+
+  <aside class="sign-in-aside">
+    <div class="aside-overlay"></div>
+  </aside>
+</div>

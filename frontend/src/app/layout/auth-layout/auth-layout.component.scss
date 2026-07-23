@@ -1,0 +1,22 @@
+﻿/* auth-layout.component.scss */
+
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  /* Add a background color so the white sign-in card pops out */
+  background-color: #eef2f8; 
+}
+
+.auth-layout-shell {
+  /* Change from min-height: 100vh to strict height: 100% to prevent scrolling */
+  height: 100%; 
+  width: 100%;
+  /* This 2rem padding acts as your blank margin on all four sides */
+  padding: 2rem; 
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
