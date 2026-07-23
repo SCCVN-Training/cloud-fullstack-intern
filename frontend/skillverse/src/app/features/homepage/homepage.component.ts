@@ -42,14 +42,6 @@ export class HomepageComponent {
     return this.authService.currentUser();
   }
 
-  get userName(): string {
-    return this.user?.name ?? 'Guest';
-  }
-
-  get userAvatar(): string {
-    return this.user?.avatar ?? 'https://ui-avatars.com/api/?name=' + encodeURIComponent(this.userName);
-  }
-
   features: Feature[] = [
     {
       title: 'Learn Together',
