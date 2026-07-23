@@ -15,10 +15,12 @@
         </div>
       </div>
 
-      <div class="events-grid" [hidden]="isLoading">
+      <div class="events-grid" *ngIf="!isLoading; else loadingState">
         <app-event-card *ngFor="let workshop of workshops" [workshop]="workshop"></app-event-card>
       </div>
-      <p class="loading-text" [hidden]="!isLoading">Loading workshops…</p>
+      <ng-template #loadingState>
+        <p class="loading-text">Loading workshops…</p>
+      </ng-template>
 
       <app-pagination
         [currentPage]="currentPage"

@@ -15,14 +15,15 @@
   transition: box-shadow 0.2s;
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.666);
   }
 }
 
 .card-thumb {
   position: relative;
+  height: 100%;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3 / 2;
   background: #e2e8f0;
 
   img {
