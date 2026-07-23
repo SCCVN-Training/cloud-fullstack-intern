@@ -3,17 +3,17 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # App Settings
-    PROJECT_NAME: str = "Cloud Drive API"
-    API_V1_STR: str = "/api/v1"
+    PROJECT_NAME: str = "Nephos"
+    API_STR: str
 
     # Database Configuration (Neon Postgres)
     DATABASE_URL: str
 
     # JWT Security Configuration
     SECRET_KEY: str
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
-    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+    REFRESH_TOKEN_EXPIRE_DAYS: int
 
     # Load from .env file
     model_config = SettingsConfigDict(

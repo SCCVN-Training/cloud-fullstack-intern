@@ -24,7 +24,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title=settings.PROJECT_NAME, lifespan=lifespan)
 
 # Register routes
-app.include_router(auth_router, prefix=settings.API_V1_STR)
+app.include_router(auth_router, prefix=settings.API_STR)
 
 app.add_middleware(
   CORSMiddleware,
