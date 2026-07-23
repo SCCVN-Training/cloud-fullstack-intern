@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../core/services/auth/auth';
 
 interface NavigationItem {
   label: string;
@@ -19,6 +20,11 @@ interface NavigationItem {
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
+  constructor(public authService: AuthService) {}
+
+  logout() {
+  this.authService.logout();
+  }
 
   readonly navigationItems: NavigationItem[] = [
     {
