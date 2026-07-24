@@ -1,4 +1,4 @@
-import { Component, signal, computed, HostBinding } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +10,7 @@ import {
   SidePanel,
   SidePanelNavKey,
 } from '../../shared/components/side-panel/side-panel';
+import { MobileBottomNav } from '../../shared/components/mobile-bottom-nav/mobile-bottom-nav';
 
 export interface DriveItem {
   id: string;
@@ -33,6 +34,7 @@ export interface DriveItem {
     MatMenuModule,
     DashboardHeader,
     SidePanel,
+    MobileBottomNav,
   ],
   templateUrl: './drive.html',
   styleUrls: ['./drive.scss'],

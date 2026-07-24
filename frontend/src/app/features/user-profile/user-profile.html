@@ -112,45 +112,5 @@
   </div>
 
   <!-- 3. MOBILE BOTTOM NAVIGATION -->
-  <nav class="mobile-bottom-nav">
-    <button
-      class="nav-tab"
-      [class.active]="activeSideNav() === 'home'"
-      (click)="switchNav('home')"
-    >
-      <mat-icon>home</mat-icon>
-      <span>HOME</span>
-    </button>
-
-    <button
-      class="nav-tab"
-      [class.active]="activeSideNav() === 'recent'"
-      (click)="switchNav('recent')"
-    >
-      <mat-icon>schedule</mat-icon>
-      <span>RECENT</span>
-    </button>
-
-    <button class="fab-upload" (click)="onUploadTrigger()">
-      <mat-icon>add</mat-icon>
-    </button>
-
-    <button
-      class="nav-tab"
-      [class.active]="activeSideNav() === 'starred'"
-      (click)="switchNav('starred')"
-    >
-      <mat-icon>star</mat-icon>
-      <span>STARRED</span>
-    </button>
-
-    <button
-      class="nav-tab"
-      [class.active]="isProfileActive()"
-      (click)="onProfileHeaderClick()"
-    >
-      <mat-icon>account_circle</mat-icon>
-      <span>PROFILE</span>
-    </button>
-  </nav>
+  <app-mobile-bottom-nav (upload)="onUploadTrigger()"></app-mobile-bottom-nav>
 </div>

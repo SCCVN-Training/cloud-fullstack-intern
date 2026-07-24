@@ -1,4 +1,26 @@
-<aside class="side-panel">
+<!-- Added: Mobile backdrop overlay for dimming effect -->
+<div
+  class="backdrop"
+  [class.visible]="!isCollapsed()"
+  (click)="toggleCollapse()"
+  aria-hidden="true"
+></div>
+
+<aside class="side-panel" [class.collapsed]="isCollapsed()">
+  <!-- Added: Collapse/Expand toggle button -->
+  <div class="collapse-toggle-container">
+    <button
+      type="button"
+      class="toggle-btn"
+      (click)="toggleCollapse()"
+      [attr.aria-label]="isCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+    >
+      <mat-icon
+        >{{ isCollapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon
+      >
+    </button>
+  </div>
+
   <div class="storage-summary">
     <h2>Cloud Storage</h2>
     <p class="storage-text">
@@ -12,15 +34,16 @@
   </div>
 
   <nav class="nav-links">
+    @for (item of navItems; track item.key){
     <button
-      *ngFor="let item of navItems"
       [class.active]="activeNav() === item.key"
-      (click)="navChange.emit(item.key)"
+      (click)="onNavClick(item)"
       class="nav-item"
     >
       <mat-icon>{{ item.icon }}</mat-icon>
       <span>{{ item.label }}</span>
     </button>
+    }
   </nav>
 
   <div class="sidebar-action">
@@ -30,7 +53,9 @@
       class="upgrade-btn"
       (click)="upgrade.emit()"
     >
-      Upgrade Storage
+      <!-- Added: Icon for collapsed state -->
+      <mat-icon class="action-icon">upload</mat-icon>
+      <span class="action-label">Upgrade Storage</span>
     </button>
   </div>
 </aside>

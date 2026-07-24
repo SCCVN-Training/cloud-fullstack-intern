@@ -104,7 +104,7 @@
     .user-name {
       font-size: 32px;
       font-weight: 600;
-      margin: 0 0 4px 0;
+      margin: 0 0 12px 0;
       letter-spacing: -0.01em;
     }
 
@@ -112,35 +112,6 @@
       font-size: 16px;
       color: #717786;
       margin: 0 0 16px 0;
-    }
-
-    .badge-group {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-
-      @media (min-width: 768px) {
-        justify-content: flex-start;
-      }
-
-      .badge {
-        padding: 4px 16px;
-        border-radius: 9999px;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-
-        &.primary-badge {
-          background-color: rgba(0, 88, 188, 0.1);
-          color: #0058bc;
-        }
-
-        &.secondary-badge {
-          background-color: rgba(80, 97, 107, 0.1);
-          color: #50616b;
-        }
-      }
     }
   }
 }

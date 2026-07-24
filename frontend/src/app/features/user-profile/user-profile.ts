@@ -11,6 +11,7 @@ import {
 import { HostBinding } from '@angular/core';
 import { AuthService } from '@core/auth/services/auth.service';
 import { Router } from '@angular/router';
+import { MobileBottomNav } from '../../shared/components/mobile-bottom-nav/mobile-bottom-nav';
 
 export interface StorageCategory {
   name: string;
@@ -44,6 +45,7 @@ export type ActionKey =
     MatButtonModule,
     DashboardHeader,
     SidePanel,
+    MobileBottomNav,
   ],
   templateUrl: './user-profile.html',
   styleUrls: ['./user-profile.scss'],

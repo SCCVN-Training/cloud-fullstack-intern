@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
+  padding: 0 clamp(12px, 3vw, 32px);
   background: rgba(248, 249, 255, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(225, 232, 240, 0.8);
@@ -18,6 +18,7 @@
   .logo-area {
     @include brand.nephos-brand;
     --brand-size: 36px;
+    flex-shrink: 0;
   }
 
   .search-container {
@@ -26,6 +27,7 @@
     gap: 8px;
     width: 100%;
     max-width: 400px;
+    min-width: 120px;
     background-color: #eff4ff;
     padding: 8px 16px;
     border-radius: 999px;
@@ -79,6 +81,37 @@
         font-size: 32px;
         width: 32px;
         height: 32px;
+      }
+    }
+  }
+
+  // Tablet & Mobile Adjustments (< 768px)
+  @media (max-width: 768px) {
+    .search-container {
+      padding: 6px 12px;
+    }
+
+    .header-actions {
+      .upload-btn {
+        padding: 0 12px;
+        min-width: 40px;
+
+        mat-icon {
+          margin-right: 0;
+        }
+
+        .upload-label {
+          display: none; // Hide text label on smaller viewports
+        }
+      }
+    }
+  }
+
+  // Mobile Small (< 480px)
+  @media (max-width: 480px) {
+    .logo-area {
+      .brand-name {
+        display: none; // Show only icon logo on extra small screens
       }
     }
   }

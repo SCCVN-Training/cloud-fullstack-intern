@@ -1,3 +1,23 @@
+.backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  @media (max-width: 768px) {
+    display: block;
+
+    &.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+}
+
 .side-panel {
   position: fixed;
   top: 64px;
@@ -9,6 +29,32 @@
   padding: 24px 16px;
   box-sizing: border-box;
   background-color: #f8f9ff;
+  transition:
+    width 0.3s ease,
+    transform 0.3s ease;
+  z-index: 100;
+
+  .collapse-toggle-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: #50616b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 50%;
+
+      &:hover {
+        background-color: #eff4ff;
+      }
+    }
+  }
 
   .storage-summary {
     padding: 16px;
@@ -87,6 +133,66 @@
       border-radius: 12px;
       border-color: rgba(0, 88, 188, 0.3);
       color: #0058bc;
+
+      .action-icon {
+        display: none;
+      }
+    }
+  }
+
+  &.collapsed {
+    width: 72px;
+
+    .collapse-toggle-container {
+      justify-content: center;
+    }
+
+    .storage-summary {
+      display: none;
+    }
+
+    .nav-links {
+      align-items: center;
+
+      .nav-item {
+        padding: 12px;
+        justify-content: center;
+        width: 44px;
+
+        span {
+          display: none;
+        }
+      }
+    }
+
+    .sidebar-action {
+      display: flex;
+      justify-content: center;
+
+      .upgrade-btn {
+        width: 44px;
+        min-width: 44px;
+        padding: 0;
+
+        .action-label {
+          display: none;
+        }
+
+        .action-icon {
+          display: inline-block;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    top: 0;
+    height: 100vh;
+    max-width: 80vw;
+
+    &.collapsed {
+      transform: translateX(-100%);
+      width: 260px;
     }
   }
 }
