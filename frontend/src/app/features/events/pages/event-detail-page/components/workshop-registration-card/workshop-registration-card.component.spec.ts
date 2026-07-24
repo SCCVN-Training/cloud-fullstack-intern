@@ -1,5 +1,3 @@
-/// <reference types="jasmine" />
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkshopRegistrationCardComponent } from './workshop-registration-card.component';
 import { WorkshopDetail } from '../../../../models/workshop-detail.model';
@@ -49,15 +47,13 @@ describe('WorkshopRegistrationCardComponent', () => {
     expect(component.register.emit).toHaveBeenCalledWith('wk-1');
   });
 
-  // Test that status transitions to registered after timeout completes
-  it('should move to registered after setTimeout resolves', (done) => {
+  it('should move to registered after setTimeout resolves', async () => {
     vi.spyOn(component.register, 'emit');
     component.onRegisterClick();
 
-    setTimeout(() => {
-      expect(component.status).toBe('registered');
-      done();
-    }, 1300);
+    await new Promise((resolve) => setTimeout(resolve, 1300));
+
+    expect(component.status).toBe('registered');
   });
 
   // Test that second click is ignored while processing
