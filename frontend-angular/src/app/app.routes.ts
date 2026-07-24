@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/auth/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
+import { authGuard } from './features/auth/guards/auth.guard';
 
 export const routes: Routes = [
   // 1. The Default Redirect Rule
@@ -9,21 +9,19 @@ export const routes: Routes = [
   // 2. The Actual Home Route
   {
     path: 'home',
-    loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
+    loadComponent: () => import('./features/home/home').then((m) => m.Home),
   },
 
   // Other routes (login, register, etc.) go here...
   {
     path: 'login',
     canActivate: [guestGuard],
-    loadComponent: () =>
-      import('./features/auth/pages/login/login.component').then((m) => m.LoginComponent),
+    loadComponent: () => import('./features/auth/pages/login/login').then((m) => m.Login),
   },
   {
     path: 'register',
     canActivate: [guestGuard],
-    loadComponent: () =>
-      import('./features/auth/pages/register/register.component').then((m) => m.RegisterComponent),
+    loadComponent: () => import('./features/auth/pages/register/register').then((m) => m.Register),
   },
   {
     path: 'dashboard',
@@ -35,7 +33,6 @@ export const routes: Routes = [
   // 3. The Wildcard Fallback (Always keep this last!)
   {
     path: '**',
-    loadComponent: () =>
-      import('./shared/components/not-found/not-found.component').then((m) => m.NotFoundComponent),
+    loadComponent: () => import('./shared/components/not-found/not-found').then((m) => m.NotFound),
   },
 ];

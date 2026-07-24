@@ -1,0 +1,25 @@
+<header class="navbar">
+  <div class="navbar__brand">
+    <button class="brand-button" routerLink="/dashboard">
+      <img src="icon.png" alt="OTAKUTORY Logo" class="logo" />
+      <h2>OTAKUTORY</h2>
+    </button>
+  </div>
+
+  <div class="profile-container" clickOutside (clickOutside)="closeMenu()">
+    <button
+      type="button"
+      class="profile-trigger"
+      (click)="toggleMenu()"
+      aria-label="Open profile menu"
+    >
+      @if (userAvatarUrl) {
+        <img [src]="userAvatarUrl" alt="Profile" class="profile-avatar" />
+      } @else {
+        <mat-icon>account_circle</mat-icon>
+      }
+    </button>
+
+    <app-dashboard-navbar-menu [open]="menuOpen()" />
+  </div>
+</header>

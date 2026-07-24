@@ -1,0 +1,275 @@
+.profile-view-container {
+  width: 100%;
+  min-height: calc(100vh - 72px);
+  background-color: var(--mat-sys-surface);
+}
+
+// Loading State
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+// Banner Section
+.banner-section {
+  position: relative;
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.6) 100%);
+    z-index: 1;
+  }
+}
+
+.banner-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: var(--mat-sys-primary);
+  opacity: 0.4;
+  z-index: 0;
+}
+
+.banner-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 2rem;
+  z-index: 2;
+
+  .content-inner {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .edit-btn {
+    display: flex;
+  }
+}
+
+// Profile Content
+.profile-content {
+  padding: 3rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.profile-card-wrapper {
+  margin-bottom: 4rem;
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    color: var(--mat-sys-on-surface);
+    margin: 0 0 2rem 0;
+  }
+}
+
+// Profile Details
+.profile-details {
+  background-color: var(--mat-sys-surface-container-low);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-top: 3rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--mat-sys-on-surface);
+    margin: 0 0 2rem 0;
+  }
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  p {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--mat-sys-on-surface);
+    line-height: 1.6;
+    word-break: break-word;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--mat-sys-surface);
+    border-radius: 12px;
+    width: fit-content;
+    font-weight: 500;
+    color: var(--mat-sys-primary);
+
+    &.public {
+      color: var(--mat-sys-on-surface);
+    }
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.color-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.color-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 2px solid var(--mat-sys-outline-variant);
+  flex-shrink: 0;
+}
+
+code {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--mat-sys-surface);
+  border-radius: 4px;
+  color: var(--mat-sys-on-surface);
+}
+
+// Button Footer
+.edit-btn-footer {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+}
+
+// Error & Empty States
+.error-container,
+.empty-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 2rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 1rem 0 0.5rem;
+    color: var(--mat-sys-on-surface);
+  }
+
+  p {
+    font-size: 1rem;
+    color: var(--mat-sys-on-surface-variant);
+    margin: 0 0 2rem;
+    max-width: 400px;
+  }
+}
+
+.error-icon,
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: var(--mat-sys-on-surface-variant);
+  margin-bottom: 1rem;
+}
+
+.error-icon {
+  color: var(--mat-sys-error);
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .profile-view-container {
+    min-height: calc(100vh - 72px);
+  }
+
+  .banner-section {
+    height: 200px;
+  }
+
+  .banner-content {
+    padding: 1.5rem;
+
+    .content-inner {
+      width: 100%;
+
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  .profile-content {
+    padding: 1.5rem;
+  }
+
+  .profile-card-wrapper h1 {
+    font-size: 1.75rem;
+  }
+
+  .profile-details {
+    padding: 1.5rem;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .detail-item label {
+    font-size: 0.8rem;
+  }
+
+  .edit-btn-footer {
+    button {
+      width: 100%;
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { AppEffect } from './with-app-effect';
 
@@ -6,7 +6,7 @@ import { AppEffect } from './with-app-effect';
   providedIn: 'root',
 })
 export class AppEvent {
-  constructor(private readonly effect: AppEffect) {}
+  private readonly effect = inject(AppEffect);
 
   initializeApp() {
     console.log('[App Event] Initialization triggered');
@@ -14,6 +14,7 @@ export class AppEvent {
   }
 
   initializeAppAsync(): Promise<void> {
+    console.log('[App Event] Initialization (async) triggered');
     return firstValueFrom(this.effect.initializeApp());
   }
 }

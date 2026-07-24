@@ -1,0 +1,199 @@
+<div class="edit-container">
+  <!-- Header -->
+  <div class="edit-header">
+    <h1>Edit Your Profile</h1>
+    <p class="subtitle">Customize your profile appearance and information</p>
+  </div>
+
+  <!-- Main Content -->
+  <div class="edit-content">
+    <!-- Form Section -->
+    <div class="form-section">
+      <form [formGroup]="profileForm">
+        <!-- Basic Information Section -->
+        <div class="section">
+          <h2>Basic Information</h2>
+          <mat-divider></mat-divider>
+
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Display Name *</mat-label>
+              <input matInput formControlName="displayName" placeholder="Your display name" />
+              @if (getErrorMessage('displayName')) {
+                <mat-error>{{ getErrorMessage('displayName') }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Bio</mat-label>
+              <textarea
+                matInput
+                formControlName="bio"
+                placeholder="Tell us about yourself (max 500 characters)"
+                rows="4"
+              ></textarea>
+              <mat-hint align="end">{{ profileForm.get('bio')?.value?.length || 0 }}/500</mat-hint>
+              @if (getErrorMessage('bio')) {
+                <mat-error>{{ getErrorMessage('bio') }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Images Section -->
+        <div class="section">
+          <h2>Profile Images</h2>
+          <mat-divider></mat-divider>
+
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Avatar URL</mat-label>
+              <input
+                matInput
+                formControlName="avatarUrl"
+                placeholder="https://example.com/avatar.jpg"
+              />
+              <mat-hint>Enter the full URL to your avatar image</mat-hint>
+              @if (getErrorMessage('avatarUrl')) {
+                <mat-error>{{ getErrorMessage('avatarUrl') }}</mat-error>
+              }
+            </mat-form-field>
+
+            @if (getValidAvatarUrl()) {
+              <div class="image-preview">
+                <img [src]="getValidAvatarUrl()!" alt="Avatar preview" />
+              </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Banner URL</mat-label>
+              <input
+                matInput
+                formControlName="bannerUrl"
+                placeholder="https://example.com/banner.jpg"
+              />
+              <mat-hint>Enter the full URL to your banner image</mat-hint>
+              @if (getErrorMessage('bannerUrl')) {
+                <mat-error>{{ getErrorMessage('bannerUrl') }}</mat-error>
+              }
+            </mat-form-field>
+
+            @if (getValidBannerUrl()) {
+              <div class="banner-preview">
+                <img [src]="getValidBannerUrl()!" alt="Banner preview" />
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Card Customization Section -->
+        <div class="section">
+          <h2>Profile Card Customization</h2>
+          <mat-divider></mat-divider>
+
+          <div class="form-row">
+            <div class="form-group">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Card Style *</mat-label>
+                <mat-select formControlName="profileCardStyle">
+                  @for (style of cardStyleOptions; track style) {
+                    <mat-option [value]="style">{{ style }}</mat-option>
+                  }
+                </mat-select>
+                @if (getErrorMessage('profileCardStyle')) {
+                  <mat-error>{{ getErrorMessage('profileCardStyle') }}</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="form-row colors">
+            <div class="form-group">
+              <app-color-picker
+                label="Accent Color"
+                formControlName="accentColor"
+              ></app-color-picker>
+            </div>
+
+            <div class="form-group">
+              <app-color-picker
+                label="Background Color"
+                formControlName="backgroundColor"
+              ></app-color-picker>
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy Section -->
+        <div class="section">
+          <h2>Privacy Settings</h2>
+          <mat-divider></mat-divider>
+
+          <div class="form-group checkbox-group">
+            <mat-checkbox formControlName="isProfilePublic">
+              <span class="checkbox-label">Make my profile public</span>
+              <span class="checkbox-hint">Allow others to view your profile information</span>
+            </mat-checkbox>
+          </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="section preview-section-form">
+          <h2>Profile Preview</h2>
+          <mat-divider></mat-divider>
+
+          <div class="preview-wrapper">
+            @if (previewProfile(); as preview) {
+              <app-profile-card [profile]="preview"></app-profile-card>
+            } @else {
+              <div class="preview-loading">
+                <mat-spinner diameter="40"></mat-spinner>
+                <p>Loading profile...</p>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button mat-stroked-button (click)="onCancel()" [disabled]="profileStore.loading()">
+            Cancel
+          </button>
+          <button
+            mat-stroked-button
+            color="accent"
+            (click)="onRevert()"
+            [disabled]="profileStore.loading()"
+          >
+            <mat-icon>undo</mat-icon>
+            Revert Changes
+          </button>
+          <button
+            matButton="filled"
+            (click)="onSave()"
+            [disabled]="profileForm.invalid || profileStore.loading()"
+          >
+            <mat-icon>save</mat-icon>
+            @if (profileStore.loading()) {
+              Saving...
+            } @else {
+              Save Changes
+            }
+          </button>
+        </div>
+
+        <!-- Error Display -->
+        @if (profileStore.error()) {
+          <div class="error-alert">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ profileStore.error() }}</span>
+          </div>
+        }
+      </form>
+    </div>
+  </div>
+</div>

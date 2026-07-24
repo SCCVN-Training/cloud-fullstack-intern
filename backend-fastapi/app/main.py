@@ -7,6 +7,7 @@ from sqlalchemy import text
 from app.core.config import app_settings
 from app.core.database import BaseDeclarativeModel, mongodb_client, neon_async_engine
 from app.modules.auth.router import auth_router
+from app.modules.profile.router import profile_router
 
 # Configure Logger to match Uvicorn's format
 logger = logging.getLogger("uvicorn.error")
@@ -57,6 +58,7 @@ app.add_middleware(
 
 # Register Domain Routers
 app.include_router(auth_router)
+app.include_router(profile_router)
 
 
 @app.get("/health", tags=["Health Check"])

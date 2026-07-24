@@ -1,0 +1,131 @@
+<div class="profile-view-container">
+  <!-- Loading State -->
+  @if (profileStore.loading()) {
+    <div class="loading-spinner">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  }
+
+  <!-- Profile Content -->
+  @if (!profileStore.loading() && profileStore.profile(); as profile) {
+    <!-- Banner Section -->
+    <div
+      class="banner-section"
+      [style.background-image]="profile.bannerUrl ? 'url(' + profile.bannerUrl + ')' : 'none'"
+    >
+      <div class="banner-overlay"></div>
+      <div class="banner-content">
+        <div class="content-inner">
+          <button matButton="filled" (click)="goToEdit()" class="edit-btn">
+            <mat-icon>edit</mat-icon>
+            Edit Profile
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Content Section -->
+    <div class="profile-content">
+      <div class="profile-card-wrapper">
+        <h1>Your Profile</h1>
+        <app-profile-card [profile]="profile"></app-profile-card>
+      </div>
+
+      <!-- Profile Details -->
+      <div class="profile-details">
+        <h2>Profile Information</h2>
+
+        <div class="details-grid">
+          <div class="detail-item">
+            <label for="displayName">Display Name</label>
+            <p>{{ profile.displayName }}</p>
+          </div>
+
+          @if (profile.bio) {
+            <div class="detail-item full-width">
+              <label for="bio">Bio</label>
+              <p>{{ profile.bio }}</p>
+            </div>
+          }
+
+          <div class="detail-item">
+            <label for="cardStyle">Card Style</label>
+            <p class="badge">{{ profile.profileCardStyle }}</p>
+          </div>
+
+          <div class="detail-item">
+            <label for="accentColor">Accent Color</label>
+            <div class="color-display">
+              <div class="color-dot" [style.background-color]="profile.accentColor"></div>
+              <code>{{ profile.accentColor }}</code>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <label for="backgroundColor">Background Color</label>
+            <div class="color-display">
+              <div class="color-dot" [style.background-color]="profile.backgroundColor"></div>
+              <code>{{ profile.backgroundColor }}</code>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <label for="profileVisibility">Profile Visibility</label>
+            <p class="badge" [class.public]="profile.isProfilePublic">
+              @if (profile.isProfilePublic) {
+                <mat-icon>public</mat-icon>
+                Public
+              } @else {
+                <mat-icon>lock</mat-icon>
+                Private
+              }
+            </p>
+          </div>
+
+          <div class="detail-item">
+            <label for="joined">Joined</label>
+            <p>{{ profile.createdAt | date: 'medium' }}</p>
+          </div>
+
+          <div class="detail-item">
+            <label for="lastUpdated">Last Updated</label>
+            <p>{{ profile.updatedAt | date: 'medium' }}</p>
+          </div>
+        </div>
+
+        <div class="edit-btn-footer">
+          <button matButton="outlined" color="primary" (click)="goToEdit()" class="full-width">
+            <mat-icon>edit</mat-icon>
+            Edit Your Profile
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (!profileStore.loading() && profileStore.error()) {
+    <div class="error-container">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h2>Could not load profile</h2>
+      <p>{{ profileStore.error() }}</p>
+      <button mat-raised-button color="primary" (click)="ngOnInit()">
+        <mat-icon>refresh</mat-icon>
+        Try Again
+      </button>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!profileStore.loading() && !profileStore.profile() && !profileStore.error()) {
+    <div class="empty-container">
+      <mat-icon class="empty-icon">account_circle</mat-icon>
+      <h2>Profile Not Found</h2>
+      <p>We couldn't find your profile data. Please refresh the page.</p>
+      <button mat-raised-button color="primary" (click)="ngOnInit()">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+    </div>
+  }
+</div>

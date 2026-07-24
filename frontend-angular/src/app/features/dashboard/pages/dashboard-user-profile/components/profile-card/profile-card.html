@@ -1,0 +1,43 @@
+<mat-card class="profile-card" [ngClass]="getCardStyleClass()" [style]="getCardStyles()">
+  <mat-card-header>
+    <div class="profile-header">
+      @if (profile().avatarUrl) {
+        <img [src]="profile().avatarUrl" alt="{{ profile().displayName }}" class="avatar" />
+      } @else {
+        <div class="avatar-placeholder">
+          <mat-icon>account_circle</mat-icon>
+        </div>
+      }
+      <div class="profile-info">
+        <h3 class="display-name">{{ profile().displayName }}</h3>
+        @if (profile().bio) {
+          <p class="bio">{{ profile().bio }}</p>
+        }
+      </div>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="stats">
+      <div class="stat-item">
+        <span class="stat-count">{{ profile().totalAnime }}</span>
+        <span class="stat-label">Anime</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-count">{{ profile().totalManga }}</span>
+        <span class="stat-label">Manga</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-count">{{ profile().totalMusic }}</span>
+        <span class="stat-label">Music</span>
+      </div>
+    </div>
+
+    @if (!profile().isProfilePublic) {
+      <div class="privacy-badge">
+        <mat-icon>lock</mat-icon>
+        <span>Private Profile</span>
+      </div>
+    }
+  </mat-card-content>
+</mat-card>
