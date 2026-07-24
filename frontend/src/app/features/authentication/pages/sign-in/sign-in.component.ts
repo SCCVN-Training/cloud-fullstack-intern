@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router'; // 1. Import the Router
+import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -12,28 +13,54 @@ import { Router } from '@angular/router'; // 1. Import the Router
 })
 export class SignInComponent {
   private fb = inject(FormBuilder);
-  
-  // 2. Inject the Angular Router service
   private router = inject(Router);
+  private authService = inject(AuthService);
+
+  errorMessage = '';
+  isSubmitting = false;
 
   form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.email, this.sccEmailValidator]],
     password: ['', Validators.required],
-    remember: [false]
+    remember: [false],
   });
 
-  onSubmit(): void {
-    if (this.form.valid) {
-      // Typically, you would call an authentication service here first.
-      // Once auth is successful, execute the routing metric below:
-      
-      // 3. Navigate the user to the main dashboard route
-      this.router.navigate(['/dashboard']); 
+  private sccEmailValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value as string | null;
+    if (!value) {
+      return null;
     }
+
+    return value.trim().toLowerCase().endsWith('@scc.com') ? null : { invalidSccEmail: true };
+  }
+
+  onSubmit(): void {
+    this.errorMessage = '';
+
+    if (this.form.invalid) {
+      this.errorMessage = 'Please enter a valid @scc.com email address and password.';
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const email = this.form.value.email ?? '';
+    const password = this.form.value.password ?? '';
+    this.isSubmitting = true;
+
+    this.authService.login(email, password).subscribe((result) => {
+      this.isSubmitting = false;
+
+      if (!result.success) {
+        this.errorMessage = result.message;
+        return;
+      }
+
+      this.authService.saveSession(result.user!);
+      this.router.navigateByUrl('/dashboard', { replaceUrl: true });
+    });
   }
 
   onSSOClick(): void {
-    // Navigate to the SSO sign-in page
     this.router.navigate(['/auth/sign-in-sso']);
   }
 }

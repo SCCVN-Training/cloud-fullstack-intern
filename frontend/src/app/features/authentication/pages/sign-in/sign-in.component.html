@@ -17,12 +17,21 @@
       </div>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="sign-in-form">
+        @if (errorMessage) {
+          <div class="error-banner" role="alert">
+            {{ errorMessage }}
+          </div>
+        }
+
         <div class="form-field">
           <label for="email">Email Address</label>
           <div class="input-group">
             <span class="material-symbols-outlined icon">mail</span>
-            <input id="email" type="email" formControlName="email" placeholder="name@company.com" />
+            <input id="email" type="email" formControlName="email" placeholder="name@scc.com" />
           </div>
+          @if (form.get('email')?.touched && form.get('email')?.hasError('invalidSccEmail')) {
+            <p class="field-error">Please use a valid @scc.com email address.</p>
+          }
         </div>
 
         <div class="form-field">
@@ -42,8 +51,8 @@
           </label>
         </div>
 
-        <button class="btn-primary" type="submit" [disabled]="form.invalid">
-          <span>Sign in</span> <span class="material-symbols-outlined icon-sm">login</span>
+        <button class="btn-primary" type="submit" [disabled]="form.invalid || isSubmitting">
+          <span>{{ isSubmitting ? 'Signing in...' : 'Sign in' }}</span> <span class="material-symbols-outlined icon-sm">login</span>
         </button>
 
         <div class="divider"><span>OR</span></div>
