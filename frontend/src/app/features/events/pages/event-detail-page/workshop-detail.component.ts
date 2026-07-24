@@ -23,7 +23,7 @@ import { HelpCardComponent } from '../../../../shared/components/help-card/help-
     HelpCardComponent,
   ],
   templateUrl: './workshop-detail.component.html',
-  styleUrl: './workshop-detail.component.scss',
+  styleUrls: ['./workshop-detail.component.scss'],
 })
 export class WorkshopDetailComponent implements OnInit {
   workshop: WorkshopDetail | null = null;
@@ -61,7 +61,8 @@ export class WorkshopDetailComponent implements OnInit {
         this.workshop = workshop;
         this.isLoading = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('WorkshopDetailComponent load error:', err);
         this.loadError = true;
         this.isLoading = false;
       },
