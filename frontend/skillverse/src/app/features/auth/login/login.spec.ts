@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { BehaviorSubject, of }  from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { vi } from 'vitest';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 
@@ -16,7 +16,7 @@ describe('Login', () => {
   let authService: AuthService;
 
   const socialAuthServiceMock = {
-  authState: new BehaviorSubject(null)
+    authState: new BehaviorSubject(null),
   };
 
   beforeEach(async () => {
@@ -31,21 +31,23 @@ describe('Login', () => {
           provide: AuthService,
           useValue: {
             login: vi.fn(),
-            logout: vi.fn()
-          }
+            logout: vi.fn(),
+          },
         },
 
         {
           provide: SocialAuthService,
           useValue: {
-            authState: new BehaviorSubject(null)
-          }
-        }
-      ]
+            authState: new BehaviorSubject(null),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Login);
     component = fixture.componentInstance;
+
+    component.isTest = true;
 
     toastService = TestBed.inject(ToastService);
     authService = TestBed.inject(AuthService);
@@ -128,7 +130,7 @@ describe('Login', () => {
   it('should not submit invalid form', () => {
     component.loginForm.setValue({
       email: '',
-      password: ''
+      password: '',
     });
 
     component.onSubmit();
@@ -140,63 +142,54 @@ describe('Login', () => {
   // Login Logic
   // =====================================
 
-it('should login successfully', async () => {
-  const loginSpy = vi.spyOn(authService, 'login');
-  const successSpy = vi.spyOn(toastService, 'showSuccess');
+  it('should login successfully', async () => {
+    const loginSpy = vi.spyOn(authService, 'login');
+    const successSpy = vi.spyOn(toastService, 'showSuccess');
 
-  component.loginForm.setValue({
-    email: 'admin@gmail.com',
-    password: '123456'
+    component.loginForm.setValue({
+      email: 'admin@gmail.com',
+      password: '123456',
+    });
+
+    component.onSubmit();
+
+    await new Promise((resolve) => setTimeout(resolve, 1700));
+
+    expect(loginSpy).toHaveBeenCalled();
+    expect(successSpy).toHaveBeenCalledWith('Login successful!');
   });
 
-  component.onSubmit();
+  it('should show error for wrong email', async () => {
+    const errorSpy = vi.spyOn(toastService, 'showError');
 
-  await new Promise(resolve => setTimeout(resolve, 1700));
+    component.loginForm.setValue({
+      email: 'wrong@gmail.com',
+      password: '123456',
+    });
 
-  expect(loginSpy).toHaveBeenCalled();
-  expect(successSpy).toHaveBeenCalledWith('Login successful!');
-});
+    component.onSubmit();
 
-it('should show error for wrong email', async () => {
-  const errorSpy = vi.spyOn(toastService, 'showError');
+    await new Promise((resolve) => setTimeout(resolve, 1700));
 
-  component.loginForm.setValue({
-    email: 'wrong@gmail.com',
-    password: '123456'
+    expect(component.errorMessage$.value).toBe('Email does not exist in the system.');
+
+    expect(errorSpy).toHaveBeenCalledWith('Incorrect email. Please check again!');
   });
 
-  component.onSubmit();
+  it('should show error for wrong password', async () => {
+    const errorSpy = vi.spyOn(toastService, 'showError');
 
-  await new Promise(resolve => setTimeout(resolve, 1700));
+    component.loginForm.setValue({
+      email: 'admin@gmail.com',
+      password: '654321',
+    });
 
-  expect(component.errorMessage$.value).toBe(
-    'Email does not exist in the system.'
-  );
+    component.onSubmit();
 
-  expect(errorSpy).toHaveBeenCalledWith(
-    'Incorrect email. Please check again!'
-  );
-});
+    await new Promise((resolve) => setTimeout(resolve, 1700));
 
-it('should show error for wrong password', async () => {
-  const errorSpy = vi.spyOn(toastService, 'showError');
+    expect(component.errorMessage$.value).toBe('Password is not correct.');
 
-  component.loginForm.setValue({
-    email: 'admin@gmail.com',
-    password: '654321'
+    expect(errorSpy).toHaveBeenCalledWith('Incorrect password. Please try again!');
   });
-
-  component.onSubmit();
-
-  await new Promise(resolve => setTimeout(resolve, 1700));
-
-  expect(component.errorMessage$.value).toBe(
-    'Password is not correct.'
-  );
-
-  expect(errorSpy).toHaveBeenCalledWith(
-    'Incorrect password. Please try again!'
-  );
-});
-
 });
