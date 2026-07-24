@@ -1,0 +1,60 @@
+<div class="user-layout">
+  <!-- SideNavBar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <span class="brand-name text-primary">SkillVerse</span>
+    </div>
+
+    <div class="user-profile">
+      <img
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbCGWfN80I9PzrchuQjWHhHu4aY9C3k4tC-C0qG5vMVpOrishf8InXwxvXhRxamoxlAQsGcENn7bqzQPrGvz6-5DdrR3T7BwhZ0XXkN85uWVJB-gangg0bQ1QAFWgbhzN25JE46bd7N7fdqKMIi9MlDXHA94YxCYtpz3VGv3dUCQqA2MGLCKC1zExaJqJWL4xUpm0joc6HWOjvb-rUojc9JshNiRp_6ZiZAQMucWpYdgbYU7NTayzqgx9vzgRDMb3k7ir12z-5ylYK"
+        alt="User Avatar"
+        class="avatar"
+      />
+      <div class="user-info">
+        <p class="user-name">SkillVerse User</p>
+        <p class="user-role text-on-surface-variant">Expert Learner</p>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a routerLink="/user/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-outlined icon-fill">dashboard</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+      <a routerLink="/user/my-skills" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-outlined">psychology</span>
+        <span class="nav-text">My Skills</span>
+      </a>
+      <a routerLink="/user/my-bookings" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-outlined">event_available</span>
+        <span class="nav-text">My Bookings</span>
+      </a>
+      <a routerLink="/user/wallet" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-outlined">account_balance_wallet</span>
+        <span class="nav-text">Wallet</span>
+      </a>
+      <a routerLink="/user/profile" routerLinkActive="active" class="nav-item">
+        <span class="material-symbols-outlined">person</span>
+        <span class="nav-text">Profile</span>
+      </a>
+      <a routerLink="/browse-skills" class="nav-item">
+        <span class="material-symbols-outlined">search</span>
+        <span class="nav-text">Browse Skills</span>
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <button type="button" class="nav-item sign-out" (click)="logout()">
+        <span class="material-symbols-outlined">logout</span>
+        <span class="nav-text">Sign Out</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="page-container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
