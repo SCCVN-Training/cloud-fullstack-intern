@@ -1,0 +1,60 @@
+<section class="reviews-section">
+  <div class="reviews-header">
+    <h2 class="section-title">Reviews</h2>
+
+    <div class="reviews-nav">
+      <button
+        class="nav-btn"
+        (click)="prevReviews()"
+        [disabled]="!canGoPrev()"
+        [class.disabled]="!canGoPrev()"
+      >
+        <span class="material-symbols-outlined"> chevron_left </span>
+      </button>
+
+      <button
+        class="nav-btn"
+        (click)="nextReviews()"
+        [disabled]="!canGoNext()"
+        [class.disabled]="!canGoNext()"
+      >
+        <span class="material-symbols-outlined"> chevron_right </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="reviews-grid">
+    <div class="review-card" *ngFor="let review of displayedReviews">
+      <div class="review-top">
+        <div class="reviewer-info">
+          <div class="reviewer-initials" [ngClass]="review.initialsClass">
+            {{ review.initials }}
+          </div>
+
+          <span class="reviewer-name">
+            {{ review.name }}
+          </span>
+        </div>
+
+        <div class="review-stars">
+          <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+            <span class="material-symbols-outlined icon-star-fill" *ngIf="review.stars >= star">
+              star
+            </span>
+
+            <span
+              class="material-symbols-outlined icon-star-half"
+              *ngIf="review.stars >= star - 0.5 && review.stars < star"
+            >
+              star_half
+            </span>
+          </ng-container>
+        </div>
+      </div>
+
+      <p class="review-text">
+        {{ review.text }}
+      </p>
+    </div>
+  </div>
+</section>

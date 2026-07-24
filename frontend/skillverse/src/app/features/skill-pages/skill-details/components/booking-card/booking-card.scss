@@ -1,0 +1,98 @@
+@use '../shared-styles' as *;
+
+:host {
+  display: block;
+}
+
+.booking-card {
+  @extend %card, %flex-col;
+  gap: var(--spacing-sm, 0.5rem);
+
+  .booking-label {
+    @extend %txt-mute;
+    font: 700 15px sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .price-display {
+    @extend %flex-align;
+    gap: var(--spacing-sm, 0.5rem);
+    border-bottom: 1px solid rgba(218, 192, 201, 0.2);
+    padding-bottom: var(--spacing-md, 1rem);
+    margin-bottom: var(--spacing-xs, 0.25rem);
+    .icon-coin {
+      @extend %txt-pri;
+      font-size: 32px;
+    }
+    .price-value {
+      @extend %txt-sur;
+      font: 800 40px/1 sans-serif;
+    }
+    .price-currency {
+      font: 600 14px sans-serif;
+      color: var(--color-on-surface-variant);
+      margin-top: 8px;
+    }
+  }
+  .booking-details {
+    @extend %flex-col;
+    gap: var(--spacing-sm, 0.5rem);
+    padding: var(--spacing-sm, 0.5rem) 0;
+  }
+  .detail-item {
+    @extend %flex-align;
+    gap: var(--spacing-md, 1rem);
+    .detail-icon {
+      @extend %flex-center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: $c-pri-20;
+      flex-shrink: 0;
+      .material-symbols-outlined {
+        @extend %txt-pri;
+        font-size: 20px;
+      }
+    }
+    .detail-name {
+      @extend %txt-mute;
+      font: 700 11px sans-serif;
+      text-transform: uppercase;
+    }
+    .detail-val {
+      @extend %txt-mute;
+      font: 100 14px sans-serif;
+    }
+  }
+  .btn-book {
+    @extend %flex-center, %trans, %f-14-600;
+    width: auto;
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-full);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(164, 48, 115, 0.2);
+    gap: var(--spacing-sm, 0.5rem);
+    margin-top: var(--spacing-sm, 0.5rem);
+    &:hover {
+      background: rgba(164, 48, 115, 0.9);
+    }
+  }
+  .guarantee {
+    @extend %flex-center;
+    gap: var(--spacing-xs, 0.25rem);
+    padding-top: var(--spacing-sm, 0.5rem);
+    opacity: 0.6;
+    .icon-shield {
+      @extend %txt-pri;
+      font-size: 14px;
+    }
+    p {
+      @extend %txt-mute;
+      text-align: center;
+      font: 500 11px sans-serif;
+    }
+  }
+}

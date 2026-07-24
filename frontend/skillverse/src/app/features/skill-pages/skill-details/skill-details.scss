@@ -1,0 +1,113 @@
+@use './components/shared-styles' as *;
+
+:host {
+  display: block; // Ensures the component takes up full width
+}
+
+// --- Main Container ---
+.skill-details-container {
+  @extend %flex-col, %border;
+  max-width: var(--container-max, 1200px);
+  margin: var(--spacing-lg, 2rem) auto var(--spacing-md, 1rem);
+  padding: var(--spacing-md, 1rem);
+  background: var(--color-surface-container-lowest, #fff);
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: $shadow-base;
+  gap: var(--spacing-md, 1rem);
+  margin-top: calc(var(--spacing-lg, 2rem) + 60px);
+
+  .section-title {
+    @extend %title;
+    font-size: 22px;
+    margin-bottom: var(--spacing-md, 1rem);
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+// --- Layout Grids ---
+.content-grid {
+  display: grid;
+  gap: var(--spacing-md, 1rem);
+  align-items: flex-start;
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+.main-column {
+  @extend %flex-col;
+  gap: var(--spacing-md, 1rem);
+  @media (min-width: 1024px) {
+    grid-column: span 8;
+  }
+}
+
+.sidebar-column {
+  @media (min-width: 1024px) {
+    grid-column: span 4;
+  }
+}
+
+.bottom-sections {
+  @extend %flex-col;
+  gap: var(--spacing-md, 1rem);
+}
+
+// --- About Section (Since the HTML is inside skill-details.html) ---
+.about-section {
+  @extend %card;
+  @media (min-width: 768px) {
+    padding: var(--spacing-lg, 2rem);
+  }
+
+  .about-text {
+    color: var(--color-on-surface-variant);
+    font: 16px/24px sans-serif;
+    p {
+      margin-bottom: var(--spacing-md, 1rem);
+    }
+  }
+
+  .learning-outcomes {
+    background: rgba(239, 244, 255, 0.5);
+    border-radius: var(--radius-default, 8px);
+    padding: var(--spacing-md, 1rem);
+    border: 1px solid rgba(218, 192, 201, 0.2);
+  }
+
+  .learning-title {
+    @extend %flex-align, %f-14-600, %txt-sur;
+    gap: var(--spacing-xs, 0.5rem);
+    margin: 0 0 var(--spacing-sm, 0.5rem);
+    .icon-bulb {
+      @extend %txt-pri;
+      font-size: 20px;
+    }
+  }
+
+  .learning-list {
+    @extend %grid-sm, %grid-2-md;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li {
+      @extend %flex-align, %trans;
+      gap: var(--spacing-sm, 0.5rem);
+      padding: 8px;
+      border-radius: 8px;
+      &:hover {
+        background: #fff;
+      }
+      .icon-check {
+        @extend %txt-pri;
+        font-size: 20px;
+      }
+      span:not(.icon-check) {
+        font-size: 14px;
+      }
+    }
+  }
+}

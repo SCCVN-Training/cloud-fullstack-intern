@@ -1,21 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { BrowseSkillsPage } from './browse-skills';
+import { SkillHero } from './skill-hero';
 
-describe('BrowseSkillsPage', () => {
-  let component: BrowseSkillsPage;
-  let fixture: ComponentFixture<BrowseSkillsPage>;
+describe('SkillHero', () => {
+  let component: SkillHero;
+  let fixture: ComponentFixture<SkillHero>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BrowseSkillsPage],
+      imports: [SkillHero],
       providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(BrowseSkillsPage);
+    fixture = TestBed.createComponent(SkillHero);
+
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {

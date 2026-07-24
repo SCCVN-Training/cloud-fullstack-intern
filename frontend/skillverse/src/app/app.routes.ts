@@ -10,6 +10,7 @@ import { Register } from './features/auth/register/register';
 import { HowItWorksPage } from './features/how-it-works/how-it-works';
 import { AboutUsPage } from './features/about-us/about-us';
 import { BrowseSkillsPage } from './features/skill-pages/browse-skills/browse-skills';
+import { SkillDetailsPage } from './features/skill-pages/skill-details/skill-details';
 
 export const routes: Routes = [
   {
@@ -18,33 +19,38 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: HomepageComponent
+        component: HomepageComponent,
       },
       {
         path: 'how-it-works',
-        component: HowItWorksPage
+        component: HowItWorksPage,
       },
       {
         path: 'about-us',
-        component: AboutUsPage
+        component: AboutUsPage,
       },
       {
         path: 'browse-skills',
         component: BrowseSkillsPage,
-        canActivate: [authGuard]
-      }
-    ]
+        canActivate: [authGuard],
+      },
+      {
+        path: 'skill-details/:id',
+        component: SkillDetailsPage,
+        canActivate: [authGuard],
+      },
+    ],
   },
   {
     path: 'login',
-    component: Login
+    component: Login,
   },
   {
     path: 'register',
-    component: Register
+    component: Register,
   },
   {
     path: '**',
-    redirectTo: ''
-  }
+    redirectTo: '',
+  },
 ];
