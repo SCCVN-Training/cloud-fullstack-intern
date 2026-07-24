@@ -1,11 +1,32 @@
-<section class="page-header">
-  <div>
-    <p class="eyebrow">Events</p>
-    <h1>All workshops</h1>
-  </div>
-  <a routerLink="/events/new" class="button">Create event</a>
-</section>
+<div class="events-page">
+  <div class="events-body">
+    <app-event-filters (filtersChanged)="onFiltersChanged($event)"></app-event-filters>
 
-<section class="event-list">
-  <div class="card-placeholder">Event cards will render here</div>
-</section>
+    <main class="events-content">
+      <div class="events-content-header">
+        <span class="results-count">Showing <strong>{{ totalItems }}</strong> workshops</span>
+        <div class="sort-control">
+          <span>Sort by:</span>
+          <select>
+            <option>Earliest Date</option>
+            <option>Newest</option>
+            <option>Most Popular</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="events-grid" *ngIf="!isLoading; else loadingState">
+        <app-event-card *ngFor="let workshop of workshops" [workshop]="workshop"></app-event-card>
+      </div>
+      <ng-template #loadingState>
+        <p class="loading-text">Loading workshops…</p>
+      </ng-template>
+
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChanged)="onPageChanged($event)"
+      ></app-pagination>
+    </main>
+  </div>
+</div>

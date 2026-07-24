@@ -76,9 +76,15 @@
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
+  /* 1. Make the card a Flex column with full height */
+  display: flex;
+  flex-direction: column;
+  height: 100%; // Ensures all cards in a CSS Grid row match height
+
   .card-media {
     position: relative;
     height: 160px;
+    flex-shrink: 0; // Don't allow image section to shrink
 
     img {
       width: 100%;
@@ -102,6 +108,11 @@
   .card-content {
     padding: 1.25rem;
 
+    /* 2. Make content wrapper grow and fill remaining space */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
     h3 {
       font-size: 1.05rem;
       font-weight: 700;
@@ -120,6 +131,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    /* 3. Push footer to the absolute bottom of .card-content */
+    margin-top: auto; 
   }
 }
 
@@ -128,6 +142,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  font-size: clamp(0.75rem, 0.85rem, 0.9rem);
+  font-weight: 600;
 }
 
 .status-tag .material-symbols-outlined {

@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  * {
+    box-sizing: border-box;
+  }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  margin-top: 1.5rem;
+}
+
+.page-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    background: #f8fafc;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.active {
+    background: #0052cc;
+    border-color: #0052cc;
+    color: #ffffff;
+  }
+
+  .icon-sm {
+    font-size: 1.125rem;
+  }
+}
+
+.ellipsis {
+  color: #94a3b8;
+  font-size: 0.8125rem;
+  padding: 0 0.25rem;
+}

@@ -1,0 +1,55 @@
+<div class="registration-card">
+  <div>
+    <h2 class="card-title">Register for this workshop</h2>
+    <p class="card-subtitle">Secure your spot for this enterprise-level session.</p>
+  </div>
+
+  <div class="availability-block">
+    <div class="availability-row">
+      <span>Availability</span>
+      <span class="filled-label">{{ workshop.seatsFilled }}/{{ workshop.seatsTotal }} seats filled</span>
+    </div>
+    <div class="capacity-bar">
+      <div class="capacity-fill" [style.width.%]="capacityPercent"></div>
+    </div>
+    <p class="spots-remaining" *ngIf="seatsRemaining > 0">
+      <span class="material-symbols-outlined icon-xs">bolt</span>
+      Only {{ seatsRemaining }} spots remaining!
+    </p>
+    <p class="spots-remaining full" *ngIf="seatsRemaining === 0">Workshop is fully booked.</p>
+  </div>
+
+  <button
+    class="btn-register"
+    type="button"
+    [class.processing]="status === 'processing'"
+    [class.registered]="status === 'registered'"
+    [disabled]="status !== 'idle' || seatsRemaining === 0"
+    (click)="onRegisterClick()"
+  >
+    <ng-container [ngSwitch]="status">
+      <ng-container *ngSwitchCase="'processing'">
+        <span class="material-symbols-outlined icon-sm spin">progress_activity</span>
+        <span>Processing...</span>
+      </ng-container>
+      <ng-container *ngSwitchCase="'registered'">
+        <span class="material-symbols-outlined icon-sm">check_circle</span>
+        <span>Registered</span>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <span>Register Now</span>
+      </ng-container>
+    </ng-container>
+  </button>
+
+  <div class="quick-links">
+    <a href="#" (click)="$event.preventDefault()">
+      <span class="material-symbols-outlined icon-sm">calendar_add_on</span>
+      Add to calendar
+    </a>
+    <a href="#" (click)="$event.preventDefault()">
+      <span class="material-symbols-outlined icon-sm">share</span>
+      Share this workshop
+    </a>
+  </div>
+</div>

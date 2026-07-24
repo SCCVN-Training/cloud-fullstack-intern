@@ -1,0 +1,15 @@
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a routerLink="/">Home</a>
+  <span class="material-symbols-outlined icon-xs">chevron_right</span>
+  <a routerLink="/events">Workshops</a>
+  <span class="material-symbols-outlined icon-xs">chevron_right</span>
+  <span class="current">{{ workshop.title }}</span>
+</nav>
+
+<section class="hero" [style.background-image]="'url(' + workshop.heroImageUrl + ')'">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="status-badge">{{ workshop.status | uppercase }}</span>
+    <h1 class="hero-title">{{ workshop.title }}</h1>
+  </div>
+</section>
