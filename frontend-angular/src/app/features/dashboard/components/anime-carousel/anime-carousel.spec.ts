@@ -12,6 +12,10 @@ describe('AnimeCarousel', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(AnimeCarousel);
+
+    fixture.componentRef.setInput('animeList', []);
+    fixture.detectChanges();
+
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
