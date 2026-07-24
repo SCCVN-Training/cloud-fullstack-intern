@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-browse-skills',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './browse-skills.html',
-  styleUrls: ['./browse-skills.scss']
+  styleUrls: ['./browse-skills.scss'],
 })
 export class BrowseSkillsPage {
-
   isSearchEmpty = false;
 
   onSearch(value: string) {
