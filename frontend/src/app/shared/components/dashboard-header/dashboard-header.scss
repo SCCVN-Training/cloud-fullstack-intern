@@ -103,6 +103,10 @@
         .upload-label {
           display: none; // Hide text label on smaller viewports
         }
+
+        .hide-label {
+          display: none; // Hide button on smaller viewports
+        }
       }
     }
   }
@@ -112,6 +116,12 @@
     .logo-area {
       .brand-name {
         display: none; // Show only icon logo on extra small screens
+      }
+    }
+
+    .header-actions {
+      .upload-btn {
+        display: none !important; // Completely hides upload button on small screens
       }
     }
   }
