@@ -15,7 +15,7 @@
     <!-- Brand Header -->
     <header class="auth-header">
       <h1>
-        <a class="logo-area" [style.--brand-size]="brandSize + 'px'">
+        <a class="logo-area">
           <img
             src="/icon_nephos_logo.png"
             class="brand-logo-img"
@@ -28,7 +28,7 @@
     </header>
 
     @if (errorMessage()) {
-      <div class="alert-banner">{{ errorMessage() }}</div>
+    <div class="alert-banner">{{ errorMessage() }}</div>
     }
 
     <!-- Registration Form -->
@@ -43,7 +43,7 @@
         <input matInput type="text" formControlName="username" />
         <mat-icon matSuffix>person</mat-icon>
         @if (registerForm.get("username")?.hasError("required")) {
-          <mat-error>Full Name is required</mat-error>
+        <mat-error>Full Name is required</mat-error>
         }
       </mat-form-field>
 
@@ -62,9 +62,9 @@
         />
         <mat-icon matSuffix>mail</mat-icon>
         @if (registerForm.get("email")?.hasError("required")) {
-          <mat-error>Email Address is required</mat-error>
+        <mat-error>Email Address is required</mat-error>
         } @else if (registerForm.get("email")?.hasError("email")) {
-          <mat-error>Please enter a valid email address</mat-error>
+        <mat-error>Please enter a valid email address</mat-error>
         }
       </mat-form-field>
 
@@ -94,7 +94,7 @@
             </mat-icon>
           </button>
           @if (registerForm.get("password")?.hasError("required")) {
-            <mat-error>Password is required</mat-error>
+          <mat-error>Password is required</mat-error>
           }
         </mat-form-field>
 
@@ -110,12 +110,22 @@
             formControlName="confirmPassword"
             autocomplete="new-password"
           />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            aria-label="Toggle password visibility"
+            (click)="toggleConfirmPassword()"
+          >
+            <mat-icon>
+              {{ showConfirmPassword ? "visibility_off" : "visibility" }}
+            </mat-icon>
+          </button>
           @if (registerForm.get("confirmPassword")?.hasError("required")) {
-            <mat-error>Confirm Password is required</mat-error>
+          <mat-error>Confirm Password is required</mat-error>
           } @else if (
-            registerForm.get("confirmPassword")?.hasError("passwordMismatch")
-          ) {
-            <mat-error>Passwords do not match</mat-error>
+          registerForm.get("confirmPassword")?.hasError("passwordMismatch") ) {
+          <mat-error>Passwords do not match</mat-error>
           }
         </mat-form-field>
       </div>
@@ -139,9 +149,9 @@
           [disabled]="!isFormReady || isLoading() || registerForm.invalid"
         >
           @if (isLoading()) {
-            <span>Creating Account...</span>
+          <span>Creating Account...</span>
           } @else {
-            <span>Create Free Account</span>
+          <span>Create Free Account</span>
           }
         </button>
 

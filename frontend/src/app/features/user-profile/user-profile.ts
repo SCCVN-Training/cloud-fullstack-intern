@@ -56,11 +56,6 @@ export class UserProfile {
   userName = computed(() => this.currentUser()?.full_name ?? 'Guest User');
   userEmail = computed(() => this.currentUser()?.email ?? 'No email available');
 
-  brandSize = 36;
-  @HostBinding('style.--brand-size') get cssBrandSize() {
-    return this.brandSize + 'px';
-  }
-
   // Track active side nav item vs profile state
   activeSideNav = signal<SidePanelNavKey>('');
   isProfileActive = signal<boolean>(true);
@@ -183,7 +178,7 @@ export class UserProfile {
     const currentPass = window.prompt('Enter your current password:');
     if (!currentPass) return;
 
-    const newPass = window.prompt('Enter your new password (min 8 chars):');
+    const newPass = window.prompt('Enter your new passwo3 rd (min 8 chars):');
     if (!newPass) return;
 
     this.authService.changePassword(currentPass, newPass).subscribe({

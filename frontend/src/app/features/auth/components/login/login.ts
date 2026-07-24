@@ -48,11 +48,11 @@ export class Login {
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
-  brandSize = 50;
+  // brandSize = 50;
 
-  @HostBinding('style.--brand-size') get cssBrandSize() {
-    return this.brandSize + 'px';
-  }
+  // @HostBinding('style.--brand-size') get cssBrandSize() {
+  //   return this.brandSize + 'px';
+  // }
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;

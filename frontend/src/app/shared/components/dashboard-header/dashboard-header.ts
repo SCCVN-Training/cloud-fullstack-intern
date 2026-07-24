@@ -13,11 +13,6 @@ import { HostBinding } from '@angular/core';
   styleUrls: ['./dashboard-header.scss'],
 })
 export class DashboardHeader {
-  brandSize = 36;
-  @HostBinding('style.--brand-size') get cssBrandSize() {
-    return this.brandSize + 'px';
-  }
-
   searchPlaceholder = input<string>('Search files...');
 
   // Signal Outputs

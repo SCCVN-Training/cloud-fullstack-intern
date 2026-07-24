@@ -73,6 +73,11 @@
   }
 }
 
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
 /* Glassmorphic Container Box */
 .auth-box {
   position: relative;
@@ -98,6 +103,7 @@
 
     .logo-area {
       @include brand.nephos-brand;
+      --brand-size: 50px;
       display: inline-flex;
       justify-content: center;
       align-items: center;

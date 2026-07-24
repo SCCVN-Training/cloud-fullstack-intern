@@ -38,11 +38,6 @@ export interface DriveItem {
   styleUrls: ['./drive.scss'],
 })
 export class Drive {
-  brandSize = 36;
-  @HostBinding('style.--brand-size') get cssBrandSize() {
-    return this.brandSize + 'px';
-  }
-
   currentNav = signal<SidePanelNavKey>('home');
 
   usedStorage = signal<number>(4.2);

@@ -12,11 +12,4 @@ import { HostBinding } from '@angular/core';
   templateUrl: './landing.html',
   styleUrls: ['./landing.scss'],
 })
-export class Landing {
-  // Brand size control (px) for logo + name scaling on the landing page
-  brandSize = 50;
-
-  @HostBinding('style.--brand-size') get cssBrandSize() {
-    return this.brandSize + 'px';
-  }
-}
+export class Landing {}

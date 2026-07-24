@@ -92,17 +92,16 @@ export class Register {
   }
 
   showPassword = false;
+  showConfirmPassword = false;
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
-  brandSize = 50;
-
-  @HostBinding('style.--brand-size') get cssBrandSize() {
-    return this.brandSize + 'px';
-  }
-
   togglePassword(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   onSubmit(): void {
