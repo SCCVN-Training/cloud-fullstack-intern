@@ -34,7 +34,7 @@ jobs:
         run: npm ci   # unlike npm install, npm ci strictly follows package-lock.json and is faster for CI/CD pipelines (ensure reproducible builds)
 
       - name: Run unit tests
-        run: npm test -- --watch=false --browsers=ChromeHeadlessNoSandbox --code-coverage
+        run: npm test -- --code-coverage
 
       - name: Build application
         run: npm run build
