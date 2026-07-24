@@ -1,0 +1,101 @@
+@use '../shared-styles' as *;
+
+:host {
+  display: block;
+}
+
+.reviews-section {
+  @extend %flex-col;
+  gap: var(--spacing-sm, 0.5rem);
+
+  .section-title {
+    @extend %title;
+    font-size: 22px;
+    margin: 0;
+  }
+
+  .reviews-header {
+    @extend %flex-align;
+    justify-content: space-between;
+    padding: 0 var(--spacing-xs, 0.25rem);
+  }
+  .reviews-nav {
+    @extend %flex-align;
+    gap: var(--spacing-xs, 0.25rem);
+  }
+  .nav-btn {
+    @extend %flex-center, %circle, %trans, %txt-pri;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--color-primary);
+    background: transparent;
+    cursor: pointer;
+    &:hover:not(.disabled) {
+      background: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+    &.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: var(--color-outline-variant);
+      color: var(--color-outline-variant);
+    }
+  }
+
+  .reviews-grid {
+    @extend %grid-sm, %grid-2-md;
+  }
+  .review-card {
+    @extend %border;
+    background: #fff;
+    border-radius: var(--radius-default);
+    padding: var(--spacing-sm, 0.5rem);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+    &:hover {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .review-top {
+      @extend %flex-align;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-sm, 0.5rem);
+    }
+    .reviewer-info {
+      @extend %flex-align;
+      gap: var(--spacing-sm, 0.5rem);
+    }
+    .reviewer-initials {
+      @extend %flex-center, %circle;
+      width: 32px;
+      height: 32px;
+      font: 700 12px sans-serif;
+      &.initials-jd {
+        background: var(--color-surface-container);
+        @extend %txt-pri;
+      }
+      &.initials-sw {
+        background: rgba(255, 166, 177, 0.3);
+        color: var(--color-secondary);
+      }
+    }
+    .reviewer-name {
+      @extend %f-14-600, %txt-sur;
+    }
+    .review-stars {
+      display: flex;
+      color: #f59e0b;
+      .material-symbols-outlined {
+        font-size: 14px;
+        font-variation-settings: 'FILL' 1;
+      }
+    }
+    .review-text {
+      @extend %txt-mute;
+      font: 14px/24px sans-serif;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+}

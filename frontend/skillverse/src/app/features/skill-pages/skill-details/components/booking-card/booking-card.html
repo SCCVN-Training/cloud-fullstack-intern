@@ -1,0 +1,60 @@
+<div class="booking-card">
+  <p class="booking-label">Session Price</p>
+
+  <div class="price-display">
+    <span class="material-symbols-outlined icon-coin"> monetization_on </span>
+
+    <span class="price-value">
+      {{ price }}
+    </span>
+
+    <span class="price-currency"> Skill Coins </span>
+  </div>
+
+  <div class="booking-details">
+    <div class="detail-item">
+      <div class="detail-icon">
+        <span class="material-symbols-outlined"> schedule </span>
+      </div>
+
+      <div class="detail-text">
+        <p class="detail-name">Duration</p>
+        <p class="detail-val">{{ duration }}</p>
+      </div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-icon">
+        <span class="material-symbols-outlined"> signal_cellular_alt </span>
+      </div>
+
+      <div class="detail-text">
+        <p class="detail-name">Level</p>
+        <p class="detail-val">{{ level }}</p>
+      </div>
+    </div>
+
+    <div class="detail-item">
+      <div class="detail-icon">
+        <span class="material-symbols-outlined"> devices </span>
+      </div>
+
+      <div class="detail-text">
+        <p class="detail-name">Requirements</p>
+        <p class="detail-val">{{ requirements }}</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-book">
+    Book Session
+
+    <span class="material-symbols-outlined"> calendar_month </span>
+  </button>
+
+  <div class="guarantee">
+    <span class="material-symbols-outlined icon-shield"> security </span>
+
+    <p>100% Satisfaction Guarantee</p>
+  </div>
+</div>

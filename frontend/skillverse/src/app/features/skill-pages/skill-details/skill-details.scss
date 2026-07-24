@@ -1,210 +1,36 @@
-// --- Variables & Placeholders ---
-$color-border: rgba(218, 192, 201, 0.3);
-$color-primary-20: rgba(244, 114, 182, 0.2);
-$shadow-base:
-  0 10px 15px -3px rgba(0, 0, 0, 0.1),
-  0 4px 6px -2px rgba(0, 0, 0, 0.05);
+@use './components/shared-styles' as *;
 
-%flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-%card-panel {
-  padding: var(--spacing-md);
-  border-radius: var(--radius-default);
-  box-shadow:
-    $shadow-base,
-    inset 0 0 0 1px $color-primary-20;
-}
-%reset-text {
-  margin: 0;
-  color: var(--color-on-surface-variant);
-}
-%border-base {
-  border: 1px solid $color-border;
-}
-%transition {
-  transition: all 0.2s ease;
-}
-%circle {
-  border-radius: 50%;
+:host {
+  display: block; // Ensures the component takes up full width
 }
 
 // --- Main Container ---
 .skill-details-container {
-  max-width: var(--container-max);
-  margin: var(--spacing-lg) auto var(--spacing-md);
-  padding: var(--spacing-md);
-  background-color: var(--color-surface-container-lowest);
-  border-radius: var(--radius-lg);
+  @extend %flex-col, %border;
+  max-width: var(--container-max, 1200px);
+  margin: var(--spacing-lg, 2rem) auto var(--spacing-md, 1rem);
+  padding: var(--spacing-md, 1rem);
+  background: var(--color-surface-container-lowest, #fff);
+  border-radius: var(--radius-lg, 16px);
   box-shadow: $shadow-base;
-  @extend %border-base;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  margin-top: calc(var(--spacing-lg) + 60px);
+  gap: var(--spacing-md, 1rem);
+  margin-top: calc(var(--spacing-lg, 2rem) + 60px);
 
-  // Shared generic classes to prevent repetition
   .section-title {
-    margin: 0;
-    font: 600 22px sans-serif;
-    color: var(--color-on-surface);
+    @extend %title;
+    font-size: 22px;
+    margin-bottom: var(--spacing-md, 1rem);
   }
+
   .material-symbols-outlined {
     font-size: 18px;
-  }
-}
-
-// --- Hero Section ---
-.hero-section {
-  position: relative;
-  overflow: hidden;
-  background: linear-gradient(to bottom right, #fff, var(--color-surface-container-low));
-  padding: var(--spacing-md);
-  border-radius: var(--radius-default);
-  margin-bottom: var(--spacing-md);
-
-  .back-btn {
-    position: absolute;
-    left: 1rem;
-    top: 1rem;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    padding: 6px 12px;
-    border-radius: var(--radius-full);
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(24px);
-    @extend %border-base;
-    color: var(--color-on-surface-variant);
-    font: 500 12px sans-serif;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    @extend %transition;
-    text-decoration: none;
-
-    &:hover {
-      color: var(--color-primary);
-      background-color: #fff;
-    }
-  }
-
-  .hero-bg-blur {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 12rem;
-    height: 12rem;
-    background-color: $color-primary-20;
-    filter: blur(64px);
-    @extend %circle;
-    transform: translate(25%, -25%);
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 10;
-    display: grid;
-    gap: var(--spacing-lg);
-    align-items: center;
-    @media (min-width: 768px) {
-      grid-template-columns: repeat(12, 1fr);
-    }
-  }
-
-  .hero-text {
-    display: flex;
-    flex-direction: column;
-    margin-top: 1px;
-    @media (min-width: 768px) {
-      grid-column: span 7;
-    }
-  }
-
-  .hero-tags {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .tag-category {
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
-    padding: 4px 12px;
-    border-radius: var(--radius-full);
-    font: 500 12px sans-serif;
-  }
-
-  .tag-rating {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    color: var(--color-on-surface-variant);
-    font: 500 12px sans-serif;
-    background-color: rgba(255, 255, 255, 0.5);
-    padding: 4px 8px;
-    border-radius: var(--radius-full);
-    @extend %border-base;
-
-    .icon-star {
-      color: #f59e0b;
-      font-size: 16px;
-      font-variation-settings: 'FILL' 1;
-    }
-    .rating-value {
-      font-weight: 700;
-      color: var(--color-on-surface);
-    }
-    .rating-reviews {
-      opacity: 0.7;
-    }
-  }
-
-  .hero-title {
-    font: 700 28px/36px sans-serif;
-    color: var(--color-on-surface);
-    margin: 0 0 var(--spacing-sm);
-    @media (min-width: 768px) {
-      font-size: 32px;
-      line-height: 40px;
-    }
-  }
-
-  .hero-description {
-    @extend %reset-text;
-    font: 18px/28px sans-serif;
-    max-width: 42rem;
-  }
-
-  .hero-image {
-    position: relative;
-    height: 16rem;
-    width: 100%;
-    border-radius: var(--radius-default);
-    overflow: hidden;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-
-    @media (min-width: 768px) {
-      grid-column: span 5;
-      height: 20rem;
-      width: 24rem;
-      margin: 0 auto;
-    }
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
   }
 }
 
 // --- Layout Grids ---
 .content-grid {
   display: grid;
-  gap: var(--spacing-md);
+  gap: var(--spacing-md, 1rem);
   align-items: flex-start;
   @media (min-width: 1024px) {
     grid-template-columns: repeat(12, 1fr);
@@ -212,9 +38,8 @@ $shadow-base:
 }
 
 .main-column {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+  @extend %flex-col;
+  gap: var(--spacing-md, 1rem);
   @media (min-width: 1024px) {
     grid-column: span 8;
   }
@@ -225,350 +50,64 @@ $shadow-base:
     grid-column: span 4;
   }
 }
+
 .bottom-sections {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+  @extend %flex-col;
+  gap: var(--spacing-md, 1rem);
 }
 
-// --- About Section ---
+// --- About Section (Since the HTML is inside skill-details.html) ---
 .about-section {
-  @extend %card-panel;
+  @extend %card;
   @media (min-width: 768px) {
-    padding: var(--spacing-lg);
+    padding: var(--spacing-lg, 2rem);
   }
 
-  .section-title {
-    margin-bottom: var(--spacing-md);
-  }
   .about-text {
     color: var(--color-on-surface-variant);
     font: 16px/24px sans-serif;
     p {
-      margin-bottom: var(--spacing-md);
+      margin-bottom: var(--spacing-md, 1rem);
     }
   }
 
   .learning-outcomes {
-    background-color: rgba(239, 244, 255, 0.5);
-    border-radius: var(--radius-default);
-    padding: var(--spacing-md);
+    background: rgba(239, 244, 255, 0.5);
+    border-radius: var(--radius-default, 8px);
+    padding: var(--spacing-md, 1rem);
     border: 1px solid rgba(218, 192, 201, 0.2);
   }
 
   .learning-title {
-    font: 600 14px sans-serif;
-    color: var(--color-on-surface);
-    margin: 0 0 var(--spacing-sm);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
+    @extend %flex-align, %f-14-600, %txt-sur;
+    gap: var(--spacing-xs, 0.5rem);
+    margin: 0 0 var(--spacing-sm, 0.5rem);
     .icon-bulb {
-      color: var(--color-primary);
+      @extend %txt-pri;
       font-size: 20px;
     }
   }
 
   .learning-list {
+    @extend %grid-sm, %grid-2-md;
     list-style: none;
     padding: 0;
     margin: 0;
-    display: grid;
-    gap: var(--spacing-sm);
-    @media (min-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
     li {
-      display: flex;
-      align-items: flex-start;
-      gap: var(--spacing-sm);
+      @extend %flex-align, %trans;
+      gap: var(--spacing-sm, 0.5rem);
       padding: 8px;
       border-radius: 8px;
-      @extend %transition;
       &:hover {
-        background-color: #fff;
+        background: #fff;
       }
-
       .icon-check {
-        color: var(--color-primary);
+        @extend %txt-pri;
         font-size: 20px;
       }
       span:not(.icon-check) {
         font-size: 14px;
       }
-    }
-  }
-}
-
-// --- Booking Card ---
-.booking-card {
-  @extend %card-panel;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-
-  .booking-label {
-    @extend %reset-text;
-    font: 700 15px sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .price-display {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    border-bottom: 1px solid rgba(218, 192, 201, 0.2);
-    padding-bottom: var(--spacing-md);
-    margin-bottom: var(--spacing-xs);
-
-    .icon-coin {
-      color: var(--color-primary);
-      font-size: 32px;
-    }
-    .price-value {
-      font: 800 40px/1 sans-serif;
-      color: var(--color-on-surface);
-    }
-    .price-currency {
-      font: 600 14px sans-serif;
-      color: var(--color-on-surface-variant);
-      margin-top: 8px;
-    }
-  }
-
-  .booking-details {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm) 0;
-  }
-
-  .detail-item {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-
-    .detail-icon {
-      @extend %flex-center;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background-color: $color-primary-20;
-      flex-shrink: 0;
-      .material-symbols-outlined {
-        color: var(--color-primary);
-        font-size: 20px;
-      }
-    }
-
-    .detail-name {
-      @extend %reset-text;
-      font: 700 11px sans-serif;
-      text-transform: uppercase;
-    }
-    .detail-val {
-      @extend %reset-text;
-      font: 100 14px sans-serif;
-    }
-  }
-
-  .btn-book {
-    @extend %flex-center;
-    width: 100%;
-    background-color: var(--color-primary);
-    color: var(--color-on-primary);
-    font: 600 14px sans-serif;
-    padding: var(--spacing-md);
-    border-radius: var(--radius-full);
-    border: none;
-    cursor: pointer;
-    @extend %transition;
-    box-shadow: 0 10px 15px -3px rgba(164, 48, 115, 0.2);
-    gap: var(--spacing-sm);
-    margin-top: var(--spacing-sm);
-    &:hover {
-      background-color: rgba(164, 48, 115, 0.9);
-    }
-  }
-
-  .guarantee {
-    @extend %flex-center;
-    gap: var(--spacing-xs);
-    padding-top: var(--spacing-sm);
-    opacity: 0.6;
-    .icon-shield {
-      font-size: 14px;
-      color: var(--color-primary);
-    }
-    p {
-      @extend %reset-text;
-      text-align: center;
-      font: 500 11px sans-serif;
-    }
-  }
-}
-
-// --- Instructor Panel ---
-.instructor-panel {
-  border-radius: 24px;
-  padding: var(--spacing-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-  align-items: flex-start;
-  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.05);
-  border-left: 4px solid var(--color-primary);
-  background-color: rgba(255, 255, 255, 0.5);
-  @media (min-width: 768px) {
-    flex-direction: row;
-  }
-
-  .instructor-avatar img {
-    @extend %circle;
-    width: 96px;
-    height: 96px;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 2px solid var(--color-surface-variant);
-  }
-
-  .instructor-info {
-    text-align: center;
-    flex: 1;
-    @media (min-width: 768px) {
-      text-align: left;
-    }
-
-    .instructor-name {
-      margin: 0 0 var(--spacing-xs);
-      font: 600 22px sans-serif;
-      color: var(--color-on-surface);
-    }
-    .instructor-title {
-      margin: 0 0 var(--spacing-sm);
-      font: 600 14px sans-serif;
-      color: var(--color-primary);
-    }
-    .instructor-bio {
-      margin: 0 0 var(--spacing-md);
-      font-size: 16px;
-      color: var(--color-on-surface-variant);
-    }
-  }
-}
-
-// --- Reviews Section ---
-.reviews-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-
-  .reviews-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 var(--spacing-xs);
-  }
-
-  .reviews-nav {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-  }
-
-  .nav-btn {
-    @extend %flex-center;
-    @extend %circle;
-    width: 32px;
-    height: 32px;
-    border: 1px solid var(--color-primary);
-    color: var(--color-primary);
-    background: transparent;
-    cursor: pointer;
-    @extend %transition;
-
-    &:hover:not(.disabled) {
-      background-color: var(--color-primary);
-      color: var(--color-on-primary);
-    }
-    &.disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      border-color: var(--color-outline-variant);
-      color: var(--color-outline-variant);
-    }
-  }
-
-  .reviews-grid {
-    display: grid;
-    gap: var(--spacing-sm);
-    @media (min-width: 768px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  .review-card {
-    background-color: #fff;
-    border-radius: var(--radius-default);
-    padding: var(--spacing-sm);
-    @extend %border-base;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.2s ease;
-    &:hover {
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-
-    .review-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--spacing-sm);
-    }
-    .reviewer-info {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .reviewer-initials {
-      @extend %flex-center;
-      @extend %circle;
-      width: 32px;
-      height: 32px;
-      font: 700 12px sans-serif;
-
-      &.initials-jd {
-        background-color: var(--color-surface-container);
-        color: var(--color-primary);
-      }
-      &.initials-sw {
-        background-color: rgba(255, 166, 177, 0.3);
-        color: var(--color-secondary);
-      }
-    }
-
-    .reviewer-name {
-      font: 600 14px sans-serif;
-      color: var(--color-on-surface);
-    }
-    .review-stars {
-      display: flex;
-      color: #f59e0b;
-      .material-symbols-outlined {
-        font-size: 14px;
-        font-variation-settings: 'FILL' 1;
-      }
-    }
-
-    .review-text {
-      @extend %reset-text;
-      font: 14px/24px sans-serif;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
   }
 }

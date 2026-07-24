@@ -1,0 +1,77 @@
+// ---------- Variables ----------
+$c-pri-20: rgba(244, 114, 182, 0.2);
+$c-border: rgba(218, 192, 201, 0.3);
+$shadow-base:
+  0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+// ---------- Layout Utilities ----------
+%flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+%flex-align {
+  display: flex;
+  align-items: center;
+}
+%flex-col {
+  display: flex;
+  flex-direction: column;
+}
+%grid-sm {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+%grid-2-md {
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ---------- Card & Shapes ----------
+%card {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-default);
+  background: white;
+  border: 1px solid $c-border;
+  box-shadow:
+    $shadow-base,
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+%circle {
+  border-radius: 50%;
+}
+%border {
+  border: 1px solid $c-border;
+}
+
+// ---------- Typography ----------
+%txt-sur {
+  color: var(--color-on-surface);
+}
+%txt-mute {
+  margin: 0;
+  color: var(--color-on-surface-variant);
+}
+%txt-pri {
+  color: var(--color-primary);
+}
+%txt-white {
+  color: var(--color-on-primary);
+}
+%title {
+  margin: 0 0 var(--spacing-sm);
+  color: var(--color-on-surface);
+}
+%f-12-500 {
+  font: 500 12px sans-serif;
+}
+%f-14-600 {
+  font: 600 14px sans-serif;
+}
+
+// ---------- Utilities ----------
+%trans {
+  transition: all 0.2s ease;
+}

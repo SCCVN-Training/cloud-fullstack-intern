@@ -1,0 +1,41 @@
+<section class="hero-section">
+  <a routerLink="/browse-skills" class="back-btn">
+    <span class="material-symbols-outlined"> arrow_back </span>
+
+    Back
+  </a>
+
+  <div class="hero-bg-blur"></div>
+
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-tags">
+        <span class="tag-category">
+          {{ skill.category }}
+        </span>
+
+        <div class="tag-rating">
+          <span class="material-symbols-outlined icon-star"> star </span>
+
+          <span class="rating-value">
+            {{ skill.rating }}
+          </span>
+
+          <span class="rating-reviews"> ({{ skill.reviews }} Reviews) </span>
+        </div>
+      </div>
+
+      <h1 class="hero-title">
+        {{ skill.title }}
+      </h1>
+
+      <p class="hero-description">
+        {{ skill.description }}
+      </p>
+    </div>
+
+    <div class="hero-image">
+      <img [src]="skill.image" [alt]="skill.title" />
+    </div>
+  </div>
+</section>
