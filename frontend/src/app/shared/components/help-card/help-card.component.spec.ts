@@ -25,9 +25,12 @@ describe('HelpCardComponent', () => {
   });
 
   it('should render custom inputs when provided', () => {
-    component.title = 'Custom title';
+    fixture.componentRef.setInput('title', 'Custom title');
+    fixture.componentRef.setInput('linkLabel', 'Custom link');
     fixture.detectChanges();
+
     const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
     expect(text).toContain('Custom title');
+    expect(text).toContain('Custom link');
   });
 });

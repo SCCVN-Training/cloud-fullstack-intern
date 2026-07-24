@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+/// <reference types="jasmine" />
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WorkshopRegistrationCardComponent } from './workshop-registration-card.component';
 import { WorkshopDetail } from '../../../../models/workshop-detail.model';
 
@@ -37,25 +39,32 @@ describe('WorkshopRegistrationCardComponent', () => {
     expect(component.capacityPercent).toBe(100);
   });
 
-  // fakeAsync + tick let us fast-forward the component's setTimeout instead of
-  // actually waiting 1.2s for the test to finish.
-  it('should move idle -> processing -> registered and emit once', fakeAsync(() => {
-    spyOn(component.register, 'emit');
+  // Test that status changes and emit is called immediately
+  it('should move to processing and emit when registering', () => {
+    vi.spyOn(component.register, 'emit');
     expect(component.status).toBe('idle');
 
     component.onRegisterClick();
     expect(component.status).toBe('processing');
     expect(component.register.emit).toHaveBeenCalledWith('wk-1');
+  });
 
-    tick(1200);
-    expect(component.status).toBe('registered');
-  }));
+  // Test that status transitions to registered after timeout completes
+  it('should move to registered after setTimeout resolves', (done) => {
+    vi.spyOn(component.register, 'emit');
+    component.onRegisterClick();
 
-  it('should ignore a second click while already processing', fakeAsync(() => {
-    spyOn(component.register, 'emit');
+    setTimeout(() => {
+      expect(component.status).toBe('registered');
+      done();
+    }, 1300);
+  });
+
+  // Test that second click is ignored while processing
+  it('should ignore a second click while already processing', () => {
+    vi.spyOn(component.register, 'emit');
     component.onRegisterClick();
     component.onRegisterClick(); // should be a no-op
-    tick(1200);
     expect(component.register.emit).toHaveBeenCalledTimes(1);
-  }));
+  });
 });

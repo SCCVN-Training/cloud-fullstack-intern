@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { EventCardComponent } from './event-card.component';
 import { Workshop } from '../../models/event.model';
 
@@ -24,6 +25,7 @@ describe('EventCardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EventCardComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EventCardComponent);

@@ -1,3 +1,5 @@
+/// <reference types="jasmine" />
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PaginationComponent } from './pagination.component';
 
@@ -26,13 +28,13 @@ describe('PaginationComponent', () => {
   });
 
   it('should not emit when going before page 1', () => {
-    spyOn(component.pageChanged, 'emit');
+    vi.spyOn(component.pageChanged, 'emit');
     component.goTo(0);
     expect(component.pageChanged.emit).not.toHaveBeenCalled();
   });
 
   it('should emit the target page when valid', () => {
-    spyOn(component.pageChanged, 'emit');
+    vi.spyOn(component.pageChanged, 'emit');
     component.goTo(3);
     expect(component.pageChanged.emit).toHaveBeenCalledWith(3);
   });

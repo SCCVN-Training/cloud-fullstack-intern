@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { vi, type Mock } from 'vitest';
 import { WorkshopDetailComponent } from './workshop-detail.component';
 import { WorkshopDetailService } from '../../services/workshop-detail.service';
 import { WorkshopDetail } from '../../models/workshop-detail.model';
@@ -8,18 +9,18 @@ import { WorkshopDetail } from '../../models/workshop-detail.model';
 describe('WorkshopDetailComponent', () => {
   let component: WorkshopDetailComponent;
   let fixture: ComponentFixture<WorkshopDetailComponent>;
-  let serviceSpy: jasmine.SpyObj<WorkshopDetailService>;
+  let serviceSpy: { getWorkshopById: Mock };
 
   const mockWorkshop = { id: 'wk-1', title: 'Test Workshop' } as WorkshopDetail;
 
   function setup(paramId: string | null, response = of(mockWorkshop)) {
-    serviceSpy = jasmine.createSpyObj('WorkshopDetailService', ['getWorkshopById']);
-    serviceSpy.getWorkshopById.and.returnValue(response);
+    serviceSpy = { getWorkshopById: vi.fn() };
+    serviceSpy.getWorkshopById.mockReturnValue(response);
 
     TestBed.configureTestingModule({
       imports: [WorkshopDetailComponent],
       providers: [
-        provideRouter([]), // needed because this template renders <app-workshop-hero>, which uses RouterLink
+        provideRouter([]),
         { provide: WorkshopDetailService, useValue: serviceSpy },
         {
           provide: ActivatedRoute,
@@ -55,7 +56,10 @@ describe('WorkshopDetailComponent', () => {
   });
 
   it('should flag a load error when the service call fails', () => {
-    setup('wk-1', throwError(() => new Error('network error')));
+    setup(
+      'wk-1',
+      throwError(() => new Error('network error')),
+    );
     fixture.detectChanges();
 
     expect(component.loadError).toBe(true);
@@ -72,8 +76,7 @@ describe('WorkshopDetailComponent', () => {
 
   it('should set isLoading to true before calling service', () => {
     setup('wk-1');
-    
-    // Before detectChanges, isLoading should be false
+
     expect(component.isLoading).toBe(false);
   });
 
@@ -88,7 +91,7 @@ describe('WorkshopDetailComponent', () => {
   it('should call onRegister with the workshop id', () => {
     setup('wk-1');
     fixture.detectChanges();
-    spyOn(console, 'log');
+    vi.spyOn(console, 'log');
 
     component.onRegister('wk-1');
 
@@ -98,7 +101,7 @@ describe('WorkshopDetailComponent', () => {
   it('should handle registration for different workshop ids', () => {
     setup('wk-1');
     fixture.detectChanges();
-    spyOn(console, 'log');
+    vi.spyOn(console, 'log');
 
     const workshopIds = ['wk-1', 'wk-2', 'wk-3'];
     workshopIds.forEach((id) => {
@@ -118,10 +121,16 @@ describe('WorkshopDetailComponent', () => {
   });
 
   it('should log error to console when workshop load fails', () => {
-    spyOn(console, 'error');
-    setup('wk-1', throwError(() => new Error('network error')));
+    vi.spyOn(console, 'error');
+    setup(
+      'wk-1',
+      throwError(() => new Error('network error')),
+    );
     fixture.detectChanges();
 
-    expect(console.error).toHaveBeenCalledWith('WorkshopDetailComponent load error:', jasmine.any(Error));
+    expect(console.error).toHaveBeenCalledWith(
+      'WorkshopDetailComponent load error:',
+      expect.any(Error),
+    );
   });
 });

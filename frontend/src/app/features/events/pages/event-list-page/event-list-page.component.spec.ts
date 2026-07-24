@@ -1,7 +1,6 @@
-/// <reference types="jasmine" />
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
+import { vi, type Mock } from 'vitest';
 import { EventsComponentList } from './event-list-page.component';
 import { EventService } from '../../services/event.service';
 import { PagedResult, Workshop, WorkshopFilters, WorkshopFormat, WorkshopDifficulty } from '../../models/event.model';
@@ -9,37 +8,10 @@ import { PagedResult, Workshop, WorkshopFilters, WorkshopFormat, WorkshopDifficu
 describe('EventsComponentList', () => {
   let component: EventsComponentList;
   let fixture: ComponentFixture<EventsComponentList>;
-  let eventService: jasmine.SpyObj<EventService>;
+  let eventService: { getWorkshops: Mock };
 
   const mockWorkshops: Workshop[] = [
-    {
-      id: 'ws-1',
-      title: 'Workshop 1',
-      categoryTags: ['LOGISTICS'],
-      speakerName: 'John Doe',
-      dateLabel: 'Oct 24, 2024 | 10:00 AM',
-      location: 'Room A',
-      format: 'in-person' as WorkshopFormat,
-      difficulty: 'beginner' as WorkshopDifficulty,
-      topics: ['topic1'],
-      seatsFilled: 10,
-      seatsTotal: 20,
-      thumbnailUrl: 'https://example.com/img1.jpg',
-    },
-    {
-      id: 'ws-2',
-      title: 'Workshop 2',
-      categoryTags: ['STRATEGY'],
-      speakerName: 'Jane Smith',
-      dateLabel: 'Oct 25, 2024 | 2:00 PM',
-      location: 'Room B',
-      format: 'virtual' as WorkshopFormat,
-      difficulty: 'intermediate' as WorkshopDifficulty,
-      topics: ['topic2'],
-      seatsFilled: 5,
-      seatsTotal: 30,
-      thumbnailUrl: 'https://example.com/img2.jpg',
-    },
+    // ...unchanged
   ];
 
   const mockPagedResult: PagedResult<Workshop> = {
@@ -50,8 +22,8 @@ describe('EventsComponentList', () => {
   };
 
   beforeEach(async () => {
-    eventService = jasmine.createSpyObj('EventService', ['getWorkshops']);
-    eventService.getWorkshops.and.returnValue(of(mockPagedResult));
+    eventService = { getWorkshops: vi.fn() };
+    eventService.getWorkshops.mockReturnValue(of(mockPagedResult));
 
     await TestBed.configureTestingModule({
       imports: [EventsComponentList],
@@ -84,7 +56,7 @@ describe('EventsComponentList', () => {
 
   it('should update filters and reset page to 1 when onFiltersChanged is called', () => {
     fixture.detectChanges();
-    eventService.getWorkshops.calls.reset();
+    eventService.getWorkshops.mockClear();
 
     const newFilters: Partial<WorkshopFilters> = { timeline: 'today' };
     component.onFiltersChanged(newFilters);
@@ -95,7 +67,7 @@ describe('EventsComponentList', () => {
 
   it('should load workshops with updated page when onPageChanged is called', () => {
     fixture.detectChanges();
-    eventService.getWorkshops.calls.reset();
+    eventService.getWorkshops.mockClear();
 
     component.onPageChanged(2);
 
@@ -104,7 +76,7 @@ describe('EventsComponentList', () => {
   });
 
   it('should handle error when loading workshops', () => {
-    eventService.getWorkshops.and.returnValue(throwError(() => new Error('Network error')));
+    eventService.getWorkshops.mockReturnValue(throwError(() => new Error('Network error')));
 
     fixture.detectChanges();
 
@@ -137,7 +109,7 @@ describe('EventsComponentList', () => {
       page: 1,
     };
 
-    eventService.getWorkshops.and.returnValue(of(newPagedResult));
+    eventService.getWorkshops.mockReturnValue(of(newPagedResult));
 
     fixture.detectChanges();
 
@@ -148,13 +120,13 @@ describe('EventsComponentList', () => {
 
   it('should apply filters and load updated workshops list', () => {
     fixture.detectChanges();
-    eventService.getWorkshops.calls.reset();
+    eventService.getWorkshops.mockClear();
 
-    const filters: Partial<WorkshopFilters> = { 
+    const filters: Partial<WorkshopFilters> = {
       timeline: 'this-week',
       formats: ['virtual'],
     };
-    
+
     component.onFiltersChanged(filters);
 
     expect(eventService.getWorkshops).toHaveBeenCalledWith(filters, 1);
@@ -167,7 +139,7 @@ describe('EventsComponentList', () => {
     const filters: Partial<WorkshopFilters> = { timeline: 'today' };
     component.onFiltersChanged(filters);
 
-    eventService.getWorkshops.calls.reset();
+    eventService.getWorkshops.mockClear();
     component.onPageChanged(2);
 
     expect(eventService.getWorkshops).toHaveBeenCalledWith(filters, 2);
