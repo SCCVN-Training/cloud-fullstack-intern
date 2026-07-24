@@ -1,0 +1,176 @@
+<div class="page-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text">
+      <h1 class="page-title">Profile & Settings</h1>
+      <p class="page-subtitle">Manage your personal information, skills, and preferences.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary">View Public Profile</button>
+      <button class="btn-primary">Edit</button>
+    </div>
+  </header>
+
+  <!-- Grid Layout -->
+  <div class="profile-grid">
+    <!-- Left Column -->
+    <div class="left-col">
+      <!-- Profile Header Card -->
+      <div class="profile-summary-card card-base">
+        <div class="avatar-wrapper">
+          <img
+            class="avatar-img"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnJDZJ7HPUz6UO5KHJIpDXWzIMNOrTgJIV9LBYIPU2_-x3KlaNFPjRV3Wj58JhdP_NpaJaYzNsgNyGm-V9logDArO32uEon3kYj4aZEWBAFtcIg36LYgy7HjRoIJaBeFjs4_BwIAWAGttKOcONUZEnCSr2Zlc_bHcjkmPInUY4HVGjpZhjVEefPsx20wfKUTWMq-mFxBllBPzQBqENX5V24_gHikMUF7PRuRbFDgsmGwgi6SItN5Wl5l7jpQ1WXePl36D0zqWQegi1"
+            alt="Alex Rivera"
+          />
+          <button class="btn-edit-avatar">
+            <span class="material-symbols-outlined icon-edit">edit</span>
+          </button>
+        </div>
+
+        <h2 class="profile-name">
+          {{ authService.currentUser()?.name }}
+        </h2>
+        <span class="user-badge">Expert Learner</span>
+
+        <p class="profile-bio">Product Designer eager to learn 3D modeling and French cooking.</p>
+
+        <div class="stats-divider">
+          <div class="stat-item">
+            <p class="stat-number text-pink">12</p>
+            <p class="stat-label">Skills Learning</p>
+          </div>
+          <div class="vertical-divider"></div>
+          <div class="stat-item">
+            <p class="stat-number text-pink">4</p>
+            <p class="stat-label">Skills Taught</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-col">
+      <!-- Edit Personal Info Bento -->
+      <div class="form-card card-base">
+        <h3 class="card-title">Personal Information</h3>
+
+        <form class="info-form">
+          <div class="form-row split">
+            <div class="form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                class="form-input"
+                [value]="authService.currentUser()?.name || ''"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                class="form-input"
+                [value]="authService.currentUser()?.email || ''"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>About Me</label>
+              <textarea class="form-textarea" rows="3">
+Product Designer based in NYC. I love exchanging knowledge and meeting new people. Always looking to expand my horizons beyond the screen.</textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Skills & Interests -->
+      <div class="skills-interests-grid">
+        <!-- Skills Card -->
+        <div class="tag-card card-base">
+          <div class="card-header">
+            <h3 class="card-title">Skills I'm Learning</h3>
+            <button class="btn-icon">
+              <span class="material-symbols-outlined">add_circle</span>
+            </button>
+          </div>
+          <div class="tag-list">
+            <span class="tag-chip tag-learning">
+              3D Modeling <span class="material-symbols-outlined icon-close">close</span>
+            </span>
+            <span class="tag-chip tag-learning">
+              French Cuisine <span class="material-symbols-outlined icon-close">close</span>
+            </span>
+            <span class="tag-chip tag-learning">
+              Pottery <span class="material-symbols-outlined icon-close">close</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Interests Card -->
+        <div class="tag-card card-base">
+          <div class="card-header">
+            <h3 class="card-title">Interests</h3>
+            <button class="btn-icon">
+              <span class="material-symbols-outlined">add_circle</span>
+            </button>
+          </div>
+          <div class="tag-list">
+            <span class="tag-chip tag-interest">Design Systems</span>
+            <span class="tag-chip tag-interest">Typography</span>
+            <span class="tag-chip tag-interest">Watercolor</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews Section -->
+      <div class="reviews-card card-base">
+        <h3 class="card-title">What people say about your teaching</h3>
+
+        <div class="rating-summary">
+          <div class="stars">
+            <span class="material-symbols-outlined icon-fill">star</span>
+            <span class="material-symbols-outlined icon-fill">star</span>
+            <span class="material-symbols-outlined icon-fill">star</span>
+            <span class="material-symbols-outlined icon-fill">star</span>
+            <span class="material-symbols-outlined icon-fill">star_half</span>
+          </div>
+          <span class="rating-text">4.8 (24 Reviews)</span>
+        </div>
+
+        <div class="reviews-list">
+          <!-- Review 1 -->
+          <div class="review-item">
+            <img
+              class="reviewer-avatar"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPPt-M9Q3i0VOkQJFKgjVEKfzRWMIi6FYYQyed3eQoRkf7tQ13ocYz3LFuzbI0YKeaq5ZsaJDTLO7yQnGyNHa5i9IcvdzlwnHRH9QvHJzNYvOEvn5AAoFAWknVQA1rSsQdW5iBushH2qJXl9LrF_WiBAYi-ICutbeiB3Y3ShAaUdzWRqOwN4izJxK8xvRwLV_xGVOHoNs6oCCO7hMpbk5iaTApMAyzMaNOywMoAVEKIcxdiB3bXdJJeQPX8ll28TEgEdRoOtOyTuHa"
+              alt="Sarah J."
+            />
+            <div class="review-content">
+              <p class="reviewer-name">Sarah J.</p>
+              <p class="review-text">
+                "Alex was incredibly patient explaining the basics of Figma components. Highly
+                recommend booking a session!"
+              </p>
+            </div>
+          </div>
+
+          <!-- Review 2 -->
+          <div class="review-item">
+            <div class="reviewer-avatar text-avatar">M</div>
+            <div class="review-content">
+              <p class="reviewer-name">Mark T.</p>
+              <p class="review-text">
+                "Great session on UI principles. Looking forward to our next exchange."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
