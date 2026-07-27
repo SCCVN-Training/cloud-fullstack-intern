@@ -45,6 +45,11 @@
               formControlName="email"
               autocomplete="email"
             />
+            @if (loginForm.get('email')?.hasError('required')) {
+            <mat-error>Email address is required</mat-error>
+            } @if (loginForm.get('email')?.hasError('email')) {
+            <mat-error>Please enter a valid email address</mat-error>
+            }
           </mat-form-field>
 
           <!-- Password Field -->
@@ -64,7 +69,7 @@
               aria-label="Toggle password visibility"
               (click)="togglePassword()"
             >
-              <mat-icon matSuffix>
+              <mat-icon>
                 {{ showPassword ? "visibility_off" : "visibility" }}
               </mat-icon>
             </button>
@@ -87,7 +92,12 @@
             [disabled]="isLoading() || loginForm.invalid"
           >
             <span class="button-content">
-              <span>{{ isLoading() ? "Signing In..." : "Sign In" }}</span>
+              @if (isLoading()) {
+              <mat-spinner diameter="20"></mat-spinner>
+              <span>Signing In...</span>
+              } @else {
+              <span>Sign In</span>
+              }
             </span>
           </button>
         </form>

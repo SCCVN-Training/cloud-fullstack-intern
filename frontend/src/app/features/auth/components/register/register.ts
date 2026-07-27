@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth.service';
-import { HostBinding } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -48,7 +48,8 @@ export const passwordMatchValidator: ValidatorFn = (
     MatButtonModule,
     MatCardModule,
     MatIconModule,
-    MatCheckboxModule, // <-- Added for terms checkbox
+    MatCheckboxModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './register.html',
   styleUrls: ['./register.scss'],

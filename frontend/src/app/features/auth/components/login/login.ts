@@ -15,7 +15,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { HostBinding } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -29,6 +30,7 @@ import { HostBinding } from '@angular/core';
     MatCardModule,
     MatIconModule,
     MatCheckboxModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
@@ -47,12 +49,6 @@ export class Login {
   showPassword = false;
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
-
-  // brandSize = 50;
-
-  // @HostBinding('style.--brand-size') get cssBrandSize() {
-  //   return this.brandSize + 'px';
-  // }
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;
