@@ -12,7 +12,7 @@ import { AuthService } from '../../../../core/services/auth/auth';
 })
 export class UserLayoutComponent {
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router,
   ) {}
 

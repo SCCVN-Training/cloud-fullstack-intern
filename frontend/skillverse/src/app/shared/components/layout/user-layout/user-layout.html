@@ -11,8 +11,8 @@
         alt="User Avatar"
         class="avatar"
       />
-      <div class="user-info">
-        <p class="user-name">SkillVerse User</p>
+      <div class="user-info" *ngIf="authService.currentUser() as user">
+        <p class="user-name">{{ user.name }}</p>
         <p class="user-role text-on-surface-variant">Expert Learner</p>
       </div>
     </div>

@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
-import { Dashboard } from './dashboard/dashboard';
 import { UserLayoutComponent } from '../../shared/components/layout/user-layout/user-layout';
+
+import { Dashboard } from './dashboard/dashboard';
+import { Profile } from './profile/profile';
 
 export const userRoutes: Routes = [
   {
@@ -15,6 +17,10 @@ export const userRoutes: Routes = [
       {
         path: 'dashboard',
         component: Dashboard,
+      },
+      {
+        path: 'profile',
+        component: Profile,
       },
     ],
   },
