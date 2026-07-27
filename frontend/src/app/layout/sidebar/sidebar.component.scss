@@ -1,20 +1,34 @@
 :host {
-  position: sticky; /* 1. Sets sticky positioning */
-  top: 0;            /* 2. Fixes it at the top of the viewport when scrolling */
-  height: 100vh;     /* 3. Ensures it stretches to the full height of the viewport */
-  overflow-y: auto;  /* 4. Allows scrolling inside the sidebar if its own content overflows */
-
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
   display: block;
-  background: black;
-  padding: 1.25rem;
-  border: 0px solid var(--border);
+  padding: 1.25rem 1rem;
+  
+  // Rich Dark Gradient Background
+  background: linear-gradient(180deg, #090d16 0%, #030712 60%, #000000 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+
+  // Smooth scrollbar styling inside sidebar
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
 }
 
+// Sidebar Branding Header
 .sidebar-brand {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem 0.75rem 2rem 0.75rem;
+  padding: 0.5rem 0.75rem 1.75rem 0.75rem;
 
   .brand-text {
     display: flex;
@@ -25,6 +39,7 @@
       font-size: 1rem;
       color: #ffffff;
       line-height: 1.2;
+      letter-spacing: -0.01em;
     }
 
     .brand-sub {
@@ -34,34 +49,98 @@
   }
 }
 
+// Navigation Item List
 .nav-list ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.72rem;
+  gap: 0.5rem;
 }
 
 .nav-list a {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   text-decoration: none;
   padding: 0.85rem 1rem;
-  border-radius: 0rem;
-  color: white;
-  font-weight: 600;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease;
+  border-radius: 0.5rem; // Subtle curve for modern feel
+  color: #94a3b8; // Soft muted white for inactive tabs
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
   .material-symbols-outlined {
     flex-shrink: 0;
+    font-size: 1.35rem;
+    transition: transform 0.2s ease;
+  }
+
+  // Hover & Focus States
+  &:hover,
+  &:focus-visible {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+
+    .material-symbols-outlined {
+      transform: translateX(2px);
+    }
+  }
+
+  // Active Selected Tab (Stays Highlighted)
+  &.active,
+  &[aria-current="page"] {
+    color: #ffffff;
+    font-weight: 600;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.25) 0%, rgba(37, 99, 235, 0.05) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+
+    // Glowing Active Accent Line on the left
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      bottom: 20%;
+      width: 3px;
+      background: #3b82f6;
+      border-radius: 0 2px 2px 0;
+      box-shadow: 0 0 10px #3b82f6;
+    }
+
+    .material-symbols-outlined {
+      color: #60a5fa; // Glowing blue tint for active icon
+    }
   }
 }
 
-.nav-list a:hover,
-.nav-list a:focus-visible {
-  background: var(--surface-strong);
-  color: var(--text-primary);
+// ==========================================
+// RESPONSIVE SIDEBAR BEHAVIOR
+// ==========================================
+
+// Tablet View (768px and down): Compact Icon Bar
+@media (max-width: 768px) {
+  :host {
+    padding: 1rem 0.5rem;
+  }
+
+  .sidebar-brand {
+    justify-content: center;
+    padding: 0.5rem 0 1.5rem 0;
+
+    .brand-text {
+      display: none; // Hides brand subtitle text on small screens
+    }
+  }
+
+  .nav-list a {
+    justify-content: center;
+    padding: 0.75rem;
+
+    // Hides text labels, keeping only the icon visible
+    span:not(.material-symbols-outlined) {
+      display: none;
+    }
+  }
 }
