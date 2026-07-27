@@ -23,50 +23,42 @@
   margin: 0 auto;
 }
 
-/* Brand Logo Styling */
+/* Brand Title & Logo Badge */
 .portal-title {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
 
-  .logo-link {
+  .logo-badge {
     display: flex;
     align-items: center;
-    text-decoration: none;
-    outline: none;
-    border-radius: 8px;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    /* Clean Blue Gradient */
+    background: linear-gradient(135deg, #ffffff 0%, #0061fc 50%, #60a5fa 100%);
+    color: black;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
 
-    &:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
+    span {
+      font-size: 1.5rem;
     }
+  }
 
-    &:focus-visible {
-      box-shadow: 0 0 0 2px #3b82f6;
+  h1 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.01em;
+
+    span {
+      /* Subtle Text Gradient */
+      background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-  }
-
-  .brand-logo {
-    /* Height controls the sizing to keep the 68px navbar proportioned */
-    height: 36px; 
-    width: auto;
-    object-fit: contain;
-    /* Keeps PNG rendering crisp */
-    image-rendering: -webkit-optimize-contrast; 
-    display: block;
-  }
-}
-
-/* Responsive Scaling */
-@media (max-width: 768px) {
-  .portal-title .brand-logo {
-    height: 30px; /* Slightly smaller on tablets/mobile */
-  }
-}
-
-@media (max-width: 480px) {
-  .portal-title .brand-logo {
-    height: 26px; /* Fits tight mobile viewports without crowding search */
   }
 }
 
