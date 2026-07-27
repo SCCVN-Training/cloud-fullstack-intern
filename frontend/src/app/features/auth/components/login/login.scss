@@ -76,16 +76,6 @@
   align-items: center;
   justify-content: center;
 
-  // .brand-logo-img {
-  //   height: var(--brand-size);
-  //   width: auto;
-  // }
-
-  // .brand-name {
-  //   font-size: calc(var(--brand-size, 40px) * var(--brand-name-ratio, 0.65));
-  //   line-height: 1;
-  // }
-
   mat-icon {
     color: #fff;
     @include mat-icon-size(36px);
@@ -145,6 +135,17 @@
   display: grid;
   gap: 18px;
   padding: 32px;
+}
+
+.auth-back {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 20;
+
+  button {
+    color: #50616b;
+  }
 }
 
 .full-width {
