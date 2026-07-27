@@ -23,7 +23,6 @@ export class SidebarComponent {
     { label: 'My Speaking Events', path: '/speakers', icon: 'mic' },
     { label: 'Rooms', path: '/rooms', icon: 'meeting_room' },
     { label: 'Notifications', path: '/notifications', icon: 'notifications' },
-    { label: 'Profile', path: '/profile', icon: 'person' },
     { label: 'Reports', path: '/reports', icon: 'bar_chart' }
   ];
 }
