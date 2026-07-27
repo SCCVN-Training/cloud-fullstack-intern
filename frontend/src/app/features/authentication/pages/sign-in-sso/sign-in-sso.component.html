@@ -1,15 +1,18 @@
 <div class="sign-in-page">
+  <!-- Left Panel: Form & SSO Steps Section -->
   <section class="sign-in-panel">
-    <!-- Header (pinned top) -->
-    <div class="sign-in-header">
-      <div class="brand-icon"><span class="material-symbols-outlined">flutter_dash</span></div>
+    <!-- Header -->
+    <header class="sign-in-header">
+      <div class="brand-icon">
+        <span class="material-symbols-outlined">flutter_dash</span>
+      </div>
       <div class="brand-text">
         <h1>Syncra</h1>
         <p>Sync your work. Share your world.</p>
       </div>
-    </div>
+    </header>
 
-    <!-- Main (grows, centers itself) -->
+    <!-- Main Content Area -->
     <main class="sign-in-main">
       <!-- Step 1: Enter Company Domain -->
       <div *ngIf="currentStep === 'domain'" class="sign-in-welcome-box">
@@ -44,7 +47,7 @@
 
         <div class="divider"><span>OR</span></div>
 
-        <button type="button" class="btn-tertiary" (click)="onBackClick()" [disabled]="isLoading">
+        <button type="button" class="btn-secondary" (click)="onBackClick()" [disabled]="isLoading">
           <span class="material-symbols-outlined icon-sm">arrow_back</span>
           <span>Back to Regular Sign In</span>
         </button>
@@ -54,7 +57,7 @@
       <div *ngIf="currentStep === 'providers'" class="providers-section">
         <div class="providers-header">
           <h2>Sign in to {{ selectedCompanyDomain }}</h2>
-          <p>Choose your authentication method</p>
+          <p>Choose your authentication provider</p>
         </div>
 
         <div class="providers-list">
@@ -76,27 +79,38 @@
           </button>
         </div>
 
-        <button type="button" class="btn-tertiary btn-back" (click)="onBackClick()" [disabled]="isLoading">
+        <button type="button" class="btn-secondary btn-back" (click)="onBackClick()" [disabled]="isLoading">
           <span class="material-symbols-outlined icon-sm">arrow_back</span>
           <span>Change Domain</span>
         </button>
       </div>
     </main>
 
-    <!-- Footer (pinned bottom) -->
+    <!-- Footer -->
     <footer class="sign-in-footer">
       <div class="status-row">
         <span class="material-symbols-outlined icon-sm">shield</span>
         <span>Secure 256-bit SSL Encrypted Connection</span>
       </div>
       <div class="footer-links">
-        <a href="#">Privacy Policy</a> <a href="#">Terms of Service</a> <a href="#">Support</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Support</a>
       </div>
-      <div class="copyright">© 2024 SCC Enterprise Logistics. All rights reserved.</div>
+      <div class="copyright">© 2026 SCC Enterprise Logistics. All rights reserved.</div>
     </footer>
   </section>
 
+  <!-- Right Panel: Image Showcase with Black & Navy Gradient Overlay -->
   <aside class="sign-in-aside">
     <div class="aside-overlay"></div>
+    <div class="aside-content-card">
+      <div class="aside-badge">
+        <span class="material-symbols-outlined icon-sm">verified</span>
+        <span>Single Sign-On</span>
+      </div>
+      <h2>Enterprise Identity Integration</h2>
+      <p>Seamlessly connect with Okta, Azure AD, Ping, and custom SAML 2.0 identity providers.</p>
+    </div>
   </aside>
 </div>

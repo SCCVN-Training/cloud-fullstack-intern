@@ -1,39 +1,71 @@
+// Base Dashboard Container
 .dashboard-page {
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
+  width: 100%;
 }
 
-// Hero Section
+// ==========================================
+// 1. HERO BANNER
+// ==========================================
 .hero-banner {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: space-between;
   background: #ffffff;
   border-radius: 12px;
-  padding: 1.5rem 2rem;
+  padding: clamp(1.25rem, 3vw, 1.5rem) clamp(1.5rem, 4vw, 2rem);
   border: 1px solid #e2e8f0;
-  gap: 2rem;
+  gap: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
-  .hero-graphic img {
-    max-height: 140px;
-    border-radius: 8px;
-    object-fit: cover;
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .hero-graphic {
+    flex-shrink: 0;
+    width: 100%;
+
+    @media (min-width: 640px) {
+      width: auto;
+    }
+
+    img {
+      width: 100%;
+      max-height: 140px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
   }
 }
 
-// Section Header Styling
+// ==========================================
+// 2. SECTION HEADERS
+// ==========================================
 .section-header {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: flex-start;
+  gap: 0.5rem;
   margin-bottom: 1.25rem;
+
+  @media (min-width: 480px) {
+    flex-direction: row;
+    align-items: flex-end;
+  }
 
   h2 {
     font-size: 1.2rem;
     font-weight: 700;
     color: #0f172a;
     margin: 0 0 0.25rem 0;
+    line-height: 1.2;
   }
 
   p {
@@ -47,44 +79,59 @@
     font-weight: 600;
     font-size: 0.875rem;
     text-decoration: none;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: #1d4ed8;
+      text-decoration: underline;
+    }
   }
 }
 
-// Layout Grids
+// ==========================================
+// 3. FLUID RESPONSIVE GRIDS
+// ==========================================
 .card-grid {
   display: grid;
   gap: 1.5rem;
 
   &.two-cols {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   }
 
   &.three-cols {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   }
 
   &.four-cols {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   }
 }
 
-// Workshop Cards
+// ==========================================
+// 4. WORKSHOP CARDS
+// ==========================================
 .workshop-card {
   background: #ffffff;
   border-radius: 8px;
   border: 1px solid #e2e8f0;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-
-  /* 1. Make the card a Flex column with full height */
   display: flex;
   flex-direction: column;
-  height: 100%; // Ensures all cards in a CSS Grid row match height
+  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  }
 
   .card-media {
     position: relative;
     height: 160px;
-    flex-shrink: 0; // Don't allow image section to shrink
+    flex-shrink: 0;
 
     img {
       width: 100%;
@@ -102,13 +149,12 @@
       font-weight: 600;
       padding: 0.25rem 0.6rem;
       border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     }
   }
 
   .card-content {
     padding: 1.25rem;
-
-    /* 2. Make content wrapper grow and fill remaining space */
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -118,6 +164,7 @@
       font-weight: 700;
       margin: 0 0 0.35rem 0;
       color: #0f172a;
+      line-height: 1.3;
     }
 
     .meta {
@@ -131,31 +178,33 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    /* 3. Push footer to the absolute bottom of .card-content */
-    margin-top: auto; 
+    margin-top: auto;
   }
 }
 
-// Status Tag Styling
+// ==========================================
+// 5. STATUS TAGS
+// ==========================================
 .status-tag {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
   font-size: clamp(0.75rem, 0.85rem, 0.9rem);
   font-weight: 600;
+
+  .material-symbols-outlined {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+  }
 }
 
-.status-tag .material-symbols-outlined {
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
-}
-
-// Recommended Cards Block
+// ==========================================
+// 6. RECOMMENDED CARDS BLOCK
+// ==========================================
 .recommended-wrapper {
   background: #f1f5f9;
-  padding: 1.5rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
   border-radius: 16px;
 }
 
@@ -164,15 +213,32 @@
   border-radius: 12px;
   padding: 1rem;
   display: flex;
+  flex-direction: column;
   gap: 1.25rem;
   border: 1px solid #e2e8f0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  @media (min-width: 540px) {
+    flex-direction: row;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  }
 
   .rec-image {
-    width: 140px;
-    height: 100%;
+    width: 100%;
+    height: 140px;
     border-radius: 8px;
     overflow: hidden;
+    flex-shrink: 0;
+
+    @media (min-width: 540px) {
+      width: 140px;
+      height: 100%;
+    }
 
     img {
       width: 100%;
@@ -188,6 +254,7 @@
 
     .rec-tags {
       display: flex;
+      flex-wrap: wrap;
       gap: 0.75rem;
       font-size: 0.7rem;
       font-weight: 700;
@@ -200,18 +267,21 @@
       font-weight: 700;
       margin: 0 0 0.5rem 0;
       line-height: 1.3;
+      color: #0f172a;
     }
 
     p {
       font-size: 0.8rem;
       color: #64748b;
       margin: 0 0 1rem 0;
+      line-height: 1.5;
     }
 
     .rec-actions {
       margin-top: auto;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 1rem;
 
       .date {
@@ -222,7 +292,9 @@
   }
 }
 
-// Trending Cards
+// ==========================================
+// 7. TRENDING CARDS
+// ==========================================
 .trending-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -232,6 +304,12 @@
   flex-direction: column;
   justify-content: space-between;
   min-height: 120px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: #cbd5e1;
+  }
 
   .card-top {
     display: flex;
@@ -242,6 +320,7 @@
       color: #ef4444;
       font-size: 0.65rem;
       font-weight: 800;
+      letter-spacing: 0.02em;
     }
 
     .bookmark-btn {
@@ -250,8 +329,11 @@
       color: #94a3b8;
       cursor: pointer;
       padding: 0;
+      transition: color 0.15s ease;
 
-      &:hover { color: #0f172a; }
+      &:hover {
+        color: #0f172a;
+      }
     }
   }
 
@@ -276,43 +358,68 @@
   }
 }
 
-// Generic Button Styles
+// ==========================================
+// 8. MINIMALIST NAVY GRADIENT BUTTONS
+// ==========================================
 .btn {
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.825rem;
-  cursor: pointer;
+  --navy-dark: #0f172a;
+  --navy-mid: #1e293b;
+  --navy-accent: #334155;
+  --navy-border: #cbd5e1;
+  
+  --btn-radius: 6px;
+  --btn-transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  padding: clamp(0.5rem, 1.2vw, 0.6875rem) clamp(1rem, 2.5vw, 1.375rem);
+  font-size: clamp(0.8125rem, 1vw, 0.875rem);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+
+  border-radius: var(--btn-radius);
   border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  transition: var(--btn-transition);
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--navy-mid);
+    outline-offset: 2px;
+  }
 
   &-primary {
-    background: #1d4ed8;
-    color: #ffffff;
+    background-image: linear-gradient(180deg, var(--navy-mid) 0%, var(--navy-dark) 100%);
+    color: #f8fafc;
+    border-color: rgba(15, 23, 42, 0.2);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
-    &:hover { background: #1e40af; }
+    &:hover {
+      background-image: linear-gradient(180deg, var(--navy-accent) 0%, var(--navy-mid) 100%);
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
   }
 
   &-outline {
-    background: transparent;
-    border-color: #cbd5e1;
-    color: #334155;
+    background-color: #ffffff;
+    color: var(--navy-dark);
+    border-color: var(--navy-border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 
-    &:hover { background: #f8fafc; }
-  }
-}
-
-// Responsive adjustments
-@media (max-width: 1024px) {
-  .card-grid.four-cols {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .card-grid.two-cols {
-    grid-template-columns: 1fr;
-  }
-  .card-grid.three-cols {
-    grid-template-columns: 1fr;
-  }
-  .card-grid.four-cols {
-    grid-template-columns: 1fr;
+    &:hover {
+      background-image: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      border-color: var(--navy-accent);
+      color: var(--navy-dark);
+    }
   }
 }

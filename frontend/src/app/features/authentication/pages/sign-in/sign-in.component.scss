@@ -1,18 +1,26 @@
 :host {
   display: block;
-  height: 100%;
-  width: 100%;
-  background: white;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #ffffff;
   color: #0f172a;
   font-family:
     'Inter',
     system-ui,
     -apple-system,
     sans-serif;
+
   * {
     box-sizing: border-box;
   }
 }
+
+// Navy & Dark Theme Palette
+$navy-dark: #0f172a;
+$navy-mid: #1e293b;
+$navy-accent: #1d4ed8;
+$navy-light: #2563eb;
 
 .sign-in-page {
   display: flex;
@@ -20,77 +28,106 @@
   width: 100%;
 }
 
-/* --- Left Panel (Form) --- */
+/* ==========================================
+   LEFT PANEL (WHITE / NAVY FORM)
+   ========================================== */
 .sign-in-panel {
   display: flex;
-  overflow-y: auto;
   flex-direction: column;
-  justify-content: space-between; /* Pushes header up, footer down */
+  justify-content: space-between;
   height: 100%;
-  box-sizing: border-box;
-  padding: 1.25rem; /* Compact padding for small screens */
+  width: 100%;
+  overflow-y: auto;
+  padding: clamp(1.25rem, 3vh, 2.5rem) clamp(1.5rem, 3vw, 3rem);
+  background: #ffffff;
+
+  @media (min-width: 1024px) {
+    width: 38%;
+    min-width: 400px;
+    border-right: 1px solid #e2e8f0;
+  }
 }
 
+// Header
 .sign-in-header {
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 0.5em;
-  margin-bottom: 0.75rem; /* Down from 1rem */
+  gap: 0.75rem;
   width: 100%;
+  margin-top: 5rem;
 }
 
 .brand-icon {
   display: grid;
   place-items: center;
-  flex-shrink: 0;
-  /* Scaled down box dimensions */
-  width: 2.25em; /* Down from 3.5em */
-  height: 2.25em;
-  color: black;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.85rem;
+  // Deep Navy to Dark Gradient Icon Box
+  background: white;
+  color: linear-gradient(135deg, $navy-mid 0%, $navy-dark 100%);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+
   .material-symbols-outlined {
-    font-size: 1.75em; /* Down from 3em */
+    font-size: 2.5rem;
   }
 }
 
 .brand-text {
   display: flex;
   flex-direction: column;
+
   h1 {
-    font-size: clamp(0.95rem, 1.1vw, 1.15rem); /* Downscaled clamp range */
+    font-size: clamp(1.1rem, 1.2vw, 1.3rem);
     font-weight: 700;
     margin: 0;
-    line-height: 1.2;
-    color: #1e293b;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+
+    // 1. Define the gradient as a background image
+    background-image: linear-gradient(135deg, $navy-mid 0%, $navy-dark 100%);
+
+    // 2. Clip the background image so it only displays inside the shape of the text characters
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    // 3. Make the actual text color transparent so the background gradient shows through
+    -webkit-text-fill-color: transparent;
+    color: transparent; // Fallback
   }
+
   p {
     margin: 0.15rem 0 0;
-    font-size: clamp(0.7rem, 0.8vw, 0.8rem); /* Downscaled clamp range */
+    font-size: clamp(0.7rem, 0.8vw, 0.8rem);
     color: #64748b;
   }
 }
 
+// Main Form Box
 .sign-in-main {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 360px; /* Tightened from 400px for a more compact form width */
+  max-width: 360px;
   width: 100%;
   margin: 0 auto;
-  box-sizing: border-box;
 
   .sign-in-welcome-box {
-    margin-bottom: 0.75rem; /* Down from 1rem */
+    margin-bottom: 1.25rem;
+
     h2 {
-      font-size: clamp(1.15rem, 1.35vw, 1.35rem); /* Down from fixed 1.5rem */
+      font-size: clamp(1.35rem, 1.6vw, 1.6rem);
       font-weight: 700;
       margin: 0;
+      color: $navy-dark;
+      letter-spacing: -0.02em;
     }
+
     p {
-      margin: 0.25rem 0 0;
-      font-size: clamp(0.725rem, 0.85vw, 0.8125rem);
+      margin: 0.35rem 0 0;
+      font-size: clamp(0.775rem, 0.85vw, 0.85rem);
       color: #64748b;
     }
   }
@@ -98,33 +135,37 @@
   .sign-in-form {
     display: flex;
     flex-direction: column;
-    gap: 0.875rem; /* Reduced gap between form fields from 1.25rem */
+    gap: 1rem;
   }
 
   .form-field {
     display: flex;
     flex-direction: column;
-    gap: 0.375rem; /* Down from 0.5rem */
+    gap: 0.375rem;
+
     label {
-      font-size: clamp(0.75rem, 0.85vw, 0.8125rem); /* Scaled down from 0.875rem */
+      font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
       font-weight: 600;
-      color: #0f172a;
+      color: $navy-dark;
     }
   }
 
   .error-banner {
-    background: #fee2e2;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fef2f2;
     color: #991b1b;
     border: 1px solid #fecaca;
-    border-radius: 0.375rem;
-    padding: 0.625rem 0.75rem;
-    font-size: 0.75rem;
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.775rem;
     font-weight: 600;
   }
 
   .field-error {
     margin: 0;
-    color: #b91c1c;
+    color: #dc2626;
     font-size: 0.7rem;
     font-weight: 600;
   }
@@ -133,11 +174,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .forgot-link {
       font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
       font-weight: 600;
-      color: #0052cc;
+      color: $navy-accent;
       text-decoration: none;
+
       &:hover {
         text-decoration: underline;
       }
@@ -146,29 +189,40 @@
 
   .input-group {
     position: relative;
+
     .icon {
       position: absolute;
-      left: 0.75rem;
+      left: 0.85rem;
       top: 50%;
       transform: translateY(-50%);
       color: #94a3b8;
-      font-size: 1.125rem; /* Slightly smaller icon inside field */
+      font-size: 1.125rem;
+      transition: color 0.2s ease;
     }
+
     input {
       width: 100%;
-      padding: 0.4rem 0.625rem 0.4rem 2.25rem; /* Slimmer vertical input padding */
+      padding: 0.55rem 0.75rem 0.55rem 2.5rem;
+      background: #f8fafc;
       border: 1px solid #cbd5e1;
-      border-radius: 0.375rem;
-      font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
-      color: #0f172a;
-      transition: all 0.2s;
+      border-radius: 0.5rem;
+      font-size: clamp(0.8125rem, 0.9vw, 0.875rem);
+      color: $navy-dark;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
       &::placeholder {
         color: #94a3b8;
       }
+
       &:focus {
         outline: none;
-        border-color: #0052cc;
-        box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.1);
+        background: #ffffff;
+        border-color: $navy-accent;
+        box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+
+        + .icon {
+          color: $navy-accent;
+        }
       }
     }
   }
@@ -178,56 +232,78 @@
   .checkbox-label {
     display: flex;
     align-items: center;
-    gap: 0.375rem;
+    gap: 0.5rem;
     font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
     color: #475569;
     cursor: pointer;
+
     input {
-      width: 0.875rem;
-      height: 0.875rem;
-      accent-color: #0052cc;
+      width: 0.9375rem;
+      height: 0.9375rem;
+      border-radius: 0.25rem;
+      accent-color: $navy-accent;
       cursor: pointer;
     }
   }
 }
 
+// Minimalist Navy Gradient Buttons
 .btn-primary,
 .btn-secondary {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.375rem;
+  gap: 0.5rem;
   width: 100%;
-  padding: 0.5rem 0.75rem; /* Slimmer button height down from 0.75rem 1rem */
-  border-radius: 0.375rem;
-  font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  font-size: clamp(0.8125rem, 0.9vw, 0.875rem);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
   .icon-sm {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 }
 
 .btn-primary {
-  background: #0052cc;
+  // Rich Navy to Black Gradient
+  background-image: linear-gradient(180deg, $navy-mid 0%, $navy-dark 100%);
   color: #ffffff;
-  border: none;
+  border: 1px solid rgba(15, 23, 42, 0.2);
+  box-shadow:
+    0 2px 6px rgba(15, 23, 42, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
   &:hover:not(:disabled) {
-    background: #0043a6;
+    background-image: linear-gradient(180deg, #334155 0%, $navy-mid 100%);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.22);
   }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
   }
 }
 
 .btn-secondary {
   background: #ffffff;
-  color: #0052cc;
+  color: $navy-dark;
   border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+
   &:hover {
-    background: #f8fafc;
+    background-image: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    border-color: #94a3b8;
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 }
 
@@ -237,13 +313,15 @@
   text-align: center;
   color: #64748b;
   font-size: 0.7rem;
-  font-weight: 500;
+  font-weight: 600;
+
   &::before,
   &::after {
     content: '';
     flex: 1;
     border-bottom: 1px solid #e2e8f0;
   }
+
   &::before {
     margin-right: 0.75rem;
   }
@@ -252,100 +330,126 @@
   }
 }
 
+// Footer
 .sign-in-footer {
-  margin-top: 0.5rem; /* Cut in half from 2rem */
-  padding-top: 1.5rem; /* Cut in half from 1.5rem */
+  margin-top: 1rem;
+  padding-top: 1rem;
   border-top: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem; /* Down from 0.75rem */
+  gap: 0.375rem;
+
   .status-row {
     display: flex;
     align-items: center;
     gap: 0.375rem;
-    color: #94a3b8;
-    font-size: 0.6rem;
+    color: #64748b;
+    font-size: 0.65rem;
+
     .icon-sm {
-      font-size: 0.75rem;
+      font-size: 0.85rem;
+      color: $navy-accent;
     }
   }
+
   .footer-links {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.875rem;
+
     a {
-      font-size: 0.6rem;
+      font-size: 0.65rem;
       font-weight: 500;
       color: #64748b;
       text-decoration: none;
+
       &:hover {
-        color: #0f172a;
+        color: $navy-dark;
       }
     }
   }
+
   .copyright {
-    font-size: 0.6rem;
+    font-size: 0.625rem;
     color: #94a3b8;
   }
 }
 
-/* --- Right Panel (Image) --- */
+/* ==========================================
+   RIGHT PANEL (BLACK & NAVY GRADIENT OVERLAY)
+   ========================================== */
 .sign-in-aside {
   display: none;
 }
 
-/* Desktop Breakpoint */
 @media (min-width: 1024px) {
-  .sign-in-panel {
-    width: 38%;
-    min-width: 360px;
-    /* Responsive padding scaling dynamically with both viewport height (vh) and width (vw) */
-    padding: clamp(1.25rem, 2.5vh, 2.25rem) clamp(1.5rem, 2.5vw, 2.75rem);
-  }
   .sign-in-aside {
-    display: block;
+    display: flex;
+    align-items: flex-end;
     width: 62%;
     height: 100%;
     position: relative;
+    padding: 3rem;
     background: url('https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&auto=format&fit=crop')
       center/cover no-repeat;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
   }
+
+  // Multi-stop Deep Navy and Black Gradient Overlay
   .aside-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0) 40%);
+    background: linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.2) 0%,
+      rgba(15, 23, 42, 0.7) 50%,
+      rgba(0, 0, 0, 0.95) 100%
+    );
   }
-  .aside-content {
-    position: absolute;
-    bottom: 2.5rem;
-    left: 2.5rem;
-    right: 2.5rem;
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    color: #ffffff;
-  }
-  .aside-logo-text {
-    font-size: clamp(2rem, 2.5vw, 2.75rem);
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    margin: 0;
-  }
-  .aside-copy {
-    border-left: 2px solid rgba(255, 255, 255, 0.3);
-    padding-left: 1rem;
-    h2 {
-      font-size: clamp(0.95rem, 1.1vw, 1.05rem);
-      font-weight: 700;
-      margin: 0;
+
+  .aside-content-card {
+    position: relative;
+    z-index: 2;
+    max-width: 540px;
+    padding: 2rem;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+
+    .aside-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.35rem 0.75rem;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 2rem;
+      color: #60a5fa;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 0.875rem;
+
+      .icon-sm {
+        font-size: 0.9375rem;
+      }
     }
+
+    h2 {
+      font-size: clamp(1.35rem, 2vw, 1.75rem);
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 0 0.5rem;
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+    }
+
     p {
-      font-size: clamp(0.75rem, 0.85vw, 0.8125rem);
-      margin: 0.25rem 0 0;
-      opacity: 0.9;
+      font-size: clamp(0.85rem, 1vw, 0.9375rem);
+      color: #cbd5e1;
+      margin: 0;
+      line-height: 1.6;
     }
   }
 }
