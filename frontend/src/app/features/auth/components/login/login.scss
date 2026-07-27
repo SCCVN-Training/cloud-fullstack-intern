@@ -148,6 +148,11 @@
   }
 }
 
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
 .full-width {
   width: 100%;
 
