@@ -1,51 +1,17 @@
 <main class="skill-details-container">
-  <app-skill-hero></app-skill-hero>
+  <div *ngIf="isLoading">Loading...</div>
 
-  <div class="content-grid">
-    <div class="main-column">
-      <section class="about-section">
-        <h2 class="section-title">About this skill</h2>
-        <div class="about-text">
-          <p>
-            In this comprehensive session, we'll dive deep into the core tools of Procreate. We
-            won't just cover what the buttons do; we'll explore professional workflows that save
-            time and elevate your art. Whether you want to draw stylized characters, lush
-            landscapes, or clean typography, the foundation starts here.
-          </p>
-          <div class="learning-outcomes">
-            <h3 class="learning-title">
-              <span class="material-symbols-outlined icon-bulb">lightbulb</span> What you'll learn:
-            </h3>
-            <ul class="learning-list">
-              <li>
-                <span class="material-symbols-outlined icon-check">check_circle</span>
-                <span>Canvas setup for print vs. digital</span>
-              </li>
-              <li>
-                <span class="material-symbols-outlined icon-check">check_circle</span>
-                <span>Layers, blending modes, editing</span>
-              </li>
-              <li>
-                <span class="material-symbols-outlined icon-check">check_circle</span>
-                <span>Customizing brushes to your style</span>
-              </li>
-              <li>
-                <span class="material-symbols-outlined icon-check">check_circle</span>
-                <span>Color theory &amp; cohesive palettes</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <aside class="sidebar-column">
-      <app-booking-card></app-booking-card>
-    </aside>
+  <div *ngIf="errorMessage">
+    {{ errorMessage }}
   </div>
 
-  <div class="bottom-sections">
-    <app-instructor-card></app-instructor-card>
-    <app-review-carousel></app-review-carousel>
+  <div *ngIf="skill">
+    <h1>{{ skill.title }}</h1>
+
+    <p>{{ skill.category }}</p>
+
+    <img [src]="skill.image" [alt]="skill.title" width="300" />
+
+    <pre>{{ skill | json }}</pre>
   </div>
 </main>

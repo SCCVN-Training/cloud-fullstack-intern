@@ -1,19 +1,29 @@
 <section class="instructor-panel">
   <div class="instructor-avatar">
-    <img [src]="instructor.avatar" [alt]="instructor.name" />
+    <img [src]="skill.instructorAvatar" [alt]="skill.instructorName" />
   </div>
 
   <div class="instructor-info">
     <h3 class="instructor-name">
-      {{ instructor.name }}
+      {{ skill.instructorName }}
     </h3>
 
     <p class="instructor-title">
-      {{ instructor.title }}
+      {{ skill.instructorTitle }}
     </p>
 
     <p class="instructor-bio">
-      {{ instructor.bio }}
+      {{ skill.instructorBio }}
+    </p>
+
+    <p class="instructor-contact">
+      Language:
+      {{ skill.language }}
+    </p>
+
+    <p class="instructor-contact">
+      Available Slots:
+      {{ skill.availableSlots }}
     </p>
   </div>
 </section>
