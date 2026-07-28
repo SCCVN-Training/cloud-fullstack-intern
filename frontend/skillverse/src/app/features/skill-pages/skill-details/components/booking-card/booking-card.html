@@ -5,7 +5,7 @@
     <span class="material-symbols-outlined icon-coin"> monetization_on </span>
 
     <span class="price-value">
-      {{ price }}
+      {{ skill.price }}
     </span>
 
     <span class="price-currency"> Skill Coins </span>
@@ -19,7 +19,10 @@
 
       <div class="detail-text">
         <p class="detail-name">Duration</p>
-        <p class="detail-val">{{ duration }}</p>
+
+        <p class="detail-val">
+          {{ skill.duration }}
+        </p>
       </div>
     </div>
 
@@ -30,7 +33,10 @@
 
       <div class="detail-text">
         <p class="detail-name">Level</p>
-        <p class="detail-val">{{ level }}</p>
+
+        <p class="detail-val">
+          {{ skill.level }}
+        </p>
       </div>
     </div>
 
@@ -41,7 +47,10 @@
 
       <div class="detail-text">
         <p class="detail-name">Requirements</p>
-        <p class="detail-val">{{ requirements }}</p>
+
+        <p class="detail-val">
+          {{ skill.requirements }}
+        </p>
       </div>
     </div>
   </div>
@@ -51,10 +60,4 @@
 
     <span class="material-symbols-outlined"> calendar_month </span>
   </button>
-
-  <div class="guarantee">
-    <span class="material-symbols-outlined icon-shield"> security </span>
-
-    <p>100% Satisfaction Guarantee</p>
-  </div>
 </div>

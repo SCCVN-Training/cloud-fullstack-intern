@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -6,55 +6,51 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './review-carousel.html',
-  styleUrl: './review-carousel.scss',
+  styleUrls: ['./review-carousel.scss'],
 })
 export class ReviewCarousel {
-  reviews = [
-    {
-      id: 1,
-      initials: 'JD',
-      initialsClass: 'initials-jd',
-      name: 'James D.',
-      stars: 5,
-      text: "Elena is fantastic! I was completely lost with Procreate's interface, but she explained everything so clearly.",
-    },
-    {
-      id: 2,
-      initials: 'SW',
-      initialsClass: 'initials-sw',
-      name: 'Sarah W.',
-      stars: 3,
-      text: 'Great tips on brush customization. I wish the session was a bit longer because time flew by, but totally worth it!',
-    },
-    {
-      id: 3,
-      initials: 'MT',
-      initialsClass: 'initials-jd',
-      name: 'Michael T.',
-      stars: 5,
-      text: 'Excellent course! The section on color theory really opened my eyes to new possibilities.',
-    },
-    {
-      id: 4,
-      initials: 'AL',
-      initialsClass: 'initials-sw',
-      name: 'Anna L.',
-      stars: 5,
-      text: 'Highly recommended. The way she breaks down complex fundamentals makes it so easy to follow along!',
-    },
-    {
-      id: 5,
-      initials: 'KC',
-      initialsClass: 'initials-jd',
-      name: 'Kevin C.',
-      stars: 4,
-      text: 'A very solid introduction to Procreate. I loved the section on creating custom brushes.',
-    },
-  ];
+  @Input() skill: any;
 
   currentReviewIndex = 0;
 
   reviewsPerPage = 2;
+
+  get reviews() {
+    return [
+      {
+        id: 1,
+        initials: 'JD',
+        initialsClass: 'initials-jd',
+        name: 'James D.',
+        stars: 5,
+        text: `${this.skill?.name} explained everything clearly. Fantastic mentor!`,
+      },
+      {
+        id: 2,
+        initials: 'SW',
+        initialsClass: 'initials-sw',
+        name: 'Sarah W.',
+        stars: 4,
+        text: `Really enjoyed learning from ${this.skill?.name}.`,
+      },
+      {
+        id: 3,
+        initials: 'MT',
+        initialsClass: 'initials-jd',
+        name: 'Michael T.',
+        stars: 5,
+        text: `The teaching style was excellent.`,
+      },
+      {
+        id: 4,
+        initials: 'AL',
+        initialsClass: 'initials-sw',
+        name: 'Anna L.',
+        stars: 5,
+        text: `Would definitely book another session.`,
+      },
+    ];
+  }
 
   get displayedReviews() {
     return this.reviews.slice(
