@@ -12,8 +12,8 @@ class Settings(BaseSettings):
     # JWT Security Configuration
     SECRET_KEY: str
     ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int
-    REFRESH_TOKEN_EXPIRE_DAYS: int
+    ACCESS_TOKEN_EXPIRE: int
+    REFRESH_TOKEN_EXPIRE: int
 
     # Load from .env file
     model_config = SettingsConfigDict(

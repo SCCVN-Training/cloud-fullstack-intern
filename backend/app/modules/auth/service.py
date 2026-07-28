@@ -7,15 +7,16 @@ from fastapi import HTTPException, Response, status
 from app.core.config import settings
 from app.core.security import hash_password, verify_password, create_token, decode_token
 from app.modules.auth.repository import AuthRepository
-from app.modules.auth.schemas import UserRegisterRequest, UserLoginRequest, UserResponse, ForgotPasswordRequest, ResetPasswordRequest, ChangePasswordRequest, MessageResponse
+from app.modules.auth import schemas, queries
+
 
 class AuthService:
 
     @staticmethod
     def _set_token_cookies(response: Response, user_id: str) -> None:
         """Helper to create and attach HttpOnly access and refresh cookies."""
-        access_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        refresh_expires = timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+        access_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE)
+        refresh_expires = timedelta(days=settings.REFRESH_TOKEN_EXPIRE)
 
         access_token = create_token({"sub": str(user_id), "type": "access"}, access_expires)
         refresh_token = create_token({"sub": str(user_id), "type": "refresh"}, refresh_expires)
@@ -41,7 +42,7 @@ class AuthService:
         )
 
     @staticmethod
-    async def register_user(conn: asyncpg.Connection, data: UserRegisterRequest, response: Response) -> UserResponse:
+    async def register_user(conn: asyncpg.Connection, data: schemas.UserRegisterRequest, response: Response) -> schemas.UserResponse:
         existing_user = await AuthRepository.get_by_email(conn, data.email)
         if existing_user:
             raise HTTPException(
@@ -59,12 +60,12 @@ class AuthService:
 
         AuthService._set_token_cookies(response, str(new_user["id"]))
 
-        return UserResponse(**new_user)
+        return schemas.UserResponse(**new_user)
 
     @staticmethod
     async def login_user(
-        conn: asyncpg.Connection, credentials: UserLoginRequest, response: Response
-    ) -> UserResponse:
+        conn: asyncpg.Connection, credentials: schemas.UserLoginRequest, response: Response
+    ) -> schemas.UserResponse:
         user = await AuthRepository.get_by_email(conn, credentials.email)
         if not user or not verify_password(credentials.password, user["hashed_password"]):
             raise HTTPException(
@@ -81,10 +82,10 @@ class AuthService:
         # Attach HttpOnly JWT Cookies
         AuthService._set_token_cookies(response, str(user["id"]))
 
-        return UserResponse(**user)
+        return schemas.UserResponse(**user)
 
     @staticmethod
-    async def refresh_session(conn: asyncpg.Connection, refresh_token: str, response: Response) -> UserResponse:
+    async def refresh_session(conn: asyncpg.Connection, refresh_token: str, response: Response) -> schemas.UserResponse:
         payload = decode_token(refresh_token)
         if not payload or payload.get("type") != "refresh":
             raise HTTPException(
@@ -93,8 +94,7 @@ class AuthService:
             )
 
         user_id = payload.get("sub")
-        query = "SELECT * FROM nephos.users WHERE id = $1"
-        row = await conn.fetchrow(query, user_id)
+        row = await conn.fetchrow(queries.GET_USER_BY_EMAIL, user_id)
         if not row:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
@@ -105,7 +105,7 @@ class AuthService:
         # Issue fresh token pair
         AuthService._set_token_cookies(response, str(user["id"]))
 
-        return UserResponse(**user)
+        return schemas.UserResponse(**user)
 
     @staticmethod
     def logout_user(response: Response) -> dict:
@@ -129,7 +129,7 @@ class AuthService:
         return {"message": "Account successfully deleted."}
 
     @staticmethod
-    async def request_password_reset(conn: asyncpg.Connection, data: ForgotPasswordRequest) -> dict:
+    async def request_password_reset(conn: asyncpg.Connection, data: schemas.ForgotPasswordRequest) -> dict:
         user = await AuthRepository.get_by_email(conn, data.email)
         
         # Security Best Practice: Don't reveal if email exists or not
@@ -149,7 +149,7 @@ class AuthService:
         return {"message": "If that email is registered, a password reset link has been sent."}
 
     @staticmethod
-    async def reset_password(conn: asyncpg.Connection, data: ResetPasswordRequest) -> dict:
+    async def reset_password(conn: asyncpg.Connection, data: schemas.ResetPasswordRequest) -> dict:
         token_record = await AuthRepository.get_valid_reset_token(conn, data.token)
         if not token_record:
             raise HTTPException(
@@ -171,11 +171,10 @@ class AuthService:
     async def change_password(
         conn: asyncpg.Connection,
         user_id: uuid.UUID,
-        payload: ChangePasswordRequest,
+        payload: schemas.ChangePasswordRequest,
     ) -> dict:
         # Fetch current user record from DB
-        query = "SELECT hashed_password FROM nephos.users WHERE id = $1"
-        row = await conn.fetchrow(query, user_id)
+        row = await conn.fetchrow(queries.GET_CURRENT_PASSWORD, user_id)
         if not row:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
@@ -188,11 +187,6 @@ class AuthService:
 
         # 2. Hash and update new password
         new_hashed = hash_password(payload.new_password)
-        update_query = """
-            UPDATE nephos.users 
-            SET hashed_password = $1, updated_at = CURRENT_TIMESTAMP 
-            WHERE id = $2
-        """
-        await conn.execute(update_query, new_hashed, user_id)
+        await conn.execute(queries.UPDATE_USER_PASSWORD, new_hashed, user_id)
 
         return {"message": "Password updated successfully."}

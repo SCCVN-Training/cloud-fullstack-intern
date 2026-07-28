@@ -5,6 +5,7 @@ from app.core.database import init_db_pool, close_db_pool, pool
 from app.modules.auth.models import CREATE_USERS_TABLE_SQL
 from app.modules.auth.router import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
+import app.modules.auth
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

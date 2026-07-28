@@ -2,15 +2,14 @@ import asyncpg
 import uuid
 from datetime import datetime
 from typing import Optional, Any
-
+from app.modules.auth import queries
 
 class AuthRepository:
 
     @staticmethod
     async def get_by_email(conn: asyncpg.Connection, email: str) -> Optional[dict[str, Any]]:
         """Queries user by email using raw SQL and parameterized bindings."""
-        query = "SELECT * FROM nephos.users WHERE email = $1"
-        row = await conn.fetchrow(query, email)
+        row = await conn.fetchrow(queries.GET_USER_BY_EMAIL, email)
         return dict(row) if row else None
 
     @staticmethod
@@ -20,20 +19,13 @@ class AuthRepository:
         hashed_password: str,
         full_name: Optional[str],
     ) -> dict[str, Any]:
-        """Inserts a new user record safely into PostgreSQL."""
-        query = """
-            INSERT INTO nephos.users (email, hashed_password, full_name)
-            VALUES ($1, $2, $3)
-            RETURNING id, email, full_name, storage_used, storage_quota, created_at;
-        """
-        row = await conn.fetchrow(query, email, hashed_password, full_name)
+        row = await conn.fetchrow(queries.CREATE_USER, email, hashed_password, full_name)
         return dict(row)
 
     @staticmethod
     async def delete_user(conn: asyncpg.Connection, user_id: uuid.UUID) -> bool:
         """Permanently deletes a user from the database."""
-        query = "DELETE FROM nephos.users WHERE id = $1"
-        result = await conn.execute(query, user_id)
+        result = await conn.execute(queries.DELETE_USER, user_id)
         # Returns True if a row was actually deleted
         return result == "DELETE 1"
 
@@ -42,22 +34,14 @@ class AuthRepository:
         conn: asyncpg.Connection, user_id: uuid.UUID, token: str, expires_at: datetime
     ) -> None:
         """Stores a new password reset token."""
-        query = """
-            INSERT INTO nephos.password_resets (user_id, token, expires_at)
-            VALUES ($1, $2, $3)
-        """
-        await conn.execute(query, user_id, token, expires_at)
+        await conn.execute(queries.CREATE_RESET_TOKEN, user_id, token, expires_at)
 
     @staticmethod
     async def get_valid_reset_token(
         conn: asyncpg.Connection, token: str
     ) -> Optional[dict[str, Any]]:
         """Retrieves a token record if it exists, is unused, and hasn't expired."""
-        query = """
-            SELECT * FROM nephos.password_resets 
-            WHERE token = $1 AND is_used = FALSE AND expires_at > CURRENT_TIMESTAMP
-        """
-        row = await conn.fetchrow(query, token)
+        row = await conn.fetchrow(queries.GET_VALID_RESET_TOKEN, token)
         return dict(row) if row else None
 
     @staticmethod
@@ -67,11 +51,11 @@ class AuthRepository:
         """Updates user password and marks the token as used in a single transaction."""
         async with conn.transaction():
             await conn.execute(
-                "UPDATE nephos.users SET hashed_password = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2",
+                queries.UPDATE_USER_PASSWORD,
                 new_hashed_password,
                 user_id,
             )
             await conn.execute(
-                "UPDATE nephos.password_resets SET is_used = TRUE WHERE id = $1",
+                queries.INVALIDATE_RESET_TOKEN,
                 token_id,
             )

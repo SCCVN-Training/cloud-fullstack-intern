@@ -2,6 +2,7 @@ import asyncpg
 from fastapi import Depends, HTTPException, Request, status
 from app.core.database import get_db_connection
 from app.core.security import decode_token
+from app.modules.auth import queries
 
 
 async def get_current_user(
@@ -24,8 +25,7 @@ async def get_current_user(
         )
 
     user_id = payload.get("sub")
-    query = "SELECT * FROM nephos.users WHERE id = $1"
-    row = await conn.fetchrow(query, user_id)
+    row = await conn.fetchrow(queries.GET_USER_BY_EMAIL, user_id)
 
     if not row:
         raise HTTPException(
