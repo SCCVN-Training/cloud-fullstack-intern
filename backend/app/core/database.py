@@ -18,3 +18,13 @@ SessionLocal = sessionmaker(
 # Base class for all database models
 class Base(DeclarativeBase):
     pass
+
+# Dependency Injection
+def get_db():
+    db = SessionLocal()
+
+    try:
+        yield db
+
+    finally:
+        db.close()
