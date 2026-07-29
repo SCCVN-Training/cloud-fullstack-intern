@@ -3,6 +3,11 @@ GET_USER_BY_EMAIL = """
     WHERE email = $1;
 """
 
+GET_USER_BY_ID = """
+    SELECT * FROM nephos.users 
+    WHERE id = $1;
+"""
+
 CREATE_USER = """
     INSERT INTO nephos.users (email, hashed_password, full_name)
     VALUES ($1, $2, $3)

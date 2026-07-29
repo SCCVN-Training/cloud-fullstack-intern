@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MobileBottomView } from './mobile-bottom-view';
+import { MobileBottomNav } from './mobile-bottom-nav';
 
-describe('MobileBottomView', () => {
-  let component: MobileBottomView;
-  let fixture: ComponentFixture<MobileBottomView>;
+describe('MobileBottomNav', () => {
+  let component: MobileBottomNav;
+  let fixture: ComponentFixture<MobileBottomNav>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MobileBottomView],
+      imports: [MobileBottomNav],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MobileBottomView);
+    fixture = TestBed.createComponent(MobileBottomNav);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS nephos.users (
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_email ON nephos.users(email);
 
 CREATE TABLE IF NOT EXISTS nephos.password_resets (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

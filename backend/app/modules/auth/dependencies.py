@@ -1,9 +1,11 @@
+import uuid
 import asyncpg
 from fastapi import Depends, HTTPException, Request, status
 from app.core.database import get_db_connection
 from app.core.security import decode_token
-from app.modules.auth import queries
+from app.modules.auth.repository import AuthRepository
 
+auth_repository = AuthRepository()
 
 async def get_current_user(
     request: Request,
@@ -24,13 +26,26 @@ async def get_current_user(
             detail="Invalid or expired access token.",
         )
 
-    user_id = payload.get("sub")
-    row = await conn.fetchrow(queries.GET_USER_BY_EMAIL, user_id)
+    sub = payload.get("sub")
+    if not sub:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token payload.",
+        )
 
-    if not row:
+    try:
+        user_id = uuid.UUID(str(sub))
+    except (ValueError, TypeError):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token subject identifier.",
+        )
+
+    user = await auth_repository.get_by_id(conn, user_id)
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found.",
         )
 
-    return dict(row)
+    return user
