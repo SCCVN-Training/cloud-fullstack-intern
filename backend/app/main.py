@@ -14,7 +14,7 @@ async def lifespan(app: FastAPI):
     if pool:
         async with pool.acquire() as conn:
             await conn.execute(CREATE_USERS_TABLE_SQL)
-        print("✅ Database table 'users' verified / created.")
+        print("Database table 'users' verified / created.")
 
     yield
 
