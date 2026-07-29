@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
 from app.models.user import User
-from app.schemas.user import UserCreate
+from app.schemas.user import ( UserCreate, UserLogin, LoginResponse)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -35,3 +35,28 @@ class UserService:
         db.refresh(new_user)
 
         return new_user
+
+    @staticmethod
+    def login_user(db: Session, user_data: UserLogin) -> LoginResponse:
+        # Find user by email
+        user = (
+            db.query(User)
+            .filter(User.email == user_data.email)
+            .first()
+        )
+
+        # Check if user exists
+        if user is None:
+            raise ValueError("Invalid email or password")
+
+        # Verify password
+        if not pwd_context.verify(
+            user_data.password,
+            user.password_hash
+        ):
+            raise ValueError("Invalid email or password")
+
+        # Login successfully
+        return LoginResponse(
+            message="Login successful"
+        )
