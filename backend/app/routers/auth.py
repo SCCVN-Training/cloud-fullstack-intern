@@ -1,8 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.schemas.user import ( UserCreate, UserResponse, UserLogin, LoginResponse )
+from app.schemas.user import ( 
+    UserCreate, 
+    UserResponse, 
+    UserLogin, 
+    LoginResponse 
+)
 from app.services.user_service import UserService
 
 router = APIRouter(
@@ -17,12 +22,12 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED
 )
 
-def register(
+async def register(
     user: UserCreate,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     try:
-        return UserService.create_user(db, user)
+        return await UserService.create_user(db, user)
 
     except ValueError as err:
         raise HTTPException(
@@ -37,12 +42,12 @@ def register(
     status_code=status.HTTP_200_OK
 )
 
-def login(
+async def login(
     user: UserLogin,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     try:
-        return UserService.login_user(db, user)
+        return await UserService.login_user(db, user)
 
     except ValueError as err:
         raise HTTPException(
