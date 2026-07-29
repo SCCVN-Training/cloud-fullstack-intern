@@ -3,3 +3,7 @@ fastapi
 uvicorn
 httpx2
 httpx
+asyncpg
+PyJWT
+passlib
+pydantic-settings
