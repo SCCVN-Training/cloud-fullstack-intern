@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 from app.core.database import Base, engine
-from app.routers.auth import router as auth_router
+from app.modules.auth.router import router as auth_router
+from app.core.exceptions import register_exception_handlers
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,10 +18,15 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Register Global Exception Handlers
+register_exception_handlers(app)
+
+# Routers
 app.include_router(auth_router)
 
+# Root Endpoint
 @app.get("/")
-def root():
+async def root():
     return{
         "message": "Welcome to SkillVerse API"
     }

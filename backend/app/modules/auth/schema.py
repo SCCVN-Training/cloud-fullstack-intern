@@ -1,15 +1,16 @@
 import uuid
+
 from pydantic import BaseModel, EmailStr, Field
 
 ### REGISTER
 # Used by POST /auth/register
-class UserCreate(BaseModel):
+class RegisterRequest(BaseModel):
     user_name: str = Field(..., min_length=5, max_length=50)
     email: EmailStr
     password: str = Field(..., min_length=8)
 
-# Returned after successful registration
-class UserResponse(BaseModel):
+# Successful registration
+class RegisterResponse(BaseModel):
     id: uuid.UUID
     user_name: str
     email: EmailStr
@@ -19,10 +20,21 @@ class UserResponse(BaseModel):
 
 ### LOGIN
 # Used by POST /auth/login
-class UserLogin(BaseModel):
+class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
-# Returned after successful login
+# Successful login
 class LoginResponse(BaseModel):
-    message: str
+    access_token: str
+    token_type: str
+
+### CURRENT USER
+class CurrentUserResponse(BaseModel):
+    id: uuid.UUID
+    user_name: str
+    email: EmailStr
+
+    model_config = {
+        "from_attributes": True
+    }
