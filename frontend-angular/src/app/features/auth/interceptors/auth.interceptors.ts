@@ -1,15 +1,21 @@
-import { HttpClient, HttpInterceptorFn } from '@angular/common/http';
+import { HttpClient, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core/primitives/di';
 import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import { AuthReducer } from '../data-access/with-auth-reducer';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const http = inject(HttpClient);
   // Always send cookies
-  const request = req.clone({
-    withCredentials: true,
-  });
+  let request: HttpRequest<unknown>;
+  if (req.url.startsWith(environment.apiUrl)) {
+    request = req.clone({
+      withCredentials: true,
+    });
+  } else {
+    request = req;
+  }
 
   return next(request).pipe(
     catchError((error) => {

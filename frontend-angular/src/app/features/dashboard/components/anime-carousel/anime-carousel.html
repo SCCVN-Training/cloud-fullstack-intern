@@ -1,0 +1,15 @@
+<div class="carousel">
+  <button matIconButton class="nav left" (click)="scrollLeft()">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+
+  <div class="viewport" #viewport>
+    @for (anime of animeList(); track anime.mal_id) {
+      <app-anime-card class="card" [anime]="anime" />
+    }
+  </div>
+
+  <button matIconButton class="nav right" (click)="scrollRight()">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+</div>
