@@ -1,8 +1,8 @@
 from uuid import UUID
 
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi.security import OAuth2PasswordBearer
 
 from app.core.database import get_db
 from app.core.security import decode_access_token
@@ -10,6 +10,7 @@ from app.core.exceptions import (
     InvalidTokenException,
     UserNotFoundException
 )
+from app.common.enums import UserRole
 from app.modules.users.models import User
 from app.modules.users.repository import UserRepository
 
@@ -25,8 +26,9 @@ async def get_current_user(
 ) -> User:
         payload = decode_access_token(token)
         user_id = payload.get("sub")
+        role = payload.get("role")
 
-        if user_id is None:
+        if user_id is None or role is None:
             raise InvalidTokenException(
                 "Token payload is invalid"
             )
@@ -42,3 +44,15 @@ async def get_current_user(
             )
 
         return user
+
+# Admin authorization dependency
+async def require_admin(
+    current_user: User = Depends(get_current_user)
+) -> User:
+
+    if current_user.role != UserRole.ADMIN:
+        raise InvalidTokenException(
+             "Admin priviledges required"
+        ) 
+
+    return current_user

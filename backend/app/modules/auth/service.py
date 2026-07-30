@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.common.enums import UserRole
 from app.modules.users.models import User
 from app.modules.users.repository import UserRepository
 from app.core.security import (
@@ -46,7 +47,8 @@ class AuthService:
         new_user = User(
             user_name=user_data.user_name,
             email=user_data.email,
-            password_hash=hashed_password
+            password_hash=hashed_password,
+            role=UserRole.USER
         )
         
         new_user = await UserRepository.create(
@@ -88,8 +90,9 @@ class AuthService:
 
         # Generate JWT access token
         access_token = create_access_token(
-            {
-                "sub": str(user.id)
+            {   
+                "sub": str(user.id),
+                "role": user.role.value
             }
         )
 
