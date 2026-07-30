@@ -1,3 +1,4 @@
+import uuid
 from pydantic import BaseModel, EmailStr, Field
 
 ### REGISTER
@@ -9,7 +10,7 @@ class UserCreate(BaseModel):
 
 # Returned after successful registration
 class UserResponse(BaseModel):
-    id: int
+    id: uuid.UUID
     user_name: str
     email: EmailStr
     model_config = {
