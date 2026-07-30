@@ -4,12 +4,11 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine
 ) 
 from sqlalchemy.orm import DeclarativeBase
-
-from app.core.config import DATABASE_URL
+from app.core.config import settings
 
 # Create async database engine (connection between Python and Neon PostgreSQL)
 engine = create_async_engine(
-    DATABASE_URL,
+    settings.DATABASE_URL,
     echo=True    # Print every SQL statement
 )
 
