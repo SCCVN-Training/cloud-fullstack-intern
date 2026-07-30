@@ -2,7 +2,7 @@ import secrets
 import asyncpg
 import uuid
 from datetime import datetime, timedelta, timezone
-from fastapi import HTTPException, Response, status
+from fastapi import HTTPException, Response, Depends, status
 from app.core.config import settings
 from app.core.security import hash_password, verify_password, create_token, decode_token
 from app.modules.auth.repository import AuthRepository
@@ -11,9 +11,9 @@ from app.modules.auth import schemas
 
 class AuthService:
 
-    def __init__(self, repo: AuthRepository | None = None):
+    def __init__(self, repo: AuthRepository = Depends()):
         # Default to real repository if none is passed
-        self.repo = repo or AuthRepository()
+        self.repo = repo
 
     @staticmethod
     def _set_token_cookies(response: Response, user_id: str) -> None:
