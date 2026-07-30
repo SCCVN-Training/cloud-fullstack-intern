@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
 import { PagedResult, Workshop, WorkshopFilters } from '../models/event.model';
+import { WorkshopDetail } from '../models/workshop-detail.model';
+import { WorkshopDetailService } from './workshop-detail.service';
 // import { environment } from '../../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class EventService {
   // private readonly baseUrl = `${environment.apiBaseUrl}/events`;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private wsDetailService: WorkshopDetailService
+  ) { }
 
   getWorkshops(
     filters: Partial<WorkshopFilters>,
@@ -20,7 +25,13 @@ export class EventService {
     // return this.http.get<PagedResult<Workshop>>(this.baseUrl, {
     //   params: this.buildParams(filters, page, pageSize),
     // });
-    return of(this.mockResult(page, pageSize)).pipe(delay(200));
+    // NOTES: `filters` is accepted but not yet applied to this mock dataset ]
+    // pagination is wired up to real data; filtering logic is a follow-up. 
+    // return of(this.mockResult(page, pageSize)).pipe(delay(200));
+    return this.wsDetailService.getAllWorkshop().pipe(
+      map((allWorkshop) => this.toPagedResult(allWorkshop, page, pageSize)),
+      delay(200)
+    );
   }
 
   private buildParams(filters: Partial<WorkshopFilters>, page: number, pageSize: number): HttpParams {
@@ -33,73 +44,34 @@ export class EventService {
     return params;
   }
 
-  private mockResult(page: number, pageSize: number): PagedResult<Workshop> {
-    const all: Workshop[] = [
-      {
-        id: 'wk-1',
-        title: 'Global Supply Chain Resilience 2024',
-        categoryTags: ['LOGISTICS', 'STRATEGY'],
-        speakerName: 'Dr. Elena Rodriguez',
-        dateLabel: 'Oct 24, 2024 | 10:00 AM',
-        location: 'Main Hall, HQ-12',
-        format: 'in-person',
-        difficulty: 'intermediate',
-        topics: ['Supply Chain', 'Compliance'],
-        seatsFilled: 42,
-        seatsTotal: 50,
-        thumbnailUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&auto=format&fit=crop',
-      },
-      {
-        id: 'wk-2',
-        title: 'Predictive Analytics for Warehousing',
-        categoryTags: ['AI & ML', 'AUTOMATION'],
-        speakerName: 'Marcus Chen',
-        dateLabel: 'Oct 26, 2024 | 02:00 PM',
-        location: 'Microsoft Teams Link',
-        format: 'virtual',
-        difficulty: 'advanced',
-        topics: ['Analytics', 'AI & ML'],
-        seatsFilled: 156,
-        seatsTotal: 200,
-        thumbnailUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop',
-      },
-      {
-        id: 'wk-3',
-        title: 'Change Management in Logistics',
-        categoryTags: ['LEADERSHIP', 'MANAGEMENT'],
-        speakerName: 'Robert Sterling',
-        dateLabel: 'Nov 02, 2024 | 09:00 AM',
-        location: 'Conference Center B',
-        format: 'in-person',
-        difficulty: 'beginner',
-        topics: ['Leadership'],
-        seatsFilled: 12,
-        seatsTotal: 25,
-        thumbnailUrl: 'https://images.unsplash.com/photo-1580674684081-7617fbf3d745?w=800&auto=format&fit=crop',
-      },
-      {
-        id: 'wk-4',
-        title: 'Lean Warehouse Operations Workshop',
-        categoryTags: ['OPERATIONS'],
-        speakerName: 'David Wu',
-        dateLabel: 'Nov 05, 2024 | 11:00 AM',
-        location: 'Logistics Hub C',
-        format: 'in-person',
-        difficulty: 'intermediate',
-        topics: ['Supply Chain', 'Sustainability'],
-        seatsFilled: 22,
-        seatsTotal: 30,
-        thumbnailUrl: 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=800&auto=format&fit=crop',
-      },
-    ];
-
+  private toPagedResult(
+    allworkshop: WorkshopDetail[],
+    page: number,
+    pageSize: number
+  ): PagedResult<Workshop> {
+    const totalItems = allworkshop.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
     const start = (page - 1) * pageSize;
-    const items = all.slice(start, start + pageSize);
+    const items = allworkshop.slice(start, start + pageSize).map((w) => this.toCardWorkshop(w));
+
+    return { items, page, totalItems, totalPages }
+
+  }
+
+  private toCardWorkshop(detail: WorkshopDetail): Workshop {
     return {
-      items,
-      page,
-      totalItems: 12,
-      totalPages: 8,
+      id: detail.id,
+      title: detail.title,
+      categoryTags: [],
+      speakerName: detail.speaker.name,
+      dateLabel: detail.dateLabel,
+      location: detail.location,
+      format: detail.format,
+      difficulty: detail.difficulty,
+      topics: [],
+      seatsFilled: detail.seatsFilled,
+      seatsTotal: detail.seatsTotal,
+      thumbnailUrl: detail.heroImageUrl,
     };
   }
 }

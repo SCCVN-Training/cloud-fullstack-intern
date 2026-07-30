@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { EventFiltersComponent } from '../../components/event-filters/event-filters.component';
 import { EventCardComponent } from '../../components/event-card/event-card.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
@@ -22,7 +22,7 @@ export class EventsComponentList implements OnInit {
 
   private activeFilters: Partial<WorkshopFilters> = {};
 
-  constructor(private eventService: EventService) {}
+  constructor(private eventService: EventService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.loadWorkshops();
@@ -47,9 +47,11 @@ export class EventsComponentList implements OnInit {
         this.totalItems = result.totalItems;
         this.totalPages = result.totalPages;
         this.isLoading = false;
+        this.cdr.markForCheck()
       },
       error: () => {
         this.isLoading = false;
+        this.cdr.markForCheck();
       },
     });
   }

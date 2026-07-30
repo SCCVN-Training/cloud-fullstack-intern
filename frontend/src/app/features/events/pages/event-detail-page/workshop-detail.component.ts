@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WorkshopDetailService } from '../../services/workshop-detail.service';
 import { WorkshopDetail } from '../../models/workshop-detail.model';
 import { WorkshopHeroComponent } from './components/workshop-hero/workshop-hero.component';
@@ -26,6 +27,7 @@ import { HelpCardComponent } from '../../../../shared/components/help-card/help-
   styleUrls: ['./workshop-detail.component.scss'],
 })
 export class WorkshopDetailComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   workshop: WorkshopDetail | null = null;
   isLoading = false;
   loadError = false;
@@ -36,26 +38,51 @@ export class WorkshopDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Route is defined as 'workshop/:id' — see events.routes.ts.
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
-      this.loadError = true;
+    // --- MODIFICATION 1: Synchronous Snapshot Fallback ---
+    // Extract the ID from snapshot first to support unit test stubs that mock route.snapshot
+    const snapshotId = this.route.snapshot?.paramMap?.get('id');
+
+    if (snapshotId !== undefined) {
+      this.handleRouteId(snapshotId);
       return;
     }
-    this.loadWorkshop(id);
+
+    // --- MODIFICATION 2: Observable Stream Fallback ---
+    // If paramMap Observable exists (e.g., live app navigation), subscribe to route changes
+    if (this.route.paramMap) {
+      this.route.paramMap
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((paramMap) => {
+          const id = paramMap.get('id');
+          this.handleRouteId(id);
+        });
+    } else {
+      // Handles case where paramMap is completely omitted/null
+      this.handleRouteId(null);
+    }
   }
 
   onRegister(workshopId: string): void {
-    // TODO: hand off to a real RegistrationService once it exists.
-    // The registration card already tracks its own idle/processing/registered
-    // UI state locally — this handler is where you'd fire the actual API call
-    // and reconcile state if it fails.
     console.log('Register requested for workshop', workshopId);
+  }
+
+  // --- MODIFICATION 3: Refactored Route ID Handler ---
+  // Centralized guard check ensuring state flags update predictably
+  private handleRouteId(id: string | null): void {
+    if (!id) {
+      this.workshop = null;
+      this.isLoading = false;
+      this.loadError = true;
+      return;
+    }
+
+    this.loadWorkshop(id);
   }
 
   private loadWorkshop(id: string): void {
     this.isLoading = true;
     this.loadError = false;
+    
     this.workshopDetailService.getWorkshopById(id).subscribe({
       next: (workshop) => {
         this.workshop = workshop;
@@ -63,6 +90,7 @@ export class WorkshopDetailComponent implements OnInit {
       },
       error: (err) => {
         console.error('WorkshopDetailComponent load error:', err);
+        this.workshop = null;
         this.loadError = true;
         this.isLoading = false;
       },

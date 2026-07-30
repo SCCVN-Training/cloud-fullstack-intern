@@ -1,15 +1,18 @@
 ﻿<div class="sign-in-page">
+  <!-- Left Panel: White & Navy Form Section -->
   <section class="sign-in-panel">
-    <!-- Header (pinned top) -->
-    <div class="sign-in-header">
-      <div class="brand-icon"><span class="material-symbols-outlined">flutter_dash</span></div>
+    <!-- Header -->
+    <header class="sign-in-header">
+      <div class="brand-icon">
+        <span class="material-symbols-outlined">flutter_dash</span>
+      </div>
       <div class="brand-text">
         <h1>Syncra</h1>
         <p>Sync your work. Share your world.</p>
       </div>
-    </div>
+    </header>
 
-    <!-- Main (grows, centers itself) -->
+    <!-- Main Form Section -->
     <main class="sign-in-main">
       <div class="sign-in-welcome-box">
         <h2>Welcome Back!</h2>
@@ -19,21 +22,29 @@
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="sign-in-form">
         @if (errorMessage) {
           <div class="error-banner" role="alert">
-            {{ errorMessage }}
+            <span class="material-symbols-outlined icon-sm">error</span>
+            <span>{{ errorMessage }}</span>
           </div>
         }
 
+        <!-- Email Field with Enter-to-Jump -->
         <div class="form-field">
           <label for="email">Email Address</label>
           <div class="input-group">
             <span class="material-symbols-outlined icon">mail</span>
-            <input id="email" type="email" formControlName="email" placeholder="name@scc.com" />
+            <input 
+              id="email" 
+              type="email" 
+              formControlName="email" 
+              placeholder="name@scc.com"
+              (keydown.enter)="$event.preventDefault(); passwordInput.focus()" />
           </div>
           @if (form.get('email')?.touched && form.get('email')?.hasError('invalidSccEmail')) {
             <p class="field-error">Please use a valid @scc.com email address.</p>
           }
         </div>
 
+        <!-- Password Field -->
         <div class="form-field">
           <div class="field-label-row">
             <label for="password">Password</label>
@@ -41,7 +52,12 @@
           </div>
           <div class="input-group">
             <span class="material-symbols-outlined icon">lock</span>
-            <input id="password" type="password" formControlName="password" placeholder="••••••••" />
+            <input 
+              #passwordInput 
+              id="password" 
+              type="password" 
+              formControlName="password" 
+              placeholder="••••••••" />
           </div>
         </div>
 
@@ -51,12 +67,15 @@
           </label>
         </div>
 
+        <!-- Primary Navy Gradient Button -->
         <button class="btn-primary" type="submit" [disabled]="form.invalid || isSubmitting">
-          <span>{{ isSubmitting ? 'Signing in...' : 'Sign in' }}</span> <span class="material-symbols-outlined icon-sm">login</span>
+          <span>{{ isSubmitting ? 'Signing in...' : 'Sign in' }}</span> 
+          <span class="material-symbols-outlined icon-sm">login</span>
         </button>
 
         <div class="divider"><span>OR</span></div>
 
+        <!-- Secondary Outline Button -->
         <button type="button" class="btn-secondary" (click)="onSSOClick()">
           <span class="material-symbols-outlined icon-sm">verified_user</span>
           <span>Sign in with Company SSO</span>
@@ -64,20 +83,31 @@
       </form>
     </main>
 
-    <!-- Footer (pinned bottom) -->
+    <!-- Footer -->
     <footer class="sign-in-footer">
       <div class="status-row">
         <span class="material-symbols-outlined icon-sm">shield</span>
         <span>Secure 256-bit SSL Encrypted Connection</span>
       </div>
       <div class="footer-links">
-        <a href="#">Privacy Policy</a> <a href="#">Terms of Service</a> <a href="#">Support</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Support</a>
       </div>
-      <div class="copyright">© 2024 SCC Enterprise Logistics. All rights reserved.</div>
+      <div class="copyright">© 2026 SCC Enterprise Logistics. All rights reserved.</div>
     </footer>
   </section>
 
+  <!-- Right Panel: Image Showcase with Black/Navy Gradient Overlay -->
   <aside class="sign-in-aside">
     <div class="aside-overlay"></div>
+    <div class="aside-content-card">
+      <div class="aside-badge">
+        <span class="material-symbols-outlined icon-sm">verified</span>
+        <span>Enterprise Platform</span>
+      </div>
+      <h2>Logistics & Supply Intelligence</h2>
+      <p>Streamlining automated workflows, fleet tracking, and operations on one continuous platform.</p>
+    </div>
   </aside>
 </div>
