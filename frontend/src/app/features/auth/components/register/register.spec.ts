@@ -28,10 +28,4 @@ describe('Register', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should expose default brandSize and bind it to the host style', () => {
-    expect(component.brandSize).toBe(50);
-    const hostElement = fixture.nativeElement as HTMLElement;
-    expect(hostElement.style.getPropertyValue('--brand-size')).toBe('50px');
-  });
 });

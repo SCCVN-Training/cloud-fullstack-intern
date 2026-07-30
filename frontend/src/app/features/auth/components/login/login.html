@@ -1,10 +1,15 @@
 <div class="login-page">
   <div class="background-shape bg-shape-1"></div>
   <div class="background-shape bg-shape-2"></div>
-
+  <!-- Back Button -->
+  <div class="auth-back">
+    <button mat-icon-button routerLink="/">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
   <div class="login-viewport">
     <section class="brand-panel">
-      <div class="brand-icon" [style.--brand-size]="brandSize + 'px'">
+      <div class="brand-icon">
         <img
           src="/icon_nephos_logo.png"
           alt="Nephos logo"
@@ -22,9 +27,7 @@
 
       <mat-card-content>
         @if (errorMessage()) {
-          <div class="error-banner">
-            {{ errorMessage() }}
-          </div>
+        <div class="error-banner">{{ errorMessage() }}</div>
         }
 
         <form
@@ -42,6 +45,11 @@
               formControlName="email"
               autocomplete="email"
             />
+            @if (loginForm.get('email')?.hasError('required')) {
+            <mat-error>Email address is required</mat-error>
+            } @if (loginForm.get('email')?.hasError('email')) {
+            <mat-error>Please enter a valid email address</mat-error>
+            }
           </mat-form-field>
 
           <!-- Password Field -->
@@ -61,7 +69,7 @@
               aria-label="Toggle password visibility"
               (click)="togglePassword()"
             >
-              <mat-icon matSuffix>
+              <mat-icon>
                 {{ showPassword ? "visibility_off" : "visibility" }}
               </mat-icon>
             </button>
@@ -84,7 +92,12 @@
             [disabled]="isLoading() || loginForm.invalid"
           >
             <span class="button-content">
-              <span>{{ isLoading() ? "Signing In..." : "Sign In" }}</span>
+              @if (isLoading()) {
+              <mat-spinner diameter="20"></mat-spinner>
+              <span>Signing In...</span>
+              } @else {
+              <span>Sign In</span>
+              }
             </span>
           </button>
         </form>

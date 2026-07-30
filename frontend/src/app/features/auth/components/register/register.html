@@ -1,21 +1,17 @@
 <div class="minimal-auth-container">
-  <!-- Back Button -->
   <div class="auth-back">
-    <button mat-icon-button routerLink="/">
+    <button mat-icon-button routerLink="/" aria-label="Go back to homepage">
       <mat-icon>arrow_back</mat-icon>
     </button>
   </div>
 
-  <!-- Floating Atmosphere Circles -->
   <div class="bg-glow glow-1"></div>
   <div class="bg-glow glow-2"></div>
 
-  <!-- Registration Glass Box -->
   <mat-card class="auth-box">
-    <!-- Brand Header -->
     <header class="auth-header">
       <h1>
-        <a class="logo-area" [style.--brand-size]="brandSize + 'px'">
+        <a routerLink="/" class="logo-area">
           <img
             src="/icon_nephos_logo.png"
             class="brand-logo-img"
@@ -28,12 +24,10 @@
     </header>
 
     @if (errorMessage()) {
-      <div class="alert-banner">{{ errorMessage() }}</div>
+    <div class="alert-banner" role="alert">{{ errorMessage() }}</div>
     }
 
-    <!-- Registration Form -->
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
-      <!-- Full Name -->
       <mat-form-field
         appearance="outline"
         subscriptSizing="dynamic"
@@ -43,11 +37,10 @@
         <input matInput type="text" formControlName="username" />
         <mat-icon matSuffix>person</mat-icon>
         @if (registerForm.get("username")?.hasError("required")) {
-          <mat-error>Full Name is required</mat-error>
+        <mat-error>Full Name is required</mat-error>
         }
       </mat-form-field>
 
-      <!-- Email Address -->
       <mat-form-field
         appearance="outline"
         subscriptSizing="dynamic"
@@ -62,13 +55,12 @@
         />
         <mat-icon matSuffix>mail</mat-icon>
         @if (registerForm.get("email")?.hasError("required")) {
-          <mat-error>Email Address is required</mat-error>
+        <mat-error>Email Address is required</mat-error>
         } @else if (registerForm.get("email")?.hasError("email")) {
-          <mat-error>Please enter a valid email address</mat-error>
+        <mat-error>Please enter a valid email address</mat-error>
         }
       </mat-form-field>
 
-      <!-- Password Row -->
       <div class="password-row">
         <mat-form-field
           appearance="outline"
@@ -86,7 +78,7 @@
             mat-icon-button
             matSuffix
             type="button"
-            aria-label="Toggle password visibility"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
             (click)="togglePassword()"
           >
             <mat-icon>
@@ -94,7 +86,7 @@
             </mat-icon>
           </button>
           @if (registerForm.get("password")?.hasError("required")) {
-            <mat-error>Password is required</mat-error>
+          <mat-error>Password is required</mat-error>
           }
         </mat-form-field>
 
@@ -106,30 +98,44 @@
           <mat-label>Confirm</mat-label>
           <input
             matInput
-            [type]="showPassword ? 'text' : 'password'"
+            [type]="showConfirmPassword ? 'text' : 'password'"
             formControlName="confirmPassword"
             autocomplete="new-password"
           />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            [attr.aria-label]="showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'"
+            (click)="toggleConfirmPassword()"
+          >
+            <mat-icon>
+              {{ showConfirmPassword ? "visibility_off" : "visibility" }}
+            </mat-icon>
+          </button>
           @if (registerForm.get("confirmPassword")?.hasError("required")) {
-            <mat-error>Confirm Password is required</mat-error>
-          } @else if (
-            registerForm.get("confirmPassword")?.hasError("passwordMismatch")
-          ) {
-            <mat-error>Passwords do not match</mat-error>
+          <mat-error>Confirm Password is required</mat-error>
+          } @else if
+          (registerForm.get("confirmPassword")?.hasError("passwordMismatch")) {
+          <mat-error>Passwords do not match</mat-error>
           }
         </mat-form-field>
       </div>
 
-      <!-- Terms Checkbox -->
       <div class="terms-row">
         <mat-checkbox formControlName="terms">
           I agree to the
-          <a href="#" class="inline-link">Terms of Service</a> and
-          <a href="#" class="inline-link">Privacy Policy</a>.
+          <a routerLink="/terms" class="inline-link">Terms of Service</a> and
+          <a routerLink="/privacy" class="inline-link">Privacy Policy</a>.
         </mat-checkbox>
+        @if (registerForm.get('terms')?.touched &&
+        registerForm.get('terms')?.hasError('requiredTrue')) {
+        <div class="checkbox-error" role="alert">
+          You must accept the terms to proceed.
+        </div>
+        }
       </div>
 
-      <!-- Primary Action -->
       <div class="auth-actions">
         <button
           mat-flat-button
@@ -139,9 +145,10 @@
           [disabled]="!isFormReady || isLoading() || registerForm.invalid"
         >
           @if (isLoading()) {
-            <span>Creating Account...</span>
+          <mat-spinner diameter="20"></mat-spinner>
+          <span>Creating Account...</span>
           } @else {
-            <span>Create Free Account</span>
+          <span>Create Free Account</span>
           }
         </button>
 
@@ -153,12 +160,11 @@
     </form>
   </mat-card>
 
-  <!-- Secondary Footer Links -->
   <nav class="secondary-nav">
-    <a href="#">Help Center</a>
+    <a routerLink="/help">Help Center</a>
     <span class="dot"></span>
-    <a href="#">Security</a>
+    <a routerLink="/security">Security</a>
     <span class="dot"></span>
-    <a href="#">Status</a>
+    <a routerLink="/status">Status</a>
   </nav>
 </div>

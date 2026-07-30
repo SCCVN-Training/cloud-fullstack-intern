@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth.service';
-import { HostBinding } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -48,7 +48,8 @@ export const passwordMatchValidator: ValidatorFn = (
     MatButtonModule,
     MatCardModule,
     MatIconModule,
-    MatCheckboxModule, // <-- Added for terms checkbox
+    MatCheckboxModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './register.html',
   styleUrls: ['./register.scss'],
@@ -92,17 +93,16 @@ export class Register {
   }
 
   showPassword = false;
+  showConfirmPassword = false;
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
-  brandSize = 50;
-
-  @HostBinding('style.--brand-size') get cssBrandSize() {
-    return this.brandSize + 'px';
-  }
-
   togglePassword(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPassword(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
   }
 
   onSubmit(): void {
@@ -117,9 +117,9 @@ export class Register {
     const { username, email, password } = this.registerForm.value;
 
     this.authService.register(username, email, password).subscribe({
-      next: (response) => {
+      next: (user) => {
         this.isLoading.set(false);
-        if (response.success) {
+        if (user && user.email) {
           this.router.navigate(['/login']);
         }
       },

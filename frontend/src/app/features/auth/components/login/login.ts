@@ -15,7 +15,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { HostBinding } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -29,6 +30,7 @@ import { HostBinding } from '@angular/core';
     MatCardModule,
     MatIconModule,
     MatCheckboxModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
@@ -48,12 +50,6 @@ export class Login {
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
 
-  brandSize = 50;
-
-  @HostBinding('style.--brand-size') get cssBrandSize() {
-    return this.brandSize + 'px';
-  }
-
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
@@ -70,9 +66,9 @@ export class Login {
     const { email, password } = this.loginForm.value;
 
     this.authService.login(email, password).subscribe({
-      next: (response) => {
+      next: (user) => {
         this.isLoading.set(false);
-        if (response.success) {
+        if (user && user.email) {
           this.router.navigate(['/drive']);
         }
       },
