@@ -1,5 +1,7 @@
 pytest
 pytest-env
+email-validator
+pydantic[email]
 fastapi
 uvicorn
 httpx2
