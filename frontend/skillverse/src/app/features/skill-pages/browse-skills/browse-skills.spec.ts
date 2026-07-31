@@ -73,11 +73,21 @@ describe('BrowseSkillsPage', () => {
     expect(compiled.querySelector('.card-title')?.textContent).toContain(mockSkills[0].title);
   });
 
-  it('should show empty search state when search value is empty', () => {
-    component.onSearch('empty');
+  it('should show empty search state when search value is empty', async () => {
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+
+    input.value = 'empty';
+    input.dispatchEvent(new Event('input'));
+
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
     expect(component.isSearchEmpty).toBe(true);
-    expect(fixture.nativeElement.querySelector('.empty-state')).toBeTruthy();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.querySelector('.empty-state')).not.toBeNull();
+    expect(compiled.querySelector('.btn-clear')).not.toBeNull();
   });
 });

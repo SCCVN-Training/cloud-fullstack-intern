@@ -47,13 +47,15 @@ describe('BookingCard', () => {
 
   it('should display pricing and details', () => {
     const compiled = fixture.nativeElement as HTMLElement;
+    const detailVals = Array.from(compiled.querySelectorAll('.detail-val')).map(
+      (node) => node.textContent?.trim() ?? '',
+    );
 
     expect(compiled.querySelector('.price-value')?.textContent).toContain(
       mockSkill.price.toString(),
     );
-    expect(compiled.querySelector('.detail-val')?.textContent).toContain(mockSkill.duration);
-    expect(compiled.querySelector('.detail-val:last-of-type')?.textContent).toContain(
-      mockSkill.requirements,
-    );
+    expect(detailVals[0]).toContain(mockSkill.duration);
+    expect(detailVals[1]).toContain(mockSkill.level);
+    expect(detailVals[2]).toContain(mockSkill.requirements);
   });
 });
