@@ -1,6 +1,30 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BookingCard } from './booking-card';
+import { Skill } from '../../../../../core/models/skill.model';
+
+const mockSkill: Skill = {
+  id: 'react-architecture-patterns',
+  title: 'React Architecture Patterns',
+  category: 'Development',
+  description: 'Learn modern frontend architecture.',
+  image: '/assets/images/skill-react.png',
+  price: 120,
+  duration: '2h',
+  level: 'Intermediate',
+  requirements: 'Basic React knowledge',
+  rating: 4.8,
+  reviewCount: 42,
+  instructorName: 'Jane Doe',
+  instructorTitle: 'Senior Developer',
+  instructorBio: 'Frontend expert',
+  instructorAvatar: '/assets/images/jane-avatar.png',
+  availableSlots: 5,
+  language: 'English',
+  tags: ['react', 'architecture'],
+  featured: false,
+  createdAt: '2026-07-01',
+};
 
 describe('BookingCard', () => {
   let component: BookingCard;
@@ -12,13 +36,24 @@ describe('BookingCard', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(BookingCard);
-
     component = fixture.componentInstance;
-
+    component.skill = mockSkill;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display pricing and details', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.querySelector('.price-value')?.textContent).toContain(
+      mockSkill.price.toString(),
+    );
+    expect(compiled.querySelector('.detail-val')?.textContent).toContain(mockSkill.duration);
+    expect(compiled.querySelector('.detail-val:last-of-type')?.textContent).toContain(
+      mockSkill.requirements,
+    );
   });
 });
