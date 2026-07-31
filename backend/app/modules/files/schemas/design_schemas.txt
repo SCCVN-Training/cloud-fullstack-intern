@@ -1,4 +1,33 @@
- CREATE TYPE permission_level AS ENUM ('view', 'edit', 'manage');
+-- ============================================================================
+-- 1. REUSABLE TRIGGER FUNCTION
+-- ============================================================================
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- ============================================================================
+-- 2. ATTACH TRIGGERS TO TABLES
+-- ============================================================================
+
+-- Folder table trigger
+CREATE TRIGGER trg_folders_updated_at
+    BEFORE UPDATE ON folders
+    FOR EACH ROW
+    EXECUTE FUNCTION set_updated_at();
+
+-- Files table trigger
+CREATE TRIGGER trg_files_updated_at
+    BEFORE UPDATE ON files
+    FOR EACH ROW
+    EXECUTE FUNCTION set_updated_at();
+
+
+CREATE EXTENSION IF NOT EXISTS "ltree";
+CREATE TYPE permission_level AS ENUM ('view', 'edit');
 
 -- ============================================================================
 -- 1. FOLDERS TABLE
@@ -6,18 +35,18 @@
 CREATE TABLE folders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    parent_folder_id UUID REFERENCES folders(id) ON DELETE CASCADE, -- NULL = root
+    parent_folder_id UUID REFERENCES folders(id) ON DELETE CASCADE,
+    path LTREE NOT NULL, -- Format: root_id.child_id.grandchild_id
     folder_name TEXT NOT NULL,
     is_trashed BOOLEAN NOT NULL DEFAULT FALSE,
     trashed_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    
-    CONSTRAINT unique_folder_per_parent UNIQUE NULLS NOT DISTINCT (owner_id, parent_folder_id, folder_name)
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE INDEX idx_folders_owner ON folders (owner_id);
 CREATE INDEX idx_folders_parent ON folders (parent_folder_id);
+CREATE INDEX idx_folders_path_gist ON folders USING GIST (path); -- Fast tree/ancestor lookups
 
 -- ============================================================================
 -- 2. FILES TABLE
@@ -25,7 +54,8 @@ CREATE INDEX idx_folders_parent ON folders (parent_folder_id);
 CREATE TABLE files (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    parent_folder_id UUID REFERENCES folders(id) ON DELETE CASCADE, -- NULL = root
+    parent_folder_id UUID REFERENCES folders(id) ON DELETE CASCADE,
+    path LTREE NOT NULL, -- Inherits parent folder path + file id
     storage_key TEXT UNIQUE NOT NULL DEFAULT gen_random_uuid()::text,
     file_name TEXT NOT NULL,
     size_bytes BIGINT NOT NULL,
@@ -34,23 +64,31 @@ CREATE TABLE files (
     is_trashed BOOLEAN NOT NULL DEFAULT FALSE,
     trashed_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    
-    CONSTRAINT unique_file_per_folder UNIQUE NULLS NOT DISTINCT (owner_id, parent_folder_id, file_name)
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE INDEX idx_files_owner ON files (owner_id);
 CREATE INDEX idx_files_parent ON files (parent_folder_id);
+CREATE INDEX idx_files_path_gist ON files USING GIST (path);
+
+-- Allow duplicate file names in general, but enforce uniqueness for ACTIVE files under same parent
+CREATE UNIQUE INDEX idx_unique_active_file_in_folder 
+ON files (owner_id, parent_folder_id, file_name) 
+WHERE is_trashed = FALSE AND parent_folder_id IS NOT NULL;
+
+CREATE UNIQUE INDEX idx_unique_active_file_in_root 
+ON files (owner_id, file_name) 
+WHERE is_trashed = FALSE AND parent_folder_id IS NULL;
 
 -- ============================================================================
--- 3. DIRECT SHARES (SPECIFIC USERS)
+-- 3. DIRECT SHARES
 -- ============================================================================
 CREATE TABLE direct_shares (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     file_id UUID REFERENCES files(id) ON DELETE CASCADE,
     folder_id UUID REFERENCES folders(id) ON DELETE CASCADE,
     grantee_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    created_by UUID REFERENCES users(id) ON DELETE SET NULL, -- Sharer / Creator
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
     permission permission_level NOT NULL DEFAULT 'view',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 
@@ -63,21 +101,20 @@ CREATE TABLE direct_shares (
 );
 
 CREATE INDEX idx_direct_shares_grantee ON direct_shares(grantee_id);
-CREATE INDEX idx_direct_shares_file ON direct_shares(file_id) WHERE file_id IS NOT NULL;
-CREATE INDEX idx_direct_shares_folder ON direct_shares(folder_id) WHERE folder_id IS NOT NULL;
 
 -- ============================================================================
--- 4. PUBLIC SHARE LINKS (ANYONE WITH THE LINK)
+-- 4. PUBLIC SHARE LINKS
 -- ============================================================================
 CREATE TABLE public_share_links (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     file_id UUID REFERENCES files(id) ON DELETE CASCADE,
     folder_id UUID REFERENCES folders(id) ON DELETE CASCADE,
-    created_by UUID REFERENCES users(id) ON DELETE SET NULL, -- Sharer / Creator
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
     share_token TEXT UNIQUE NOT NULL DEFAULT gen_random_uuid()::text,
     permission permission_level NOT NULL DEFAULT 'view',
     password_hash TEXT,
     expires_at TIMESTAMPTZ,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT check_public_share_target CHECK (
@@ -87,5 +124,3 @@ CREATE TABLE public_share_links (
 );
 
 CREATE INDEX idx_public_share_token ON public_share_links(share_token);
-CREATE INDEX idx_public_share_file ON public_share_links(file_id) WHERE file_id IS NOT NULL;
-CREATE INDEX idx_public_share_folder ON public_share_links(folder_id) WHERE folder_id IS NOT NULL;
