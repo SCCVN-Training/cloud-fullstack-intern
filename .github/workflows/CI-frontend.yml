@@ -6,19 +6,15 @@ permissions:
 on:
   push:
     branches:
-      - main
-      - dev_nhu
       - dev-nhu
       - feature/**
   pull_request:
     branches:
-      - main
-      - dev_nhu
       - dev-nhu
 
 jobs:
   frontend:
-    name: Build and Test Frontend
+    name: Frontend Build
     runs-on: ubuntu-latest
 
     defaults:
@@ -26,8 +22,7 @@ jobs:
         working-directory: frontend/skillverse
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -39,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Angular application
+      - name: Build Angular
         run: npm run build
 
       - name: Run unit tests
