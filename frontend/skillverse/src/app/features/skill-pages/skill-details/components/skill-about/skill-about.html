@@ -1,1 +1,18 @@
-<p>skill-about works!</p>
+<section class="about-section">
+  <div class="about-text">
+    <p>{{ skill.aboutText || skill.description || 'No description available' }}</p>
+  </div>
+
+  <div class="learning-outcomes" *ngIf="skill.learningOutcomes?.length">
+    <h4 class="learning-title">
+      <span class="material-symbols-outlined icon-bulb"> lightbulb </span>
+      What you'll learn
+    </h4>
+    <ul class="learning-list">
+      <li *ngFor="let outcome of skill.learningOutcomes">
+        <span class="material-symbols-outlined icon-check"> check_circle </span>
+        <span>{{ outcome }}</span>
+      </li>
+    </ul>
+  </div>
+</section>
