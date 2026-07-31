@@ -6,11 +6,12 @@ export const UserAccountSchema = z.object({
   email: z.email(),
   isActive: z.boolean(),
   createdAt: z.string(),
+  updatedAt: z.string().optional(),
 });
 
 // 2. Payloads
 export const RegisterPayloadSchema = z.object({
-  displayName: z.string().min(3, 'Display name must be at least 3 characters'),
+  displayName: z.string().min(3, 'Display name must be at least 3 charatcers'),
   email: z.email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });

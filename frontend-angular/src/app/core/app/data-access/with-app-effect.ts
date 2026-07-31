@@ -29,7 +29,7 @@ export class AppEffect {
       }),
 
       // Restore authentication
-      switchMap(() => this.authEffect.restoreSession()),
+      switchMap(() => this.authEffect.refreshSession()),
 
       // Load profile only if authenticated
       switchMap(() => {

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { EMPTY, Observable, catchError, finalize, map, of, switchMap, tap } from 'rxjs';
 
 import { NotificationService } from '../../../core/notification/services/notification.service';
+import { UserProfileApi } from '../../user-profile/api/user-profile.api';
 import { UserProfileEffect } from '../../user-profile/data-access/with-user-profile-effect';
 import { UserProfileReducer } from '../../user-profile/data-access/with-user-profile-reducer';
 import { AuthApi } from '../api/auth.api';
@@ -15,6 +16,7 @@ import { AuthReducer } from './with-auth-reducer';
 })
 export class AuthEffect {
   private readonly api = inject(AuthApi);
+  private readonly profileApi = inject(UserProfileApi);
   private readonly profileEffect = inject(UserProfileEffect);
   private readonly profileReducer = inject(UserProfileReducer);
   private readonly reducer = inject(AuthReducer);
@@ -50,11 +52,25 @@ export class AuthEffect {
   register(payload: RegisterPayload): Observable<void> {
     this.reducer.setLoading(true);
 
-    return this.api.register(payload).pipe(
+    const registerAuthPayload = {
+      email: payload.email,
+      password: payload.password,
+    };
+
+    return this.api.register(registerAuthPayload).pipe(
       tap(() => {
         this.reducer.setError(null);
-        this.notification.success('Account created successfully! Please log in.');
-        this.router.navigate(['/login']);
+      }),
+      switchMap((response) => {
+        const profilePayload = {
+          userId: response.data.user.id,
+          displayName: payload.displayName,
+        };
+        return this.profileApi.createProfile(profilePayload);
+      }),
+      tap(() => {
+        this.notification.success('Registration successful!');
+        this.router.navigate(['/dashboard']);
       }),
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Registration failed. Please try again.';
@@ -99,10 +115,10 @@ export class AuthEffect {
     );
   }
 
-  restoreSession(): Observable<void> {
+  refreshSession(): Observable<void> {
     this.reducer.setLoading(true);
 
-    return this.api.restoreSession().pipe(
+    return this.api.refreshSession().pipe(
       switchMap(() => this.api.getCurrentUser()),
       tap((response) => {
         this.reducer.setCurrentUser(response.data.user);
@@ -119,9 +135,9 @@ export class AuthEffect {
     );
   }
 
-  //This is Observable version of restoreSession, which can be used in app initializer to ensure session restoration is complete before the app starts.
+  //This is Observable version of refreshSession, which can be used in app initializer to ensure session restoration is complete before the app starts.
   // initializeSession(): Observable<void> {
-  //   return this.api.restoreSession().pipe(
+  //   return this.api.refreshSession().pipe(
   //     switchMap(() => this.api.getCurrentUser()),
   //     tap((response) => {
   //       this.reducer.setCurrentUser(response.data.user);
