@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Skill } from '../../../../../core/models/skill.model';
 
 @Component({
   selector: 'app-skill-about',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './skill-about.html',
   styleUrl: './skill-about.scss',
 })
-export class SkillAbout {}
+export class SkillAbout {
+  @Input({ required: true }) skill!: Skill;
+}

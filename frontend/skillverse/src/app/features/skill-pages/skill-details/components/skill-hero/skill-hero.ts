@@ -12,4 +12,9 @@ import { Skill } from '../../../../../core/models/skill.model';
 })
 export class SkillHero {
   @Input({ required: true }) skill!: Skill;
+
+  // Add this for debugging
+  ngOnInit() {
+    console.log('SkillHero received skill:', this.skill?.title);
+  }
 }

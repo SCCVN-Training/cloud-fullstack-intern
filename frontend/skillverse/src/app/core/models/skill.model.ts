@@ -25,4 +25,16 @@ export interface Skill {
 
   featured: boolean;
   createdAt: string;
+
+  aboutText?: string; // For the about section
+  learningOutcomes?: string[]; // For the "What you'll learn" list
+  prerequisites?: string[]; // Optional, for extra info
+  reviews?: {
+    // For the review carousel
+    name: string;
+    initials: string;
+    initialsClass: string;
+    stars: number;
+    text: string;
+  }[];
 }

@@ -1,17 +1,48 @@
 <main class="skill-details-container">
-  <div *ngIf="isLoading">Loading...</div>
-
-  <div *ngIf="errorMessage">
-    {{ errorMessage }}
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading skill details...</p>
   </div>
 
-  <div *ngIf="skill">
-    <h1>{{ skill.title }}</h1>
+  <!-- Error State -->
+  <div *ngIf="errorMessage" class="error-state">
+    <span class="material-symbols-outlined">error_outline</span>
+    <p>{{ errorMessage }}</p>
+    <button class="btn-retry" (click)="retryLoad()">Try Again</button>
+  </div>
 
-    <p>{{ skill.category }}</p>
+  <!-- Success State - Use 'skill' directly -->
+  <div *ngIf="!isLoading && !errorMessage && skill">
+    <!-- Hero Section -->
+    <app-skill-hero [skill]="skill"></app-skill-hero>
 
-    <img [src]="skill.image" [alt]="skill.title" width="300" />
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+      <!-- Left Column -->
+      <div class="main-column">
+        <!-- About Section -->
+        <app-skill-about [skill]="skill"></app-skill-about>
 
-    <pre>{{ skill | json }}</pre>
+        <!-- Instructor Card -->
+        <app-instructor-card [skill]="skill"></app-instructor-card>
+      </div>
+
+      <!-- Right Column - Sidebar -->
+      <div class="sidebar-column">
+        <app-booking-card [skill]="skill"></app-booking-card>
+      </div>
+    </div>
+
+    <!-- Bottom Sections -->
+    <div class="bottom-sections">
+      <app-review-carousel [skill]="skill"></app-review-carousel>
+    </div>
+  </div>
+
+  <!-- Fallback if something went wrong -->
+  <div *ngIf="!isLoading && !errorMessage && !skill" class="error-state">
+    <span class="material-symbols-outlined">info</span>
+    <p>No skill data available</p>
   </div>
 </main>
