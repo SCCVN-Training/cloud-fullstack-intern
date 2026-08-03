@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 # Base Exception
 class AppException(Exception):
     def __init__(
-        self, 
+        self,
         message: str
     ):
         self.message = message
@@ -14,14 +14,20 @@ class AppException(Exception):
 class EmailAlreadyExistsException(AppException):
     pass
 
+
 class InvalidCredentialException(AppException):
     pass
+
 
 class UserNotFoundException(AppException):
     pass
 
 # JWT Token Exception
 class InvalidTokenException(AppException):
+    pass
+
+# Authorization Exception
+class ForbiddenException(AppException):
     pass
 
 # Global Exception Handlers
@@ -39,7 +45,7 @@ def register_exception_handlers(app: FastAPI) -> None:
             }
         )
 
-    # Invalid credential 
+    # Invalid credential
     @app.exception_handler(InvalidCredentialException)
     async def invalid_credential_handler(
         request: Request,
@@ -65,7 +71,6 @@ def register_exception_handlers(app: FastAPI) -> None:
             }
         )
 
-
     @app.exception_handler(AppException)
     async def app_exception_handler(
         request: Request,
@@ -76,7 +81,7 @@ def register_exception_handlers(app: FastAPI) -> None:
             content={
                 "detail": exc.message
             }
-        )    
+        )
 
     # Invalid JWT token
     @app.exception_handler(InvalidTokenException)
@@ -88,5 +93,18 @@ def register_exception_handlers(app: FastAPI) -> None:
             status_code=status.HTTP_401_UNAUTHORIZED,
             content={
                 "detail": str(exc)
+            }
+        )
+
+    # Forbidden access
+    @app.exception_handler(ForbiddenException)
+    async def forbidden_exception_handler(
+        request: Request,
+        exc: ForbiddenException
+    ):
+        return JSONResponse(
+            status_code=status.HTTP_403_FORBIDDEN,
+            content={
+                "detail": exc.message
             }
         )

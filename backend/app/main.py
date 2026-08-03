@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 from app.core.database import Base, engine
 from app.modules.auth.router import router as auth_router
+from app.modules.users.router import router as users_router
 from app.core.exceptions import register_exception_handlers
 
 @asynccontextmanager
@@ -23,6 +24,7 @@ register_exception_handlers(app)
 
 # Routers
 app.include_router(auth_router)
+app.include_router(users_router)
 
 # Root Endpoint
 @app.get("/")
