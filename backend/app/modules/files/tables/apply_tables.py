@@ -27,8 +27,6 @@ async def apply_tables():
     try:
         async with database.pool.acquire() as connection:
             async with connection.transaction():
-                # await connection.execute("CREATE SCHEMA IF NOT EXISTS nephos;")
-                # await connection.execute("SET search_path TO nephos, public;")
                 await connection.execute(tables_sql)
 
         print("Schema applied successfully!")

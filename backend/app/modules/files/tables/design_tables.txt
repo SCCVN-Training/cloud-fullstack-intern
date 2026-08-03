@@ -1,10 +1,10 @@
 -- VER 1.7
 
-CREATE SCHEMA IF NOT EXISTS nephos;
-SET search_path TO nephos, public;
+-- CREATE SCHEMA IF NOT EXISTS nephos;
+-- SET search_path TO nephos, public;
 
 -- -- ============================================================================
--- NEPHOS SCHEMA -- files, folders, sharing (direct + public link)
+-- NEPHOS SCHEMA -- nephos.files, nephos.folders, sharing (direct + public link)
 -- -- ============================================================================
 
 -- -- ============================================================================
@@ -15,10 +15,15 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto"; -- gen_random_uuid() is native in PG1
 
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'permission_level') THEN
-        CREATE TYPE permission_level AS ENUM ('view', 'edit');
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_type t
+        JOIN pg_namespace n ON n.oid = t.typnamespace
+        WHERE t.typname = 'permission_level' AND n.nspname = 'nephos'
+    ) THEN
+        CREATE TYPE nephos.permission_level AS ENUM ('view', 'edit');
     END IF;
 END $$;
+
 -- Order matters: MAX() in effective_permission() relies on this declared order
 -- ('edit' > 'view'). If you ever add a third level, insert it at the correct
 -- position, not just append it.
@@ -29,8 +34,8 @@ END $$;
 -- -- ============================================================================
 CREATE TABLE IF NOT EXISTS nephos.folders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    parent_folder_id UUID REFERENCES folders(id) ON DELETE CASCADE,
+    owner_id UUID NOT NULL REFERENCES nephos.users(id) ON DELETE CASCADE,
+    parent_folder_id UUID REFERENCES nephos.folders(id) ON DELETE CASCADE,
     path LTREE NOT NULL,
     folder_name TEXT NOT NULL,
     is_trashed BOOLEAN NOT NULL DEFAULT FALSE,
@@ -46,19 +51,19 @@ CREATE TABLE IF NOT EXISTS nephos.folders (
     )
 );
 
-CREATE INDEX IF NOT EXISTS idx_folders_owner ON folders (owner_id);
-CREATE INDEX IF NOT EXISTS idx_folders_parent ON folders (parent_folder_id);
-CREATE INDEX IF NOT EXISTS idx_folders_path_gist ON folders USING GIST (path);
-CREATE INDEX IF NOT EXISTS idx_folders_trashed_at ON folders (trashed_at) WHERE is_trashed = TRUE;
+CREATE INDEX IF NOT EXISTS idx_folders_owner ON nephos.folders (owner_id);
+CREATE INDEX IF NOT EXISTS idx_folders_parent ON nephos.folders (parent_folder_id);
+CREATE INDEX IF NOT EXISTS idx_folders_path_gist ON nephos.folders USING GIST (path);
+CREATE INDEX IF NOT EXISTS idx_folders_trashed_at ON nephos.folders (trashed_at) WHERE is_trashed = TRUE;
 
 -- Enforce unique active folder names inside a parent folder
 CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_active_folder_in_parent
-ON folders (parent_folder_id, folder_name)
+ON nephos.folders (parent_folder_id, folder_name)
 WHERE is_trashed = FALSE AND parent_folder_id IS NOT NULL;
 
 -- Enforce unique active folder names in user root directory
 CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_active_folder_in_root
-ON folders (owner_id, folder_name)
+ON nephos.folders (owner_id, folder_name)
 WHERE is_trashed = FALSE AND parent_folder_id IS NULL;
 
 -- -- ============================================================================
@@ -66,8 +71,8 @@ WHERE is_trashed = FALSE AND parent_folder_id IS NULL;
 -- -- ============================================================================
 CREATE TABLE IF NOT EXISTS nephos.files (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    owner_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    parent_folder_id UUID REFERENCES folders(id) ON DELETE CASCADE,
+    owner_id UUID NOT NULL REFERENCES nephos.users(id) ON DELETE CASCADE,
+    parent_folder_id UUID REFERENCES nephos.folders(id) ON DELETE CASCADE,
     path LTREE NOT NULL,
     storage_key TEXT UNIQUE NOT NULL, -- Managed by app layer for object store pathing
     file_name TEXT NOT NULL,
@@ -87,20 +92,20 @@ CREATE TABLE IF NOT EXISTS nephos.files (
     )
 );
 
-CREATE INDEX IF NOT EXISTS idx_files_owner ON files (owner_id);
-CREATE INDEX IF NOT EXISTS idx_files_parent ON files (parent_folder_id);
-CREATE INDEX IF NOT EXISTS idx_files_path_gist ON files USING GIST (path);
-CREATE INDEX IF NOT EXISTS idx_files_content_hash ON files (content_hash) WHERE content_hash IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_files_trashed_at ON files (trashed_at) WHERE is_trashed = TRUE;
+CREATE INDEX IF NOT EXISTS idx_files_owner ON nephos.files (owner_id);
+CREATE INDEX IF NOT EXISTS idx_files_parent ON nephos.files (parent_folder_id);
+CREATE INDEX IF NOT EXISTS idx_files_path_gist ON nephos.files USING GIST (path);
+CREATE INDEX IF NOT EXISTS idx_files_content_hash ON nephos.files (content_hash) WHERE content_hash IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_files_trashed_at ON nephos.files (trashed_at) WHERE is_trashed = TRUE;
 
 -- Enforce unique active file names inside a folder (independent of uploader owner_id)
 CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_active_file_in_folder
-ON files (parent_folder_id, file_name)
+ON nephos.files (parent_folder_id, file_name)
 WHERE is_trashed = FALSE AND parent_folder_id IS NOT NULL;
 
 -- Enforce unique active file names in user root directory
 CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_active_file_in_root
-ON files (owner_id, file_name)
+ON nephos.files (owner_id, file_name)
 WHERE is_trashed = FALSE AND parent_folder_id IS NULL;
 
 -- These two unique indexes are the concurrency backstop for the "keep both -> suffix (n)"
@@ -112,11 +117,11 @@ WHERE is_trashed = FALSE AND parent_folder_id IS NULL;
 -- -- ============================================================================
 CREATE TABLE IF NOT EXISTS nephos.direct_shares (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    file_id UUID REFERENCES files(id) ON DELETE CASCADE,
-    folder_id UUID REFERENCES folders(id) ON DELETE CASCADE,
-    grantee_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
-    permission permission_level NOT NULL DEFAULT 'view',
+    file_id UUID REFERENCES nephos.files(id) ON DELETE CASCADE,
+    folder_id UUID REFERENCES nephos.folders(id) ON DELETE CASCADE,
+    grantee_id UUID NOT NULL REFERENCES nephos.users(id) ON DELETE CASCADE,
+    created_by UUID REFERENCES nephos.users(id) ON DELETE SET NULL,
+    permission nephos.permission_level NOT NULL DEFAULT 'view',
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 
@@ -128,9 +133,9 @@ CREATE TABLE IF NOT EXISTS nephos.direct_shares (
     CONSTRAINT unique_folder_user_share UNIQUE (folder_id, grantee_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_direct_shares_grantee ON direct_shares(grantee_id);
-CREATE INDEX IF NOT EXISTS idx_direct_shares_file ON direct_shares(file_id) WHERE file_id IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_direct_shares_folder ON direct_shares(folder_id) WHERE folder_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_direct_shares_grantee ON nephos.direct_shares(grantee_id);
+CREATE INDEX IF NOT EXISTS idx_direct_shares_file ON nephos.direct_shares(file_id) WHERE file_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_direct_shares_folder ON nephos.direct_shares(folder_id) WHERE folder_id IS NOT NULL;
 
 -- -- ============================================================================
 -- 4. PUBLIC SHARE LINKS
@@ -140,11 +145,11 @@ CREATE INDEX IF NOT EXISTS idx_direct_shares_folder ON direct_shares(folder_id) 
 -- two columns encoding the same fact can drift out of sync; this can't.
 CREATE TABLE IF NOT EXISTS nephos.public_share_links (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    file_id UUID REFERENCES files(id) ON DELETE CASCADE,
-    folder_id UUID REFERENCES folders(id) ON DELETE CASCADE,
-    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    file_id UUID REFERENCES nephos.files(id) ON DELETE CASCADE,
+    folder_id UUID REFERENCES nephos.folders(id) ON DELETE CASCADE,
+    created_by UUID REFERENCES nephos.users(id) ON DELETE SET NULL,
     share_token TEXT UNIQUE NOT NULL,
-    permission permission_level NOT NULL DEFAULT 'view',
+    permission nephos.permission_level NOT NULL DEFAULT 'view',
     password_hash TEXT,
     expires_at TIMESTAMPTZ,
     revoked_at TIMESTAMPTZ,
@@ -157,16 +162,16 @@ CREATE TABLE IF NOT EXISTS nephos.public_share_links (
     )
 );
 
-CREATE INDEX IF NOT EXISTS idx_public_share_token ON public_share_links(share_token);
-CREATE INDEX IF NOT EXISTS idx_public_share_file ON public_share_links(file_id) WHERE file_id IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_public_share_folder ON public_share_links(folder_id) WHERE folder_id IS NOT NULL;
-CREATE UNIQUE INDEX IF NOT EXISTS idx_one_live_public_file ON public_share_links(file_id) WHERE revoked_at IS NULL AND file_id IS NOT NULL;
-CREATE UNIQUE INDEX IF NOT EXISTS idx_one_live_public_folder ON public_share_links(folder_id) WHERE revoked_at IS NULL AND folder_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_public_share_token ON nephos.public_share_links(share_token);
+CREATE INDEX IF NOT EXISTS idx_public_share_file ON nephos.public_share_links(file_id) WHERE file_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_public_share_folder ON nephos.public_share_links(folder_id) WHERE folder_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_one_live_public_file ON nephos.public_share_links(file_id) WHERE revoked_at IS NULL AND file_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_one_live_public_folder ON nephos.public_share_links(folder_id) WHERE revoked_at IS NULL AND folder_id IS NOT NULL;
 
 -- -- ============================================================================
 -- 5. AUTOMATED TIMESTAMPS
 -- -- ============================================================================
-CREATE OR REPLACE FUNCTION touch_updated_at()
+CREATE OR REPLACE FUNCTION nephos.touch_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW.updated_at = NOW();
@@ -174,15 +179,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_folders_updated ON folders;
-DROP TRIGGER IF EXISTS trg_files_updated ON files;
-DROP TRIGGER IF EXISTS trg_direct_shares_updated ON direct_shares;
-DROP TRIGGER IF EXISTS trg_public_links_updated ON public_share_links;
+DROP TRIGGER IF EXISTS trg_folders_updated ON nephos.folders;
+DROP TRIGGER IF EXISTS trg_files_updated ON nephos.files;
+DROP TRIGGER IF EXISTS trg_direct_shares_updated ON nephos.direct_shares;
+DROP TRIGGER IF EXISTS trg_public_links_updated ON nephos.public_share_links;
 
-CREATE TRIGGER trg_folders_updated BEFORE UPDATE ON folders FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
-CREATE TRIGGER trg_files_updated BEFORE UPDATE ON files FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
-CREATE TRIGGER trg_direct_shares_updated BEFORE UPDATE ON direct_shares FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
-CREATE TRIGGER trg_public_links_updated BEFORE UPDATE ON public_share_links FOR EACH ROW EXECUTE FUNCTION touch_updated_at();
+CREATE TRIGGER trg_folders_updated BEFORE UPDATE ON nephos.folders FOR EACH ROW EXECUTE FUNCTION nephos.touch_updated_at();
+CREATE TRIGGER trg_files_updated BEFORE UPDATE ON nephos.files FOR EACH ROW EXECUTE FUNCTION nephos.touch_updated_at();
+CREATE TRIGGER trg_direct_shares_updated BEFORE UPDATE ON nephos.direct_shares FOR EACH ROW EXECUTE FUNCTION nephos.touch_updated_at();
+CREATE TRIGGER trg_public_links_updated BEFORE UPDATE ON nephos.public_share_links FOR EACH ROW EXECUTE FUNCTION nephos.touch_updated_at();
 
 -- -- ============================================================================
 -- 5b. PATH LABEL HELPER
@@ -190,7 +195,7 @@ CREATE TRIGGER trg_public_links_updated BEFORE UPDATE ON public_share_links FOR 
 -- Converts a UUID into a single ltree label (hyphens aren't valid in ltree labels).
 -- Shared by the INSERT-time path setter and the move (reparent) triggers below,
 -- so the label format only lives in one place.
-CREATE OR REPLACE FUNCTION uuid_ltree_label(p_id UUID)
+CREATE OR REPLACE FUNCTION nephos.uuid_ltree_label(p_id UUID)
 RETURNS LTREE AS $$
     SELECT text2ltree(replace(p_id::text, '-', '_'));
 $$ LANGUAGE sql IMMUTABLE;
@@ -201,51 +206,51 @@ $$ LANGUAGE sql IMMUTABLE;
 -- Computes `path` automatically on creation -- the app never supplies it directly.
 -- Root-level items get a single-label path from their own id; nested items get
 -- their parent's path plus their own id appended.
-CREATE OR REPLACE FUNCTION set_folder_path_on_insert()
+CREATE OR REPLACE FUNCTION nephos.set_folder_path_on_insert()
 RETURNS TRIGGER AS $$
 DECLARE
     parent_path LTREE;
 BEGIN
     IF NEW.parent_folder_id IS NULL THEN
-        NEW.path := uuid_ltree_label(NEW.id);
+        NEW.path := nephos.uuid_ltree_label(NEW.id);
     ELSE
-        SELECT path INTO parent_path FROM folders WHERE id = NEW.parent_folder_id;
+        SELECT path INTO parent_path FROM nephos.folders WHERE id = NEW.parent_folder_id;
         IF parent_path IS NULL THEN
             RAISE EXCEPTION 'Parent folder % does not exist', NEW.parent_folder_id;
         END IF;
-        NEW.path := parent_path || uuid_ltree_label(NEW.id);
+        NEW.path := parent_path || nephos.uuid_ltree_label(NEW.id);
     END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_set_folder_path_on_insert  ON folders;
+DROP TRIGGER IF EXISTS trg_set_folder_path_on_insert  ON nephos.folders;
 CREATE TRIGGER trg_set_folder_path_on_insert
-BEFORE INSERT ON folders
-FOR EACH ROW EXECUTE FUNCTION set_folder_path_on_insert();
+BEFORE INSERT ON nephos.folders
+FOR EACH ROW EXECUTE FUNCTION nephos.set_folder_path_on_insert();
 
-CREATE OR REPLACE FUNCTION set_file_path_on_insert()
+CREATE OR REPLACE FUNCTION nephos.set_file_path_on_insert()
 RETURNS TRIGGER AS $$
 DECLARE
     parent_path LTREE;
 BEGIN
     IF NEW.parent_folder_id IS NULL THEN
-        NEW.path := uuid_ltree_label(NEW.id);
+        NEW.path := nephos.uuid_ltree_label(NEW.id);
     ELSE
-        SELECT path INTO parent_path FROM folders WHERE id = NEW.parent_folder_id;
+        SELECT path INTO parent_path FROM nephos.folders WHERE id = NEW.parent_folder_id;
         IF parent_path IS NULL THEN
             RAISE EXCEPTION 'Parent folder % does not exist', NEW.parent_folder_id;
         END IF;
-        NEW.path := parent_path || uuid_ltree_label(NEW.id);
+        NEW.path := parent_path || nephos.uuid_ltree_label(NEW.id);
     END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_set_file_path_on_insert  ON  files;
+DROP TRIGGER IF EXISTS trg_set_file_path_on_insert  ON  nephos.files;
 CREATE TRIGGER trg_set_file_path_on_insert
-BEFORE INSERT ON files
-FOR EACH ROW EXECUTE FUNCTION set_file_path_on_insert();
+BEFORE INSERT ON nephos.files
+FOR EACH ROW EXECUTE FUNCTION nephos.set_file_path_on_insert();
 
 -- NOTE: these fire BEFORE INSERT, so NEW.id is already populated (the id DEFAULT
 -- gen_random_uuid() resolves before triggers see the row) but NEW.path needs no
@@ -255,7 +260,7 @@ FOR EACH ROW EXECUTE FUNCTION set_file_path_on_insert();
 -- 6. CYCLE PREVENTION ON FOLDER MOVE
 -- -- ============================================================================
 -- Prevents moving a folder into one of its own descendants (or itself).
-CREATE OR REPLACE FUNCTION prevent_folder_cycle()
+CREATE OR REPLACE FUNCTION nephos.prevent_folder_cycle()
 RETURNS TRIGGER AS $$
 DECLARE
     new_parent_path LTREE;
@@ -264,7 +269,7 @@ BEGIN
         RETURN NEW;
     END IF;
 
-    SELECT path INTO new_parent_path FROM folders WHERE id = NEW.parent_folder_id;
+    SELECT path INTO new_parent_path FROM nephos.folders WHERE id = NEW.parent_folder_id;
 
     IF new_parent_path IS NULL THEN
         RAISE EXCEPTION 'Target parent folder % does not exist', NEW.parent_folder_id;
@@ -278,10 +283,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_prevent_folder_cycle  ON folders  ;
+DROP TRIGGER IF EXISTS trg_prevent_folder_cycle  ON nephos.folders  ;
 CREATE TRIGGER trg_prevent_folder_cycle
-BEFORE UPDATE OF parent_folder_id ON folders
-FOR EACH ROW EXECUTE FUNCTION prevent_folder_cycle();
+BEFORE UPDATE OF parent_folder_id ON nephos.folders
+FOR EACH ROW EXECUTE FUNCTION nephos.prevent_folder_cycle();
 
 -- -- ============================================================================
 -- 7. PATH MAINTENANCE ON MOVE
@@ -289,7 +294,7 @@ FOR EACH ROW EXECUTE FUNCTION prevent_folder_cycle();
 -- Folders: recompute this folder's own path, then cascade the new prefix to every
 -- descendant folder/file. Runs AFTER UPDATE since it needs both OLD.path (to match
 -- descendants) and the already-applied NEW.path.
-CREATE OR REPLACE FUNCTION reparent_folder_path()
+CREATE OR REPLACE FUNCTION nephos.reparent_folder_path()
 RETURNS TRIGGER AS $$
 DECLARE
     new_parent_path LTREE;
@@ -300,35 +305,35 @@ BEGIN
     END IF;
 
     IF NEW.parent_folder_id IS NULL THEN
-        computed_path := uuid_ltree_label(NEW.id);
+        computed_path := nephos.uuid_ltree_label(NEW.id);
     ELSE
-        SELECT path INTO new_parent_path FROM folders WHERE id = NEW.parent_folder_id;
+        SELECT path INTO new_parent_path FROM nephos.folders WHERE id = NEW.parent_folder_id;
         computed_path := new_parent_path || subpath(OLD.path, -1);
     END IF;
 
     -- Cascade prefix change to all descendants BEFORE updating this row's own path,
     -- so the WHERE path <@ OLD.path match still includes this folder's old subtree.
-    UPDATE folders
+    UPDATE nephos.folders
         SET path = computed_path || subpath(path, nlevel(OLD.path))
         WHERE path <@ OLD.path AND id != NEW.id;
 
-    UPDATE files
+    UPDATE nephos.files
         SET path = computed_path || subpath(path, nlevel(OLD.path))
         WHERE path <@ OLD.path;
 
-    UPDATE folders SET path = computed_path WHERE id = NEW.id;
+    UPDATE nephos.folders SET path = computed_path WHERE id = NEW.id;
 
     RETURN NULL; -- row already updated above; AFTER trigger return value is ignored anyway
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_reparent_folder_path  ON  folders;
+DROP TRIGGER IF EXISTS trg_reparent_folder_path  ON  nephos.folders;
 CREATE TRIGGER trg_reparent_folder_path
-AFTER UPDATE OF parent_folder_id ON folders
-FOR EACH ROW EXECUTE FUNCTION reparent_folder_path();
+AFTER UPDATE OF parent_folder_id ON nephos.folders
+FOR EACH ROW EXECUTE FUNCTION nephos.reparent_folder_path();
 
 -- Files: no descendants, just recompute this row's own path on move.
-CREATE OR REPLACE FUNCTION reparent_file_path()
+CREATE OR REPLACE FUNCTION nephos.reparent_file_path()
 RETURNS TRIGGER AS $$
 DECLARE
     new_parent_path LTREE;
@@ -338,9 +343,9 @@ BEGIN
     END IF;
 
     IF NEW.parent_folder_id IS NULL THEN
-        NEW.path := uuid_ltree_label(NEW.id);
+        NEW.path := nephos.uuid_ltree_label(NEW.id);
     ELSE
-        SELECT path INTO new_parent_path FROM folders WHERE id = NEW.parent_folder_id;
+        SELECT path INTO new_parent_path FROM nephos.folders WHERE id = NEW.parent_folder_id;
         NEW.path := new_parent_path || subpath(NEW.path, -1);
     END IF;
 
@@ -348,10 +353,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS  trg_reparent_file_path ON  files;
+DROP TRIGGER IF EXISTS  trg_reparent_file_path ON  nephos.files;
 CREATE TRIGGER trg_reparent_file_path
-BEFORE UPDATE OF parent_folder_id ON files
-FOR EACH ROW EXECUTE FUNCTION reparent_file_path();
+BEFORE UPDATE OF parent_folder_id ON nephos.files
+FOR EACH ROW EXECUTE FUNCTION nephos.reparent_file_path();
 
 -- NOTE: for very large subtrees, the synchronous UPDATE ... WHERE path <@ OLD.path in
 -- reparent_folder_path() can hold long locks. If that becomes a problem in practice,
@@ -362,7 +367,7 @@ FOR EACH ROW EXECUTE FUNCTION reparent_file_path();
 -- 8. SPLIT FILE NAME
 -- -- ============================================================================
 
-CREATE OR REPLACE FUNCTION split_file_name(p_file_name TEXT, OUT base TEXT, OUT ext TEXT)
+CREATE OR REPLACE FUNCTION nephos.split_file_name(p_file_name TEXT, OUT base TEXT, OUT ext TEXT)
 AS $$
 DECLARE
     dot_pos INT;
@@ -383,7 +388,7 @@ $$ LANGUAGE plpgsql IMMUTABLE;
 -- 9. RESOLVE RESTORED FILE NAME COLLISION
 -- -- ============================================================================
 
-CREATE OR REPLACE FUNCTION resolve_restored_file_name(
+CREATE OR REPLACE FUNCTION nephos.resolve_restored_file_name(
     p_parent_folder_id UUID,
     p_owner_id UUID,
     p_file_name TEXT
@@ -395,7 +400,7 @@ DECLARE
     v_counter INT := 0;
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM files
+        SELECT 1 FROM nephos.files
         WHERE is_trashed = FALSE
           AND file_name = p_file_name
           AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
@@ -404,12 +409,12 @@ BEGIN
         RETURN p_file_name;
     END IF;
 
-    SELECT base, ext INTO v_base, v_ext FROM split_file_name(p_file_name);
+    SELECT base, ext INTO v_base, v_ext FROM nephos.split_file_name(p_file_name);
     v_candidate := v_base || '_restored' || v_ext;
 
     LOOP
         IF NOT EXISTS (
-            SELECT 1 FROM files
+            SELECT 1 FROM nephos.files
             WHERE is_trashed = FALSE
               AND file_name = v_candidate
               AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
@@ -427,7 +432,7 @@ $$ LANGUAGE plpgsql;
 -- 10. RESOLVE RESTORED FOLDER NAME
 -- -- ============================================================================
 
-CREATE OR REPLACE FUNCTION resolve_restored_folder_name(
+CREATE OR REPLACE FUNCTION nephos.resolve_restored_folder_name(
     p_parent_folder_id UUID,
     p_owner_id UUID,
     p_folder_name TEXT
@@ -437,7 +442,7 @@ DECLARE
     v_counter INT := 0;
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM folders
+        SELECT 1 FROM nephos.folders
         WHERE is_trashed = FALSE
           AND folder_name = p_folder_name
           AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
@@ -450,7 +455,7 @@ BEGIN
 
     LOOP
         IF NOT EXISTS (
-            SELECT 1 FROM folders
+            SELECT 1 FROM nephos.folders
             WHERE is_trashed = FALSE
               AND folder_name = v_candidate
               AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
@@ -480,13 +485,13 @@ $$ LANGUAGE plpgsql;
 -- allowed by product rule.
 --
 -- Files are restored one at a time in a loop (not a single bulk UPDATE) so that
--- two trashed files which collide with EACH OTHER (not with anything currently
+-- two trashed nephos.files which collide with EACH OTHER (not with anything currently
 -- active) are resolved sequentially against each other's already-applied names,
 -- rather than both computing the same candidate name off a shared snapshot.
 --
 -- pg_trigger_depth() guard prevents this trigger's own UPDATEs on descendant
 -- rows from re-firing itself recursively down the subtree.
-CREATE OR REPLACE FUNCTION cascade_folder_trash_state()
+CREATE OR REPLACE FUNCTION nephos.cascade_folder_trash_state()
 RETURNS TRIGGER AS $$
 DECLARE
     v_file RECORD;
@@ -497,40 +502,40 @@ BEGIN
     END IF;
 
     IF NEW.is_trashed = TRUE AND OLD.is_trashed = FALSE THEN
-        UPDATE folders
+        UPDATE nephos.folders
             SET is_trashed = TRUE, trashed_at = NEW.trashed_at
             WHERE path <@ OLD.path AND id != NEW.id AND is_trashed = FALSE;
 
-        UPDATE files
+        UPDATE nephos.files
             SET is_trashed = TRUE, trashed_at = NEW.trashed_at
             WHERE path <@ OLD.path AND is_trashed = FALSE;
 
     ELSIF NEW.is_trashed = FALSE AND OLD.is_trashed = TRUE THEN
         -- Folders: restore one at a time, resolving name collisions the same
-        -- way files do -- both against already-active folders AND against
-        -- sibling folders being restored earlier in this same loop.
+        -- way nephos.files do -- both against already-active nephos.folders AND against
+        -- sibling nephos.folders being restored earlier in this same loop.
         FOR v_folder IN
             SELECT id, parent_folder_id, owner_id, folder_name
-            FROM folders
+            FROM nephos.folders
             WHERE path <@ NEW.path AND id != NEW.id AND is_trashed = TRUE
         LOOP
-            UPDATE folders
+            UPDATE nephos.folders
             SET is_trashed = FALSE,
                 trashed_at = NULL,
-                folder_name = resolve_restored_folder_name(v_folder.parent_folder_id, v_folder.owner_id, v_folder.folder_name)
+                folder_name = nephos.resolve_restored_folder_name(v_folder.parent_folder_id, v_folder.owner_id, v_folder.folder_name)
             WHERE id = v_folder.id;
         END LOOP;
 
         -- Files: same pattern, unchanged from before.
         FOR v_file IN
             SELECT id, parent_folder_id, owner_id, file_name
-            FROM files
+            FROM nephos.files
             WHERE path <@ NEW.path AND is_trashed = TRUE
         LOOP
-            UPDATE files
+            UPDATE nephos.files
             SET is_trashed = FALSE,
                 trashed_at = NULL,
-                file_name = resolve_restored_file_name(v_file.parent_folder_id, v_file.owner_id, v_file.file_name)
+                file_name = nephos.resolve_restored_file_name(v_file.parent_folder_id, v_file.owner_id, v_file.file_name)
             WHERE id = v_file.id;
         END LOOP;
     END IF;
@@ -539,10 +544,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS  trg_cascade_folder_trash ON folders  ;
+DROP TRIGGER IF EXISTS  trg_cascade_folder_trash ON nephos.folders  ;
 CREATE TRIGGER trg_cascade_folder_trash
-AFTER UPDATE OF is_trashed ON folders
-FOR EACH ROW EXECUTE FUNCTION cascade_folder_trash_state();
+AFTER UPDATE OF is_trashed ON nephos.folders
+FOR EACH ROW EXECUTE FUNCTION nephos.cascade_folder_trash_state();
 
 -- ============================================================================
 -- 11b. PREVENT ORPHAN RESTORE (block direct restore of a non-root trashed item)
@@ -551,13 +556,13 @@ FOR EACH ROW EXECUTE FUNCTION cascade_folder_trash_state();
 -- own restore cascading down (cascade_folder_trash_state() above) -- it can
 -- never be restored on its own while an ancestor is still trashed. This keeps
 -- is_trashed always in sync with ancestors, which effective_permission()
--- (section 10) already assumes.
+-- (section 13) already assumes.
 --
 -- pg_trigger_depth() > 1 lets the cascade's own nested UPDATEs through --
 -- those are legitimate restores-via-ancestor, not orphan restores. This
 -- relies on the same depth convention as cascade_folder_trash_state()'s own
 -- guard, so the two triggers must be reasoned about together.
-CREATE OR REPLACE FUNCTION prevent_orphan_restore()
+CREATE OR REPLACE FUNCTION nephos.prevent_orphan_restore()
 RETURNS TRIGGER AS $$
 DECLARE
     v_path LTREE;
@@ -574,7 +579,7 @@ BEGIN
     v_path := OLD.path;
 
     SELECT EXISTS (
-        SELECT 1 FROM folders
+        SELECT 1 FROM nephos.folders
         WHERE path @> v_path
           AND path != v_path
           AND is_trashed = TRUE
@@ -588,15 +593,15 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS  trg_prevent_orphan_restore_folders ON folders  ;
+DROP TRIGGER IF EXISTS  trg_prevent_orphan_restore_folders ON nephos.folders  ;
 CREATE TRIGGER trg_prevent_orphan_restore_folders
-BEFORE UPDATE OF is_trashed ON folders
-FOR EACH ROW EXECUTE FUNCTION prevent_orphan_restore();
+BEFORE UPDATE OF is_trashed ON nephos.folders
+FOR EACH ROW EXECUTE FUNCTION nephos.prevent_orphan_restore();
 
-DROP TRIGGER IF EXISTS trg_prevent_orphan_restore_files ON files  ;
+DROP TRIGGER IF EXISTS trg_prevent_orphan_restore_files ON nephos.files  ;
 CREATE TRIGGER trg_prevent_orphan_restore_files
-BEFORE UPDATE OF is_trashed ON files
-FOR EACH ROW EXECUTE FUNCTION prevent_orphan_restore();
+BEFORE UPDATE OF is_trashed ON nephos.files
+FOR EACH ROW EXECUTE FUNCTION nephos.prevent_orphan_restore();
 
 -- App layer contract:
 --   * User-initiated delete on a specific item -> app sets is_trashed=TRUE,
@@ -609,15 +614,15 @@ FOR EACH ROW EXECUTE FUNCTION prevent_orphan_restore();
 -- 12. SHARE GRANTEE != OWNER
 -- -- ============================================================================
 -- Prevents sharing a file/folder with its own owner (redundant/confusing row).
-CREATE OR REPLACE FUNCTION check_grantee_not_owner()
+CREATE OR REPLACE FUNCTION nephos.check_grantee_not_owner()
 RETURNS TRIGGER AS $$
 DECLARE
     target_owner UUID;
 BEGIN
     IF NEW.file_id IS NOT NULL THEN
-        SELECT owner_id INTO target_owner FROM files WHERE id = NEW.file_id;
+        SELECT owner_id INTO target_owner FROM nephos.files WHERE id = NEW.file_id;
     ELSE
-        SELECT owner_id INTO target_owner FROM folders WHERE id = NEW.folder_id;
+        SELECT owner_id INTO target_owner FROM nephos.folders WHERE id = NEW.folder_id;
     END IF;
 
     IF target_owner = NEW.grantee_id THEN
@@ -628,10 +633,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_check_grantee_not_owner  ON direct_shares ;
+DROP TRIGGER IF EXISTS trg_check_grantee_not_owner  ON nephos.direct_shares ;
 CREATE TRIGGER trg_check_grantee_not_owner
-BEFORE INSERT OR UPDATE ON direct_shares
-FOR EACH ROW EXECUTE FUNCTION check_grantee_not_owner();
+BEFORE INSERT OR UPDATE ON nephos.direct_shares
+FOR EACH ROW EXECUTE FUNCTION nephos.check_grantee_not_owner();
 
 -- -- ============================================================================
 -- 13. EFFECTIVE PERMISSION (public link + private share, highest wins)
@@ -643,12 +648,12 @@ FOR EACH ROW EXECUTE FUNCTION check_grantee_not_owner();
 -- combines them at read time, taking the highest permission found, so that
 -- revoking a public link cleanly falls back to any private grant.
 --
--- Fixed every branch stays typed as `permission_level`
+-- Fixed every branch stays typed as `nephos.permission_level`
 -- (never cast to text) so MAX() uses the enum's declared order (edit > view)
 -- instead of comparing lexicographically, which would wrongly favor 'view'.
 --
 -- Fixed: the target's own is_trashed is checked FIRST,
--- before any share table is consulted. cascade_folder_trash_state() (section 8)
+-- before any share table is consulted. cascade_folder_trash_state() (section 11)
 -- keeps a descendant's is_trashed in sync with all of its ancestors, so
 -- checking the target row alone correctly blocks access whether it was
 -- trashed directly or via an ancestor -- previously only the *matched
@@ -657,20 +662,20 @@ FOR EACH ROW EXECUTE FUNCTION check_grantee_not_owner();
 --
 -- Returns NULL if the user has no access at all (or the target doesn't exist,
 -- or is trashed).
-CREATE OR REPLACE FUNCTION effective_permission(
+CREATE OR REPLACE FUNCTION nephos.effective_permission(
     p_target_path LTREE,
     p_is_file BOOLEAN,       -- TRUE if p_target_path refers to a file, FALSE for folder
     p_target_id UUID,        -- the file_id or folder_id itself, for exact (non-ancestor) share rows
     p_user_id UUID
-) RETURNS permission_level AS $$
+) RETURNS nephos.permission_level AS $$
 DECLARE
-    result permission_level;
+    result nephos.permission_level;
     target_trashed BOOLEAN;
 BEGIN
     IF p_is_file THEN
-        SELECT is_trashed INTO target_trashed FROM files WHERE id = p_target_id;
+        SELECT is_trashed INTO target_trashed FROM nephos.files WHERE id = p_target_id;
     ELSE
-        SELECT is_trashed INTO target_trashed FROM folders WHERE id = p_target_id;
+        SELECT is_trashed INTO target_trashed FROM nephos.folders WHERE id = p_target_id;
     END IF;
 
     IF target_trashed IS NULL OR target_trashed THEN
@@ -680,8 +685,8 @@ BEGIN
     SELECT MAX(perm) INTO result FROM (
         -- direct share targeting an ancestor folder (or this folder itself)
         SELECT ds.permission AS perm
-        FROM direct_shares ds
-        JOIN folders f ON f.id = ds.folder_id
+        FROM nephos.direct_shares ds
+        JOIN nephos.folders f ON f.id = ds.folder_id
         WHERE ds.grantee_id = p_user_id
           AND f.is_trashed = FALSE
           AND f.path @> p_target_path
@@ -690,8 +695,8 @@ BEGIN
 
         -- direct share targeting this exact file
         SELECT ds.permission
-        FROM direct_shares ds
-        JOIN files fl ON fl.id = ds.file_id
+        FROM nephos.direct_shares ds
+        JOIN nephos.files fl ON fl.id = ds.file_id
         WHERE p_is_file AND ds.grantee_id = p_user_id AND ds.file_id = p_target_id
           AND fl.is_trashed = FALSE
 
@@ -699,8 +704,8 @@ BEGIN
 
         -- live (unrevoked, unexpired) public link on an ancestor folder (or this folder itself)
         SELECT psl.permission
-        FROM public_share_links psl
-        JOIN folders f ON f.id = psl.folder_id
+        FROM nephos.public_share_links psl
+        JOIN nephos.folders f ON f.id = psl.folder_id
         WHERE psl.revoked_at IS NULL
           AND (psl.expires_at IS NULL OR psl.expires_at > now())
           AND f.is_trashed = FALSE
@@ -710,8 +715,8 @@ BEGIN
 
         -- live (unrevoked, unexpired) public link on this exact file
         SELECT psl.permission
-        FROM public_share_links psl
-        JOIN files fl ON fl.id = psl.file_id
+        FROM nephos.public_share_links psl
+        JOIN nephos.files fl ON fl.id = psl.file_id
         WHERE p_is_file AND psl.revoked_at IS NULL
           AND (psl.expires_at IS NULL OR psl.expires_at > now())
           AND psl.file_id = p_target_id
@@ -725,9 +730,9 @@ $$ LANGUAGE plpgsql STABLE;
 -- -- ============================================================================
 -- 14. OWNER ACCESS
 -- -- ============================================================================
--- effective_permission() above ONLY looks at direct_shares / public_share_links --
--- it knows nothing about ownership, and check_grantee_not_owner (section 9) actively
--- prevents an owner from ever having a direct_shares row of their own. So calling
+-- effective_permission() above ONLY looks at nephos.direct_shares / nephos.public_share_links --
+-- it knows nothing about ownership, and check_grantee_not_owner (section 12) actively
+-- prevents an owner from ever having a nephos.direct_shares row of their own. So calling
 -- effective_permission() for the owner of an item returns NULL (no access), which is
 -- wrong: the owner always has full rights, and those rights are broader than 'edit'
 -- (delete, reshare, transfer ownership, manage public links) -- broader than the
@@ -736,8 +741,8 @@ $$ LANGUAGE plpgsql STABLE;
 -- Ownership must be checked FIRST, before ever consulting effective_permission().
 -- is_owner() is a thin helper so the app doesn't duplicate this lookup; the actual
 -- "owner implies full rights" branching belongs in the app's authorization layer,
--- since permission_level has no value that means "owner".
-CREATE OR REPLACE FUNCTION is_owner(
+-- since nephos.permission_level has no value that means "owner".
+CREATE OR REPLACE FUNCTION nephos.is_owner(
     p_is_file BOOLEAN,
     p_target_id UUID,
     p_user_id UUID
@@ -746,9 +751,9 @@ DECLARE
     target_owner UUID;
 BEGIN
     IF p_is_file THEN
-        SELECT owner_id INTO target_owner FROM files WHERE id = p_target_id;
+        SELECT owner_id INTO target_owner FROM nephos.files WHERE id = p_target_id;
     ELSE
-        SELECT owner_id INTO target_owner FROM folders WHERE id = p_target_id;
+        SELECT owner_id INTO target_owner FROM nephos.folders WHERE id = p_target_id;
     END IF;
 
     RETURN target_owner IS NOT NULL AND target_owner = p_user_id;
