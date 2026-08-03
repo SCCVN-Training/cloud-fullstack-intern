@@ -8,7 +8,8 @@ from app.core.database import get_db
 from app.core.security import decode_access_token
 from app.core.exceptions import (
     InvalidTokenException,
-    UserNotFoundException
+    UserNotFoundException,
+    ForbiddenException  
 )
 from app.common.enums import UserRole
 from app.modules.users.models import User
@@ -51,8 +52,8 @@ async def require_admin(
 ) -> User:
 
     if current_user.role != UserRole.ADMIN:
-        raise InvalidTokenException(
-             "Admin priviledges required"
-        ) 
+        raise ForbiddenException(
+            "Admin priviledges required"
+        )
 
     return current_user
