@@ -22,10 +22,10 @@ interface SkillCard {
   selector: 'app-homepage',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.scss'],
+  templateUrl: './homepage.html',
+  styleUrls: ['./homepage.scss'],
 })
-export class HomepageComponent {
+export class Homepage {
   constructor(private authService: AuthService) {}
 
   get isLoggedIn(): boolean {

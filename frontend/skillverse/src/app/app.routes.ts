@@ -3,7 +3,7 @@ import { authGuard } from './core/guards/auth/auth-guard';
 
 import { PublicLayoutComponent } from './shared/components/layout/public-layout/public-layout.component';
 
-import { HomepageComponent } from './features/homepage/homepage.component';
+import { Homepage } from './features/homepage/homepage';
 import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
 
@@ -19,7 +19,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: HomepageComponent,
+        component: Homepage,
       },
       {
         path: 'how-it-works',
