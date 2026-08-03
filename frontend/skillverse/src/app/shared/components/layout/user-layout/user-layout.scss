@@ -118,7 +118,7 @@
       cursor: pointer;
       text-align: left;
       font: inherit;
-      color: var(--color-error); // <-- red text & icon
+      color: var(--color-error); 
 
       &:hover {
         background-color: rgba(164, 48, 115, 0.1);
