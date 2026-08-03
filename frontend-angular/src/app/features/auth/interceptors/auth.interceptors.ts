@@ -28,11 +28,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (request.url.includes('/auth/logout')) return throwError(() => error);
 
-      if (request.url.includes('/auth/restore-session')) return throwError(() => error);
+      if (request.url.includes('/auth/refresh-session')) return throwError(() => error);
 
       return http
         .post(
-          '/auth/restore-session',
+          '/auth/refresh-session',
           {},
           {
             withCredentials: true,

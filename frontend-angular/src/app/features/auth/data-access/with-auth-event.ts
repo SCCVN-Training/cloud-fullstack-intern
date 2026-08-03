@@ -36,9 +36,9 @@ export class AuthEvent {
   /**
    * Restore previous session.
    */
-  restoreSession(): void {
-    console.log('[Auth Event] Restore session triggered'); // Log when restore session is triggered
-    this.effect.restoreSession().subscribe();
+  refreshSession(): void {
+    console.log('[Auth Event] Refresh session triggered'); // Log when restore session is triggered
+    this.effect.refreshSession().subscribe();
   }
 
   getCurrentUser(): void {

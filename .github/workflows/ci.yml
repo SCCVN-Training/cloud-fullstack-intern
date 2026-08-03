@@ -48,12 +48,12 @@ jobs:
         run: npm run build
 
   backend:
-    name: Backend (FastAPI)
+    name: Backend V2 (FastAPI)
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: backend-fastapi
+        working-directory: backend-fastapi-v2
 
     services:
       postgres:
@@ -85,7 +85,7 @@ jobs:
         with:
           python-version: "3.14" # Upgraded to the latest stable Python release
           cache: pip
-          cache-dependency-path: backend-fastapi/requirements.txt # Optional: Added pip caching
+          cache-dependency-path: backend-fastapi-v2/requirements.txt # Optional: Added pip caching
 
       - name: Install dependencies
         run: |

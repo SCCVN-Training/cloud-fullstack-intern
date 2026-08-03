@@ -6,6 +6,7 @@ export const UserAccountSchema = z.object({
   email: z.email(),
   isActive: z.boolean(),
   createdAt: z.string(),
+  updatedAt: z.string().optional(),
 });
 
 // 2. Payloads

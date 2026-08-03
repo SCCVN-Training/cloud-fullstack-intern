@@ -17,19 +17,23 @@ export const UserProfileSchema = z.object({
 
   isProfilePublic: z.boolean(),
 
-  totalAnime: z.number().int(),
-  totalManga: z.number().int(),
-  totalMusic: z.number().int(),
-
   createdAt: z.string(),
   updatedAt: z.string(),
 });
 
 export const GetProfileResponseSchema = z.object({
   message: z.string(),
-  data: UserProfileSchema,
+  data: z.object({
+    profile: UserProfileSchema,
+  }),
+});
+
+export const CreateProfileRequestSchema = z.object({
+  userId: z.string(),
+  displayName: z.string(),
 });
 
 // Types
 export type UserProfile = z.infer<typeof UserProfileSchema>;
 export type GetProfileResponse = z.infer<typeof GetProfileResponseSchema>;
+export type CreateProfileRequest = z.infer<typeof CreateProfileRequestSchema>;

@@ -22,7 +22,7 @@ export class UserProfileEffect {
     return this.api.getMyProfile().pipe(
       tap((response) => {
         this.reducer.setError(null);
-        this.reducer.patch({ profile: response.data });
+        this.reducer.patch({ profile: response.data.profile });
       }),
       map(() => void 0),
       catchError((error: HttpErrorResponse) => {
@@ -42,7 +42,7 @@ export class UserProfileEffect {
     return this.api.updateMyProfile(payload).pipe(
       tap((response) => {
         this.reducer.setError(null);
-        this.reducer.patch({ profile: response.data });
+        this.reducer.patch({ profile: response.data.profile });
         this.notification.success('Profile updated successfully');
         this.router.navigate(['/dashboard', 'profile']);
       }),
