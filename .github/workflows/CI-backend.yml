@@ -42,12 +42,12 @@ jobs:
 
       - name: Create .env for CI
         run: |
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL || 'sqlite:///tmp/test.db' }}" > .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL || 'sqlite+aiosqlite:///tmp/test.db' }}" > .env
           echo "SECRET_KEY=${{ secrets.SECRET_KEY || 'test-secret-key' }}" >> .env
           echo "ALGORITHM=HS256" >> .env
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=30" >> .env
           echo "ADMIN_EMAIL=admin@gmail.com" >> .env
-          echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD || 'abc123456' }}" >> .env
+          echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD || 'test-password' }}" >> .env
           echo "ADMIN_USERNAME=Admin" >> .env
 
       - name: Verify FastAPI application
