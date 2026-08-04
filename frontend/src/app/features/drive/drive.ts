@@ -45,10 +45,6 @@ export class Drive {
   usedStorage = signal<number>(4.2);
   totalStorage = signal<number>(15);
 
-  storagePercentage = computed(() =>
-    Math.round((this.usedStorage() / this.totalStorage()) * 100),
-  );
-
   suggestedItems = signal<DriveItem[]>([
     {
       id: '1',
