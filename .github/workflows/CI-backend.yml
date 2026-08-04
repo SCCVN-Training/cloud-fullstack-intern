@@ -19,17 +19,14 @@ jobs:
         working-directory: backend
 
     steps:
-      # Checkout repository
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      # Install Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
 
-      # Cache pip packages
       - name: Cache pip packages
         uses: actions/cache@v4
         with:
@@ -38,29 +35,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Create temporary .env for CI
-      #
-      # TODO:
-      # Replace these values with GitHub Actions Secrets
-      # when repository permissions are available.
-      #
-      - name: Create .env
+      - name: Create .env for CI
         run: |
-          echo "DATABASE_URL=postgresql+asyncpg://skillverse_user:npg_W5zbDsgC0AnI@ep-gentle-rain-azyqy7xp-pooler.c-3.ap-southeast-1.aws.neon.tech/skillverse_db?sslmode=require" > .env
-          echo "SECRET_KEY=12FgAvZEpSoXqpOmrd0bEWoQnJRzXemjZdBqiycMz1f" >> .env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL || 'sqlite+aiosqlite:///tmp/test.db' }}" > .env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY || 'test-secret-key' }}" >> .env
           echo "ALGORITHM=HS256" >> .env
           echo "ACCESS_TOKEN_EXPIRE_MINUTES=30" >> .env
           echo "ADMIN_EMAIL=admin@gmail.com" >> .env
-          echo "ADMIN_PASSWORD=abc123456" >> .env
+          echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD || 'test-password' }}" >> .env
           echo "ADMIN_USERNAME=Admin" >> .env
 
-      # Verify FastAPI application imports successfully
       - name: Verify FastAPI application
         run: |
           python -c "from app.main import app; print('✅ Backend imported successfully')"

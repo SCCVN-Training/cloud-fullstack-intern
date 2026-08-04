@@ -78,7 +78,11 @@
       </div>
 
       <!-- Submit Button -->
-      <button class="btn-auth-submit" type="submit" [disabled]="isLoading$ | async">
+      <button
+        class="btn-auth-submit"
+        type="submit"
+        [disabled]="loginForm.invalid || (isLoading$ | async)"
+      >
         <span *ngIf="!(isLoading$ | async)">Login</span>
         <span *ngIf="isLoading$ | async">Logging in...</span>
         <span class="material-symbols-outlined icon-light" *ngIf="!(isLoading$ | async)"

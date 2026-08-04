@@ -59,7 +59,7 @@
       </div>
 
       <!-- Submit Button -->
-      <button class="btn-auth-submit" type="submit" [disabled]="isLoading$ | async">
+      <button class="btn-auth-submit" type="submit" [disabled]="registerForm.invalid || (isLoading$ | async)">
         <span *ngIf="!(isLoading$ | async)">Create Account</span>
         <span *ngIf="isLoading$ | async">Creating...</span>
         <span class="material-symbols-outlined icon-light" *ngIf="!(isLoading$ | async)">arrow_forward</span>
