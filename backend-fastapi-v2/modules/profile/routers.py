@@ -12,6 +12,7 @@ from modules.profile.schemas import (
     ProfileDataResponse,
 )
 from modules.auth.models import UserAccountModel
+from modules.profile.rate_limit import ProfileRateLimiter, get_profile_rate_limiter
 
 
 # ============ Router Setup ============
@@ -39,9 +40,11 @@ async def get_profile_service(
     status_code=status.HTTP_201_CREATED,
 )
 async def create_profile(
-    request: CreateProfileRequest,
+    payload: CreateProfileRequest,
     current_user: UserAccountModel = Depends(get_current_user),
     service: ProfileService = Depends(get_profile_service),
+    rate_limiter: ProfileRateLimiter = Depends(get_profile_rate_limiter)
+
 ):
     """
     Create a user profile.
@@ -50,13 +53,25 @@ async def create_profile(
     ✅ User must be authenticated via cookie
     """
     # Security check: User can only create their own profile
-    if request.user_id != current_user.id:
+    if payload.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can only create your own profile.",
         )
 
-    profile = await service.create_profile(request)
+    allowed, remaining, retry_after = await rate_limiter.check_create_profile(
+        user_id=str(current_user.id)
+    )
+
+    if not allowed:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many profile creation attempts. Please try again later.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
+
+    profile = await service.create_profile(payload)
 
     return {
         "message": "Profile created successfully.",
@@ -74,6 +89,7 @@ async def create_profile(
 async def get_my_profile(
     current_user: UserAccountModel = Depends(get_current_user),
     service: ProfileService = Depends(get_profile_service),
+    rate_limiter: ProfileRateLimiter = Depends(get_profile_rate_limiter)
 ):
     """
     Get current user's profile.
@@ -81,6 +97,16 @@ async def get_my_profile(
     ✅ Reads access_token from HttpOnly cookie
     ✅ User must be authenticated via cookie
     """
+    allowed, remaining, retry_after = await rate_limiter.check_get_profile(
+        user_id=str(current_user.id)
+    )
+    if not allowed:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many profile retrieval attempts. Please try again later.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
     profile = await service.get_profile_by_user_id(current_user.id)
 
     return {
@@ -96,9 +122,10 @@ async def get_my_profile(
     status_code=status.HTTP_200_OK,
 )
 async def update_my_profile(
-    request: UpdateProfileRequest,
+    payload: UpdateProfileRequest,
     current_user: UserAccountModel = Depends(get_current_user),
     service: ProfileService = Depends(get_profile_service),
+    rate_limiter: ProfileRateLimiter = Depends(get_profile_rate_limiter)
 ):
     """
     Update current user's profile.
@@ -106,9 +133,20 @@ async def update_my_profile(
     ✅ Reads access_token from HttpOnly cookie
     ✅ User must be authenticated via cookie
     """
+    allowed, remaining, retry_after = await rate_limiter.check_update_profile(
+        user_id=str(current_user.id)
+    )
+
+    if not allowed:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many profile update attempts. Please try again later.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
     profile = await service.update_profile(
+        payload,
         user_id=current_user.id,
-        request=request,
     )
 
     return {
@@ -127,6 +165,7 @@ async def update_my_profile(
 async def delete_my_profile(
     current_user: UserAccountModel = Depends(get_current_user),
     service: ProfileService = Depends(get_profile_service),
+    rate_limiter: ProfileRateLimiter = Depends(get_profile_rate_limiter)
 ):
     """
     Delete current user's profile.
@@ -134,6 +173,17 @@ async def delete_my_profile(
     ✅ Reads access_token from HttpOnly cookie
     ✅ User must be authenticated via cookie
     """
+    allowed, remaining, retry_after = await rate_limiter.check_delete_profile(
+        user_id=str(current_user.id)
+    )
+
+    if not allowed:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many profile deletion attempts. Please try again later.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
     result = await service.delete_profile(current_user.id)
 
     return {

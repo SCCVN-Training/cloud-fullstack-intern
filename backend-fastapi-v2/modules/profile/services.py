@@ -94,7 +94,7 @@ class ProfileService:
     async def update_profile(
         self,
         user_id: UUID,
-        request: UpdateProfileRequest,
+        payload: UpdateProfileRequest,
     ) -> ProfileResponse:
         """
         Update a user profile (partial update).
@@ -120,7 +120,7 @@ class ProfileService:
             )
 
         # Get changes (exclude None values)
-        changes = request.model_dump(exclude_none=True)
+        changes = payload.model_dump(exclude_none=True)
 
         if not changes:
             # No changes to apply
