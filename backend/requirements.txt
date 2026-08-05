@@ -10,3 +10,4 @@ asyncpg
 PyJWT
 passlib
 pydantic-settings
+boto3
