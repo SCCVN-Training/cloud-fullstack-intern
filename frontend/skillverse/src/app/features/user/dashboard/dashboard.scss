@@ -427,3 +427,18 @@
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: 9999px;
 }
+
+.btn-back {
+  border-radius: 10px;
+  width: 70px;
+  height: 30px;
+  background-color: var(--color-surface-container-high);
+  color: var(--color-primary);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-surface-variant);
+  }
+}

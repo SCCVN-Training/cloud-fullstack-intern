@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-my-bookings',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './my-bookings.html',
   styleUrls: ['./my-bookings.scss'],
 })

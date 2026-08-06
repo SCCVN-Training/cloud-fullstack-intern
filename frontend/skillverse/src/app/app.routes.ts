@@ -15,10 +15,15 @@ import { SkillDetailsPage } from './features/skill-pages/skill-details/skill-det
 export const routes: Routes = [
   {
     path: '',
+    redirectTo: 'homepage',
+    pathMatch: 'full',
+  },
+  {
+    path: '',
     component: PublicLayoutComponent,
     children: [
       {
-        path: '',
+        path: 'homepage',
         component: Homepage,
       },
       {
@@ -53,9 +58,5 @@ export const routes: Routes = [
   {
     path: 'register',
     component: Register,
-  },
-  {
-    path: '**',
-    redirectTo: '',
   },
 ];
