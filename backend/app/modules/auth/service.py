@@ -7,6 +7,8 @@ from app.core.config import settings
 from app.core.security import hash_password, verify_password, create_token, decode_token
 from app.modules.auth.repository import AuthRepository
 from app.modules.auth import schemas
+from app.modules.files.repository import FileOperationsRepository
+from app.modules.files.service import R2StorageGateway
 
 
 class AuthService:
