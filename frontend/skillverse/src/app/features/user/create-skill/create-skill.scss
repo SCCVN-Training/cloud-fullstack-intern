@@ -1,0 +1,150 @@
+.page-container {
+  padding: var(--spacing-xl);
+}
+
+.max-w-3xl {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.md\:text-left {
+  text-align: left;
+}
+.text-center {
+  text-align: center;
+}
+
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0px 12px 32px rgba(244, 114, 182, 0.1);
+  border-radius: var(--radius-lg);
+  
+  @media (min-width: 768px) {
+    border-radius: var(--radius-xl);
+  }
+}
+
+.upload-area {
+  border: 2px dashed var(--color-outline-variant);
+  border-radius: 24px;
+  height: 16rem;
+  cursor: pointer;
+  transition: border-color 0.3s;
+
+  &:hover {
+    border-color: var(--color-primary);
+    .upload-icon {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.upload-icon {
+  font-size: 48px;
+  color: rgba(164, 48, 115, 0.5); /* primary/50 */
+  transition: color 0.3s;
+}
+
+.upload-bg {
+  background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCipfwyQYoYWBOsPvMtuS_Ak-Rb9Ydk82gx7P1WkEFRv2fr7AMWr1rO95mBQK2gjNbk6Xur2p1zsec5Wgygsu5Sk8hJVNdAwbEOPEoL7Fk0uQtLUQ27R-EhaZ5aCoJgxosVKS99haoLDysp_e-yf1tGrK8wnVIYKT93rmSbmtmJ_-UYIsfv0CHEhJUEHAoqi8b6f3K3tm9YgrzdlAb7IKSFNxMVLzGG0Oaqr65gFjtAZUEb5xXHR_2z_99m2xvXuOZhpfhK_38iMuHb');
+}
+
+.custom-input {
+  background-color: #F3F4F6;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+  font-family: inherit;
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(164, 48, 115, 0.2);
+    outline: none;
+    background-color: #ffffff;
+  }
+}
+
+.w-full {
+  width: 100%;
+}
+
+.pl-lg { padding-left: var(--spacing-lg) !important; }
+.pr-lg { padding-right: var(--spacing-lg) !important; }
+
+.appearance-none {
+  appearance: none;
+}
+
+.select-icon {
+  right: var(--spacing-sm);
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.input-icon {
+  left: var(--spacing-sm);
+}
+
+.resize-none {
+  resize: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.level-box {
+  border: 2px solid transparent;
+  border-radius: 12px;
+  transition: all 0.2s;
+
+  &.active {
+    border-color: var(--color-primary);
+    background-color: rgba(244, 114, 182, 0.2); /* primary-container/20 */
+  }
+}
+
+.form-actions {
+  border-top: 1px solid rgba(218, 192, 201, 0.3); /* outline-variant/30 */
+  flex-direction: column-reverse;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--color-surface-variant);
+    border-color: rgba(164, 48, 115, 0.2);
+  }
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border: none;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
