@@ -11,3 +11,4 @@ PyJWT
 passlib
 pydantic-settings
 boto3
+python-multipart
