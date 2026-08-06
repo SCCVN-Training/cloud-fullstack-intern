@@ -1,0 +1,117 @@
+<main class="page-container flex-1 py-xl">
+  <!-- Header -->
+  <header class="mb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
+    <div>
+      <h1 class="text-headline-lg-mobile md:text-headline-lg text-on-surface mb-xs">My Bookings</h1>
+      <p class="text-body-md text-on-surface-variant">Manage your upcoming sessions and review past learning experiences.</p>
+    </div>
+    <!-- Tabs -->
+    <div class="tabs-container flex p-1 rounded-full bg-surface-container-high w-fit">
+      <button 
+        *ngFor="let tab of tabs" 
+        (click)="selectTab(tab)"
+        class="tab-btn px-md py-xs rounded-full font-label-md transition-all"
+        [class.active]="activeTab === tab">
+        {{ tab }}
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-col lg:flex-row flex gap-lg">
+    <!-- Bookings List -->
+    <div class="flex-1 flex flex-col gap-md">
+      <!-- Empty state if no bookings -->
+      <div *ngIf="filteredBookings.length === 0" class="glass-panel p-lg text-center rounded-[24px]">
+        <p class="text-body-md text-on-surface-variant">No {{activeTab.toLowerCase()}} bookings found.</p>
+      </div>
+
+      <!-- Booking Items -->
+      <div *ngFor="let booking of filteredBookings" 
+           (click)="selectBooking(booking.id)"
+           class="glass-panel booking-card rounded-[24px] p-md cursor-pointer transition-all"
+           [class.active]="booking.selected">
+        <div class="flex justify-between items-start mb-sm">
+          <div class="flex items-center gap-sm">
+            <span class="status-badge px-sm py-1 rounded-full font-label-sm flex items-center gap-1" [ngClass]="booking.statusColorClass">
+              <span class="material-symbols-outlined text-[14px]">{{ booking.statusIcon }}</span>
+              {{ booking.status }}
+            </span>
+            <span class="text-label-sm text-on-surface-variant">{{ booking.time }}</span>
+          </div>
+          <img class="w-8 h-8 rounded-full object-cover" [src]="booking.avatar" [alt]="booking.mentor">
+        </div>
+        <h3 class="text-title-lg text-on-surface mb-xs">{{ booking.title }}</h3>
+        <p class="text-body-md text-on-surface-variant mb-md">with <span class="font-semibold">{{ booking.mentor }}</span></p>
+        
+        <div class="flex gap-sm">
+          <button *ngIf="booking.actionable" class="btn-primary flex-1 py-sm rounded-full font-label-md text-on-primary">
+            Join Session
+          </button>
+          <button *ngIf="!booking.actionable" class="btn-disabled flex-1 py-sm rounded-full font-label-md cursor-not-allowed">
+            Awaiting Confirmation
+          </button>
+          <button *ngIf="booking.actionable" class="btn-secondary px-md py-sm rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined">chat</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Booking Details Sidebar -->
+    <div class="w-full lg:w-96" *ngIf="selectedBooking">
+      <div class="glass-panel details-sidebar rounded-[24px] p-md lg:p-lg sticky">
+        <div class="flex justify-between items-center mb-md">
+          <h2 class="text-title-lg text-on-surface">Session Details</h2>
+          <button class="text-on-surface-variant hover:text-primary transition-colors bg-transparent border-none cursor-pointer">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+        </div>
+
+        <div class="mb-lg">
+          <img *ngIf="selectedBooking.banner" class="w-full h-32 object-cover rounded-xl mb-md" [src]="selectedBooking.banner" alt="Banner">
+          <div *ngIf="!selectedBooking.banner" class="w-full h-32 bg-surface-container-high rounded-xl mb-md flex items-center justify-center text-on-surface-variant">
+            <span class="material-symbols-outlined text-[32px]">image</span>
+          </div>
+          <h3 class="text-headline-lg-mobile text-on-surface mb-xs">{{ selectedBooking.title }}</h3>
+          <p class="text-body-md text-primary font-semibold mb-md">{{ selectedBooking.mentor }}</p>
+          
+          <div class="flex items-center gap-sm text-on-surface-variant mb-xs">
+            <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+            <span class="text-label-md">{{ selectedBooking.dateStr || 'Date TBD' }}</span>
+          </div>
+          <div class="flex items-center gap-sm text-on-surface-variant mb-md">
+            <span class="material-symbols-outlined text-[18px]">schedule</span>
+            <span class="text-label-md">{{ selectedBooking.timeStr || 'Time TBD' }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="selectedBooking.actionable" class="meeting-link-box bg-surface-container-low rounded-xl p-md mb-lg">
+          <h4 class="text-label-md text-on-surface mb-sm flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">link</span>
+            Meeting Link
+          </h4>
+          <a class="text-primary hover:underline text-body-md break-all block mb-xs" href="#">meet.skillverse.co/{{ selectedBooking.id }}</a>
+          <p class="text-label-sm text-on-surface-variant">Passcode: 482910</p>
+        </div>
+
+        <div class="mb-lg" *ngIf="selectedBooking.actionable">
+          <h4 class="text-label-md text-on-surface mb-sm">Preparation Notes</h4>
+          <ul class="prep-list text-body-md text-on-surface-variant">
+            <li>Install the required software.</li>
+            <li>Have a basic understanding of the topic.</li>
+            <li>Review the pre-reading materials sent in chat.</li>
+          </ul>
+        </div>
+
+        <div class="flex flex-col gap-sm">
+          <button class="btn-primary w-full py-sm rounded-full font-label-md shadow-md text-on-primary">
+            Join Meeting Now
+          </button>
+          <button class="btn-outline w-full py-sm rounded-full font-label-md text-primary">
+            Reschedule
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

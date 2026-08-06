@@ -1,0 +1,132 @@
+.page-container {
+  padding: var(--spacing-md);
+  max-width: var(--container-max);
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    padding: var(--spacing-xl);
+  }
+}
+
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0px 12px 32px rgba(244, 114, 182, 0.1);
+}
+
+.tabs-container {
+  background-color: var(--color-surface-container-high);
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+
+  &.active {
+    background-color: #ffffff;
+    color: var(--color-primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  &:not(.active):hover {
+    color: var(--color-primary);
+  }
+}
+
+.booking-card {
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+    border-color: rgba(164, 48, 115, 0.5); /* primary/50 */
+  }
+
+  &.active {
+    opacity: 1;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(164, 48, 115, 0.2);
+  }
+}
+
+/* Status colors mapped from utility classes */
+.bg-primary-container {
+  background-color: var(--color-primary-container);
+}
+.text-on-primary-container {
+  color: var(--color-on-primary-container);
+}
+
+.bg-surface-container-highest {
+  background-color: var(--color-surface-container-highest);
+}
+.text-on-surface-variant {
+  color: var(--color-on-surface-variant);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.btn-secondary {
+  background-color: var(--color-surface-container-high);
+  color: var(--color-primary);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-surface-variant);
+  }
+}
+
+.btn-disabled {
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface-variant);
+  border: none;
+}
+
+.btn-outline {
+  background-color: var(--color-surface-container-high);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-surface-variant);
+  }
+}
+
+.details-sidebar {
+  top: var(--spacing-xl);
+}
+
+.meeting-link-box {
+  border: 1px solid rgba(218, 192, 201, 0.3);
+}
+
+.prep-list {
+  list-style-type: disc;
+  list-style-position: inside;
+  margin-top: 4px;
+  
+  li {
+    margin-bottom: 4px;
+  }
+}
+
+.w-full { width: 100%; }
+.lg\:w-96 {
+  @media (min-width: 1024px) {
+    width: 24rem;
+  }
+}
