@@ -4,6 +4,7 @@ import { UserLayoutComponent } from '../../shared/components/layout/user-layout/
 import { Dashboard } from './dashboard/dashboard';
 import { Profile } from './profile/profile';
 import { MySkills } from './my-skills/my-skills';
+import { Wallet } from './wallet/wallet';
 
 export const userRoutes: Routes = [
   {
@@ -26,6 +27,10 @@ export const userRoutes: Routes = [
       {
         path: 'my-skills',
         component: MySkills,
+      },
+      {
+        path: 'wallet',
+        component: Wallet,
       },
     ],
   },

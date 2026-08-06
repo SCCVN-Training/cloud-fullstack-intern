@@ -1,0 +1,126 @@
+<main class="page-container flex-1 h-full overflow-y-auto">
+  <div class="max-w-container-max mx-auto flex flex-col gap-lg">
+    <!-- Page Header -->
+    <header class="flex justify-between items-end">
+      <div>
+        <h1 class="text-headline-lg-mobile md:text-display-lg text-on-surface mb-xs">My Wallet & Activity</h1>
+        <p class="text-body-lg text-on-surface-variant">Manage your Skill Coins and track your transaction history.</p>
+      </div>
+      <div class="search-bar hidden sm:flex bg-surface-container-highest rounded-full px-md py-base items-center gap-base">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size: 20px;">search</span>
+        <input class="bg-transparent border-none focus-none text-label-md w-48" placeholder="Search activity..." type="text">
+      </div>
+    </header>
+
+    <!-- Balance Card Grid -->
+    <section class="grid-12 gap-md">
+      <!-- Primary Balance Card -->
+      <div class="balance-card col-8 glass-panel ambient-shadow rounded-xl relative overflow-hidden flex flex-col justify-between p-lg" style="grid-column: span 8;">
+        <!-- Decorative Gradient Blob -->
+        <div class="decorative-blob absolute"></div>
+        <div>
+          <div class="flex items-center gap-sm text-on-surface-variant mb-sm">
+            <span class="material-symbols-outlined text-primary">stars</span>
+            <span class="text-title-lg">Available Balance</span>
+          </div>
+          <div class="flex items-baseline gap-base">
+            <span class="text-display-lg gradient-text font-bold">{{ balance | number }}</span>
+            <span class="text-body-lg text-on-surface-variant">Skill Coins</span>
+          </div>
+          <div class="text-label-sm text-on-surface-variant flex items-center gap-xs mt-2">
+            <span class="material-symbols-outlined text-success" style="font-size: 16px;">trending_up</span>
+            <span class="text-success font-bold">+12%</span> since last month
+          </div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row items-start sm:items-center z-10 mt-md gap-sm">
+          <button class="btn-primary py-md px-lg rounded-full text-on-primary font-label-md shadow-md">
+            Redeem Coins
+          </button>
+          <a class="text-label-md text-primary hover:underline flex items-center gap-xs cursor-pointer">
+            How to earn more <span class="material-symbols-outlined" style="font-size: 16px;">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity History Section -->
+    <section class="glass-panel ambient-shadow rounded-xl overflow-hidden mb-xl">
+      <!-- Filter Bar -->
+      <div class="filter-bar p-md flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md">
+        <div class="tabs flex gap-sm overflow-x-auto w-full sm:w-auto">
+          <button class="tab-btn active px-md py-sm rounded-full font-label-md whitespace-nowrap">All Activity</button>
+          <button class="tab-btn px-md py-sm rounded-full font-label-md whitespace-nowrap transition-colors">Earnings</button>
+          <button class="tab-btn px-md py-sm rounded-full font-label-md whitespace-nowrap transition-colors">Spent</button>
+          <button class="tab-btn px-md py-sm rounded-full font-label-md whitespace-nowrap transition-colors">System</button>
+        </div>
+        <div class="flex items-center gap-sm text-on-surface-variant cursor-pointer group">
+          <span class="material-symbols-outlined" style="font-size: 20px;">filter_list</span>
+          <span class="text-label-md">Last 30 Days</span>
+          <span class="material-symbols-outlined dropdown-icon transition-transform">expand_more</span>
+        </div>
+      </div>
+
+      <!-- Transaction List -->
+      <div class="transaction-list divide-y">
+        <ng-container *ngFor="let group of activities">
+          <!-- Group Header -->
+          <div class="px-md py-sm list-header">
+            <span class="text-label-sm font-bold uppercase tracking-wider text-on-surface-variant">{{ group.group }}</span>
+          </div>
+          
+          <!-- Items -->
+          <div *ngFor="let item of group.items" class="transaction-item p-md flex items-center gap-md transition-colors cursor-pointer">
+            <div class="icon-circle flex items-center justify-center rounded-full" [ngClass]="item.colorClass + '-theme'">
+              <span class="material-symbols-outlined">{{ item.icon }}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="text-body-lg text-on-surface truncate font-semibold">{{ item.title }}</h4>
+              <p class="text-on-surface-variant text-label-sm">{{ item.description }}</p>
+            </div>
+            <div class="hidden sm:block text-right">
+              <p class="text-on-surface-variant text-label-sm">{{ item.time }}</p>
+              <p class="text-on-surface-variant" style="font-size: 12px;">{{ item.status }}</p>
+            </div>
+            <div class="text-right ml-md amount-box">
+              <span class="font-bold text-body-lg" 
+                    [ngClass]="item.isPositive === true ? 'text-success' : (item.isPositive === false ? 'text-on-surface' : 'text-on-surface-variant')">
+                {{ item.amount }}
+              </span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Load More -->
+      <div class="p-md text-center load-more-footer">
+        <button class="text-primary font-bold hover:underline flex items-center justify-center gap-xs mx-auto bg-transparent border-none cursor-pointer">
+          Load older activity
+          <span class="material-symbols-outlined" style="font-size: 16px;">keyboard_arrow_down</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Help Section -->
+    <div class="grid-12 gap-lg pb-xl help-section" style="display: grid; grid-template-columns: repeat(2, 1fr);">
+      <div class="help-card flex gap-md items-start p-md rounded-xl glass-panel">
+        <div class="help-icon bg-primary-fixed-dim text-primary rounded-full flex items-center justify-center flex-shrink-0 w-10 h-10">
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">help</span>
+        </div>
+        <div>
+          <h5 class="text-label-md text-on-surface font-semibold">Understanding SkillCoins</h5>
+          <p class="text-on-surface-variant text-body-md mt-1">SkillCoins (SC) are our platform's currency. You earn them by teaching skills and spend them to learn from others. The exchange rate is 1:1.</p>
+        </div>
+      </div>
+      <div class="help-card flex gap-md items-start p-md rounded-xl glass-panel">
+        <div class="help-icon bg-tertiary-fixed-dim text-tertiary rounded-full flex items-center justify-center flex-shrink-0 w-10 h-10">
+          <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">security</span>
+        </div>
+        <div>
+          <h5 class="text-label-md text-on-surface font-semibold">Safe Transaction Guarantee</h5>
+          <p class="text-on-surface-variant text-body-md mt-1">All SkillVerse transactions are protected by our escrow system. Coins are only released after a session is completed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
