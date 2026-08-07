@@ -17,6 +17,7 @@ import {
   UploadDialog,
   UploadDialogResult,
 } from '../upload-dialog/upload-dialog';
+import { FileOperationsService } from '../../core/file-operations/services/file-operations.service';
 
 @Component({
   selector: 'app-drive',
@@ -43,6 +44,7 @@ export class Drive {
   isSidebarCollapsed = signal<boolean>(false);
 
   private dialog = inject(MatDialog);
+  private fileService = inject(FileOperationsService);
 
   onSidebarCollapseChange(collapsed: boolean): void {
     this.isSidebarCollapsed.set(collapsed);
@@ -103,11 +105,39 @@ export class Drive {
         if (!result) return;
 
         if (result.action === 'upload' && result.files) {
-          console.log('Uploading files:', result.files);
+          this.uploadFiles(result.files);
         } else if (result.action === 'create-folder' && result.folderName) {
-          console.log('Creating folder:', result.folderName);
+          this.createFolder(result.folderName);
         }
       });
+  }
+
+  private uploadFiles(files: File[]): void {
+    if (files.length === 0) return;
+    this.isLoading.set(true);
+
+    this.fileService.uploadFiles(files).subscribe({
+      next: (uploaded) => {
+        this.items.update((current) => [...uploaded, ...current]);
+      },
+      error: (error) => {
+        console.error('Upload failed:', error);
+      },
+      complete: () => {
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  private createFolder(folderName: string): void {
+    this.fileService.createFolder(folderName).subscribe({
+      next: (folder) => {
+        this.items.update((current) => [folder, ...current]);
+      },
+      error: (error) => {
+        console.error('Create folder failed:', error);
+      },
+    });
   }
 
   onOpenItem(item: DriveItem): void {
@@ -119,10 +149,46 @@ export class Drive {
   }
 
   onDownloadItem(item: DriveItem): void {
-    console.log('Downloading file:', item.name);
+    if (item.itemType !== 'file') return;
+
+    this.fileService.downloadFile(item.id).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = item.name;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      },
+      error: (error) => {
+        console.error('Download failed:', error);
+      },
+    });
   }
 
   onTrashItem(item: DriveItem): void {
-    console.log('Moving to trash:', item.id);
+    if (item.itemType === 'file') {
+      this.fileService.trashFile(item.id).subscribe({
+        next: () => {
+          this.items.update((current) =>
+            current.filter((entry) => entry.id !== item.id),
+          );
+        },
+        error: (error) => {
+          console.error('Trash file failed:', error);
+        },
+      });
+    } else {
+      this.fileService.trashFolder(item.id).subscribe({
+        next: () => {
+          this.items.update((current) =>
+            current.filter((entry) => entry.id !== item.id),
+          );
+        },
+        error: (error) => {
+          console.error('Trash folder failed:', error);
+        },
+      });
+    }
   }
 }

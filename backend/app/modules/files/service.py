@@ -12,6 +12,7 @@ from typing import Any, Literal
 import asyncpg
 import boto3
 from botocore.exceptions import ClientError
+from boto3.s3.transfer import TransferConfig
 from fastapi import Depends, HTTPException, UploadFile, status, Request
 from fastapi.responses import StreamingResponse
 
@@ -22,12 +23,19 @@ from app.modules.files.repository import FileOperationsRepository
 
 
 class R2StorageGateway:
+    
     def __init__(self) -> None:
         self.endpoint_url = getattr(settings, "R2_ENDPOINT_URL", None)
         self.access_key = getattr(settings, "R2_ACCESS_KEY_ID", None)
         self.secret_key = getattr(settings, "R2_SECRET_ACCESS_KEY", None)
         self.bucket_name = getattr(settings, "R2_BUCKET_NAME", None)
         self._client: Any | None = None
+        self.config = TransferConfig(
+            multipart_threshold=8 * 1024 * 1024,  # 8 MB: threshold to trigger multipart
+            multipart_chunksize=16 * 1024 * 1024, # 16 MB: size of each uploaded chunk
+            max_concurrency=10,                    # Number of simultaneous threads
+            use_threads=False
+        )
 
     def _get_client(self) -> Any:
         if not self.endpoint_url or not self.access_key or not self.secret_key:
