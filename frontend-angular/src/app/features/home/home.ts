@@ -17,7 +17,7 @@ export class Home {
 
   readonly authStore = inject(AuthStore);
 
-  startCollecting(): void {
+  goToDashboard(): void {
     this.router.navigate(['/dashboard']);
   }
 }

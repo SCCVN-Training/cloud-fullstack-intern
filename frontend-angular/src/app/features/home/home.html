@@ -1,23 +1,46 @@
 <div class="home-container">
-  <!-- MAIN HERO SECTION ONLY -->
+  <!-- Decorative shapes -->
+  <div class="bg-shape shape-1"></div>
+  <div class="bg-shape shape-2"></div>
+
   <header class="hero-section">
     <div class="hero-brand">
-      <span class="jp-subtitle">オタクツリー // PERSONAL ARCHIVE</span>
+      <span class="jp-subtitle">オタクツリー // オタクハブ</span>
       <h1 class="hero-title">OTAKUTORY</h1>
     </div>
 
-    <p class="hero-tagline">Track everything you love.</p>
+    <p class="hero-tagline">
+      <mat-icon class="tagline-icon">auto_awesome</mat-icon>
+      Watch. Read. Create.
+    </p>
     <p class="hero-description">
-      A minimalist, self-managed ecosystem to organize, rate, and generate stunning showcases of
-      your favorite anime, manga, games, and music. Zero social noise. Just your personal library,
-      beautifully cataloged.
+      Your all‑in‑one hub for <strong>seasonal anime</strong>, trending <strong>news</strong>, and
+      creative <strong>image generation</strong>.<br />
+      Dive into the latest shows, stay ahead of the headlines, and craft aesthetic visuals with our
+      template studio. <span class="highlight">No AI fuss</span>, just your otaku passion.
     </p>
 
     <div class="hero-actions">
-      <button matButton class="btn-large" (click)="startCollecting()">
-        <mat-icon>add_circle_outline</mat-icon>
-        START COLLECTING
+      <button mat-flat-button color="primary" class="btn-primary" (click)="goToDashboard()">
+        <mat-icon>explore</mat-icon>
+        LET'S DISCOVER
       </button>
+    </div>
+
+    <!-- Feature highlights (replacing chips) -->
+    <div class="feature-row">
+      <div class="feature-item">
+        <mat-icon>schedule</mat-icon>
+        <span>Seasonal Anime</span>
+      </div>
+      <div class="feature-item">
+        <mat-icon>rss_feed</mat-icon>
+        <span>Latest News</span>
+      </div>
+      <div class="feature-item">
+        <mat-icon>brush</mat-icon>
+        <span>Template Studio</span>
+      </div>
     </div>
   </header>
 </div>

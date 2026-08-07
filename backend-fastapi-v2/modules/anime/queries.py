@@ -30,6 +30,7 @@ query GetSeasonalAnime($season: MediaSeason, $year: Int, $page: Int, $perPage: I
             averageScore
             genres
             nextAiringEpisode { airingAt episode }
+            siteUrl
         }
     }
 }
@@ -53,6 +54,7 @@ query SearchAnime($search: String, $page: Int, $perPage: Int) {
             bannerImage
             description
             status
+            siteUrl
         }
     }
 }
@@ -88,6 +90,7 @@ query GetAnimeDetails($id: Int) {
         characters { edges { node { id name { full } } } }
         staff { edges { node { id name { full } } } }
         rankings { rank type }
+        siteUrl
     }
 }
 """

@@ -1,5 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { NavigationStart, Router, RouterModule } from '@angular/router';
@@ -21,7 +22,7 @@ import { DashboardNavbarMenu } from './components/navbar-menu/dashboard-navbar-m
   templateUrl: './dashboard-navbar.html',
   styleUrl: './dashboard-navbar.scss',
 })
-export class DashboardNavbar implements OnInit {
+export class DashboardNavbar {
   private readonly profileStore = inject(UserProfileStore);
   private router = inject(Router);
 
@@ -29,11 +30,14 @@ export class DashboardNavbar implements OnInit {
 
   menuOpen = signal(false);
 
-  ngOnInit() {
+  constructor() {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationStart))
-      .subscribe((event: NavigationStart) => {
-        console.log('Navigation started to:', event.url);
+      .pipe(
+        filter((event) => event instanceof NavigationStart),
+        takeUntilDestroyed(),
+      )
+      .subscribe(() => {
+        // console.log('Navigation started to:', event.url);
         this.closeMenu();
       });
   }

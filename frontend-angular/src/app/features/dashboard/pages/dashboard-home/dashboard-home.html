@@ -11,9 +11,12 @@
   </section>
 
   <section class="section">
-    <h2>20 Seasonal Animes</h2>
+    <h2>Anime in this season</h2>
 
-    <app-anime-carousel [animeList]="seasonalAnimeList()"></app-anime-carousel>
+    <app-anime-carousel
+      [animeList]="seasonalAnimeList()"
+      [loading]="seasonalAnimeLoading()"
+    ></app-anime-carousel>
   </section>
 
   <section class="section">

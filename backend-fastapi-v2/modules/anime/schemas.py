@@ -66,6 +66,7 @@ class AnimeSeasonalItem(BaseModel):
     genres: List[str] = []
     # studios: Studios
     nextAiringEpisode: Optional[AnimeNextAiring] = None
+    siteUrl: Optional[str] = Field(None, alias="siteUrl")  # URL to AniList page
 
 class AnimeSearchItem(BaseModel):
     """Anime item for search results (less detailed)."""
@@ -76,6 +77,7 @@ class AnimeSearchItem(BaseModel):
     description: Optional[str] = None
     # episodes: Optional[int] = None
     status: str
+    siteUrl: Optional[str] = Field(None, alias="siteUrl")  # URL to AniList page
     # averageScore: Optional[int] = None
     # popularity: int
     # genres: List[str] = []

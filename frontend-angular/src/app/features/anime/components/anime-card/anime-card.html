@@ -1,0 +1,53 @@
+<article class="anime-card">
+  <div class="poster-wrap">
+    <img [src]="imageUrl()" [alt]="displayTitle() + ' poster'" loading="lazy" />
+    <div class="poster-shade"></div>
+    <!-- <span class="card-number">{{ cardNumber() }}</span> -->
+    <!-- <button class="save-button" type="button" [attr.aria-label]="'Save ' + displayTitle()">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-3.5L6 21V4.75Z"
+        ></path>
+      </svg>
+    </button> -->
+  </div>
+
+  <header class="card-header">
+    <h3 class="card-title">
+      <a
+        class="title-link"
+        [href]="anime().siteUrl || '#'"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {{ displayTitle() }}
+      </a>
+    </h3>
+    <p class="card-subtitle">{{ displaySubtitle() }}</p>
+  </header>
+
+  <div class="card-content">
+    <div class="meta">
+      @if (displayScore()) {
+        <span class="score">★ {{ displayScore() }}</span>
+      }
+      <!-- @if (anime().episodes) {
+        <span class="episodes">{{ anime().episodes }} eps</span>
+      } -->
+      @if (nextAiringText()) {
+        <span class="next-airing">{{ nextAiringText() }}</span>
+      }
+    </div>
+
+    @if (displayGenres().shown.length) {
+      <div class="genres" aria-label="Genres">
+        @for (genre of displayGenres().shown; track genre) {
+          <span class="genre">{{ genre }}</span>
+        }
+        @if (displayGenres().extra > 0) {
+          <span class="genre extra">+{{ displayGenres().extra }}</span>
+        }
+      </div>
+    }
+  </div>
+</article>
