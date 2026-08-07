@@ -1,11 +1,13 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth/auth-guard';
+import { onboardingGuard } from './core/guards/onboarding/onboarding-guard';
 
 import { PublicLayoutComponent } from './shared/components/layout/public-layout/public-layout.component';
 
 import { Homepage } from './features/homepage/homepage';
 import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
+import { Onboarding } from './features/auth/onboarding/onboarding';
 
 import { HowItWorksPage } from './features/how-it-works/how-it-works';
 import { AboutUsPage } from './features/about-us/about-us';
@@ -49,7 +51,7 @@ export const routes: Routes = [
   {
     path: 'user',
     loadChildren: () => import('./features/user/user.routes').then((m) => m.userRoutes),
-    canActivate: [authGuard],
+    canActivate: [authGuard, onboardingGuard],
   },
   {
     path: 'login',
@@ -58,5 +60,10 @@ export const routes: Routes = [
   {
     path: 'register',
     component: Register,
+  },
+  {
+    path: 'onboarding',
+    component: Onboarding,
+    canActivate: [authGuard],
   },
 ];
