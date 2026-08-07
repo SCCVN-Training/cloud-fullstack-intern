@@ -1,0 +1,189 @@
+<div class="auth-page">
+  <div class="ambient-background">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <main class="auth-container glass-card">
+    <header class="auth-header">
+      <h1 class="text-headline-lg auth-title">Tell us about you</h1>
+      <p class="text-body-md auth-subtitle">
+        Just a few details so we can personalize SkillVerse for you.
+      </p>
+    </header>
+
+    <form class="auth-form" [formGroup]="onboardingForm" (ngSubmit)="onSubmit()">
+      <!-- Full name -->
+      <div class="form-group">
+        <label class="text-label-sm form-label" for="fullName">Full name</label>
+        <div
+          class="input-wrapper"
+          [class.input-error]="
+            f['fullName'].invalid && (f['fullName'].dirty || f['fullName'].touched)
+          "
+        >
+          <span class="material-symbols-outlined input-icon">badge</span>
+          <input
+            class="form-input text-body-md"
+            id="fullName"
+            formControlName="fullName"
+            placeholder="Jane Doe"
+            type="text"
+          />
+        </div>
+        <div
+          *ngIf="f['fullName'].invalid && (f['fullName'].dirty || f['fullName'].touched)"
+          class="error-text"
+        >
+          <small *ngIf="f['fullName'].errors?.['required']">Full name is required.</small>
+          <small *ngIf="f['fullName'].errors?.['minlength']">Full name is too short.</small>
+        </div>
+      </div>
+
+      <!-- Age + Gender -->
+      <div class="form-row">
+        <div class="form-group">
+          <label class="text-label-sm form-label" for="age">Age</label>
+          <div
+            class="input-wrapper"
+            [class.input-error]="f['age'].invalid && (f['age'].dirty || f['age'].touched)"
+          >
+            <span class="material-symbols-outlined input-icon">cake</span>
+            <input
+              class="form-input text-body-md"
+              id="age"
+              formControlName="age"
+              placeholder="25"
+              type="number"
+              min="13"
+              max="120"
+            />
+          </div>
+          <div class="error-text" *ngIf="f['age'].invalid && (f['age'].dirty || f['age'].touched)">
+            <small *ngIf="f['age'].errors?.['required']">Age is required.</small>
+            <small *ngIf="f['age'].errors?.['min'] || f['age'].errors?.['max']">
+              Enter a valid age.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="text-label-sm form-label" for="gender">Gender</label>
+          <div
+            class="input-wrapper select-wrapper"
+            [class.input-error]="f['gender'].invalid && (f['gender'].dirty || f['gender'].touched)"
+          >
+            <span class="material-symbols-outlined input-icon">wc</span>
+            <select class="form-input text-body-md" id="gender" formControlName="gender">
+              <option value="" disabled selected hidden>Select</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="other">Other</option>
+              <option value="prefer_not_to_say">Prefer not to say</option>
+            </select>
+          </div>
+          <div
+            class="error-text"
+            *ngIf="f['gender'].invalid && (f['gender'].dirty || f['gender'].touched)"
+          >
+            <small>Please select a gender.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bio -->
+      <div class="form-group">
+        <label class="text-label-sm form-label" for="bio">Short Biography</label>
+        <div class="input-wrapper textarea-wrapper">
+          <textarea
+            class="form-input text-body-md"
+            id="bio"
+            formControlName="bio"
+            placeholder="A sentence or two about you"
+            rows="2"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Interests -->
+      <div class="form-group">
+        <label class="text-label-sm form-label" for="interestInput">Interests</label>
+        <div class="input-wrapper">
+          <span class="material-symbols-outlined input-icon">interests</span>
+          <input
+            class="form-input text-body-md"
+            id="interestInput"
+            [(ngModel)]="interestInput"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="e.g. hiking — press Enter to add"
+            type="text"
+            (keydown.enter)="$event.preventDefault(); addInterest()"
+          />
+        </div>
+        <div class="chip-list" *ngIf="interests.length">
+          <span class="chip" *ngFor="let interest of interests">
+            {{ interest }}
+            <button
+              type="button"
+              class="chip-remove"
+              (click)="removeInterest(interest)"
+              [attr.aria-label]="'Remove ' + interest"
+            >
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <!-- Skills learning -->
+      <div class="form-group">
+        <label class="text-label-sm form-label" for="skillInput">Skills you want to learn</label>
+        <div class="input-wrapper">
+          <span class="material-symbols-outlined input-icon">school</span>
+          <input
+            class="form-input text-body-md"
+            id="skillInput"
+            [(ngModel)]="skillInput"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="e.g. guitar — press Enter to add"
+            type="text"
+            (keydown.enter)="$event.preventDefault(); addSkill()"
+          />
+        </div>
+        <div class="chip-list" *ngIf="skillsLearning.length">
+          <span class="chip" *ngFor="let skill of skillsLearning">
+            {{ skill }}
+            <button
+              type="button"
+              class="chip-remove"
+              (click)="removeSkill(skill)"
+              [attr.aria-label]="'Remove ' + skill"
+            >
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <!-- Skills taught — informational only -->
+      <p class="skills-taught-note text-body-sm">
+        <span class="material-symbols-outlined">workspace_premium</span>
+        Skills taught: {{ skillsTaughtCount }} — you can start teaching once you host your first
+        session.
+      </p>
+
+      <button
+        class="btn-auth-submit"
+        type="submit"
+        [disabled]="onboardingForm.invalid || (isLoading$ | async)"
+      >
+        <span *ngIf="!(isLoading$ | async)">Finish setup</span>
+        <span *ngIf="isLoading$ | async">Saving...</span>
+        <span class="material-symbols-outlined icon-light" *ngIf="!(isLoading$ | async)"
+          >arrow_forward</span
+        >
+      </button>
+    </form>
+  </main>
+</div>
