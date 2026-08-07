@@ -16,9 +16,15 @@ from app.modules.users.schema import (
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
+# Separate router, same URL prefix, but its own "Admin" tag — so Swagger
+# groups admin-only operations (list all users) visually apart from
+# self-or-admin operations (get/update/replace/delete one user).
+# Same prefix on two routers is fine; FastAPI just merges their routes.
+admin_router = APIRouter(prefix="/users", tags=["Admin"])
+
 
 # LIST USERS (admin only)
-@router.get("", response_model=UserListResponse, status_code=status.HTTP_200_OK)
+@admin_router.get("", response_model=UserListResponse, status_code=status.HTTP_200_OK)
 async def list_users(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),

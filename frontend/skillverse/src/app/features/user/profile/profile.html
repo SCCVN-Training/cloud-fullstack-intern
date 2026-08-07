@@ -1,7 +1,5 @@
 <div class="page-container">
-  <button type="button" class="btn-back" routerLink="/homepage">
-    Back
-  </button>
+  <button type="button" class="btn-back" routerLink="/homepage">Back</button>
   <!-- Page Header -->
   <header class="page-header">
     <div class="header-text">
@@ -9,8 +7,7 @@
       <p class="page-subtitle">Manage your personal information, skills, and preferences.</p>
     </div>
     <div class="header-actions">
-      <button class="btn-secondary">View Public Profile</button>
-      <button class="btn-primary">Edit</button>
+      <button class="btn-secondary" type="button" (click)="openDeleteConfirm()">Delete</button>
     </div>
   </header>
 
@@ -23,29 +20,52 @@
         <div class="avatar-wrapper">
           <img
             class="avatar-img"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnJDZJ7HPUz6UO5KHJIpDXWzIMNOrTgJIV9LBYIPU2_-x3KlaNFPjRV3Wj58JhdP_NpaJaYzNsgNyGm-V9logDArO32uEon3kYj4aZEWBAFtcIg36LYgy7HjRoIJaBeFjs4_BwIAWAGttKOcONUZEnCSr2Zlc_bHcjkmPInUY4HVGjpZhjVEefPsx20wfKUTWMq-mFxBllBPzQBqENX5V24_gHikMUF7PRuRbFDgsmGwgi6SItN5Wl5l7jpQ1WXePl36D0zqWQegi1"
-            alt="Alex Rivera"
+            [src]="authService.currentUser()?.avatar || defaultAvatarUrl"
+            [alt]="authService.currentUser()?.name || 'Profile photo'"
           />
-          <button class="btn-edit-avatar">
-            <span class="material-symbols-outlined icon-edit">edit</span>
+          <input
+            #avatarInput
+            type="file"
+            accept="image/png,image/jpeg,.png,.jpg,.jpeg"
+            hidden
+            (change)="onAvatarSelected($event)"
+          />
+          <button
+            class="btn-edit-avatar"
+            type="button"
+            (click)="avatarInput.click()"
+            [disabled]="isUploadingAvatar()"
+            [attr.aria-label]="'Change profile photo'"
+          >
+            <span class="material-symbols-outlined icon-edit">
+              {{ isUploadingAvatar() ? 'hourglass_top' : 'edit' }}
+            </span>
           </button>
         </div>
 
         <h2 class="profile-name">
           {{ authService.currentUser()?.name }}
         </h2>
-        <span class="user-badge">Expert Learner</span>
+        <span class="user-badge" *ngIf="authService.currentUser()?.profile as p">
+          {{ p.age ? p.age + ' yrs' : '' }}{{ p.age && p.gender ? ' • ' : '' }}{{ p.gender || '' }}
+        </span>
 
-        <p class="profile-bio">Product Designer eager to learn 3D modeling and French cooking.</p>
+        <p class="profile-bio">
+          {{ authService.currentUser()?.profile?.bio || 'Add a short bio to introduce yourself.' }}
+        </p>
 
         <div class="stats-divider">
           <div class="stat-item">
-            <p class="stat-number text-pink">12</p>
+            <p class="stat-number text-pink">
+              {{ authService.currentUser()?.profile?.skillsLearning?.length || 0 }}
+            </p>
             <p class="stat-label">Skills Learning</p>
           </div>
           <div class="vertical-divider"></div>
           <div class="stat-item">
-            <p class="stat-number text-pink">4</p>
+            <p class="stat-number text-pink">
+              {{ authService.currentUser()?.profile?.skillsTaught || 0 }}
+            </p>
             <p class="stat-label">Skills Taught</p>
           </div>
         </div>
@@ -56,37 +76,95 @@
     <div class="right-col">
       <!-- Edit Personal Info Bento -->
       <div class="form-card card-base">
-        <h3 class="card-title">Personal Information</h3>
+        <div class="card-header">
+          <h3 class="card-title">Personal Information</h3>
+          <button *ngIf="!isEditingInfo()" type="button" class="btn-primary" (click)="startEdit()">
+            Edit
+          </button>
+        </div>
 
-        <form class="info-form">
+        <!-- READ-ONLY VIEW -->
+        <div class="info-view" *ngIf="!isEditingInfo()">
+          <div class="info-row">
+            <span class="info-label">Full Name</span>
+            <span class="info-value">{{ authService.currentUser()?.name || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Contact Email</span>
+            <span class="info-value">{{ authService.currentUser()?.email || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">About Me</span>
+            <span class="info-value">{{ authService.currentUser()?.profile?.bio || '—' }}</span>
+          </div>
+        </div>
+
+        <!-- EDIT FORM -->
+        <form class="info-form" *ngIf="isEditingInfo()" (ngSubmit)="saveEdit()">
           <div class="form-row split">
             <div class="form-group">
-              <label>First Name</label>
+              <label>Full Name</label>
+              <input type="text" class="form-input" name="editName" [(ngModel)]="editName" />
+            </div>
+          </div>
+
+          <div class="form-row split">
+            <div class="form-group">
+              <label>Age</label>
               <input
-                type="text"
+                type="number"
                 class="form-input"
-                [value]="authService.currentUser()?.name || ''"
+                name="editAge"
+                [(ngModel)]="editAge"
+                min="13"
+                max="120"
               />
+            </div>
+
+            <div class="form-group">
+              <label>Gender</label>
+              <select class="form-input" name="editGender" [(ngModel)]="editGender">
+                <option value="" disabled>Select</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="other">Other</option>
+                <option value="prefer_not_to_say">Prefer not to say</option>
+              </select>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Email Address</label>
-              <input
-                type="email"
-                class="form-input"
-                [value]="authService.currentUser()?.email || ''"
-              />
+              <label>Contact Email</label>
+              <input type="email" class="form-input" name="editEmail" [(ngModel)]="editEmail" />
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>About Me</label>
-              <textarea class="form-textarea" rows="3">
-Product Designer based in NYC. I love exchanging knowledge and meeting new people. Always looking to expand my horizons beyond the screen.</textarea>
+              <div class="label-row">
+                <label>About Me</label>
+                <span class="char-count" [class.char-count-limit]="editBio.length >= bioMaxLength">
+                  {{ editBio.length }}/{{ bioMaxLength }}
+                </span>
+              </div>
+              <textarea
+                class="form-textarea"
+                name="editBio"
+                rows="3"
+                [(ngModel)]="editBio"
+                [maxlength]="bioMaxLength"
+              ></textarea>
             </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="cancelEdit()" [disabled]="isSaving()">
+              Cancel
+            </button>
+            <button type="submit" class="btn-update" [disabled]="isSaving()">
+              {{ isSaving() ? 'Saving...' : 'Update' }}
+            </button>
           </div>
         </form>
       </div>
@@ -96,21 +174,45 @@ Product Designer based in NYC. I love exchanging knowledge and meeting new peopl
         <!-- Skills Card -->
         <div class="tag-card card-base">
           <div class="card-header">
-            <h3 class="card-title">Skills I'm Learning</h3>
-            <button class="btn-icon">
-              <span class="material-symbols-outlined">add_circle</span>
+            <h3 class="card-title">
+              Skills I'm Learning
+              <span class="count-badge">{{
+                authService.currentUser()?.profile?.skillsLearning?.length || 0
+              }}</span>
+            </h3>
+            <button class="btn-icon" type="button" (click)="toggleAddSkill()">
+              <span class="material-symbols-outlined">{{
+                addingSkill() ? 'close' : 'add_circle'
+              }}</span>
             </button>
           </div>
+
+          <div class="add-tag-input" *ngIf="addingSkill()">
+            <input
+              type="text"
+              [(ngModel)]="skillInput"
+              placeholder="Type a skill and press Enter"
+              (keydown.enter)="$event.preventDefault(); confirmAddSkill()"
+              (blur)="confirmAddSkill()"
+              autofocus
+            />
+          </div>
+
           <div class="tag-list">
-            <span class="tag-chip tag-learning">
-              3D Modeling <span class="material-symbols-outlined icon-close">close</span>
+            <span
+              class="tag-chip tag-learning"
+              *ngFor="let skill of authService.currentUser()?.profile?.skillsLearning"
+            >
+              {{ skill }}
+              <span class="material-symbols-outlined icon-close" (click)="removeSkill(skill)"
+                >close</span
+              >
             </span>
-            <span class="tag-chip tag-learning">
-              French Cuisine <span class="material-symbols-outlined icon-close">close</span>
-            </span>
-            <span class="tag-chip tag-learning">
-              Pottery <span class="material-symbols-outlined icon-close">close</span>
-            </span>
+            <span
+              class="empty-hint"
+              *ngIf="!authService.currentUser()?.profile?.skillsLearning?.length"
+              >No skills added yet.</span
+            >
           </div>
         </div>
 
@@ -118,14 +220,37 @@ Product Designer based in NYC. I love exchanging knowledge and meeting new peopl
         <div class="tag-card card-base">
           <div class="card-header">
             <h3 class="card-title">Interests</h3>
-            <button class="btn-icon">
-              <span class="material-symbols-outlined">add_circle</span>
+            <button class="btn-icon" type="button" (click)="toggleAddInterest()">
+              <span class="material-symbols-outlined">{{
+                addingInterest() ? 'close' : 'add_circle'
+              }}</span>
             </button>
           </div>
+
+          <div class="add-tag-input" *ngIf="addingInterest()">
+            <input
+              type="text"
+              [(ngModel)]="interestInput"
+              placeholder="Type an interest and press Enter"
+              (keydown.enter)="$event.preventDefault(); confirmAddInterest()"
+              (blur)="confirmAddInterest()"
+              autofocus
+            />
+          </div>
+
           <div class="tag-list">
-            <span class="tag-chip tag-interest">Design Systems</span>
-            <span class="tag-chip tag-interest">Typography</span>
-            <span class="tag-chip tag-interest">Watercolor</span>
+            <span
+              class="tag-chip tag-interest"
+              *ngFor="let interest of authService.currentUser()?.profile?.interests"
+            >
+              {{ interest }}
+              <span class="material-symbols-outlined icon-close" (click)="removeInterest(interest)"
+                >close</span
+              >
+            </span>
+            <span class="empty-hint" *ngIf="!authService.currentUser()?.profile?.interests?.length"
+              >No interests added yet.</span
+            >
           </div>
         </div>
       </div>
@@ -145,34 +270,64 @@ Product Designer based in NYC. I love exchanging knowledge and meeting new peopl
           <span class="rating-text">4.8 (24 Reviews)</span>
         </div>
 
-        <div class="reviews-list">
-          <!-- Review 1 -->
+        <div class="reviews-list" *ngIf="reviews[currentReviewIndex()] as review">
           <div class="review-item">
             <img
+              *ngIf="review.avatarUrl"
               class="reviewer-avatar"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPPt-M9Q3i0VOkQJFKgjVEKfzRWMIi6FYYQyed3eQoRkf7tQ13ocYz3LFuzbI0YKeaq5ZsaJDTLO7yQnGyNHa5i9IcvdzlwnHRH9QvHJzNYvOEvn5AAoFAWknVQA1rSsQdW5iBushH2qJXl9LrF_WiBAYi-ICutbeiB3Y3ShAaUdzWRqOwN4izJxK8xvRwLV_xGVOHoNs6oCCO7hMpbk5iaTApMAyzMaNOywMoAVEKIcxdiB3bXdJJeQPX8ll28TEgEdRoOtOyTuHa"
-              alt="Sarah J."
+              [src]="review.avatarUrl"
+              [alt]="review.name"
             />
-            <div class="review-content">
-              <p class="reviewer-name">Sarah J.</p>
-              <p class="review-text">
-                "Alex was incredibly patient explaining the basics of Figma components. Highly
-                recommend booking a session!"
-              </p>
+            <div class="reviewer-avatar text-avatar" *ngIf="!review.avatarUrl">
+              {{ review.name.charAt(0) }}
             </div>
-          </div>
-
-          <!-- Review 2 -->
-          <div class="review-item">
-            <div class="reviewer-avatar text-avatar">M</div>
             <div class="review-content">
-              <p class="reviewer-name">Mark T.</p>
-              <p class="review-text">
-                "Great session on UI principles. Looking forward to our next exchange."
-              </p>
+              <p class="reviewer-name">{{ review.name }}</p>
+              <p class="review-text">"{{ review.text }}"</p>
             </div>
           </div>
         </div>
+
+        <div class="review-nav" *ngIf="reviews.length > 1">
+          <button type="button" class="btn-review-nav" (click)="prevReview()">
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+          <span class="review-nav-count"
+            >{{ currentReviewIndex() + 1 }} / {{ reviews.length }}</span
+          >
+          <button type="button" class="btn-review-nav" (click)="nextReview()">
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Account Confirmation Modal -->
+  <div class="modal-overlay" *ngIf="showDeleteConfirm()" (click)="closeDeleteConfirm()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <span class="material-symbols-outlined modal-icon">warning</span>
+      <h3 class="modal-title">Do you want to delete your account?</h3>
+      <p class="modal-text">
+        This action can't be undone. All your profile data will be permanently removed.
+      </p>
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn-modal-no"
+          (click)="closeDeleteConfirm()"
+          [disabled]="isDeleting()"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          class="btn-modal-yes"
+          (click)="confirmDelete()"
+          [disabled]="isDeleting()"
+        >
+          {{ isDeleting() ? 'Deleting...' : 'Yes' }}
+        </button>
       </div>
     </div>
   </div>

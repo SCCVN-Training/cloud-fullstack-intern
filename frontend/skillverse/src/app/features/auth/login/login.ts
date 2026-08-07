@@ -47,7 +47,7 @@ export class Login {
           });
 
           this.toastService.showSuccess(`Welcome ${user.firstName}!`);
-          this.router.navigate(['/']);
+          this.router.navigate([this.authService.needsOnboarding() ? '/onboarding' : '/']);
         }
       });
     }
@@ -77,7 +77,7 @@ export class Login {
         this.isLoading$.next(false);
         if (success) {
           this.toastService.showSuccess('Login successful!');
-          this.router.navigate(['/']);
+          this.router.navigate([this.authService.needsOnboarding() ? '/onboarding' : '/']);
         } else {
           this.errorMessage$.next('Invalid email or password.');
           this.toastService.showError('Email or password is incorrect.');
