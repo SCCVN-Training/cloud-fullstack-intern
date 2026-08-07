@@ -22,6 +22,10 @@ class InvalidCredentialException(AppException):
 class UserNotFoundException(AppException):
     pass
 
+# Profile Exception
+class ProfileNotFoundException(AppException):
+    pass
+
 # JWT Token Exception
 class InvalidTokenException(AppException):
     pass
@@ -63,6 +67,19 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def user_not_found_handler(
         request: Request,
         exc: UserNotFoundException
+    ):
+        return JSONResponse(
+            status_code=404,
+            content={
+                "detail": exc.message
+            }
+        )
+
+    # Profile not found
+    @app.exception_handler(ProfileNotFoundException)
+    async def profile_not_found_handler(
+        request: Request,
+        exc: ProfileNotFoundException
     ):
         return JSONResponse(
             status_code=404,
