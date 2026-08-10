@@ -1,0 +1,129 @@
+// ========================================
+// Admin Table
+// ========================================
+
+.admin-table-card {
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.78);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 1.5rem;
+
+  box-shadow: 0 12px 32px rgba(164, 48, 115, 0.06);
+}
+
+.admin-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  text-align: left;
+
+  thead {
+    background: rgba(255, 251, 254, 0.65);
+  }
+
+  th {
+    padding: 1rem;
+
+    color: #544249;
+
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    border-bottom: 1px solid rgba(218, 192, 201, 0.5);
+
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 1rem;
+
+    color: #121c2a;
+
+    border-bottom: 1px solid rgba(218, 192, 201, 0.3);
+  }
+
+  tbody tr {
+    transition: background-color 150ms ease;
+
+    &:hover {
+      background-color: rgba(250, 245, 250, 0.8);
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.admin-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 1.25rem 1.5rem;
+
+  border-bottom: 1px solid rgba(218, 192, 201, 0.4);
+}
+
+.admin-table-title {
+  margin: 0;
+
+  color: #121c2a;
+
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.admin-table-description {
+  margin: 0.35rem 0 0;
+
+  color: #544249;
+
+  font-size: 0.8rem;
+}
+
+.admin-table-actions {
+  display: flex;
+
+  gap: 0.5rem;
+}
+
+.admin-empty-state {
+  padding: 4rem 1rem;
+
+  text-align: center;
+
+  color: #544249;
+
+  .material-symbols-outlined {
+    font-size: 2.5rem;
+  }
+
+  h3 {
+    margin: 0.75rem 0 0;
+
+    color: #121c2a;
+
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0.35rem 0 0;
+
+    font-size: 0.875rem;
+  }
+}

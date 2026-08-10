@@ -1,0 +1,101 @@
+// ========================================
+// Admin Badges
+// ========================================
+
+.admin-role-badge,
+.admin-status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  padding: 0.3rem 0.65rem;
+
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Role
+// ========================================
+
+.admin-role-mentor {
+  background-color: rgba(252, 231, 243, 0.55);
+
+  color: #a43073;
+
+  border: 1px solid rgba(164, 48, 115, 0.15);
+}
+
+.admin-role-learner {
+  background-color: #faf5fa;
+
+  color: #544249;
+
+  border: 1px solid rgba(218, 192, 201, 0.5);
+}
+
+// ========================================
+// Status
+// ========================================
+
+.admin-status-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+
+  border-radius: 50%;
+}
+
+.admin-status-active,
+.admin-status-completed {
+  background-color: rgba(252, 231, 243, 0.55);
+
+  color: #a43073;
+
+  border: 1px solid rgba(164, 48, 115, 0.2);
+
+  .admin-status-dot {
+    background-color: #a43073;
+  }
+}
+
+.admin-status-confirmed {
+  background-color: rgba(232, 245, 233, 0.8);
+
+  color: #2e7d32;
+
+  border: 1px solid rgba(46, 125, 50, 0.2);
+
+  .admin-status-dot {
+    background-color: #2e7d32;
+  }
+}
+
+.admin-status-pending {
+  background-color: rgba(255, 243, 205, 0.8);
+
+  color: #8a6500;
+
+  border: 1px solid rgba(138, 101, 0, 0.2);
+
+  .admin-status-dot {
+    background-color: #8a6500;
+  }
+}
+
+.admin-status-cancelled,
+.admin-status-banned {
+  background-color: #ffdad6;
+
+  color: #ba1a1a;
+
+  border: 1px solid rgba(186, 26, 26, 0.2);
+
+  .admin-status-dot {
+    background-color: #ba1a1a;
+  }
+}
