@@ -1,0 +1,310 @@
+<div class="skill-management-page">
+  <!-- ======================================== -->
+  <!-- Page Header -->
+  <!-- ======================================== -->
+
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Skill Management</h1>
+
+      <p class="page-subtitle">Manage skills, categories, mentors, and skill status.</p>
+    </div>
+  </header>
+
+  <!-- ======================================== -->
+  <!-- Filters -->
+  <!-- ======================================== -->
+
+  <section class="filters-card">
+    <div class="filters">
+      <!-- Search -->
+
+      <div class="search-wrapper">
+        <span class="material-symbols-outlined"> search </span>
+
+        <input
+          type="search"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onFilterChange()"
+          class="search-input"
+          placeholder="Search skills..."
+          aria-label="Search skills"
+        />
+      </div>
+
+      <!-- Category -->
+
+      <select
+        [(ngModel)]="selectedCategory"
+        (ngModelChange)="onFilterChange()"
+        class="filter-select"
+        aria-label="Filter by category"
+      >
+        <option value="">Category: All</option>
+
+        <option value="Art & Design">Art & Design</option>
+
+        <option value="Photography">Photography</option>
+
+        <option value="Programming">Programming</option>
+
+        <option value="Design">Design</option>
+
+        <option value="Languages">Languages</option>
+
+        <option value="Writing">Writing</option>
+
+        <option value="Music">Music</option>
+
+        <option value="Communication">Communication</option>
+      </select>
+
+      <!-- Status -->
+
+      <select
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="onFilterChange()"
+        class="filter-select"
+        aria-label="Filter by status"
+      >
+        <option value="">Status: All</option>
+
+        <option value="active">Active</option>
+
+        <option value="pending">Pending</option>
+
+        <option value="suspended">Suspended</option>
+      </select>
+
+      <!-- Clear -->
+
+      <button type="button" class="clear-button" (click)="clearFilters()">
+        <span class="material-symbols-outlined"> filter_alt_off </span>
+
+        Clear
+      </button>
+    </div>
+
+    <!-- Result Count -->
+
+    <div class="result-count">
+      Showing
+
+      <span class="result-highlight"> {{ showingFrom }}-{{ showingTo }} </span>
+
+      of
+
+      <span class="result-total">
+        {{ totalSkills }}
+      </span>
+
+      skills
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- Table Card -->
+  <!-- ======================================== -->
+
+  <section class="table-card">
+    <div class="table-wrapper">
+      <table>
+        <!-- Table Header -->
+
+        <thead>
+          <tr>
+            <th>Skill</th>
+
+            <th>Category</th>
+
+            <th>Mentor</th>
+
+            <th>Students</th>
+
+            <th class="created-column">Created Date</th>
+
+            <th>Status</th>
+
+            <th class="actions-column">Actions</th>
+          </tr>
+        </thead>
+
+        <!-- Table Body -->
+
+        <tbody>
+          <tr
+            *ngFor="let skill of paginatedSkills"
+            [class.skill-suspended]="skill.status === 'suspended'"
+          >
+            <!-- Skill -->
+
+            <td class="skill-cell">
+              <div class="skill-info">
+                <div class="skill-icon">
+                  <span class="material-symbols-outlined"> psychology </span>
+                </div>
+
+                <div class="skill-details">
+                  <p class="skill-name">
+                    {{ skill.title }}
+                  </p>
+
+                  <p class="skill-description">
+                    {{ skill.description }}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <!-- Category -->
+
+            <td>
+              <span class="category-badge">
+                {{ skill.category }}
+              </span>
+            </td>
+
+            <!-- Mentor -->
+
+            <td>
+              <div class="mentor-name">
+                {{ skill.mentor }}
+              </div>
+            </td>
+
+            <!-- Students -->
+
+            <td>
+              <div class="students-count">
+                <span class="material-symbols-outlined"> group </span>
+
+                {{ skill.students }}
+              </div>
+            </td>
+
+            <!-- Created Date -->
+
+            <td class="created-column">
+              <span class="created-date">
+                {{ skill.createdDate }}
+              </span>
+            </td>
+
+            <!-- Status -->
+
+            <td>
+              <span
+                class="status-badge"
+                [class.status-active]="skill.status === 'active'"
+                [class.status-pending]="skill.status === 'pending'"
+                [class.status-suspended]="skill.status === 'suspended'"
+              >
+                <span class="status-dot"></span>
+
+                {{ getStatusLabel(skill.status) }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+
+            <td class="actions-column">
+              <div class="skill-actions">
+                <!-- View -->
+
+                <button
+                  type="button"
+                  class="action-button"
+                  title="View Skill"
+                  aria-label="View Skill"
+                  (click)="viewSkill(skill)"
+                >
+                  <span class="material-symbols-outlined"> visibility </span>
+                </button>
+
+                <!-- Edit -->
+
+                <button
+                  type="button"
+                  class="action-button"
+                  title="Edit Skill"
+                  aria-label="Edit Skill"
+                  (click)="editSkill(skill)"
+                >
+                  <span class="material-symbols-outlined"> edit </span>
+                </button>
+
+                <!-- Delete -->
+
+                <button
+                  type="button"
+                  class="action-button danger"
+                  title="Delete Skill"
+                  aria-label="Delete Skill"
+                  (click)="deleteSkill(skill)"
+                >
+                  <span class="material-symbols-outlined"> delete </span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Empty State -->
+
+          <tr *ngIf="paginatedSkills.length === 0">
+            <td colspan="7" class="empty-state">
+              <span class="material-symbols-outlined"> psychology_alt </span>
+
+              <p>No skills found.</p>
+
+              <button type="button" class="empty-clear-button" (click)="clearFilters()">
+                Clear filters
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- Pagination -->
+    <!-- ======================================== -->
+
+    <footer class="pagination" *ngIf="totalSkills > 0">
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="currentPage === 1"
+        (click)="previousPage()"
+      >
+        <span class="material-symbols-outlined"> chevron_left </span>
+
+        Previous
+      </button>
+
+      <div class="page-numbers">
+        <button
+          *ngFor="let page of pageNumbers"
+          type="button"
+          class="page-number"
+          [class.active]="currentPage === page"
+          [attr.aria-label]="'Go to page ' + page"
+          [attr.aria-current]="currentPage === page ? 'page' : null"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="currentPage === totalPages"
+        (click)="nextPage()"
+      >
+        Next
+
+        <span class="material-symbols-outlined"> chevron_right </span>
+      </button>
+    </footer>
+  </section>
+</div>

@@ -1,0 +1,271 @@
+<div class="user-management-page">
+  <!-- ======================================== -->
+  <!-- Page Header -->
+  <!-- ======================================== -->
+
+  <header class="page-header">
+    <h1 class="page-title">User Management</h1>
+
+    <p class="page-subtitle">Manage users, roles, and account status.</p>
+  </header>
+
+  <!-- ======================================== -->
+  <!-- Filters -->
+  <!-- ======================================== -->
+
+  <section class="filters-card">
+    <div class="filters">
+      <!-- Role -->
+
+      <select
+        [(ngModel)]="selectedRole"
+        (ngModelChange)="onFilterChange()"
+        class="filter-select"
+        aria-label="Filter by role"
+      >
+        <option value="">Role: All</option>
+
+        <option value="learner">Learner</option>
+
+        <option value="mentor">Mentor</option>
+      </select>
+
+      <!-- Status -->
+
+      <select
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="onFilterChange()"
+        class="filter-select"
+        aria-label="Filter by status"
+      >
+        <option value="">Status: All</option>
+
+        <option value="active">Active</option>
+
+        <option value="banned">Banned/Suspended</option>
+      </select>
+    </div>
+
+    <!-- Result count -->
+
+    <div class="result-count">
+      Showing
+
+      <span class="result-highlight"> {{ showingFrom }}-{{ showingTo }} </span>
+
+      of
+
+      <span class="result-total">
+        {{ totalUsers | number }}
+      </span>
+
+      users
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- User Table -->
+  <!-- ======================================== -->
+
+  <section class="table-card">
+    <div class="table-wrapper">
+      <table>
+        <!-- Table Header -->
+
+        <thead>
+          <tr>
+            <th>User</th>
+
+            <th>Role</th>
+
+            <th class="joined-column">Joined Date</th>
+
+            <th>Status</th>
+
+            <th class="actions-column">Actions</th>
+          </tr>
+        </thead>
+
+        <!-- Table Body -->
+
+        <tbody>
+          <tr *ngFor="let user of paginatedUsers" [class.user-banned]="user.status === 'banned'">
+            <!-- ================================= -->
+            <!-- User -->
+            <!-- ================================= -->
+
+            <td class="user-cell">
+              <div class="user-info">
+                <!-- Avatar -->
+
+                <ng-container *ngIf="user.avatar; else initialsAvatar">
+                  <img class="user-avatar" [src]="user.avatar" [alt]="user.name + ' avatar'" />
+                </ng-container>
+
+                <!-- Initials -->
+
+                <ng-template #initialsAvatar>
+                  <div class="user-avatar initials">
+                    {{ getInitials(user.name) }}
+                  </div>
+                </ng-template>
+
+                <!-- User Information -->
+
+                <div class="user-details">
+                  <p class="user-name">
+                    {{ user.name }}
+                  </p>
+
+                  <p class="user-email">
+                    {{ user.email }}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <!-- ================================= -->
+            <!-- Role -->
+            <!-- ================================= -->
+
+            <td>
+              <span
+                class="role-badge"
+                [class.role-mentor]="user.role === 'mentor'"
+                [class.role-learner]="user.role === 'learner'"
+              >
+                {{ getRoleLabel(user.role) }}
+              </span>
+            </td>
+
+            <!-- ================================= -->
+            <!-- Joined Date -->
+            <!-- ================================= -->
+
+            <td class="joined-column">
+              <span class="joined-date">
+                {{ user.joinedDate }}
+              </span>
+            </td>
+
+            <!-- ================================= -->
+            <!-- Status -->
+            <!-- ================================= -->
+
+            <td>
+              <span
+                class="status-badge"
+                [class.status-active]="user.status === 'active'"
+                [class.status-banned]="user.status === 'banned'"
+              >
+                <span class="status-dot"></span>
+
+                {{ getStatusLabel(user.status) }}
+              </span>
+            </td>
+
+            <!-- ================================= -->
+            <!-- Actions -->
+            <!-- ================================= -->
+
+            <td class="actions-column">
+              <div class="user-actions">
+                <!-- View -->
+
+                <button
+                  type="button"
+                  class="action-button"
+                  title="View Profile"
+                  aria-label="View Profile"
+                  (click)="viewProfile(user)"
+                >
+                  <span class="material-symbols-outlined"> visibility </span>
+                </button>
+
+                <!-- Reset Password -->
+
+                <button
+                  type="button"
+                  class="action-button"
+                  title="Reset Password"
+                  aria-label="Reset Password"
+                  (click)="resetPassword(user)"
+                >
+                  <span class="material-symbols-outlined"> key </span>
+                </button>
+
+                <!-- Ban / Unban -->
+
+                <button
+                  type="button"
+                  class="action-button danger"
+                  [title]="user.status === 'banned' ? 'Unban' : 'Ban/Suspend'"
+                  [attr.aria-label]="user.status === 'banned' ? 'Unban' : 'Ban/Suspend'"
+                  (click)="toggleBan(user)"
+                >
+                  <span class="material-symbols-outlined">
+                    {{ user.status === 'banned' ? 'settings_backup_restore' : 'block' }}
+                  </span>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ================================= -->
+          <!-- Empty State -->
+          <!-- ================================= -->
+
+          <tr *ngIf="paginatedUsers.length === 0">
+            <td colspan="5" class="empty-state">
+              <span class="material-symbols-outlined"> person_search </span>
+
+              <p>No users found.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- Pagination -->
+    <!-- ======================================== -->
+
+    <footer class="pagination">
+      <!-- Previous -->
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="currentPage === 1"
+        (click)="previousPage()"
+      >
+        Previous
+      </button>
+
+      <!-- Page Numbers -->
+
+      <div class="page-numbers">
+        <button
+          *ngFor="let page of pageNumbers"
+          type="button"
+          class="page-number"
+          [class.active]="currentPage === page"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+
+      <!-- Next -->
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="currentPage === totalPages"
+        (click)="nextPage()"
+      >
+        Next
+      </button>
+    </footer>
+  </section>
+</div>

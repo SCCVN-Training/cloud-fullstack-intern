@@ -1,0 +1,659 @@
+// ========================================
+// Variables
+// ========================================
+
+$primary: #a43073;
+$primary-light: #f472b6;
+$primary-container: #fce7f3;
+
+$surface: #fffbfe;
+$surface-container: #f7f2f7;
+$surface-container-low: #faf5fa;
+$surface-container-high: #ece6ec;
+
+$on-surface: #121c2a;
+$on-surface-variant: #544249;
+
+$outline: #87717a;
+$outline-variant: #dac0c9;
+
+$error: #ba1a1a;
+$error-container: #ffdad6;
+
+$white: #ffffff;
+
+$transition: 150ms ease;
+
+// ========================================
+// Page
+// ========================================
+
+.user-management-page {
+  min-height: 100%;
+
+  padding: 2rem;
+}
+
+// ========================================
+// Header
+// ========================================
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  margin: 0;
+
+  color: $on-surface;
+
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+}
+
+.page-subtitle {
+  margin: 0.5rem 0 0;
+
+  color: $on-surface-variant;
+
+  font-size: 0.95rem;
+  line-height: 1.5rem;
+}
+
+// ========================================
+// Filters
+// ========================================
+
+.filters-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  margin-bottom: 2rem;
+  padding: 1.25rem 1.5rem;
+
+  background: rgba($white, 0.72);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba($white, 0.8);
+  border-radius: 1.5rem;
+
+  box-shadow: 0 8px 24px rgba($primary, 0.05);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+}
+
+.filter-select {
+  min-width: 10rem;
+
+  padding: 0.65rem 2.5rem 0.65rem 1rem;
+
+  border: 1px solid $outline-variant;
+  border-radius: 0.75rem;
+
+  background-color: $surface;
+
+  color: $on-surface;
+
+  font-size: 0.875rem;
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition:
+    border-color $transition,
+    box-shadow $transition;
+
+  &:hover {
+    border-color: rgba($primary, 0.5);
+  }
+
+  &:focus {
+    border-color: $primary;
+
+    box-shadow: 0 0 0 3px rgba($primary, 0.12);
+  }
+}
+
+// ========================================
+// Result Count
+// ========================================
+
+.result-count {
+  color: $on-surface-variant;
+
+  font-size: 0.875rem;
+
+  white-space: nowrap;
+}
+
+.result-highlight {
+  margin: 0 0.2rem;
+
+  color: $primary;
+
+  font-weight: 700;
+}
+
+.result-total {
+  margin-left: 0.2rem;
+
+  color: $on-surface;
+
+  font-weight: 700;
+}
+
+// ========================================
+// Table Card
+// ========================================
+
+.table-card {
+  overflow: hidden;
+
+  background: rgba($white, 0.78);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba($white, 0.85);
+  border-radius: 1.5rem;
+
+  box-shadow: 0 12px 32px rgba($primary, 0.06);
+}
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+// ========================================
+// Table
+// ========================================
+
+table {
+  width: 100%;
+  min-width: 760px;
+
+  border-collapse: collapse;
+
+  text-align: left;
+}
+
+thead {
+  background: rgba($surface, 0.65);
+}
+
+th {
+  padding: 1rem;
+
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.5);
+
+  white-space: nowrap;
+}
+
+td {
+  padding: 1rem;
+
+  color: $on-surface;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.3);
+}
+
+tbody tr {
+  transition: background-color $transition;
+
+  &:hover {
+    background-color: rgba($surface-container-low, 0.8);
+  }
+
+  &:last-child td {
+    border-bottom: none;
+  }
+}
+
+.user-banned {
+  background-color: rgba($error-container, 0.1);
+
+  &:hover {
+    background-color: rgba($error-container, 0.16);
+  }
+}
+
+// ========================================
+// User
+// ========================================
+
+.user-cell {
+  min-width: 18rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+
+  flex-shrink: 0;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+}
+
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: $surface-container-high;
+
+  color: $primary;
+
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.user-details {
+  min-width: 0;
+}
+
+.user-name {
+  margin: 0;
+
+  color: $on-surface;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.user-email {
+  margin: 0.2rem 0 0;
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Role Badge
+// ========================================
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 0.3rem 0.65rem;
+
+  border: 1px solid rgba($outline-variant, 0.5);
+
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.role-mentor {
+  background-color: rgba($primary-container, 0.55);
+
+  color: $primary;
+}
+
+.role-learner {
+  background-color: $surface-container-low;
+
+  color: $on-surface-variant;
+}
+
+// ========================================
+// Status
+// ========================================
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  padding: 0.3rem 0.65rem;
+
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+
+  border-radius: 50%;
+}
+
+.status-active {
+  background-color: rgba($primary-container, 0.55);
+
+  color: $primary;
+
+  border: 1px solid rgba($primary, 0.2);
+
+  .status-dot {
+    background-color: $primary;
+  }
+}
+
+.status-banned {
+  background-color: $error-container;
+
+  color: $error;
+
+  border: 1px solid rgba($error, 0.2);
+
+  .status-dot {
+    background-color: $error;
+  }
+}
+
+// ========================================
+// Actions
+// ========================================
+
+.actions-column {
+  width: 10rem;
+
+  text-align: right;
+}
+
+.user-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 0.35rem;
+
+  opacity: 0;
+
+  transition: opacity $transition;
+}
+
+tbody tr:hover .user-actions {
+  opacity: 1;
+}
+
+.action-button {
+  width: 2.25rem;
+  height: 2.25rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition,
+    transform $transition;
+
+  .material-symbols-outlined {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    color: $primary;
+
+    background-color: $surface-container-low;
+
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.danger:hover {
+    color: $error;
+
+    background-color: rgba($error-container, 0.6);
+  }
+}
+
+// ========================================
+// Empty State
+// ========================================
+
+.empty-state {
+  padding: 4rem 1rem;
+
+  text-align: center;
+
+  color: $on-surface-variant;
+
+  .material-symbols-outlined {
+    font-size: 2.5rem;
+  }
+
+  p {
+    margin: 0.75rem 0 0;
+  }
+}
+
+// ========================================
+// Pagination
+// ========================================
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 1rem 1.25rem;
+
+  background: rgba($surface, 0.45);
+
+  border-top: 1px solid rgba($outline-variant, 0.3);
+}
+
+.pagination-button {
+  padding: 0.6rem 1rem;
+
+  border: none;
+  border-radius: 0.6rem;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition;
+
+  &:hover:not(:disabled) {
+    color: $primary;
+
+    background-color: $surface-container-low;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+
+    cursor: not-allowed;
+  }
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+
+  gap: 0.25rem;
+}
+
+.page-number {
+  width: 2rem;
+  height: 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition;
+
+  &:hover {
+    background-color: $surface-container-low;
+  }
+
+  &.active {
+    background-color: $primary;
+
+    color: $white;
+
+    box-shadow: 0 2px 5px rgba($primary, 0.25);
+  }
+}
+
+// ========================================
+// Material Symbols
+// ========================================
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+
+  vertical-align: middle;
+}
+
+// ========================================
+// Responsive
+// ========================================
+
+@media (max-width: 900px) {
+  .user-management-page {
+    padding: 1.5rem;
+  }
+
+  .filters-card {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .filters {
+    width: 100%;
+  }
+
+  .filter-select {
+    flex: 1;
+  }
+
+  .result-count {
+    text-align: right;
+  }
+
+  .user-actions {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-management-page {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+    line-height: 2rem;
+  }
+
+  .joined-column {
+    display: none;
+  }
+
+  .pagination {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .filters {
+    flex-direction: column;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+  .result-count {
+    text-align: left;
+  }
+
+  .page-numbers {
+    display: none;
+  }
+
+  .pagination {
+    justify-content: space-between;
+  }
+}

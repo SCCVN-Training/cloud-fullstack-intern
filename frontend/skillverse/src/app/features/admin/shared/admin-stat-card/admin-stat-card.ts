@@ -13,5 +13,7 @@ export class AdminStatCardComponent {
   @Input() value = '';
   @Input() percentage = '';
   @Input() icon = '';
-  @Input() type: 'skills' | 'bookings' | 'coins' | 'reviews' | 'flagged' = 'skills';
+
+  @Input()
+  type: 'skills' | 'bookings' | 'coins' | 'reviews' | 'flagged' = 'skills';
 }

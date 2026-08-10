@@ -1,0 +1,1076 @@
+// ========================================
+// Variables
+// ========================================
+
+$primary: #a43073;
+$primary-light: #f472b6;
+$primary-container: #fce7f3;
+
+$secondary: #8f4953;
+$secondary-container: #f4dfe3;
+
+$surface: #fffbfe;
+$surface-container: #f7f2f7;
+$surface-container-low: #faf5fa;
+$surface-container-high: #ece6ec;
+
+$on-surface: #121c2a;
+$on-surface-variant: #544249;
+
+$outline: #87717a;
+$outline-variant: #dac0c9;
+
+$error: #ba1a1a;
+$error-container: #ffdad6;
+
+$white: #ffffff;
+
+$transition-fast: 150ms ease;
+$transition-normal: 250ms ease;
+
+// ========================================
+// Page
+// ========================================
+
+.review-management-page {
+  min-height: 100%;
+  padding: 2rem;
+}
+
+.review-management-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+// ========================================
+// Header
+// ========================================
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  margin: 0;
+
+  color: $on-surface;
+
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+}
+
+.page-subtitle {
+  margin: 0.5rem 0 0;
+
+  color: $on-surface-variant;
+
+  font-size: 0.95rem;
+  line-height: 1.5rem;
+}
+
+// ========================================
+// Statistics
+// ========================================
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 1.25rem;
+
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  position: relative;
+
+  padding: 1.5rem;
+
+  overflow: hidden;
+
+  background: rgba($white, 0.75);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba($white, 0.85);
+  border-radius: 1.5rem;
+
+  box-shadow: 0 8px 24px rgba($primary, 0.05);
+
+  transition:
+    transform $transition-normal,
+    box-shadow $transition-normal;
+
+  &:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 12px 30px rgba($primary, 0.08);
+  }
+
+  &--flagged {
+    border-color: rgba($error, 0.25);
+
+    background: rgba($error-container, 0.08);
+
+    .stat-card__label,
+    .stat-card__value {
+      color: $error;
+    }
+
+    .stat-card__icon {
+      color: $error;
+
+      background-color: $error-container;
+    }
+  }
+}
+
+.stat-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 1rem;
+}
+
+.stat-card__label {
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 600;
+
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stat-card__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background-color: rgba($primary-container, 0.5);
+
+  color: $primary;
+
+  font-size: 1.3rem;
+}
+
+.stat-card__value {
+  margin: 0;
+
+  color: $on-surface;
+
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+}
+
+.stat-card__footer {
+  display: flex;
+  align-items: center;
+
+  gap: 0.25rem;
+
+  margin: 0.5rem 0 0;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.positive {
+    color: $secondary;
+  }
+
+  &.warning {
+    color: $error;
+  }
+
+  .material-symbols-outlined {
+    font-size: 1rem;
+  }
+}
+
+// ========================================
+// Review Card
+// ========================================
+
+.review-card {
+  overflow: hidden;
+
+  background: rgba($white, 0.78);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba($white, 0.85);
+  border-radius: 1.5rem;
+
+  box-shadow: 0 12px 32px rgba($primary, 0.06);
+}
+
+// ========================================
+// Toolbar
+// ========================================
+
+.review-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1.5rem;
+
+  padding: 1.5rem;
+
+  background: rgba($surface, 0.55);
+
+  border-bottom: 1px solid rgba($outline-variant, 0.5);
+}
+
+.review-toolbar__title {
+  min-width: 0;
+
+  h2 {
+    margin: 0;
+
+    color: $on-surface;
+
+    font-size: 1.15rem;
+    line-height: 1.5rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0.3rem 0 0;
+
+    color: $on-surface-variant;
+
+    font-size: 0.8rem;
+  }
+}
+
+.review-toolbar__actions {
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+}
+
+// ========================================
+// Search
+// ========================================
+
+.search-box {
+  position: relative;
+
+  width: 15rem;
+
+  display: flex;
+  align-items: center;
+
+  .material-symbols-outlined {
+    position: absolute;
+    left: 0.75rem;
+
+    color: $on-surface-variant;
+
+    font-size: 1.15rem;
+
+    pointer-events: none;
+  }
+
+  input {
+    width: 100%;
+
+    padding: 0.65rem 0.9rem 0.65rem 2.4rem;
+
+    border: 1px solid $outline-variant;
+    border-radius: 0.75rem;
+
+    outline: none;
+
+    background: $surface;
+
+    color: $on-surface;
+
+    font-size: 0.8rem;
+
+    transition:
+      border-color $transition-fast,
+      box-shadow $transition-fast;
+
+    &::placeholder {
+      color: $on-surface-variant;
+    }
+
+    &:focus {
+      border-color: $primary;
+
+      box-shadow: 0 0 0 3px rgba($primary, 0.12);
+    }
+  }
+}
+
+// ========================================
+// Filter
+// ========================================
+
+.filter-select {
+  min-width: 9rem;
+
+  padding: 0.65rem 2rem 0.65rem 0.9rem;
+
+  border: 1px solid $outline-variant;
+  border-radius: 0.75rem;
+
+  outline: none;
+
+  background: $surface;
+
+  color: $on-surface;
+
+  font-size: 0.8rem;
+
+  cursor: pointer;
+
+  transition:
+    border-color $transition-fast,
+    box-shadow $transition-fast;
+
+  &:focus {
+    border-color: $primary;
+
+    box-shadow: 0 0 0 3px rgba($primary, 0.12);
+  }
+}
+
+.clear-button {
+  padding: 0.65rem 0.9rem;
+
+  border: none;
+  border-radius: 0.75rem;
+
+  background: transparent;
+
+  color: $primary;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: rgba($primary-container, 0.6);
+  }
+}
+
+// ========================================
+// Result Bar
+// ========================================
+
+.result-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 0.9rem 1.5rem;
+
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.3);
+
+  strong {
+    color: $on-surface;
+
+    font-weight: 700;
+  }
+}
+
+.flagged-summary {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.3rem;
+
+  color: $error;
+
+  font-weight: 600;
+
+  .material-symbols-outlined {
+    font-size: 1rem;
+  }
+}
+
+// ========================================
+// Table
+// ========================================
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  text-align: left;
+}
+
+thead {
+  background: rgba($surface-container-low, 0.75);
+}
+
+th {
+  padding: 1rem 1.25rem;
+
+  color: $on-surface-variant;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  white-space: nowrap;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.5);
+}
+
+td {
+  padding: 1rem 1.25rem;
+
+  color: $on-surface;
+
+  font-size: 0.8rem;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.3);
+
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: rgba($surface-container-low, 0.75);
+  }
+
+  &:last-child td {
+    border-bottom: none;
+  }
+}
+
+.review-flagged {
+  background-color: rgba($error-container, 0.1);
+
+  &:hover {
+    background-color: rgba($error-container, 0.18);
+  }
+}
+
+// ========================================
+// Reviewer
+// ========================================
+
+.reviewer {
+  display: flex;
+  align-items: center;
+
+  gap: 0.7rem;
+
+  min-width: 10rem;
+}
+
+.reviewer__avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: $primary-container;
+
+  color: $primary;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.reviewer__name {
+  color: $on-surface;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Target
+// ========================================
+
+.target-name {
+  display: block;
+
+  min-width: 9rem;
+
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Rating
+// ========================================
+
+.rating {
+  display: flex;
+  align-items: center;
+
+  gap: 0.05rem;
+
+  white-space: nowrap;
+
+  .material-symbols-outlined {
+    color: $secondary;
+
+    font-size: 1rem;
+
+    font-variation-settings:
+      'FILL' 1,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 20;
+  }
+
+  .rating__empty {
+    color: $outline-variant;
+
+    font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 20;
+  }
+}
+
+.rating__number {
+  margin-left: 0.3rem;
+
+  color: $on-surface-variant;
+
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+// ========================================
+// Review Content
+// ========================================
+
+.content-column {
+  width: 30%;
+  min-width: 18rem;
+}
+
+.review-content {
+  display: flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  max-width: 26rem;
+
+  p {
+    margin: 0;
+
+    overflow: hidden;
+
+    color: $on-surface-variant;
+
+    font-size: 0.8rem;
+
+    line-height: 1.35rem;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+  }
+}
+
+.review-content--flagged {
+  .material-symbols-outlined {
+    flex-shrink: 0;
+
+    color: $error;
+
+    font-size: 1rem;
+  }
+
+  p {
+    color: $error;
+
+    font-weight: 600;
+  }
+}
+
+// ========================================
+// Date
+// ========================================
+
+.review-date {
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Status
+// ========================================
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  padding: 0.3rem 0.65rem;
+
+  border-radius: 999px;
+
+  font-size: 0.7rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+
+  border-radius: 50%;
+}
+
+.status-normal {
+  color: $primary;
+
+  background-color: rgba($primary-container, 0.6);
+
+  border: 1px solid rgba($primary, 0.15);
+
+  .status-dot {
+    background-color: $primary;
+  }
+}
+
+.status-flagged {
+  color: $error;
+
+  background-color: $error-container;
+
+  border: 1px solid rgba($error, 0.2);
+
+  .status-dot {
+    background-color: $error;
+  }
+}
+
+// ========================================
+// Actions
+// ========================================
+
+.actions-column {
+  width: 7rem;
+
+  text-align: right;
+}
+
+.review-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 0.25rem;
+
+  opacity: 0;
+
+  transition: opacity $transition-fast;
+}
+
+tbody tr:hover .review-actions {
+  opacity: 1;
+}
+
+.action-button {
+  width: 2.25rem;
+  height: 2.25rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  cursor: pointer;
+
+  transition:
+    color $transition-fast,
+    background-color $transition-fast,
+    transform $transition-fast;
+
+  .material-symbols-outlined {
+    font-size: 1.15rem;
+  }
+
+  &:hover {
+    color: $primary;
+
+    background-color: $surface-container-low;
+
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &--danger:hover {
+    color: $error;
+
+    background-color: rgba($error-container, 0.65);
+  }
+}
+
+// ========================================
+// Empty State
+// ========================================
+
+.empty-state {
+  padding: 4rem 1rem;
+
+  text-align: center;
+
+  color: $on-surface-variant;
+
+  .material-symbols-outlined {
+    font-size: 2.75rem;
+  }
+
+  h3 {
+    margin: 0.75rem 0 0;
+
+    color: $on-surface;
+
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0.4rem 0 0;
+
+    font-size: 0.8rem;
+  }
+}
+
+.empty-state__button {
+  margin-top: 1rem;
+
+  padding: 0.6rem 1rem;
+
+  border: none;
+  border-radius: 0.7rem;
+
+  background: $primary;
+
+  color: $white;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color $transition-fast,
+    transform $transition-fast;
+
+  &:hover {
+    background: $primary-light;
+
+    transform: translateY(-1px);
+  }
+}
+
+// ========================================
+// Pagination
+// ========================================
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 1rem 1.25rem;
+
+  background: rgba($surface, 0.45);
+
+  border-top: 1px solid rgba($outline-variant, 0.3);
+}
+
+.pagination__info {
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+}
+
+.pagination__controls {
+  display: flex;
+  align-items: center;
+
+  gap: 0.3rem;
+}
+
+.pagination-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.2rem;
+
+  padding: 0.55rem 0.7rem;
+
+  border: none;
+  border-radius: 0.6rem;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color $transition-fast,
+    background-color $transition-fast;
+
+  .material-symbols-outlined {
+    font-size: 1rem;
+  }
+
+  &:hover:not(:disabled) {
+    color: $primary;
+
+    background-color: $surface-container-low;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+
+    cursor: not-allowed;
+  }
+}
+
+.page-number {
+  width: 2rem;
+  height: 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 0.5rem;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color $transition-fast,
+    background-color $transition-fast;
+
+  &:hover {
+    background-color: $surface-container-low;
+  }
+
+  &.active {
+    background-color: $primary;
+
+    color: $white;
+
+    box-shadow: 0 2px 5px rgba($primary, 0.25);
+  }
+}
+
+// ========================================
+// Material Symbols
+// ========================================
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+
+  vertical-align: middle;
+}
+
+// ========================================
+// Responsive
+// ========================================
+
+@media (max-width: 1100px) {
+  .review-toolbar {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .review-toolbar__actions {
+    width: 100%;
+  }
+
+  .search-box {
+    flex: 1;
+
+    width: auto;
+  }
+
+  .filter-select {
+    min-width: 10rem;
+  }
+
+  .review-actions {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .review-management-page {
+    padding: 1.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-bar {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .content-column {
+    min-width: 16rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .review-management-page {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+    line-height: 2rem;
+  }
+
+  .review-toolbar__actions {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .search-box,
+  .filter-select {
+    width: 100%;
+  }
+
+  .clear-button {
+    align-self: flex-start;
+  }
+
+  .pagination {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .pagination__controls {
+    width: 100%;
+
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 520px) {
+  .stat-card {
+    padding: 1.25rem;
+  }
+
+  .stat-card__value {
+    font-size: 1.75rem;
+  }
+
+  .review-card {
+    border-radius: 1rem;
+  }
+
+  .review-toolbar {
+    padding: 1.25rem;
+  }
+
+  .pagination__info {
+    font-size: 0.7rem;
+  }
+
+  .pagination-button {
+    padding: 0.5rem;
+  }
+
+  .pagination-button:not(:disabled) {
+    span.material-symbols-outlined {
+      display: none;
+    }
+  }
+}
