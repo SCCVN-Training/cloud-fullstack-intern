@@ -1,0 +1,56 @@
+@use './variables' as *;
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: $sidebar-collapsed;
+
+    &__brand {
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    &__brand-text,
+    &__section-title,
+    &__link-label,
+    &__user-info {
+      display: none;
+    }
+
+    &__link {
+      justify-content: center;
+      margin: 0.25rem 0.5rem;
+      padding: 0.8rem;
+    }
+
+    &__footer {
+      padding: 0.75rem;
+    }
+
+    &__user {
+      justify-content: center;
+    }
+
+    &__sign-out {
+      justify-content: center;
+    }
+  }
+
+  .admin-main {
+    margin-left: $sidebar-collapsed;
+  }
+
+  .topbar__search {
+    width: 16rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .topbar__content {
+    padding: 0.75rem 1rem;
+  }
+
+  .topbar__search,
+  .topbar__user-info {
+    display: none;
+  }
+}
