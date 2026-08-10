@@ -14,6 +14,8 @@ import { HowItWorksPage } from './features/how-it-works/how-it-works';
 import { AboutUsPage } from './features/about-us/about-us';
 import { BrowseSkillsPage } from './features/skill-pages/browse-skills/browse-skills';
 import { SkillDetailsPage } from './features/skill-pages/skill-details/skill-details';
+import { BookingSession } from './features/booking/booking-session/booking-session';
+import { SessionReview } from './features/booking/session-review/session-review';
 
 export const routes: Routes = [
   {
@@ -45,6 +47,16 @@ export const routes: Routes = [
       {
         path: 'skill-details/:id',
         component: SkillDetailsPage,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'booking',
+        component: BookingSession,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'session-review',
+        component: SessionReview,
         canActivate: [authGuard],
       },
     ],
