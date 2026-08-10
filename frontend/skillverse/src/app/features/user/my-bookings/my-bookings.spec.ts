@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 
 import { MyBookings } from './my-bookings';
 
@@ -10,6 +11,7 @@ describe('MyBookings', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [MyBookings],
+      providers: [[provideRouter([])]],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MyBookings);
@@ -26,11 +28,7 @@ describe('MyBookings', () => {
   });
 
   it('should contain three tabs', () => {
-    expect(component.tabs).toEqual([
-      'Upcoming',
-      'Completed',
-      'Cancelled'
-    ]);
+    expect(component.tabs).toEqual(['Upcoming', 'Completed', 'Cancelled']);
   });
 
   it('should contain three bookings', () => {
@@ -41,7 +39,7 @@ describe('MyBookings', () => {
     component.activeTab = 'Upcoming';
 
     expect(component.filteredBookings.length).toBe(3);
-    expect(component.filteredBookings.every(b => b.tab === 'Upcoming')).toBe(true);
+    expect(component.filteredBookings.every((b) => b.tab === 'Upcoming')).toBe(true);
   });
 
   it('should return no completed bookings', () => {
