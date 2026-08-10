@@ -1,0 +1,33 @@
+:host {
+  display: block;
+  position: relative;
+  min-height: 100%;
+}
+
+.rating-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-on-surface-variant, #79747e);
+  transition:
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.rating-star:hover {
+  color: var(--color-primary, #a43073);
+  transform: scale(1.08);
+}
+
+.rating-star-active {
+  color: var(--color-primary, #a43073);
+}
+
+textarea {
+  min-height: 120px;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-primary, #a43073);
+  outline-offset: 2px;
+}
