@@ -1,0 +1,417 @@
+<main class="booking-management-page">
+  <!-- ======================================== -->
+  <!-- Header -->
+  <!-- ======================================== -->
+
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Bookings &amp; Transactions</h1>
+
+      <p class="page-subtitle">
+        Manage all skill exchange sessions and associated financial records.
+      </p>
+    </div>
+
+    <button type="button" class="export-button" (click)="exportCsv()">
+      <span class="material-symbols-outlined"> download </span>
+
+      Export CSV
+    </button>
+  </header>
+
+  <!-- ======================================== -->
+  <!-- Filters -->
+  <!-- ======================================== -->
+
+  <section class="filters-card">
+    <div class="filters-left">
+      <div class="filter-group">
+        <label for="statusFilter"> Status </label>
+
+        <select id="statusFilter" class="filter-select" [(ngModel)]="selectedStatus">
+          <option value="">Status: All</option>
+
+          <option value="completed">Completed</option>
+
+          <option value="confirmed">Confirmed</option>
+
+          <option value="pending">Pending</option>
+
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="result-count">
+      Showing
+
+      <strong> {{ showingFrom }}-{{ showingTo }} </strong>
+
+      of
+
+      <strong>
+        {{ totalEntries }}
+      </strong>
+
+      entries
+    </div>
+  </section>
+
+  <!-- ======================================== -->
+  <!-- Table Card -->
+  <!-- ======================================== -->
+
+  <section class="table-card">
+    <!-- Table Header -->
+
+    <div class="table-header">
+      <div>
+        <h2>Recent Activity</h2>
+
+        <p>Review booking sessions and transactions.</p>
+      </div>
+
+      <div class="table-actions">
+        <button type="button" class="icon-button" title="Filter" aria-label="Filter bookings">
+          <span class="material-symbols-outlined"> filter_list </span>
+        </button>
+
+        <button type="button" class="icon-button" title="Sort" aria-label="Sort bookings">
+          <span class="material-symbols-outlined"> sort </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- Table -->
+    <!-- ======================================== -->
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Booking ID</th>
+
+            <th>Learner</th>
+
+            <th>Mentor</th>
+
+            <th>Scheduled Date</th>
+
+            <th>Amount (SC)</th>
+
+            <th>Status</th>
+
+            <th class="actions-column">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- Booking rows -->
+
+          <tr *ngFor="let booking of filteredBookings">
+            <!-- Booking ID -->
+
+            <td class="booking-id">
+              {{ booking.id }}
+            </td>
+
+            <!-- Learner -->
+
+            <td>
+              <div class="participant">
+                <img
+                  [src]="booking.learnerAvatar"
+                  [alt]="booking.learner + ' avatar'"
+                  class="participant-avatar"
+                />
+
+                <span>
+                  {{ booking.learner }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Mentor -->
+
+            <td>
+              <div class="participant">
+                <img
+                  [src]="booking.mentorAvatar"
+                  [alt]="booking.mentor + ' avatar'"
+                  class="participant-avatar"
+                />
+
+                <span>
+                  {{ booking.mentor }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Date -->
+
+            <td class="scheduled-date">
+              {{ booking.scheduledDate }}
+            </td>
+
+            <!-- Amount -->
+
+            <td class="amount">{{ booking.amount | number }} SC</td>
+
+            <!-- Status -->
+
+            <td>
+              <span class="status-badge" [ngClass]="'status-' + booking.status">
+                <span class="status-dot"></span>
+
+                {{ getStatusLabel(booking.status) }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+
+            <td class="actions-column">
+              <button
+                type="button"
+                class="view-button"
+                title="View booking details"
+                aria-label="View booking details"
+                (click)="openModal(booking)"
+              >
+                <span class="material-symbols-outlined"> visibility </span>
+              </button>
+            </td>
+          </tr>
+
+          <!-- Empty state -->
+
+          <tr *ngIf="filteredBookings.length === 0">
+            <td colspan="7" class="empty-state">
+              <span class="material-symbols-outlined"> event_busy </span>
+
+              <h3>No bookings found</h3>
+
+              <p>Try changing the selected status filter.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ======================================== -->
+    <!-- Pagination -->
+    <!-- ======================================== -->
+
+    <footer class="pagination">
+      <span class="pagination-info">
+        Showing {{ showingFrom }} to {{ showingTo }} of {{ totalEntries }} entries
+      </span>
+
+      <div class="page-controls">
+        <button
+          type="button"
+          class="pagination-button"
+          [disabled]="currentPage === 1"
+          (click)="previousPage()"
+        >
+          Previous
+        </button>
+
+        <button
+          type="button"
+          class="page-number"
+          [class.active]="currentPage === 1"
+          (click)="goToPage(1)"
+        >
+          1
+        </button>
+
+        <button
+          type="button"
+          class="page-number"
+          [class.active]="currentPage === 2"
+          (click)="goToPage(2)"
+        >
+          2
+        </button>
+
+        <button
+          type="button"
+          class="page-number"
+          [class.active]="currentPage === 3"
+          (click)="goToPage(3)"
+        >
+          3
+        </button>
+
+        <span class="page-ellipsis"> ... </span>
+
+        <button
+          type="button"
+          class="page-number"
+          [class.active]="currentPage === totalPages"
+          (click)="goToPage(totalPages)"
+        >
+          {{ totalPages }}
+        </button>
+
+        <button
+          type="button"
+          class="pagination-button"
+          [disabled]="currentPage === totalPages"
+          (click)="nextPage()"
+        >
+          Next
+        </button>
+      </div>
+    </footer>
+  </section>
+</main>
+
+<!-- ======================================== -->
+<!-- Booking Detail Modal -->
+<!-- ======================================== -->
+
+<div class="modal-backdrop" *ngIf="isModalOpen" (click)="closeModal()">
+  <section
+    class="booking-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="booking-modal-title"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+
+    <header class="modal-header">
+      <div>
+        <p class="modal-eyebrow">Booking Details</p>
+
+        <h2 id="booking-modal-title">
+          {{ selectedBooking?.id }}
+        </h2>
+      </div>
+
+      <button
+        type="button"
+        class="modal-close"
+        aria-label="Close booking details"
+        (click)="closeModal()"
+      >
+        <span class="material-symbols-outlined"> close </span>
+      </button>
+    </header>
+
+    <!-- Modal Body -->
+
+    <div class="modal-body" *ngIf="selectedBooking as booking">
+      <!-- Summary -->
+
+      <div class="summary-grid">
+        <article class="detail-card">
+          <span class="detail-label"> Booking Reference </span>
+
+          <strong class="detail-reference">
+            {{ booking.id }}
+          </strong>
+
+          <span class="detail-label status-label"> Status </span>
+
+          <span class="status-badge" [ngClass]="'status-' + booking.status">
+            <span class="status-dot"></span>
+
+            {{ getStatusLabel(booking.status) }}
+          </span>
+        </article>
+
+        <article class="detail-card">
+          <span class="detail-label"> Transaction Amount </span>
+
+          <strong class="detail-amount"> {{ booking.amount | number }} SC </strong>
+
+          <p>Held in escrow until completion.</p>
+        </article>
+      </div>
+
+      <!-- Participants -->
+
+      <section class="modal-section">
+        <h3>Participants</h3>
+
+        <div class="participants-list">
+          <div class="participant-card">
+            <img
+              [src]="booking.learnerAvatar"
+              [alt]="booking.learner + ' avatar'"
+              class="participant-large-avatar"
+            />
+
+            <div>
+              <strong>
+                {{ booking.learner }}
+              </strong>
+
+              <span> Learner </span>
+            </div>
+          </div>
+
+          <div class="participant-card">
+            <img
+              [src]="booking.mentorAvatar"
+              [alt]="booking.mentor + ' avatar'"
+              class="participant-large-avatar"
+            />
+
+            <div>
+              <strong>
+                {{ booking.mentor }}
+              </strong>
+
+              <span> Mentor </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Session Info -->
+
+      <section class="modal-section">
+        <h3>Session Information</h3>
+
+        <div class="session-card">
+          <div>
+            <span class="detail-label"> Date &amp; Time </span>
+
+            <strong>
+              {{ booking.scheduledDate }}
+            </strong>
+          </div>
+
+          <div>
+            <span class="detail-label"> Topic </span>
+
+            <strong>
+              {{ booking.topic }}
+            </strong>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Modal Footer -->
+
+    <footer class="modal-footer">
+      <button type="button" class="close-button" (click)="closeModal()">Close</button>
+
+      <button
+        type="button"
+        class="cancel-button"
+        *ngIf="selectedBooking?.status !== 'cancelled'"
+        (click)="forceCancel()"
+      >
+        <span class="material-symbols-outlined"> cancel </span>
+
+        Force Cancel &amp; Refund
+      </button>
+    </footer>
+  </section>
+</div>

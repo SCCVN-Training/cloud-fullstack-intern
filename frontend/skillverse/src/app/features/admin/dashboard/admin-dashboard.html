@@ -1,0 +1,132 @@
+<main class="admin-page">
+  <div class="admin-page-container">
+    <!-- ======================================== -->
+    <!-- Header -->
+    <!-- ======================================== -->
+
+    <header class="admin-page-header">
+      <h1 class="admin-page-title">Admin Dashboard</h1>
+
+      <p class="admin-page-subtitle">Overview of SkillVerse activity and platform performance.</p>
+    </header>
+
+    <!-- ======================================== -->
+    <!-- Statistics -->
+    <!-- ======================================== -->
+
+    <section class="dashboard-stats" aria-label="Platform statistics">
+      <app-admin-stat-card
+        *ngFor="let stat of stats"
+        [label]="stat.label"
+        [value]="stat.value"
+        [percentage]="stat.percentage + ' this month'"
+        [icon]="stat.icon"
+        [type]="stat.type"
+      ></app-admin-stat-card>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- Growth Chart -->
+    <!-- ======================================== -->
+
+    <section class="dashboard-card chart-card">
+      <div class="dashboard-card-header">
+        <div>
+          <h2 class="dashboard-card-title">Platform Growth</h2>
+
+          <p class="dashboard-card-subtitle">
+            New registrations and bookings over the last 30 days.
+          </p>
+        </div>
+
+        <span class="material-symbols-outlined dashboard-card-icon"> monitoring </span>
+      </div>
+
+      <div class="growth-chart">
+        <canvas #growthChart></canvas>
+      </div>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- Recent Activity -->
+    <!-- ======================================== -->
+
+    <section class="dashboard-card">
+      <div class="dashboard-card-header">
+        <div>
+          <h2 class="dashboard-card-title">Recent Activity</h2>
+
+          <p class="dashboard-card-subtitle">Latest activity across the platform.</p>
+        </div>
+
+        <a routerLink="/admin/booking-management" class="dashboard-view-all"> View all </a>
+      </div>
+
+      <div class="activity-list">
+        <!-- User -->
+
+        <article class="activity-item">
+          <div class="activity-icon">
+            <span class="material-symbols-outlined"> person_add </span>
+          </div>
+
+          <div class="activity-content">
+            <p class="activity-title">New user registered</p>
+
+            <p class="activity-meta">A new learner joined SkillVerse.</p>
+          </div>
+
+          <time class="activity-time"> 5 min ago </time>
+        </article>
+
+        <!-- Booking -->
+
+        <article class="activity-item">
+          <div class="activity-icon">
+            <span class="material-symbols-outlined"> event_available </span>
+          </div>
+
+          <div class="activity-content">
+            <p class="activity-title">Booking completed</p>
+
+            <p class="activity-meta">A skill exchange session was completed.</p>
+          </div>
+
+          <time class="activity-time"> 18 min ago </time>
+        </article>
+
+        <!-- Skill -->
+
+        <article class="activity-item">
+          <div class="activity-icon">
+            <span class="material-symbols-outlined"> psychology </span>
+          </div>
+
+          <div class="activity-content">
+            <p class="activity-title">New skill published</p>
+
+            <p class="activity-meta">A mentor published a new skill.</p>
+          </div>
+
+          <time class="activity-time"> 42 min ago </time>
+        </article>
+
+        <!-- Review -->
+
+        <article class="activity-item">
+          <div class="activity-icon">
+            <span class="material-symbols-outlined"> rate_review </span>
+          </div>
+
+          <div class="activity-content">
+            <p class="activity-title">New review submitted</p>
+
+            <p class="activity-meta">A learner submitted a new review.</p>
+          </div>
+
+          <time class="activity-time"> 1 hr ago </time>
+        </article>
+      </div>
+    </section>
+  </div>
+</main>

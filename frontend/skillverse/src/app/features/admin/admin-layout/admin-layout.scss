@@ -1,0 +1,502 @@
+// ========================================
+// Admin Layout
+// ========================================
+
+$sidebar-width: 16rem;
+$sidebar-collapsed-width: 4.5rem;
+
+$primary: #a43073;
+$primary-container: #fce7f3;
+
+$surface: #fffbfe;
+$surface-container: #f7f2f7;
+$on-surface: #1d1b20;
+$on-surface-variant: #49454f;
+$outline: #79747e;
+$outline-variant: #cac4d0;
+$white: #ffffff;
+
+$transition: 150ms ease;
+
+// ========================================
+// Layout
+// ========================================
+
+.admin-layout {
+  min-height: 100vh;
+  background: $surface;
+  color: $on-surface;
+}
+
+// ========================================
+// Sidebar
+// ========================================
+
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 100;
+
+  width: $sidebar-width;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  background: rgba($surface, 0.96);
+  border-right: 1px solid $outline-variant;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.04);
+
+  transition: width 250ms ease;
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba($outline-variant, 0.6);
+  }
+
+  &__brand-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 0.9rem;
+
+    background: $primary-container;
+    color: $primary;
+
+    .material-symbols-outlined {
+      font-size: 1.5rem;
+    }
+  }
+
+  &__brand-text {
+    min-width: 0;
+
+    h1 {
+      margin: 0;
+      color: $primary;
+
+      font-size: 1.15rem;
+      line-height: 1.4;
+      font-weight: 800;
+    }
+
+    p {
+      margin: 0.15rem 0 0;
+
+      color: $on-surface-variant;
+
+      font-size: 0.7rem;
+      line-height: 1rem;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    padding: 1.5rem 0;
+    overflow-y: auto;
+  }
+
+  &__section-title {
+    margin: 0 1.5rem 0.75rem;
+
+    color: $outline;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  &__menu {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__link {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    margin: 0.2rem 0.75rem;
+    padding: 0.8rem 0.75rem;
+
+    border-radius: 0.75rem;
+
+    color: $on-surface-variant;
+    text-decoration: none;
+
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    transition:
+      color $transition,
+      background-color $transition;
+
+    .material-symbols-outlined {
+      flex-shrink: 0;
+      font-size: 1.3rem;
+    }
+
+    &:hover {
+      color: $primary;
+      background: rgba($primary-container, 0.55);
+    }
+
+    &--active {
+      color: $primary;
+      background: $primary-container;
+      font-weight: 700;
+
+      &::before {
+        content: '';
+
+        position: absolute;
+        left: -0.75rem;
+
+        width: 4px;
+        height: 60%;
+
+        border-radius: 0 999px 999px 0;
+        background: $primary;
+      }
+    }
+  }
+
+  &__footer {
+    padding: 1rem;
+    border-top: 1px solid rgba($outline-variant, 0.6);
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+  }
+
+  &__user-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+    object-fit: cover;
+
+    border: 2px solid $primary-container;
+  }
+
+  &__user-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__user-name {
+    overflow: hidden;
+
+    color: $on-surface;
+
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__user-role {
+    margin-top: 0.1rem;
+
+    color: $outline;
+    font-size: 0.7rem;
+  }
+
+  &__sign-out {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    padding: 0.8rem;
+
+    border: 0;
+    border-radius: 0.75rem;
+
+    background: transparent;
+    color: $on-surface-variant;
+
+    font: inherit;
+    font-size: 0.9rem;
+
+    cursor: pointer;
+
+    transition:
+      color $transition,
+      background-color $transition;
+
+    &:hover {
+      color: $primary;
+      background: $primary-container;
+    }
+
+    .material-symbols-outlined {
+      font-size: 1.3rem;
+    }
+  }
+}
+
+// ========================================
+// Main
+// ========================================
+
+.admin-main {
+  min-height: 100vh;
+  margin-left: $sidebar-width;
+}
+
+// ========================================
+// Topbar
+// ========================================
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+
+  width: 100%;
+
+  background: rgba($white, 0.85);
+
+  border-bottom: 1px solid rgba($outline-variant, 0.7);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  &__content {
+    min-height: 4.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    padding: 0.75rem 2rem;
+  }
+
+  &__search {
+    position: relative;
+    width: min(24rem, 40vw);
+
+    .material-symbols-outlined {
+      position: absolute;
+      left: 0.9rem;
+
+      color: $outline;
+      pointer-events: none;
+    }
+
+    input {
+      width: 100%;
+
+      padding: 0.7rem 1rem 0.7rem 2.75rem;
+
+      border: 1px solid $outline-variant;
+      border-radius: 999px;
+
+      outline: none;
+
+      background: $surface;
+      color: $on-surface;
+
+      font-size: 0.85rem;
+
+      &:focus {
+        border-color: $primary;
+        box-shadow: 0 0 0 3px rgba($primary, 0.1);
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__action {
+    position: relative;
+
+    width: 2.5rem;
+    height: 2.5rem;
+
+    display: grid;
+    place-items: center;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: transparent;
+    color: $on-surface-variant;
+
+    cursor: pointer;
+
+    &:hover {
+      color: $primary;
+      background: $surface-container;
+    }
+  }
+
+  &__notification-dot {
+    position: absolute;
+    top: 0.45rem;
+    right: 0.45rem;
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+    background: $primary;
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+
+    margin-left: 0.5rem;
+  }
+
+  &__avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+
+    border-radius: 50%;
+    object-fit: cover;
+
+    border: 2px solid $primary-container;
+  }
+
+  &__user-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__user-name {
+    color: $on-surface;
+
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  &__user-role {
+    margin-top: 0.1rem;
+
+    color: $outline;
+    font-size: 0.7rem;
+  }
+}
+
+// ========================================
+// Content
+// ========================================
+
+.admin-content {
+  min-height: calc(100vh - 4.5rem);
+}
+
+// ========================================
+// Shared icon behavior
+// ========================================
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+
+  vertical-align: middle;
+}
+
+// ========================================
+// Responsive
+// ========================================
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: $sidebar-collapsed-width;
+
+    &__brand {
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    &__brand-text,
+    &__section-title,
+    &__link-label {
+      display: none;
+    }
+
+    &__link {
+      justify-content: center;
+      margin: 0.25rem 0.5rem;
+      padding: 0.8rem;
+    }
+
+    &__footer {
+      padding: 0.75rem;
+    }
+
+    &__user {
+      justify-content: center;
+    }
+
+    &__user-info {
+      display: none;
+    }
+
+    &__sign-out {
+      justify-content: center;
+    }
+  }
+
+  .admin-main {
+    margin-left: $sidebar-collapsed-width;
+  }
+
+  .topbar__search {
+    width: 16rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .topbar__content {
+    padding: 0.75rem 1rem;
+  }
+
+  .topbar__search {
+    display: none;
+  }
+
+  .topbar__user-info {
+    display: none;
+  }
+}

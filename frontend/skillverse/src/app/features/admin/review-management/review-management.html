@@ -1,0 +1,360 @@
+<main class="review-management-page">
+  <div class="review-management-container">
+    <!-- ======================================== -->
+    <!-- Page Header -->
+    <!-- ======================================== -->
+
+    <header class="page-header">
+      <div>
+        <h1 class="page-title">Review Management</h1>
+
+        <p class="page-subtitle">Monitor and moderate community feedback.</p>
+      </div>
+    </header>
+
+    <!-- ======================================== -->
+    <!-- Statistics -->
+    <!-- ======================================== -->
+
+    <section class="stats-grid">
+      <!-- Total Reviews -->
+
+      <article class="stat-card">
+        <div class="stat-card__header">
+          <span class="stat-card__label"> Total Reviews </span>
+
+          <span class="material-symbols-outlined stat-card__icon"> forum </span>
+        </div>
+
+        <p class="stat-card__value">
+          {{ totalReviews | number }}
+        </p>
+
+        <p class="stat-card__footer positive">
+          <span class="material-symbols-outlined"> trending_up </span>
+
+          +12% this week
+        </p>
+      </article>
+
+      <!-- Average Rating -->
+
+      <article class="stat-card">
+        <div class="stat-card__header">
+          <span class="stat-card__label"> Avg Rating </span>
+
+          <span class="material-symbols-outlined stat-card__icon"> star </span>
+        </div>
+
+        <p class="stat-card__value">
+          {{ averageRating | number: '1.1-1' }}
+        </p>
+
+        <p class="stat-card__footer positive">
+          <span class="material-symbols-outlined"> trending_flat </span>
+
+          Consistent
+        </p>
+      </article>
+
+      <!-- Flagged -->
+
+      <article class="stat-card stat-card--flagged">
+        <div class="stat-card__header">
+          <span class="stat-card__label"> Flagged </span>
+
+          <span class="material-symbols-outlined stat-card__icon"> report </span>
+        </div>
+
+        <p class="stat-card__value">
+          {{ flaggedReviews }}
+        </p>
+
+        <p class="stat-card__footer warning">Requires immediate attention</p>
+      </article>
+    </section>
+
+    <!-- ======================================== -->
+    <!-- Review Table Card -->
+    <!-- ======================================== -->
+
+    <section class="review-card">
+      <!-- Toolbar -->
+
+      <div class="review-toolbar">
+        <div class="review-toolbar__title">
+          <h2>Recent Reviews</h2>
+
+          <p>Review and moderate community feedback.</p>
+        </div>
+
+        <div class="review-toolbar__actions">
+          <!-- Search -->
+
+          <div class="search-box">
+            <span class="material-symbols-outlined"> search </span>
+
+            <input
+              type="search"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="onFilterChange()"
+              placeholder="Search reviews..."
+              aria-label="Search reviews"
+            />
+          </div>
+
+          <!-- Status -->
+
+          <select
+            class="filter-select"
+            [(ngModel)]="selectedStatus"
+            (ngModelChange)="onFilterChange()"
+            aria-label="Filter reviews by status"
+          >
+            <option value="">Status: All</option>
+
+            <option value="normal">Normal</option>
+
+            <option value="flagged">Flagged</option>
+          </select>
+
+          <!-- Clear -->
+
+          <button
+            type="button"
+            class="clear-button"
+            *ngIf="searchTerm || selectedStatus"
+            (click)="clearFilters()"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Result Information -->
+
+      <div class="result-bar">
+        <span>
+          Showing
+          <strong> {{ showingFrom }}-{{ showingTo }} </strong>
+          of
+          <strong>
+            {{ filteredReviews.length | number }}
+          </strong>
+          reviews
+        </span>
+
+        <span class="flagged-summary" *ngIf="flaggedReviews > 0">
+          <span class="material-symbols-outlined"> warning </span>
+
+          {{ flaggedReviews }} flagged
+        </span>
+      </div>
+
+      <!-- ======================================== -->
+      <!-- Table -->
+      <!-- ======================================== -->
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Reviewer</th>
+
+              <th>Target</th>
+
+              <th>Rating</th>
+
+              <th class="content-column">Review Content</th>
+
+              <th>Date</th>
+
+              <th>Status</th>
+
+              <th class="actions-column">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- Review Rows -->
+
+            <tr
+              *ngFor="let review of paginatedReviews; trackBy: trackByReviewId"
+              [class.review-flagged]="review.status === 'flagged'"
+            >
+              <!-- Reviewer -->
+
+              <td>
+                <div class="reviewer">
+                  <div class="reviewer__avatar">
+                    {{ review.reviewerInitials }}
+                  </div>
+
+                  <span class="reviewer__name">
+                    {{ review.reviewer }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- Target -->
+
+              <td>
+                <span class="target-name">
+                  {{ review.target }}
+                </span>
+              </td>
+
+              <!-- Rating -->
+
+              <td>
+                <div class="rating" [attr.aria-label]="review.rating + ' out of 5 stars'">
+                  <ng-container *ngFor="let filled of getRatingStars(review.rating)">
+                    <span class="material-symbols-outlined" [class.rating__empty]="!filled">
+                      star
+                    </span>
+                  </ng-container>
+
+                  <span class="rating__number"> {{ review.rating }}.0 </span>
+                </div>
+              </td>
+
+              <!-- Review Content -->
+
+              <td class="content-column">
+                <div
+                  class="review-content"
+                  [class.review-content--flagged]="review.status === 'flagged'"
+                >
+                  <span class="material-symbols-outlined" *ngIf="review.status === 'flagged'">
+                    warning
+                  </span>
+
+                  <p [title]="review.content">
+                    {{ review.content }}
+                  </p>
+                </div>
+              </td>
+
+              <!-- Date -->
+
+              <td>
+                <span class="review-date">
+                  {{ review.date }}
+                </span>
+              </td>
+
+              <!-- Status -->
+
+              <td>
+                <span
+                  class="status-badge"
+                  [class.status-normal]="review.status === 'normal'"
+                  [class.status-flagged]="review.status === 'flagged'"
+                >
+                  <span class="status-dot"></span>
+
+                  {{ getStatusLabel(review.status) }}
+                </span>
+              </td>
+
+              <!-- Actions -->
+
+              <td class="actions-column">
+                <div class="review-actions">
+                  <button
+                    type="button"
+                    class="action-button"
+                    title="View review"
+                    aria-label="View review"
+                    (click)="viewReview(review)"
+                  >
+                    <span class="material-symbols-outlined"> visibility </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="action-button action-button--danger"
+                    title="Delete review"
+                    aria-label="Delete review"
+                    (click)="deleteReview(review)"
+                  >
+                    <span class="material-symbols-outlined"> delete </span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Empty State -->
+
+            <tr *ngIf="paginatedReviews.length === 0">
+              <td colspan="7" class="empty-state">
+                <span class="material-symbols-outlined"> rate_review </span>
+
+                <h3>No reviews found</h3>
+
+                <p>Try changing your search or filter.</p>
+
+                <button type="button" class="empty-state__button" (click)="clearFilters()">
+                  Clear Filters
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ======================================== -->
+      <!-- Pagination -->
+      <!-- ======================================== -->
+
+      <footer class="pagination">
+        <span class="pagination__info">
+          Showing
+          {{ showingFrom }}
+          to
+          {{ showingTo }}
+          of
+          {{ filteredReviews.length }}
+          entries
+        </span>
+
+        <div class="pagination__controls">
+          <button
+            type="button"
+            class="pagination-button"
+            [disabled]="currentPage === 1"
+            (click)="previousPage()"
+            aria-label="Previous page"
+          >
+            <span class="material-symbols-outlined"> chevron_left </span>
+
+            Previous
+          </button>
+
+          <ng-container *ngFor="let page of getPageNumbers()">
+            <button
+              type="button"
+              class="page-number"
+              [class.active]="currentPage === page"
+              (click)="goToPage(page)"
+            >
+              {{ page }}
+            </button>
+          </ng-container>
+
+          <button
+            type="button"
+            class="pagination-button"
+            [disabled]="currentPage === totalPages"
+            (click)="nextPage()"
+            aria-label="Next page"
+          >
+            Next
+
+            <span class="material-symbols-outlined"> chevron_right </span>
+          </button>
+        </div>
+      </footer>
+    </section>
+  </div>
+</main>

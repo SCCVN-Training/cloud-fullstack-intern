@@ -1,0 +1,82 @@
+// ========================================
+// Admin Actions
+// ========================================
+
+.admin-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 0.35rem;
+}
+
+.admin-action-button {
+  width: 2.25rem;
+  height: 2.25rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #544249;
+
+  cursor: pointer;
+
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+
+  .material-symbols-outlined {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    color: #a43073;
+
+    background-color: #faf5fa;
+
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.danger:hover {
+    color: #ba1a1a;
+
+    background-color: rgba(255, 218, 214, 0.6);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+
+    cursor: not-allowed;
+
+    transform: none;
+  }
+}
+
+.admin-actions-hover {
+  opacity: 0;
+
+  transition: opacity 150ms ease;
+}
+
+.admin-table tbody tr:hover .admin-actions-hover {
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .admin-actions-hover {
+    opacity: 1;
+  }
+}

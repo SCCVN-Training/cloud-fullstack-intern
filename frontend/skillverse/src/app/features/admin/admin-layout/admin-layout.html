@@ -1,0 +1,163 @@
+<div class="admin-layout">
+  <!-- =========================================
+       Sidebar
+       ========================================= -->
+
+  <aside class="sidebar">
+    <!-- Brand -->
+    <div class="sidebar__brand">
+      <div class="sidebar__brand-icon">
+        <span class="material-symbols-outlined"> auto_awesome </span>
+      </div>
+
+      <div class="sidebar__brand-text">
+        <h1>SkillVerse</h1>
+        <p>Admin Console</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="sidebar__content">
+      <p class="sidebar__section-title">Management</p>
+
+      <nav>
+        <ul class="sidebar__menu">
+          <!-- Dashboard -->
+          <li>
+            <a
+              routerLink="/admin/dashboard"
+              routerLinkActive="sidebar__link--active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              class="sidebar__link"
+            >
+              <span class="material-symbols-outlined"> dashboard </span>
+
+              <span class="sidebar__link-label"> Dashboard </span>
+            </a>
+          </li>
+
+          <!-- Users -->
+          <li>
+            <a
+              routerLink="/admin/user-management"
+              routerLinkActive="sidebar__link--active"
+              class="sidebar__link"
+            >
+              <span class="material-symbols-outlined"> group </span>
+
+              <span class="sidebar__link-label"> Users </span>
+            </a>
+          </li>
+
+          <!-- Skills -->
+          <li>
+            <a
+              routerLink="/admin/skill-management"
+              routerLinkActive="sidebar__link--active"
+              class="sidebar__link"
+            >
+              <span class="material-symbols-outlined"> psychology </span>
+
+              <span class="sidebar__link-label"> Skills </span>
+            </a>
+          </li>
+
+          <!-- Bookings -->
+          <li>
+            <a
+              routerLink="/admin/booking-management"
+              routerLinkActive="sidebar__link--active"
+              class="sidebar__link"
+            >
+              <span class="material-symbols-outlined"> event_note </span>
+
+              <span class="sidebar__link-label"> Bookings </span>
+            </a>
+          </li>
+
+          <!-- Reviews -->
+          <li>
+            <a
+              routerLink="/admin/review-management"
+              routerLinkActive="sidebar__link--active"
+              class="sidebar__link"
+            >
+              <span class="material-symbols-outlined"> rate_review </span>
+
+              <span class="sidebar__link-label"> Reviews </span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Sidebar footer -->
+    <div class="sidebar__footer">
+      <div class="sidebar__user">
+        <img [src]="userAvatar" [alt]="userName" class="sidebar__user-avatar" />
+
+        <div class="sidebar__user-info">
+          <span class="sidebar__user-name">
+            {{ userName }}
+          </span>
+
+          <span class="sidebar__user-role"> Administrator </span>
+        </div>
+      </div>
+
+      <button type="button" class="sidebar__sign-out" (click)="logout()">
+        <span class="material-symbols-outlined"> logout </span>
+
+        <span class="sidebar__link-label"> Sign Out </span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- =========================================
+       Main
+       ========================================= -->
+
+  <main class="admin-main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar__content">
+        <!-- Search -->
+        <div class="topbar__search">
+          <span class="material-symbols-outlined"> search </span>
+
+          <input type="search" placeholder="Search resources..." aria-label="Search resources" />
+        </div>
+
+        <!-- Actions -->
+        <div class="topbar__actions">
+          <button type="button" class="topbar__action" aria-label="Notifications">
+            <span class="material-symbols-outlined"> notifications </span>
+
+            <span class="topbar__notification-dot"></span>
+          </button>
+
+          <button type="button" class="topbar__action" aria-label="Settings">
+            <span class="material-symbols-outlined"> settings </span>
+          </button>
+
+          <div class="topbar__user">
+            <img [src]="userAvatar" [alt]="userName" class="topbar__avatar" />
+
+            <div class="topbar__user-info">
+              <span class="topbar__user-name">
+                {{ userName }}
+              </span>
+
+              <span class="topbar__user-role"> Admin </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Routed admin page -->
+    <section class="admin-content">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

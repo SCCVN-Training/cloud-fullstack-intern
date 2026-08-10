@@ -1,0 +1,1187 @@
+// ========================================
+// Variables
+// ========================================
+
+$primary: #a43073;
+$primary-light: #f472b6;
+$primary-container: #fce7f3;
+
+$secondary: #8f4953;
+$secondary-container: #f4dfe3;
+
+$surface: #fffbfe;
+$surface-container: #f7f2f7;
+$surface-container-low: #faf5fa;
+$surface-container-high: #ece6ec;
+$surface-container-lowest: #ffffff;
+
+$on-surface: #121c2a;
+$on-surface-variant: #544249;
+
+$outline: #87717a;
+$outline-variant: #dac0c9;
+
+$error: #ba1a1a;
+$error-container: #ffdad6;
+
+$success: #166534;
+$success-container: #dcfce7;
+
+$info: #1d4ed8;
+$info-container: #dbeafe;
+
+$warning: #a16207;
+$warning-container: #fef3c7;
+
+$white: #ffffff;
+
+$transition: 150ms ease;
+
+// ========================================
+// Page
+// ========================================
+
+.booking-management-page {
+  min-height: 100%;
+  padding: 2rem;
+}
+
+// ========================================
+// Header
+// ========================================
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 1.5rem;
+
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  margin: 0;
+
+  color: $on-surface;
+
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+}
+
+.page-subtitle {
+  margin: 0.5rem 0 0;
+
+  color: $on-surface-variant;
+
+  font-size: 0.95rem;
+  line-height: 1.5rem;
+}
+
+// ========================================
+// Export Button
+// ========================================
+
+.export-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.5rem;
+
+  flex-shrink: 0;
+
+  padding: 0.8rem 1.5rem;
+
+  border: none;
+  border-radius: 999px;
+
+  background-color: $primary-container;
+
+  color: $primary;
+
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color $transition,
+    transform $transition,
+    box-shadow $transition;
+
+  .material-symbols-outlined {
+    font-size: 1.15rem;
+  }
+
+  &:hover {
+    background-color: darken($primary-container, 3%);
+    box-shadow: 0 4px 12px rgba($primary, 0.12);
+
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// ========================================
+// Filters
+// ========================================
+
+.filters-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+
+  background: rgba($white, 0.72);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba($white, 0.85);
+  border-radius: 1.25rem;
+
+  box-shadow: 0 8px 24px rgba($primary, 0.05);
+}
+
+.filters-left {
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+
+  label {
+    color: $on-surface-variant;
+
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+}
+
+.filter-select {
+  min-width: 10rem;
+
+  padding: 0.65rem 2.5rem 0.65rem 0.9rem;
+
+  border: 1px solid $outline-variant;
+  border-radius: 0.75rem;
+
+  outline: none;
+
+  background-color: $surface;
+
+  color: $on-surface;
+
+  font-size: 0.875rem;
+
+  cursor: pointer;
+
+  transition:
+    border-color $transition,
+    box-shadow $transition;
+
+  &:focus {
+    border-color: $primary;
+
+    box-shadow: 0 0 0 3px rgba($primary, 0.12);
+  }
+}
+
+.result-count {
+  color: $on-surface-variant;
+
+  font-size: 0.875rem;
+
+  white-space: nowrap;
+
+  strong {
+    margin: 0 0.2rem;
+
+    color: $on-surface;
+
+    font-weight: 700;
+  }
+}
+
+// ========================================
+// Table Card
+// ========================================
+
+.table-card {
+  overflow: hidden;
+
+  background: rgba($white, 0.78);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba($white, 0.85);
+  border-radius: 1.5rem;
+
+  box-shadow: 0 12px 32px rgba($primary, 0.06);
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 1.25rem 1.5rem;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.3);
+
+  background: rgba($white, 0.4);
+
+  h2 {
+    margin: 0;
+
+    color: $on-surface;
+
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0.25rem 0 0;
+
+    color: $on-surface-variant;
+
+    font-size: 0.8rem;
+  }
+}
+
+.table-actions {
+  display: flex;
+
+  gap: 0.25rem;
+}
+
+.icon-button {
+  width: 2.25rem;
+  height: 2.25rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition,
+    transform $transition;
+
+  .material-symbols-outlined {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    color: $primary;
+
+    background-color: $surface-container-low;
+
+    transform: scale(1.05);
+  }
+}
+
+// ========================================
+// Table
+// ========================================
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+
+  min-width: 900px;
+
+  border-collapse: collapse;
+
+  text-align: left;
+}
+
+thead {
+  background-color: rgba($surface-container-lowest, 0.5);
+}
+
+th {
+  padding: 1rem 1.25rem;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.35);
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+td {
+  padding: 1rem 1.25rem;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.2);
+
+  color: $on-surface;
+
+  font-size: 0.875rem;
+}
+
+tbody tr {
+  transition: background-color $transition;
+
+  &:hover {
+    background-color: rgba($surface-container-low, 0.55);
+  }
+
+  &:last-child td {
+    border-bottom: none;
+  }
+}
+
+// ========================================
+// Booking ID
+// ========================================
+
+.booking-id {
+  color: $secondary;
+
+  font-family: monospace;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Participants
+// ========================================
+
+.participant {
+  display: flex;
+  align-items: center;
+
+  gap: 0.7rem;
+
+  min-width: 9rem;
+
+  font-weight: 500;
+
+  white-space: nowrap;
+}
+
+.participant-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+
+  flex-shrink: 0;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border: 1px solid $outline-variant;
+}
+
+// ========================================
+// Scheduled Date
+// ========================================
+
+.scheduled-date {
+  color: $on-surface-variant;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Amount
+// ========================================
+
+.amount {
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Status
+// ========================================
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  padding: 0.3rem 0.7rem;
+
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+
+  border-radius: 50%;
+}
+
+.status-completed {
+  background-color: $success-container;
+
+  border: 1px solid rgba($success, 0.15);
+
+  color: $success;
+
+  .status-dot {
+    background-color: $success;
+  }
+}
+
+.status-confirmed {
+  background-color: $info-container;
+
+  border: 1px solid rgba($info, 0.15);
+
+  color: $info;
+
+  .status-dot {
+    background-color: $info;
+  }
+}
+
+.status-pending {
+  background-color: $warning-container;
+
+  border: 1px solid rgba($warning, 0.15);
+
+  color: $warning;
+
+  .status-dot {
+    background-color: $warning;
+  }
+}
+
+.status-cancelled {
+  background-color: $error-container;
+
+  border: 1px solid rgba($error, 0.15);
+
+  color: $error;
+
+  .status-dot {
+    background-color: $error;
+  }
+}
+
+// ========================================
+// Actions
+// ========================================
+
+.actions-column {
+  width: 6rem;
+
+  text-align: right;
+}
+
+.view-button {
+  width: 2.25rem;
+  height: 2.25rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: $primary;
+
+  cursor: pointer;
+
+  transition:
+    background-color $transition,
+    transform $transition;
+
+  .material-symbols-outlined {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    background-color: $surface-container-low;
+
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// ========================================
+// Empty State
+// ========================================
+
+.empty-state {
+  padding: 4rem 1rem;
+
+  text-align: center;
+
+  color: $on-surface-variant;
+
+  .material-symbols-outlined {
+    font-size: 2.75rem;
+  }
+
+  h3 {
+    margin: 0.75rem 0 0;
+
+    color: $on-surface;
+
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0.35rem 0 0;
+
+    font-size: 0.8rem;
+  }
+}
+
+// ========================================
+// Pagination
+// ========================================
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 1rem 1.25rem;
+
+  border-top: 1px solid rgba($outline-variant, 0.3);
+
+  background: rgba($surface, 0.45);
+}
+
+.pagination-info {
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+}
+
+.page-controls {
+  display: flex;
+  align-items: center;
+
+  gap: 0.25rem;
+}
+
+.pagination-button {
+  padding: 0.55rem 0.9rem;
+
+  border: none;
+  border-radius: 0.6rem;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition;
+
+  &:hover:not(:disabled) {
+    color: $primary;
+
+    background-color: $surface-container-low;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+
+    cursor: not-allowed;
+  }
+}
+
+.page-number {
+  width: 2rem;
+  height: 2rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition;
+
+  &:hover {
+    background-color: $surface-container-low;
+  }
+
+  &.active {
+    background-color: $primary;
+
+    color: $white;
+
+    box-shadow: 0 2px 5px rgba($primary, 0.25);
+  }
+}
+
+.page-ellipsis {
+  width: 2rem;
+
+  text-align: center;
+
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+}
+
+// ========================================
+// Modal
+// ========================================
+
+.modal-backdrop {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 1rem;
+
+  background: rgba(18, 28, 42, 0.4);
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.booking-modal {
+  width: 100%;
+  max-width: 42rem;
+  max-height: 90vh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  background: rgba($white, 0.96);
+
+  border: 1px solid rgba($white, 0.9);
+  border-radius: 1.5rem;
+
+  box-shadow: 0 24px 60px rgba(18, 28, 42, 0.2);
+}
+
+// ========================================
+// Modal Header
+// ========================================
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 1.25rem 1.5rem;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.3);
+
+  background: rgba($white, 0.7);
+}
+
+.modal-eyebrow {
+  margin: 0 0 0.25rem;
+
+  color: $on-surface-variant;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.08em;
+}
+
+.modal-header h2 {
+  margin: 0;
+
+  color: $on-surface;
+
+  font-family: monospace;
+
+  font-size: 1.1rem;
+}
+
+.modal-close {
+  width: 2.25rem;
+  height: 2.25rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition;
+
+  &:hover {
+    color: $error;
+
+    background-color: $error-container;
+  }
+}
+
+// ========================================
+// Modal Body
+// ========================================
+
+.modal-body {
+  overflow-y: auto;
+
+  padding: 1.5rem;
+}
+
+.summary-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 1rem;
+
+  margin-bottom: 2rem;
+}
+
+.detail-card {
+  padding: 1.25rem;
+
+  background: $surface-container-lowest;
+
+  border: 1px solid rgba($outline-variant, 0.3);
+  border-radius: 1rem;
+
+  box-shadow: 0 2px 8px rgba($primary, 0.03);
+}
+
+.detail-label {
+  display: block;
+
+  margin-bottom: 0.4rem;
+
+  color: $on-surface-variant;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.06em;
+}
+
+.detail-reference {
+  display: block;
+
+  color: $primary;
+
+  font-family: monospace;
+
+  font-size: 1rem;
+}
+
+.status-label {
+  margin-top: 1rem;
+}
+
+.detail-amount {
+  display: block;
+
+  color: $on-surface;
+
+  font-size: 1.75rem;
+}
+
+.detail-card p {
+  margin: 0.4rem 0 0;
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+}
+
+// ========================================
+// Modal Sections
+// ========================================
+
+.modal-section {
+  margin-bottom: 1.75rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  > h3 {
+    margin: 0 0 0.8rem;
+
+    color: $on-surface-variant;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.08em;
+  }
+}
+
+// ========================================
+// Participants
+// ========================================
+
+.participants-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.75rem;
+}
+
+.participant-card {
+  display: flex;
+  align-items: center;
+
+  gap: 0.9rem;
+
+  padding: 0.9rem;
+
+  background: rgba($surface-container-low, 0.65);
+
+  border: 1px solid rgba($outline-variant, 0.2);
+  border-radius: 0.9rem;
+}
+
+.participant-large-avatar {
+  width: 3rem;
+  height: 3rem;
+
+  flex-shrink: 0;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+}
+
+.participant-card strong,
+.participant-card span {
+  display: block;
+}
+
+.participant-card strong {
+  color: $on-surface;
+
+  font-size: 0.875rem;
+}
+
+.participant-card span {
+  margin-top: 0.2rem;
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+}
+
+// ========================================
+// Session Card
+// ========================================
+
+.session-card {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 1rem;
+
+  padding: 1rem;
+
+  background: $surface-container-lowest;
+
+  border: 1px solid rgba($outline-variant, 0.3);
+  border-radius: 0.9rem;
+}
+
+.session-card strong {
+  display: block;
+
+  color: $on-surface;
+
+  font-size: 0.875rem;
+}
+
+// ========================================
+// Modal Footer
+// ========================================
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 0.75rem;
+
+  padding: 1rem 1.5rem;
+
+  border-top: 1px solid rgba($outline-variant, 0.3);
+
+  background: rgba($surface-container, 0.65);
+}
+
+.close-button,
+.cancel-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.4rem;
+
+  padding: 0.7rem 1.25rem;
+
+  border-radius: 999px;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color $transition,
+    transform $transition;
+}
+
+.close-button {
+  border: 1px solid $primary;
+
+  background: transparent;
+
+  color: $primary;
+
+  &:hover {
+    background: rgba($primary, 0.06);
+  }
+}
+
+.cancel-button {
+  border: none;
+
+  background: $error;
+
+  color: $white;
+
+  box-shadow: 0 3px 8px rgba($error, 0.2);
+
+  .material-symbols-outlined {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    opacity: 0.9;
+
+    transform: translateY(-1px);
+  }
+}
+
+// ========================================
+// Responsive
+// ========================================
+
+@media (max-width: 1000px) {
+  .booking-management-page {
+    padding: 1.5rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+
+  .export-button {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .booking-management-page {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+    line-height: 2rem;
+  }
+
+  .filters-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filters-left {
+    width: 100%;
+  }
+
+  .filter-group {
+    width: 100%;
+
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+  .result-count {
+    align-self: flex-start;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .session-card {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .page-controls {
+    width: 100%;
+
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 520px) {
+  .page-header {
+    gap: 1rem;
+  }
+
+  .export-button {
+    width: 100%;
+  }
+
+  .table-header {
+    align-items: flex-start;
+  }
+
+  .pagination-info {
+    font-size: 0.75rem;
+  }
+
+  .page-number:nth-of-type(3),
+  .page-number:nth-of-type(4) {
+    display: none;
+  }
+
+  .modal-backdrop {
+    padding: 0.5rem;
+  }
+
+  .booking-modal {
+    max-height: 95vh;
+
+    border-radius: 1rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-footer {
+    padding: 0.9rem 1rem;
+
+    flex-direction: column;
+  }
+
+  .close-button,
+  .cancel-button {
+    width: 100%;
+  }
+}

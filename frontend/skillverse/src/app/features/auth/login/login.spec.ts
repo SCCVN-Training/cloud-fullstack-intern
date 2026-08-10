@@ -29,6 +29,7 @@ describe('Login', () => {
             authenticate: vi.fn(),
             loginWithGoogle: vi.fn(),
             logout: vi.fn(),
+            needsOnboarding: vi.fn().mockReturnValue(false),
           },
         },
 

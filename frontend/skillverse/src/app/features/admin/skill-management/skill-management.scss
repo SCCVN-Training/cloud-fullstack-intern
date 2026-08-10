@@ -1,0 +1,896 @@
+// ========================================
+// Variables
+// ========================================
+
+$primary: #a43073;
+$primary-light: #f472b6;
+$primary-container: #fce7f3;
+
+$surface: #fffbfe;
+$surface-container: #f7f2f7;
+$surface-container-low: #faf5fa;
+$surface-container-high: #ece6ec;
+
+$on-surface: #121c2a;
+$on-surface-variant: #544249;
+
+$outline: #87717a;
+$outline-variant: #dac0c9;
+
+$error: #ba1a1a;
+$error-container: #ffdad6;
+
+$warning: #8a5a00;
+$warning-container: #fff0c2;
+
+$success: #2e7d32;
+$success-container: #dff3e1;
+
+$white: #ffffff;
+
+$transition: 150ms ease;
+
+// ========================================
+// Page
+// ========================================
+
+.skill-management-page {
+  min-height: 100%;
+
+  padding: 2rem;
+}
+
+// ========================================
+// Header
+// ========================================
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  margin: 0;
+
+  color: $on-surface;
+
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+}
+
+.page-subtitle {
+  margin: 0.5rem 0 0;
+
+  color: $on-surface-variant;
+
+  font-size: 0.95rem;
+}
+
+// ========================================
+// Filters
+// ========================================
+
+.filters-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  margin-bottom: 2rem;
+  padding: 1.25rem 1.5rem;
+
+  background: rgba($white, 0.72);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba($white, 0.8);
+  border-radius: 1.5rem;
+
+  box-shadow: 0 8px 24px rgba(164, 48, 115, 0.05);
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+
+  min-width: 0;
+}
+
+// ========================================
+// Search
+// ========================================
+
+.search-wrapper {
+  position: relative;
+
+  width: 18rem;
+
+  display: flex;
+  align-items: center;
+}
+
+.search-wrapper .material-symbols-outlined {
+  position: absolute;
+
+  left: 0.85rem;
+
+  color: $on-surface-variant;
+
+  font-size: 1.2rem;
+
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+
+  padding: 0.65rem 1rem 0.65rem 2.5rem;
+
+  border: 1px solid $outline-variant;
+  border-radius: 0.75rem;
+
+  outline: none;
+
+  background-color: $surface;
+
+  color: $on-surface;
+
+  font-size: 0.875rem;
+
+  transition:
+    border-color $transition,
+    box-shadow $transition;
+
+  &::placeholder {
+    color: $on-surface-variant;
+  }
+
+  &:focus {
+    border-color: $primary;
+
+    box-shadow: 0 0 0 3px rgba($primary, 0.12);
+  }
+}
+
+// ========================================
+// Select
+// ========================================
+
+.filter-select {
+  min-width: 10rem;
+
+  padding: 0.65rem 2.5rem 0.65rem 1rem;
+
+  border: 1px solid $outline-variant;
+  border-radius: 0.75rem;
+
+  outline: none;
+
+  background-color: $surface;
+
+  color: $on-surface;
+
+  font-size: 0.875rem;
+
+  cursor: pointer;
+
+  transition:
+    border-color $transition,
+    box-shadow $transition;
+
+  &:focus {
+    border-color: $primary;
+
+    box-shadow: 0 0 0 3px rgba($primary, 0.12);
+  }
+}
+
+// ========================================
+// Clear Button
+// ========================================
+
+.clear-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  padding: 0.65rem 0.85rem;
+
+  border: none;
+  border-radius: 0.75rem;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition;
+
+  .material-symbols-outlined {
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    color: $primary;
+
+    background-color: $surface-container-low;
+  }
+}
+
+// ========================================
+// Result Count
+// ========================================
+
+.result-count {
+  color: $on-surface-variant;
+
+  font-size: 0.875rem;
+
+  white-space: nowrap;
+}
+
+.result-highlight {
+  margin: 0 0.2rem;
+
+  color: $primary;
+
+  font-weight: 700;
+}
+
+.result-total {
+  margin-left: 0.2rem;
+
+  color: $on-surface;
+
+  font-weight: 700;
+}
+
+// ========================================
+// Table Card
+// ========================================
+
+.table-card {
+  overflow: hidden;
+
+  background: rgba($white, 0.78);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba($white, 0.85);
+  border-radius: 1.5rem;
+
+  box-shadow: 0 12px 32px rgba(164, 48, 115, 0.06);
+}
+
+.table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+// ========================================
+// Table
+// ========================================
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  text-align: left;
+}
+
+thead {
+  background: rgba($surface, 0.65);
+}
+
+th {
+  padding: 1rem;
+
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.5);
+
+  white-space: nowrap;
+}
+
+td {
+  padding: 1rem;
+
+  color: $on-surface;
+
+  border-bottom: 1px solid rgba($outline-variant, 0.3);
+}
+
+tbody tr {
+  transition: background-color $transition;
+
+  &:hover {
+    background-color: rgba($surface-container-low, 0.8);
+  }
+
+  &:last-child td {
+    border-bottom: none;
+  }
+}
+
+.skill-suspended {
+  background-color: rgba($error-container, 0.08);
+
+  &:hover {
+    background-color: rgba($error-container, 0.14);
+  }
+}
+
+// ========================================
+// Skill
+// ========================================
+
+.skill-cell {
+  min-width: 23rem;
+}
+
+.skill-info {
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+}
+
+.skill-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 0.85rem;
+
+  background-color: rgba($primary-container, 0.6);
+
+  color: $primary;
+}
+
+.skill-icon .material-symbols-outlined {
+  font-size: 1.35rem;
+}
+
+.skill-details {
+  min-width: 0;
+}
+
+.skill-name {
+  margin: 0;
+
+  overflow: hidden;
+
+  color: $on-surface;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.skill-description {
+  max-width: 22rem;
+
+  margin: 0.25rem 0 0;
+
+  overflow: hidden;
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Category
+// ========================================
+
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 0.3rem 0.65rem;
+
+  border: 1px solid rgba($outline-variant, 0.5);
+
+  border-radius: 999px;
+
+  background-color: $surface-container-low;
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Mentor
+// ========================================
+
+.mentor-name {
+  color: $on-surface;
+
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Students
+// ========================================
+
+.students-count {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.35rem;
+
+  color: $on-surface-variant;
+
+  font-size: 0.85rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.students-count .material-symbols-outlined {
+  color: $primary;
+
+  font-size: 1.1rem;
+}
+
+// ========================================
+// Created Date
+// ========================================
+
+.created-date {
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+
+  white-space: nowrap;
+}
+
+// ========================================
+// Status
+// ========================================
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  padding: 0.3rem 0.65rem;
+
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+
+  border-radius: 50%;
+}
+
+// Active
+
+.status-active {
+  background-color: rgba($success-container, 0.8);
+
+  color: $success;
+
+  border: 1px solid rgba($success, 0.2);
+
+  .status-dot {
+    background-color: $success;
+  }
+}
+
+// Pending
+
+.status-pending {
+  background-color: rgba($warning-container, 0.8);
+
+  color: $warning;
+
+  border: 1px solid rgba($warning, 0.2);
+
+  .status-dot {
+    background-color: $warning;
+  }
+}
+
+// Suspended
+
+.status-suspended {
+  background-color: rgba($error-container, 0.8);
+
+  color: $error;
+
+  border: 1px solid rgba($error, 0.2);
+
+  .status-dot {
+    background-color: $error;
+  }
+}
+
+// ========================================
+// Actions
+// ========================================
+
+.actions-column {
+  width: 9rem;
+
+  text-align: right;
+}
+
+.skill-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 0.35rem;
+
+  opacity: 0;
+
+  transition: opacity $transition;
+}
+
+tbody tr:hover .skill-actions {
+  opacity: 1;
+}
+
+.action-button {
+  width: 2.25rem;
+  height: 2.25rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition,
+    transform $transition;
+
+  .material-symbols-outlined {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    color: $primary;
+
+    background-color: $surface-container-low;
+
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.danger:hover {
+    color: $error;
+
+    background-color: rgba($error-container, 0.6);
+  }
+}
+
+// ========================================
+// Empty State
+// ========================================
+
+.empty-state {
+  padding: 4rem 1rem;
+
+  text-align: center;
+
+  color: $on-surface-variant;
+
+  .material-symbols-outlined {
+    font-size: 2.75rem;
+  }
+
+  p {
+    margin: 0.75rem 0;
+  }
+}
+
+.empty-clear-button {
+  padding: 0.55rem 1rem;
+
+  border: none;
+  border-radius: 0.6rem;
+
+  background-color: $primary;
+
+  color: $white;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color $transition,
+    transform $transition;
+
+  &:hover {
+    background-color: darken($primary, 6%);
+
+    transform: translateY(-1px);
+  }
+}
+
+// ========================================
+// Pagination
+// ========================================
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 1rem 1.25rem;
+
+  background: rgba($surface, 0.45);
+
+  border-top: 1px solid rgba($outline-variant, 0.3);
+}
+
+.pagination-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.25rem;
+
+  padding: 0.6rem 1rem;
+
+  border: none;
+  border-radius: 0.6rem;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition;
+
+  .material-symbols-outlined {
+    font-size: 1rem;
+  }
+
+  &:hover:not(:disabled) {
+    color: $primary;
+
+    background-color: $surface-container-low;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+
+    cursor: not-allowed;
+  }
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+
+  gap: 0.25rem;
+}
+
+.page-number {
+  width: 2rem;
+  height: 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: $on-surface-variant;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    color $transition,
+    background-color $transition;
+
+  &:hover {
+    background-color: $surface-container-low;
+  }
+
+  &.active {
+    background-color: $primary;
+
+    color: $white;
+
+    box-shadow: 0 2px 5px rgba($primary, 0.25);
+  }
+}
+
+// ========================================
+// Material Symbols
+// ========================================
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+
+  vertical-align: middle;
+}
+
+// ========================================
+// Responsive
+// ========================================
+
+@media (max-width: 1100px) {
+  .filters-card {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .filters {
+    width: 100%;
+  }
+
+  .search-wrapper {
+    flex: 1;
+  }
+
+  .result-count {
+    text-align: right;
+  }
+
+  .skill-actions {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .skill-management-page {
+    padding: 1.5rem;
+  }
+
+  .filters {
+    flex-wrap: wrap;
+  }
+
+  .search-wrapper {
+    width: 100%;
+  }
+
+  .filter-select {
+    flex: 1;
+  }
+
+  .created-column {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .skill-management-page {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+
+    line-height: 2rem;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+  .clear-button {
+    align-self: flex-start;
+  }
+
+  .result-count {
+    text-align: left;
+  }
+
+  .skill-cell {
+    min-width: 20rem;
+  }
+
+  .pagination {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .page-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .table-card {
+    border-radius: 1rem;
+  }
+
+  .page-numbers {
+    display: none;
+  }
+
+  .pagination {
+    justify-content: space-between;
+  }
+
+  .pagination-button {
+    padding: 0.55rem 0.75rem;
+  }
+}

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth/auth-guard';
 import { onboardingGuard } from './core/guards/onboarding/onboarding-guard';
+import { adminGuard } from './core/guards/admin/admin-guard';
 
 import { PublicLayoutComponent } from './shared/components/layout/public-layout/public-layout.component';
 
@@ -52,6 +53,11 @@ export const routes: Routes = [
     path: 'user',
     loadChildren: () => import('./features/user/user.routes').then((m) => m.userRoutes),
     canActivate: [authGuard, onboardingGuard],
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes),
+    // canActivate: [authGuard, adminGuard],
   },
   {
     path: 'login',

@@ -30,6 +30,7 @@ export interface UserRecord {
   // tracked client-side.
   isOnboarded?: boolean;
   profile?: OnboardingProfile;
+  role?: 'user' | 'admin';
 }
 
 @Injectable({

@@ -1,5 +1,6 @@
- import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { provideRouter } from '@angular/router';
 
 import { Wallet } from './wallet';
 
@@ -10,6 +11,7 @@ describe('Wallet', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Wallet],
+      providers: [[provideRouter([])]],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Wallet);
@@ -45,9 +47,7 @@ describe('Wallet', () => {
   });
 
   it('should render all transaction items', () => {
-    const items = fixture.debugElement.queryAll(
-      By.css('.transaction-item')
-    );
+    const items = fixture.debugElement.queryAll(By.css('.transaction-item'));
 
     expect(items.length).toBe(4);
   });
@@ -55,48 +55,38 @@ describe('Wallet', () => {
   it('should render the correct transaction titles', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain(
-      'Advanced UI Design Coaching'
-    );
-    expect(compiled.textContent).toContain(
-      'Business Spanish Workshop'
-    );
-    expect(compiled.textContent).toContain(
-      'Coin Pack: Professional Booster'
-    );
-    expect(compiled.textContent).toContain(
-      'Community Badge Awarded'
-    );
+    expect(compiled.textContent).toContain('Advanced UI Design Coaching');
+    expect(compiled.textContent).toContain('Business Spanish Workshop');
+    expect(compiled.textContent).toContain('Coin Pack: Professional Booster');
+    expect(compiled.textContent).toContain('Community Badge Awarded');
   });
 
   it('should identify positive transactions', () => {
     const positiveTransactions = component.activities
-      .flatMap(group => group.items)
-      .filter(item => item.isPositive === true);
+      .flatMap((group) => group.items)
+      .filter((item) => item.isPositive === true);
 
     expect(positiveTransactions.length).toBe(2);
   });
 
   it('should identify negative transactions', () => {
     const negativeTransactions = component.activities
-      .flatMap(group => group.items)
-      .filter(item => item.isPositive === false);
+      .flatMap((group) => group.items)
+      .filter((item) => item.isPositive === false);
 
     expect(negativeTransactions.length).toBe(1);
   });
 
   it('should identify neutral transactions', () => {
     const neutralTransactions = component.activities
-      .flatMap(group => group.items)
-      .filter(item => item.isPositive === null);
+      .flatMap((group) => group.items)
+      .filter((item) => item.isPositive === null);
 
     expect(neutralTransactions.length).toBe(1);
   });
 
   it('should display the correct balance amount', () => {
-    const balanceElement = fixture.nativeElement.querySelector(
-      '.gradient-text'
-    ) as HTMLElement;
+    const balanceElement = fixture.nativeElement.querySelector('.gradient-text') as HTMLElement;
 
     expect(balanceElement.textContent?.trim()).toBe('1,250');
   });
