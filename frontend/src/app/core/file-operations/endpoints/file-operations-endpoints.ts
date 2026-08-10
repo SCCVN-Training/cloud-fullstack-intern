@@ -3,6 +3,7 @@ import { environment } from '../../../../environments/environment';
 export const FILE_OPERATION_ENDPOINTS = {
   uploadFiles: `${environment.apiUrl}/api/v1/storage/files`,
   folders: `${environment.apiUrl}/api/v1/storage/folders`,
+  get_storage: `${environment.apiUrl}/api/v1/storage/retrieve`,
   uploadPresign: `${environment.apiUrl}/api/v1/storage/upload/presign`,
   uploadComplete: `${environment.apiUrl}/api/v1/storage/upload/complete`,
   multipartInitiate: `${environment.apiUrl}/api/v1/storage/upload/multipart/initiate`,

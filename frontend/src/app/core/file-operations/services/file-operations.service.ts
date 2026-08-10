@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpEvent,
+  HttpHeaders,
+  HttpParams,
+} from '@angular/common/http';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FILE_OPERATION_ENDPOINTS } from '../endpoints/file-operations-endpoints';
@@ -8,6 +13,7 @@ import {
   DriveFolderItem,
   DriveItem,
 } from '../../../shared/components/drive-item-card/drive-item.model';
+import { StorageContentResponse } from '../../../features/drive/drive';
 
 export interface BackendFileResponse {
   id: string;
@@ -145,6 +151,20 @@ export class FileOperationsService {
       createdAt: folder.created_at,
       updatedAt: folder.updated_at,
     };
+  }
+
+  getStorageContents(
+    parentFolderId?: string | null,
+  ): Observable<StorageContentResponse> {
+    let params = new HttpParams();
+    if (parentFolderId) {
+      params = params.set('parent_folder_id', parentFolderId);
+    }
+
+    return this.http.get<StorageContentResponse>(
+      FILE_OPERATION_ENDPOINTS.get_storage,
+      { params, withCredentials: true },
+    );
   }
 
   requestPresignedUpload(

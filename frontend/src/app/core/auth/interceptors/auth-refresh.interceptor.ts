@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth.service';
 
 export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
+  // const token = auth.getAccessToken();
 
   return next(req).pipe(
     catchError((err: any) => {

@@ -14,6 +14,14 @@ from app.modules.files.service import FileOperationsService
 
 router = APIRouter(prefix="/storage", tags=["File Operations"])
 
+@router.get("/retrieve", response_model=schemas.StorageContentResponse)
+async def get_storage_contents(
+    parent_folder_id: uuid.UUID | None = None,
+    current_user: dict = Depends(get_current_user),
+    conn: asyncpg.Connection = Depends(get_db_connection),
+    service: FileOperationsService = Depends(FileOperationsService),
+):
+    return await service.get_storage_contents(conn, current_user, parent_folder_id)
 
 @router.post("/folders", response_model=schemas.FolderResponse, status_code=status.HTTP_201_CREATED)
 async def create_folder(

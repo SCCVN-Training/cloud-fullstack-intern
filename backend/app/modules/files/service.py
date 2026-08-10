@@ -1217,3 +1217,22 @@ class FileOperationsService:
         headers["Content-Disposition"] = f'attachment; filename="{file_row.get("file_name")}"'
 
         return StreamingResponse(stream_generator(), status_code=status_code, media_type=media_type, headers=headers)
+
+    async def get_storage_contents(
+        self,
+        conn: asyncpg.Connection,
+        current_user: dict[str, Any],
+        parent_folder_id: uuid.UUID | None = None,
+    ) -> schemas.StorageContentResponse:
+        if parent_folder_id:
+            await self._require_view_access(
+                conn, target_type="folder", target_id=parent_folder_id, current_user_id=current_user["id"]
+            )
+
+        folders_raw = await self.repo.list_user_folders(conn, current_user["id"], parent_folder_id)
+        files_raw = await self.repo.list_user_files(conn, current_user["id"], parent_folder_id)
+
+        return schemas.StorageContentResponse(
+            folders=[self._as_folder_response(f) for f in folders_raw],
+            files=[self._as_file_response(f) for f in files_raw],
+        )

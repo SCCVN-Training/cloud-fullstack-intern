@@ -23,6 +23,18 @@ class FileOperationsRepository:
         row = await conn.fetchrow(queries.GET_FILE_BY_ID, file_id)
         return self._row_to_dict(row)
 
+    async def list_user_folders(
+        self, conn: AsyncConn, owner_id: uuid.UUID, parent_folder_id: uuid.UUID | None = None
+    ) -> list[dict[str, Any]]:
+        rows = await conn.fetch(queries.GET_USER_FOLDERS, owner_id, parent_folder_id)
+        return [dict(r) for r in rows]
+
+    async def list_user_files(
+        self, conn: AsyncConn, owner_id: uuid.UUID, parent_folder_id: uuid.UUID | None = None
+    ) -> list[dict[str, Any]]:
+        rows = await conn.fetch(queries.GET_USER_FILES, owner_id, parent_folder_id)
+        return [dict(r) for r in rows]
+
     async def create_folder(
         self,
         conn: AsyncConn,
