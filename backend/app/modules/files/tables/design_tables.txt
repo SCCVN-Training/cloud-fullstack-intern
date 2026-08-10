@@ -1067,13 +1067,14 @@ BEGIN
     JOIN nephos.folders df2 ON df2.id = p_dest_folder_id
     WHERE sf.parent_folder_id = p_source_folder_id AND sf.is_trashed = FALSE;
 
-    -- Recurse into same-named child folder pairs.
+    -- Recurse into same-named child folder pairs
     RETURN QUERY
-    SELECT * FROM nephos.preview_merge_file_collisions(sc.id, dc.id)
+    SELECT r.*
     FROM nephos.folders sc
     JOIN nephos.folders dc ON dc.folder_name = sc.folder_name
                            AND dc.parent_folder_id = p_dest_folder_id
                            AND dc.is_trashed = FALSE
+    CROSS JOIN LATERAL nephos.preview_merge_file_collisions(sc.id, dc.id) r
     WHERE sc.parent_folder_id = p_source_folder_id AND sc.is_trashed = FALSE;
 END;
 $$ LANGUAGE plpgsql STABLE;

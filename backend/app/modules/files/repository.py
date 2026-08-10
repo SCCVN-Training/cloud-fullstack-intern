@@ -346,6 +346,14 @@ class FileOperationsRepository:
     ) -> None:
         await conn.fetchval(queries.CALL_LOCK_NAMING_SCOPE, parent_folder_id, owner_id)
 
+    async def resolve_file_name_collision(
+        self, 
+        conn: asyncpg.Connection, 
+        parent_folder_id: uuid.UUID | None, 
+        owner_id: uuid.UUID, file_name: str
+    ) -> str | None:
+        return await conn.fetchval(queries.RESOLVE_FILE_NAME_COLLISION, parent_folder_id, owner_id, file_name)
+
     async def resolve_restored_file_name(
         self, 
         conn: AsyncConn, 
