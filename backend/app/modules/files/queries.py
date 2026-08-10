@@ -212,6 +212,15 @@ GET_EFFECTIVE_PERMISSION = """
 SELECT nephos.effective_permission($1, $2, $3, $4)
 """
 
+NAME_EXISTS = """
+  SELECT nephos.name_exists(
+      p_is_file => $1,
+      p_parent_folder_id => $2,
+      p_owner_id => $3,
+      p_name => $4,
+      p_exclude_id => $5
+  );
+"""
 
 CALL_LOCK_NAMING_SCOPE = """
 SELECT nephos.lock_naming_scope($1, $2)

@@ -460,6 +460,55 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- ============================================================================
+-- 8c. NAME DUPLICATE CHECK -- shared by all collision-detection call sites
+-- ============================================================================
+-- Checks whether an ACTIVE (is_trashed = FALSE) file or folder with the given
+-- name already exists in the given location.
+--
+-- Scoping matches the partial unique indexes exactly:
+--   * p_parent_folder_id IS NOT NULL -> scoped to that folder
+--     (idx_unique_active_file_in_folder / idx_unique_active_folder_in_parent)
+--   * p_parent_folder_id IS NULL     -> scoped to p_owner_id at root
+--     (idx_unique_active_file_in_root / idx_unique_active_folder_in_root)
+--
+-- p_exclude_id: pass the id of the item you're moving/renaming so it doesn't
+-- collide against itself (e.g. a no-op move back to its current parent).
+-- Pass NULL when checking a brand-new name (upload, restore) with nothing to exclude.
+CREATE OR REPLACE FUNCTION nephos.name_exists(
+    p_is_file BOOLEAN,
+    p_parent_folder_id UUID,
+    p_owner_id UUID,
+    p_name TEXT,
+    p_exclude_id UUID DEFAULT NULL
+) RETURNS BOOLEAN AS $$
+DECLARE
+    v_exists BOOLEAN;
+BEGIN
+    IF p_is_file THEN
+        SELECT EXISTS (
+            SELECT 1 FROM nephos.files
+            WHERE is_trashed = FALSE
+              AND file_name = p_name
+              AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
+              AND (p_parent_folder_id IS NOT NULL OR owner_id = p_owner_id)
+              AND (p_exclude_id IS NULL OR id != p_exclude_id)
+        ) INTO v_exists;
+    ELSE
+        SELECT EXISTS (
+            SELECT 1 FROM nephos.folders
+            WHERE is_trashed = FALSE
+              AND folder_name = p_name
+              AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
+              AND (p_parent_folder_id IS NOT NULL OR owner_id = p_owner_id)
+              AND (p_exclude_id IS NULL OR id != p_exclude_id)
+        ) INTO v_exists;
+    END IF;
+
+    RETURN v_exists;
+END;
+$$ LANGUAGE plpgsql STABLE;
+
+-- ============================================================================
 -- 9. SPLIT FILE NAME
 -- ============================================================================
 CREATE OR REPLACE FUNCTION nephos.split_file_name(p_file_name TEXT, OUT base TEXT, OUT ext TEXT)

@@ -5,6 +5,9 @@ import asyncpg
 from asyncpg.pool import PoolConnectionProxy
 import uuid
 from typing import Any, Optional
+import logging
+
+from fastapi import HTTPException,status
 
 from app.modules.files import queries
 
@@ -349,6 +352,47 @@ class FileOperationsRepository:
         user_id: uuid.UUID
     ) -> str | None:
         return await conn.fetchval(queries.GET_EFFECTIVE_PERMISSION, path, is_file, target_id, user_id)
+
+    async def file_exists_by_name(
+        self,
+        conn: asyncpg.Connection,
+        parent_folder_id: uuid.UUID | None,
+        owner_id: uuid.UUID,
+        file_name: str,
+        exclude_id: uuid.UUID | None = None,
+    ) -> bool:
+        result = await conn.fetchval(
+            queries.NAME_EXISTS,
+            True,  # p_is_file
+            parent_folder_id,
+            owner_id,
+            file_name,
+            exclude_id,
+        )
+        parent_id = parent_folder_id if parent_folder_id else "Root" 
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Folder {parent_id}: {bool(result)}"
+            )
+        return bool(result)
+
+    async def folder_exists_by_name(
+        self,
+        conn: asyncpg.Connection,
+        parent_folder_id: uuid.UUID | None,
+        owner_id: uuid.UUID,
+        folder_name: str,
+        exclude_id: uuid.UUID | None = None,
+    ) -> bool:
+        result = await conn.fetchval(
+            queries.NAME_EXISTS,
+            False,  # p_is_file = False checks nephos.folders
+            parent_folder_id,
+            owner_id,
+            folder_name,
+            exclude_id,
+        )
+        return bool(result)
 
     async def call_lock_naming_scope(
         self,
