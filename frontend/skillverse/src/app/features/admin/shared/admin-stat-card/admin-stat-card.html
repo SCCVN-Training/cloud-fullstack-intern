@@ -1,0 +1,21 @@
+<article class="admin-stat-card" [class]="'admin-stat-' + type">
+  <div class="admin-stat-header">
+    <span class="admin-stat-label">
+      {{ label }}
+    </span>
+
+    <span class="material-symbols-outlined admin-stat-icon">
+      {{ icon }}
+    </span>
+  </div>
+
+  <p class="admin-stat-value">
+    {{ value }}
+  </p>
+
+  <p class="admin-stat-change" *ngIf="percentage">
+    <span class="material-symbols-outlined"> trending_up </span>
+
+    {{ percentage }}
+  </p>
+</article>

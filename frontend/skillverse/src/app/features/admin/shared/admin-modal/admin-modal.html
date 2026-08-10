@@ -1,0 +1,32 @@
+<div
+  *ngIf="isOpen"
+  class="admin-modal-overlay"
+  role="presentation"
+  (click)="onOverlayClick($event)"
+>
+  <section class="admin-modal" role="dialog" aria-modal="true" [attr.aria-label]="title">
+    <header class="admin-modal-header">
+      <div>
+        <h2 class="admin-modal-title">
+          {{ title }}
+        </h2>
+
+        <p *ngIf="description" class="admin-modal-description">
+          {{ description }}
+        </p>
+      </div>
+
+      <button type="button" class="admin-modal-close" aria-label="Close modal" (click)="close()">
+        <span class="material-symbols-outlined"> close </span>
+      </button>
+    </header>
+
+    <div class="admin-modal-body">
+      <ng-content></ng-content>
+    </div>
+
+    <footer class="admin-modal-footer">
+      <ng-content select="[modal-footer]"></ng-content>
+    </footer>
+  </section>
+</div>

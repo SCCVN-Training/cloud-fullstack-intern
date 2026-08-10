@@ -1,0 +1,90 @@
+.admin-stat-card {
+  padding: 1.5rem;
+
+  background: rgba(255, 255, 255, 0.78);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(218, 192, 201, 0.5);
+  border-radius: 1.5rem;
+
+  box-shadow: 0 8px 24px rgba(164, 48, 115, 0.05);
+}
+
+.admin-stat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 1rem;
+}
+
+.admin-stat-label {
+  color: #544249;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-stat-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background-color: rgba(252, 231, 243, 0.55);
+
+  color: #a43073;
+}
+
+.admin-stat-value {
+  margin: 0;
+
+  color: #121c2a;
+
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+}
+
+.admin-stat-change {
+  display: flex;
+  align-items: center;
+
+  gap: 0.25rem;
+
+  margin: 0.5rem 0 0;
+
+  color: #a43073;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  .material-symbols-outlined {
+    font-size: 1rem;
+  }
+}
+
+.admin-stat-flagged {
+  border-color: rgba(186, 26, 26, 0.3);
+
+  .admin-stat-label,
+  .admin-stat-value,
+  .admin-stat-change {
+    color: #ba1a1a;
+  }
+
+  .admin-stat-icon {
+    background-color: #ffdad6;
+
+    color: #ba1a1a;
+  }
+}
