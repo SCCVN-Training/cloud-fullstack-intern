@@ -1,0 +1,183 @@
+<!-- Background Decor -->
+<div
+  class="absolute top-1/4 -right-32 w-96 h-96 bg-primary-fixed-dim/40 rounded-full blur-[100px] pointer-events-none"
+></div>
+
+<div
+  class="absolute -bottom-32 -left-32 w-96 h-96 bg-secondary-fixed/50 rounded-full blur-[100px] pointer-events-none"
+></div>
+
+<div
+  class="glass-card w-full max-w-2xl bg-white/95 rounded-[2.5rem] p-lg md:p-xl shadow-[0_20px_60px_-15px_rgba(164,48,115,0.1)] relative z-10 border border-white"
+>
+  <!-- Header & Avatar -->
+  <div class="flex flex-col items-center text-center mb-md">
+    <div class="relative mb-md">
+      <div class="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md">
+        <img class="w-full h-full object-cover" [src]="reviewee.avatar" [alt]="reviewee.name" />
+      </div>
+
+      <!-- Status Badge -->
+      <div
+        class="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"
+      ></div>
+    </div>
+
+    <h1 class="font-title-lg text-title-lg text-on-surface mb-xs">
+      How was your session with {{ reviewee.name }}?
+    </h1>
+
+    <p class="text-body-md text-on-surface-variant max-w-md">
+      Your feedback helps us maintain a high-quality community.
+    </p>
+  </div>
+
+  <!-- Overall Rating -->
+  <div class="flex flex-col items-center mb-lg">
+    <p class="font-label-md text-on-surface-variant mb-sm">Overall Rating</p>
+
+    <div class="flex gap-2 mb-xs">
+      <button
+        *ngFor="let star of stars"
+        type="button"
+        class="rating-star"
+        [class.rating-star-active]="star <= overallRating"
+        [attr.aria-label]="'Rate ' + star + ' out of 5'"
+        (click)="setOverallRating(star)"
+      >
+        <span
+          class="material-symbols-outlined text-[32px]"
+          [style.font-variation-settings]="
+            star <= overallRating ? '\'FILL\' 1, \'wght\' 400' : '\'FILL\' 0, \'wght\' 300'
+          "
+        >
+          star
+        </span>
+      </button>
+    </div>
+
+    <p
+      class="text-label-sm"
+      [class.text-primary]="overallRating > 0"
+      [class.text-on-surface-variant]="overallRating === 0"
+    >
+      {{ overallRating > 0 ? overallRating + ' out of 5' : 'Select a rating' }}
+    </p>
+  </div>
+
+  <hr class="border-outline-variant/30 mb-lg" />
+
+  <!-- Detailed Feedback -->
+  <div class="mb-lg">
+    <p class="font-label-md text-on-surface-variant mb-sm">Detailed Feedback</p>
+
+    <textarea
+      [(ngModel)]="feedback"
+      class="w-full bg-surface/50 border border-outline-variant/50 rounded-2xl p-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none placeholder:text-on-surface-variant/50 hover:bg-white"
+      rows="4"
+      placeholder="What did you learn? How could the session be improved?"
+    ></textarea>
+  </div>
+
+  <!-- Sub Ratings Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-md mb-xl">
+    <!-- Knowledge Depth -->
+    <div
+      class="border border-outline-variant/30 rounded-2xl p-md bg-white hover:border-primary/30 transition-colors"
+    >
+      <p class="font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-sm">
+        Knowledge Depth
+      </p>
+
+      <div class="flex gap-1">
+        <button
+          *ngFor="let star of stars"
+          type="button"
+          class="rating-star"
+          [class.rating-star-active]="star <= knowledgeRating"
+          [attr.aria-label]="'Knowledge depth: ' + star + ' out of 5'"
+          (click)="setKnowledgeRating(star)"
+        >
+          <span
+            class="material-symbols-outlined text-[24px]"
+            [style.font-variation-settings]="
+              star <= knowledgeRating ? '\'FILL\' 1, \'wght\' 400' : '\'FILL\' 0, \'wght\' 300'
+            "
+          >
+            star
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Communication -->
+    <div
+      class="border border-outline-variant/30 rounded-2xl p-md bg-white hover:border-primary/30 transition-colors"
+    >
+      <p class="font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-sm">
+        Communication
+      </p>
+
+      <div class="flex gap-1">
+        <button
+          *ngFor="let star of stars"
+          type="button"
+          class="rating-star"
+          [class.rating-star-active]="star <= communicationRating"
+          [attr.aria-label]="'Communication: ' + star + ' out of 5'"
+          (click)="setCommunicationRating(star)"
+        >
+          <span
+            class="material-symbols-outlined text-[24px]"
+            [style.font-variation-settings]="
+              star <= communicationRating ? '\'FILL\' 1, \'wght\' 400' : '\'FILL\' 0, \'wght\' 300'
+            "
+          >
+            star
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Video / Audio Quality -->
+    <div
+      class="border border-outline-variant/30 rounded-2xl p-md bg-white hover:border-primary/30 transition-colors md:col-span-2"
+    >
+      <p class="font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-sm">
+        Video / Audio Quality
+      </p>
+
+      <div class="flex gap-1">
+        <button
+          *ngFor="let star of stars"
+          type="button"
+          class="rating-star"
+          [class.rating-star-active]="star <= videoAudioRating"
+          [attr.aria-label]="'Video and audio quality: ' + star + ' out of 5'"
+          (click)="setVideoAudioRating(star)"
+        >
+          <span
+            class="material-symbols-outlined text-[24px]"
+            [style.font-variation-settings]="
+              star <= videoAudioRating ? '\'FILL\' 1, \'wght\' 400' : '\'FILL\' 0, \'wght\' 300'
+            "
+          >
+            star
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="flex justify-center">
+    <button
+      type="button"
+      class="btn-primary-gradient text-white px-xl py-md rounded-full font-title-lg text-body-lg shadow-lg active:scale-[0.98] transition-transform min-w-[240px] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+      [disabled]="!canSubmit"
+      (click)="submitReview()"
+    >
+      Submit Review
+    </button>
+  </div>
+</div>

@@ -1,0 +1,276 @@
+// ========================================
+// Booking Session
+// ========================================
+
+.booking-session-page {
+  width: 100%;
+}
+
+// ========================================
+// Page Header
+// ========================================
+
+.booking-session-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+
+  margin-bottom: 2rem;
+}
+
+.booking-session-eyebrow {
+  margin: 0 0 0.4rem;
+
+  color: #a43073;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.booking-session-title {
+  margin: 0;
+
+  color: #121c2a;
+
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.booking-session-subtitle {
+  max-width: 42rem;
+
+  margin: 0.65rem 0 0;
+
+  color: #544249;
+
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.booking-session-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  flex-shrink: 0;
+
+  padding: 0.65rem 1rem;
+
+  border: 1px solid rgba(218, 192, 201, 0.5);
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.65);
+
+  color: #a43073;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  .material-symbols-outlined {
+    font-size: 1.1rem;
+  }
+}
+
+// ========================================
+// Main Grid
+// ========================================
+
+.booking-session-grid {
+  display: grid;
+
+  grid-template-columns: minmax(0, 8fr) minmax(280px, 4fr);
+
+  gap: 1.5rem;
+
+  align-items: start;
+}
+
+.booking-session-main {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1.5rem;
+}
+
+.booking-session-sidebar {
+  min-width: 0;
+}
+
+// ========================================
+// Session Notes
+// ========================================
+
+.booking-session-notes {
+  display: block;
+
+  min-height: 8rem;
+
+  resize: vertical;
+
+  outline: none;
+
+  font-family: inherit;
+
+  line-height: 1.6;
+}
+
+.booking-session-notes::placeholder {
+  color: #87717a;
+}
+
+// ========================================
+// Suggestion Tags
+// ========================================
+
+.booking-tag {
+  border: 0;
+  border-radius: 999px;
+
+  padding: 0.35rem 0.7rem;
+
+  background: rgba(236, 230, 236, 0.5);
+
+  color: #544249;
+
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.booking-tag:hover {
+  background-color: rgba(252, 231, 243, 0.9);
+
+  color: #a43073;
+
+  transform: translateY(-1px);
+}
+
+.booking-tag:focus-visible {
+  outline: 2px solid #a43073;
+  outline-offset: 2px;
+}
+
+// ========================================
+// What To Expect
+// ========================================
+
+.booking-expect-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+}
+
+.booking-expect-item {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 0.85rem;
+
+  padding: 0.85rem;
+
+  border-radius: 0.9rem;
+
+  background: rgba(250, 245, 250, 0.55);
+}
+
+.booking-expect-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.4rem;
+  height: 2.4rem;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: rgba(252, 231, 243, 0.7);
+
+  color: #a43073;
+
+  .material-symbols-outlined {
+    font-size: 1.15rem;
+  }
+}
+
+.booking-expect-title {
+  margin: 0;
+
+  color: #121c2a;
+
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.booking-expect-description {
+  margin: 0.2rem 0 0;
+
+  color: #544249;
+
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+// ========================================
+// Responsive
+// ========================================
+
+@media (max-width: 900px) {
+  .booking-session-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-session-sidebar {
+    order: -1;
+  }
+
+  .booking-session-sidebar .sticky {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .booking-session-header {
+    align-items: flex-start;
+    flex-direction: column;
+
+    margin-bottom: 1.5rem;
+  }
+
+  .booking-session-step {
+    align-self: flex-start;
+  }
+
+  .booking-session-title {
+    font-size: 1.75rem;
+  }
+
+  .booking-session-grid {
+    gap: 1rem;
+  }
+
+  .booking-session-main {
+    gap: 1rem;
+  }
+
+  .booking-expect-item {
+    padding: 0.75rem;
+  }
+}
