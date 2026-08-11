@@ -403,6 +403,7 @@ class FileOperationsService:
                 clean_name,
             ):
                 final_name = await self.repo.resolve_file_name_collision(
+                    conn,
                     payload.parent_folder_id,
                     current_user["id"],
                     clean_name,
@@ -419,9 +420,6 @@ class FileOperationsService:
             # else:
             #     final_name = clean_name
 
-            # final_name = await self.repo.resolve_file_name_collision(
-            #     conn, payload.parent_folder_id, current_user["id"], clean_name
-            # )
             file_id = uuid.uuid4()
             row = await self.repo.create_file(
                 conn,
