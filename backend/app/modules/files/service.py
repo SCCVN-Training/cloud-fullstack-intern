@@ -394,9 +394,34 @@ class FileOperationsService:
 
         async def _do_create():
             await self.repo.call_lock_naming_scope(conn, payload.parent_folder_id, current_user["id"])
-            final_name = await self.repo.resolve_file_name_collision(
-                conn, payload.parent_folder_id, current_user["id"], clean_name
-            )
+
+            final_name = clean_name
+            if await self.repo.file_exists_by_name(
+                conn,
+                payload.parent_folder_id,
+                current_user["id"],
+                clean_name,
+            ):
+                final_name = await self.repo.resolve_file_name_collision(
+                    payload.parent_folder_id,
+                    current_user["id"],
+                    clean_name,
+                )
+
+            # file_exists = await self.repo.file_exists_by_name(
+            #     conn, payload.parent_folder_id, current_user["id"], clean_name
+            # )
+
+            # if file_exists:
+            #     final_name = await self.repo.resolve_file_name_collision(
+            #         conn, payload.parent_folder_id, current_user["id"], clean_name
+            #     )
+            # else:
+            #     final_name = clean_name
+
+            # final_name = await self.repo.resolve_file_name_collision(
+            #     conn, payload.parent_folder_id, current_user["id"], clean_name
+            # )
             file_id = uuid.uuid4()
             row = await self.repo.create_file(
                 conn,
@@ -491,16 +516,31 @@ class FileOperationsService:
         async def _do_create():
             await self.repo.call_lock_naming_scope(conn, payload.parent_folder_id, current_user["id"])
 
-            file_exists = await self.repo.file_exists_by_name(
-                conn, payload.parent_folder_id, current_user["id"], clean_name
-            )
-
-            if file_exists:
+            final_name = clean_name
+            if await self.repo.file_exists_by_name(
+                conn,
+                payload.parent_folder_id,
+                current_user["id"],
+                clean_name,
+            ):
                 final_name = await self.repo.resolve_file_name_collision(
-                    conn, payload.parent_folder_id, current_user["id"], clean_name
+                    conn,
+                    payload.parent_folder_id,
+                    current_user["id"],
+                    clean_name,
                 )
-            else:
-                final_name = clean_name
+
+            # file_exists = await self.repo.file_exists_by_name(
+            #     conn, payload.parent_folder_id, current_user["id"], clean_name
+            # )
+
+            # if file_exists:
+            #     final_name = await self.repo.resolve_file_name_collision(
+            #         conn, payload.parent_folder_id, current_user["id"], clean_name
+            #     )
+            # else:
+            #     final_name = clean_name
+
             file_id = uuid.uuid4()
             row = await self.repo.create_file(
                 conn,

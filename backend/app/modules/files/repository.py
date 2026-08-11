@@ -369,11 +369,6 @@ class FileOperationsRepository:
             file_name,
             exclude_id,
         )
-        parent_id = parent_folder_id if parent_folder_id else "Root" 
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Folder {parent_id}: {bool(result)}"
-            )
         return bool(result)
 
     async def folder_exists_by_name(
