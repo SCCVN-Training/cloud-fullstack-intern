@@ -1,11 +1,4 @@
-import {
-  Injectable,
-  signal,
-  computed,
-  inject,
-  NgZone,
-  ApplicationRef,
-} from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpEventType, HttpHeaders } from '@angular/common/http';
 import { Subject, Subscription, firstValueFrom } from 'rxjs';
 import {
@@ -56,8 +49,6 @@ const LOCAL_STORAGE_PREFIX = 'nephos_upload_resume_';
 })
 export class UploadQueueService {
   private fileService = inject(FileOperationsService);
-  private zone = inject(NgZone);
-  private appRef = inject(ApplicationRef);
 
   queue = signal<UploadQueueItem[]>([]);
   onFileUploaded = new Subject<DriveFileItem>();
@@ -249,13 +240,6 @@ export class UploadQueueService {
         ),
       );
 
-    console.log('[upload] presign response', {
-      file: item.name,
-      storageKey: presignRes.storage_key,
-      url: presignRes.presigned_url,
-      headers: presignRes.headers,
-    });
-
     await new Promise<void>((resolve, reject) => {
       const sub = this.fileService
         .uploadBinaryToUrl(
@@ -267,7 +251,6 @@ export class UploadQueueService {
           next: (event: any) => {
             //  Removed '&& event.total' check; fallback to item.sizeBytes
             if (event.type === HttpEventType.UploadProgress) {
-              console.log('[progress]', event.loaded, event.total);
               const total = event.total || item.sizeBytes;
               this.calculateProgress(item.id, event.loaded, total);
             } else if (event.type === HttpEventType.Response) {
@@ -363,13 +346,6 @@ export class UploadQueueService {
           ),
         );
 
-      console.log('[upload] part presign response', {
-        file: item.name,
-        partNumber: partNum,
-        storageKey: storageKey,
-        url: presignPartRes.presigned_url,
-      });
-
       let partETag = '';
       await new Promise<void>((resolve, reject) => {
         const sub = this.fileService
@@ -378,7 +354,6 @@ export class UploadQueueService {
             next: (event: any) => {
               //  Fallback to item.sizeBytes if event.total is omitted
               if (event.type === HttpEventType.UploadProgress) {
-                console.log('[progress]', partNum, event.loaded, event.total);
                 const totalLoaded = start + event.loaded;
                 this.calculateProgress(item.id, totalLoaded, item.sizeBytes);
               } else if (event.type === HttpEventType.Response) {
@@ -462,241 +437,7 @@ export class UploadQueueService {
       lastTimestamp: now,
       lastLoadedBytes: loaded,
     });
-    this.appRef.tick();
   }
-
-  // private async uploadSingleFile(item: UploadQueueItem): Promise<void> {
-  //   // 1. Request presigned PUT URL with retry
-  //   const presignRes: PresignedUploadResponsePayload =
-  //     await this.retryWithBackoff(() =>
-  //       firstValueFrom(
-  //         this.fileService.requestPresignedUpload({
-  //           file_name: item.name,
-  //           size_bytes: item.sizeBytes,
-  //           mime_type: item.file.type || 'application/octet-stream',
-  //           parent_folder_id: item.parentFolderId ?? null,
-  //         }),
-  //       ),
-  //     );
-  //   console.log('[upload] presign response', {
-  //     file: item.name,
-  //     storageKey: presignRes.storage_key,
-  //     url: presignRes.presigned_url,
-  //     headers: presignRes.headers,
-  //   });
-  //   // 2. Binary upload via HTTP PUT with progress tracking
-  //   await new Promise<void>((resolve, reject) => {
-  //     const sub = this.fileService
-  //       .uploadBinaryToUrl(
-  //         presignRes.presigned_url,
-  //         item.file,
-  //         presignRes.headers,
-  //       )
-  //       .subscribe({
-  //         next: (event: any) => {
-  //           if (event.type === HttpEventType.UploadProgress && event.total) {
-  //             this.calculateProgress(item.id, event.loaded, event.total);
-  //           } else if (event.type === HttpEventType.Response) {
-  //             resolve();
-  //           }
-  //         },
-  //         error: (err) => reject(err),
-  //       });
-
-  //     this.updateItemState(item.id, { subscription: sub });
-  //   });
-
-  //   // 3. Complete direct upload metadata registration
-  //   const driveItem = await this.retryWithBackoff(() =>
-  //     firstValueFrom(
-  //       this.fileService.completeDirectUpload({
-  //         storage_key: presignRes.storage_key,
-  //         file_name: item.name,
-  //         size_bytes: item.sizeBytes,
-  //         mime_type: item.file.type || null,
-  //         parent_folder_id: item.parentFolderId ?? null,
-  //       }),
-  //     ),
-  //   );
-
-  //   this.updateItemState(item.id, {
-  //     status: 'completed',
-  //     progressPercentage: 100,
-  //     uploadedBytes: item.sizeBytes,
-  //     speedBytesPerSec: 0,
-  //     etaSeconds: 0,
-  //     driveItem,
-  //   });
-
-  //   this.onFileUploaded.next(driveItem);
-  //   this.processQueue();
-  // }
-
-  // private async uploadMultipartFile(item: UploadQueueItem): Promise<void> {
-  //   // Check if there is saved resume state
-  //   let resumeState = this.getResumeState(item.file);
-  //   let uploadId: string;
-  //   let storageKey: string;
-  //   let completedParts: { part_number: number; etag: string }[] = [];
-
-  //   if (resumeState) {
-  //     uploadId = resumeState.uploadId;
-  //     storageKey = resumeState.storageKey;
-  //     completedParts = resumeState.completedParts || [];
-  //   } else {
-  //     const initRes: InitiateMultipartUploadResponsePayload =
-  //       await this.retryWithBackoff(() =>
-  //         firstValueFrom(
-  //           this.fileService.initiateMultipartUpload({
-  //             file_name: item.name,
-  //             size_bytes: item.sizeBytes,
-  //             mime_type: item.file.type || 'application/octet-stream',
-  //             parent_folder_id: item.parentFolderId ?? null,
-  //           }),
-  //         ),
-  //       );
-  //     uploadId = initRes.upload_id;
-  //     storageKey = initRes.storage_key;
-  //     this.saveResumeState(item.file, uploadId, storageKey, []);
-  //   }
-
-  //   this.updateItemState(item.id, {
-  //     uploadId,
-  //     storageKey,
-  //     completedParts,
-  //   });
-
-  //   const totalParts = Math.ceil(item.sizeBytes / CHUNK_SIZE_BYTES);
-
-  //   for (let partNum = 1; partNum <= totalParts; partNum++) {
-  //     // Check if paused or cancelled
-  //     const currentItem = this.queue().find((i) => i.id === item.id);
-  //     if (!currentItem || currentItem.status !== 'uploading') {
-  //       return; // Stopped by user
-  //     }
-
-  //     // Check if part is already uploaded
-  //     const existing = completedParts.find((p) => p.part_number === partNum);
-  //     if (existing) {
-  //       const loaded = Math.min(partNum * CHUNK_SIZE_BYTES, item.sizeBytes);
-  //       this.calculateProgress(item.id, loaded, item.sizeBytes);
-  //       continue;
-  //     }
-
-  //     // Slice chunk
-  //     const start = (partNum - 1) * CHUNK_SIZE_BYTES;
-  //     const end = Math.min(start + CHUNK_SIZE_BYTES, item.sizeBytes);
-  //     const chunk = sliceFile(item.file, start, end);
-
-  //     // Presign Part URL
-  //     const presignPartRes: PresignPartResponsePayload =
-  //       await this.retryWithBackoff(() =>
-  //         firstValueFrom(
-  //           this.fileService.presignMultipartPart({
-  //             upload_id: uploadId,
-  //             storage_key: storageKey,
-  //             part_number: partNum,
-  //           }),
-  //         ),
-  //       );
-
-  //     console.log('[upload] part presign response', {
-  //       file: item.name,
-  //       partNumber: partNum,
-  //       storageKey: storageKey,
-  //       url: presignPartRes.presigned_url,
-  //     });
-  //     // Upload Chunk
-  //     let partETag = '';
-  //     await new Promise<void>((resolve, reject) => {
-  //       const sub = this.fileService
-  //         .uploadBinaryToUrl(presignPartRes.presigned_url, chunk)
-  //         .subscribe({
-  //           next: (event: any) => {
-  //             if (event.type === HttpEventType.UploadProgress && event.total) {
-  //               const totalLoaded = start + event.loaded;
-  //               this.calculateProgress(item.id, totalLoaded, item.sizeBytes);
-  //             } else if (event.type === HttpEventType.Response) {
-  //               // Extract ETag header or compute fallback
-  //               const etagHeader =
-  //                 event.headers.get('ETag') || event.headers.get('etag');
-  //               partETag = etagHeader
-  //                 ? etagHeader.replace(/"/g, '')
-  //                 : `etag_part_${partNum}`;
-  //               resolve();
-  //             }
-  //           },
-  //           error: (err) => reject(err),
-  //         });
-
-  //       this.updateItemState(item.id, { subscription: sub });
-  //     });
-
-  //     completedParts.push({ part_number: partNum, etag: partETag });
-  //     this.saveResumeState(item.file, uploadId, storageKey, completedParts);
-  //   }
-
-  //   // Complete Multipart Upload
-  //   const driveItem = await this.retryWithBackoff(() =>
-  //     firstValueFrom(
-  //       this.fileService.completeMultipartUpload({
-  //         upload_id: uploadId,
-  //         storage_key: storageKey,
-  //         parts: completedParts,
-  //         file_name: item.name,
-  //         size_bytes: item.sizeBytes,
-  //         mime_type: item.file.type || null,
-  //         parent_folder_id: item.parentFolderId ?? null,
-  //       }),
-  //     ),
-  //   );
-
-  //   this.clearResumeState(item.file);
-
-  //   this.updateItemState(item.id, {
-  //     status: 'completed',
-  //     progressPercentage: 100,
-  //     uploadedBytes: item.sizeBytes,
-  //     speedBytesPerSec: 0,
-  //     etaSeconds: 0,
-  //     driveItem,
-  //   });
-
-  //   this.onFileUploaded.next(driveItem);
-  //   this.processQueue();
-  // }
-
-  // private calculateProgress(id: string, loaded: number, total: number): void {
-  //   const item = this.queue().find((i) => i.id === id);
-  //   if (!item) return;
-
-  //   const now = Date.now();
-  //   const timeDiffSec = (now - (item.lastTimestamp || now)) / 1000;
-  //   let speed = item.speedBytesPerSec;
-
-  //   if (timeDiffSec >= 0.5) {
-  //     const bytesDiff = loaded - (item.lastLoadedBytes || 0);
-  //     const instantSpeed = bytesDiff / timeDiffSec;
-  //     // Exponential moving average for smooth speed calculation
-  //     speed = speed === 0 ? instantSpeed : speed * 0.7 + instantSpeed * 0.3;
-  //     item.lastTimestamp = now;
-  //     item.lastLoadedBytes = loaded;
-  //   }
-
-  //   const remainingBytes = Math.max(0, total - loaded);
-  //   const etaSeconds = speed > 0 ? Math.ceil(remainingBytes / speed) : 0;
-  //   const progressPercentage = Math.min(
-  //     100,
-  //     Math.round((loaded / total) * 100),
-  //   );
-
-  //   this.updateItemState(id, {
-  //     uploadedBytes: loaded,
-  //     progressPercentage,
-  //     speedBytesPerSec: Math.max(0, speed),
-  //     etaSeconds,
-  //   });
-  // }
 
   private updateItemState(
     id: string,
@@ -705,7 +446,6 @@ export class UploadQueueService {
     this.queue.update((items) =>
       items.map((i) => (i.id === id ? { ...i, ...patchItem } : i)),
     );
-    this.appRef.tick();
   }
 
   private async retryWithBackoff<T>(
