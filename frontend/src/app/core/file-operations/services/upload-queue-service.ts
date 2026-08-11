@@ -1,4 +1,11 @@
-import { Injectable, signal, computed, inject, NgZone } from '@angular/core';
+import {
+  Injectable,
+  signal,
+  computed,
+  inject,
+  NgZone,
+  ApplicationRef,
+} from '@angular/core';
 import { HttpEventType, HttpHeaders } from '@angular/common/http';
 import { Subject, Subscription, firstValueFrom } from 'rxjs';
 import {
@@ -50,6 +57,7 @@ const LOCAL_STORAGE_PREFIX = 'nephos_upload_resume_';
 export class UploadQueueService {
   private fileService = inject(FileOperationsService);
   private zone = inject(NgZone);
+  private appRef = inject(ApplicationRef);
 
   queue = signal<UploadQueueItem[]>([]);
   onFileUploaded = new Subject<DriveFileItem>();
@@ -241,6 +249,13 @@ export class UploadQueueService {
         ),
       );
 
+    console.log('[upload] presign response', {
+      file: item.name,
+      storageKey: presignRes.storage_key,
+      url: presignRes.presigned_url,
+      headers: presignRes.headers,
+    });
+
     await new Promise<void>((resolve, reject) => {
       const sub = this.fileService
         .uploadBinaryToUrl(
@@ -252,9 +267,11 @@ export class UploadQueueService {
           next: (event: any) => {
             //  Removed '&& event.total' check; fallback to item.sizeBytes
             if (event.type === HttpEventType.UploadProgress) {
+              console.log('[progress]', event.loaded, event.total);
               const total = event.total || item.sizeBytes;
               this.calculateProgress(item.id, event.loaded, total);
             } else if (event.type === HttpEventType.Response) {
+              this.calculateProgress(item.id, item.sizeBytes, item.sizeBytes);
               resolve();
             }
           },
@@ -346,6 +363,13 @@ export class UploadQueueService {
           ),
         );
 
+      console.log('[upload] part presign response', {
+        file: item.name,
+        partNumber: partNum,
+        storageKey: storageKey,
+        url: presignPartRes.presigned_url,
+      });
+
       let partETag = '';
       await new Promise<void>((resolve, reject) => {
         const sub = this.fileService
@@ -354,6 +378,7 @@ export class UploadQueueService {
             next: (event: any) => {
               //  Fallback to item.sizeBytes if event.total is omitted
               if (event.type === HttpEventType.UploadProgress) {
+                console.log('[progress]', partNum, event.loaded, event.total);
                 const totalLoaded = start + event.loaded;
                 this.calculateProgress(item.id, totalLoaded, item.sizeBytes);
               } else if (event.type === HttpEventType.Response) {
@@ -362,6 +387,8 @@ export class UploadQueueService {
                 partETag = etagHeader
                   ? etagHeader.replace(/"/g, '')
                   : `etag_part_${partNum}`;
+                const loadedNow = Math.min(end, item.sizeBytes);
+                this.calculateProgress(item.id, loadedNow, item.sizeBytes);
                 resolve();
               }
             },
@@ -405,38 +432,37 @@ export class UploadQueueService {
   }
 
   private calculateProgress(id: string, loaded: number, total: number): void {
-    this.zone.run(() => {
-      const item = this.queue().find((i) => i.id === id);
-      if (!item) return;
+    const item = this.queue().find((i) => i.id === id);
+    if (!item) return;
 
-      const now = Date.now();
-      const lastTime = item.lastTimestamp || now;
-      const timeDiffSec = (now - lastTime) / 1000;
+    const now = Date.now();
+    const lastTime = item.lastTimestamp || now;
+    const timeDiffSec = (now - lastTime) / 1000;
 
-      let speed = item.speedBytesPerSec;
+    let speed = item.speedBytesPerSec;
 
-      if (timeDiffSec >= 0.2) {
-        const bytesDiff = loaded - (item.lastLoadedBytes || 0);
-        const instantSpeed = bytesDiff / timeDiffSec;
-        speed = speed === 0 ? instantSpeed : speed * 0.7 + instantSpeed * 0.3;
-      }
+    if (timeDiffSec >= 0.2) {
+      const bytesDiff = loaded - (item.lastLoadedBytes || 0);
+      const instantSpeed = bytesDiff / timeDiffSec;
+      speed = speed === 0 ? instantSpeed : speed * 0.7 + instantSpeed * 0.3;
+    }
 
-      const remainingBytes = Math.max(0, total - loaded);
-      const etaSeconds = speed > 0 ? Math.ceil(remainingBytes / speed) : 0;
-      const progressPercentage = Math.min(
-        100,
-        Math.round((loaded / total) * 100),
-      );
+    const remainingBytes = Math.max(0, total - loaded);
+    const etaSeconds = speed > 0 ? Math.ceil(remainingBytes / speed) : 0;
+    const progressPercentage = Math.min(
+      100,
+      Math.round((loaded / total) * 100),
+    );
 
-      this.updateItemState(id, {
-        uploadedBytes: loaded,
-        progressPercentage,
-        speedBytesPerSec: Math.max(0, speed),
-        etaSeconds,
-        lastTimestamp: now,
-        lastLoadedBytes: loaded,
-      });
+    this.updateItemState(id, {
+      uploadedBytes: loaded,
+      progressPercentage,
+      speedBytesPerSec: Math.max(0, speed),
+      etaSeconds,
+      lastTimestamp: now,
+      lastLoadedBytes: loaded,
     });
+    this.appRef.tick();
   }
 
   // private async uploadSingleFile(item: UploadQueueItem): Promise<void> {
@@ -676,11 +702,10 @@ export class UploadQueueService {
     id: string,
     patchItem: Partial<UploadQueueItem>,
   ): void {
-    this.zone.run(() => {
-      this.queue.update((items) =>
-        items.map((i) => (i.id === id ? { ...i, ...patchItem } : i)),
-      );
-    });
+    this.queue.update((items) =>
+      items.map((i) => (i.id === id ? { ...i, ...patchItem } : i)),
+    );
+    this.appRef.tick();
   }
 
   private async retryWithBackoff<T>(
