@@ -67,6 +67,7 @@ class AnimeSeasonalItem(BaseModel):
     # studios: Studios
     nextAiringEpisode: Optional[AnimeNextAiring] = None
     siteUrl: Optional[str] = Field(None, alias="siteUrl")  # URL to AniList page
+    format: Optional[str] = None  # TV, MOVIE, OVA, etc.
 
 class AnimeSearchItem(BaseModel):
     """Anime item for search results (less detailed)."""

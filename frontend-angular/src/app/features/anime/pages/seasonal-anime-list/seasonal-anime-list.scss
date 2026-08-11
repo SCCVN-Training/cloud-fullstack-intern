@@ -1,0 +1,410 @@
+@import '../../../../app.scss';
+
+.seasonal-anime-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+}
+
+.header {
+  padding: 12px 20px;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 10;
+
+  h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #333;
+  }
+
+  .count {
+    color: #666;
+    font-size: 0.8rem;
+    background: #f0f0f0;
+    padding: 2px 10px;
+    border-radius: 12px;
+  }
+}
+
+.scroll-container {
+  flex: 1;
+  overflow-y: auto; // Single scrollbar
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 16px;
+  position: relative;
+
+  // Custom scrollbar - optional but nicer
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+}
+
+// Smaller Grid - Carousel Size
+.anime-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  padding-bottom: 4px;
+
+  app-anime-card {
+    transition: opacity 0.3s;
+
+    &.loading-item {
+      opacity: 0.6;
+    }
+  }
+}
+
+// Loading States
+.loader-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  margin-top: 4px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid $primary-blue;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner-large {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid $primary-blue;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.initial-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: 16px;
+  color: #666;
+  font-size: 1rem;
+}
+
+// End Message
+.end-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 24px;
+  margin-top: 8px;
+  animation: fadeIn 0.5s ease-out;
+
+  .end-icon {
+    font-size: 2rem;
+  }
+
+  span {
+    color: #28a745;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .end-subtext {
+    color: #666;
+    font-size: 0.8rem;
+    font-weight: 400;
+  }
+}
+
+// Empty State
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  gap: 12px;
+  color: #666;
+  grid-column: 1 / -1; // Span full width
+
+  .empty-icon {
+    font-size: 2.5rem;
+  }
+
+  span {
+    font-size: 1rem;
+  }
+}
+
+// Error State
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  margin: 16px auto;
+  max-width: 400px;
+  background: #fff5f5;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  gap: 10px;
+
+  .error-icon {
+    font-size: 2rem;
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+}
+
+// Scroll to Top Button
+.scroll-top-btn {
+  position: sticky;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: $primary-blue;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(78, 101, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: bounceIn 0.4s ease-out;
+
+  &:hover {
+    background: darken($primary-blue, 10%);
+    transform: translateX(-50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(78, 101, 255, 0.5);
+  }
+
+  &:active {
+    transform: translateX(-50%) scale(0.95);
+  }
+
+  @media (max-width: 768px) {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
+    bottom: 12px;
+  }
+}
+
+// Common Button
+.retry-btn {
+  padding: 6px 20px;
+  background: $primary-blue;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition:
+    background 0.2s,
+    transform 0.1s;
+
+  &:hover {
+    background: darken($primary-blue, 10%);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+// Animations
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.5);
+  }
+  60% {
+    transform: translateX(-50%) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+// Responsive Design
+@media (max-width: 1200px) {
+  .anime-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 992px) {
+  .anime-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 10px 16px;
+
+    h2 {
+      font-size: 1.1rem;
+    }
+
+    .count {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+    }
+  }
+
+  .scroll-container {
+    padding: 8px 12px;
+  }
+
+  .anime-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+  }
+
+  .loader-wrapper {
+    padding: 12px;
+  }
+
+  .end-message {
+    padding: 16px;
+
+    span {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 8px 12px;
+
+    h2 {
+      font-size: 0.95rem;
+    }
+  }
+
+  .scroll-container {
+    padding: 6px 8px;
+  }
+
+  .anime-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 6px;
+  }
+
+  .spinner {
+    width: 20px;
+    height: 20px;
+  }
+
+  .spinner-large {
+    width: 32px;
+    height: 32px;
+  }
+
+  .end-message {
+    padding: 12px;
+
+    .end-icon {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// Optional: Stagger animation for items
+@keyframes itemSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anime-grid app-anime-card {
+  animation: itemSlideIn 0.3s ease-out forwards;
+
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.03}s;
+    }
+  }
+}
+
+// Reduce motion preference
+@media (prefers-reduced-motion: reduce) {
+  .anime-grid app-anime-card,
+  .scroll-top-btn,
+  .loader-wrapper,
+  .end-message {
+    animation: none;
+    transition: none;
+  }
+}

@@ -15,7 +15,8 @@ export class AnimeSeasonalStore {
   readonly state = signal<AnimeSeasonalState>(seasonalInitialState);
 
   // Selectors
-  readonly items = computed(() => this.state().items);
+  readonly seasonalFullList = computed(() => this.state().items);
+  readonly seasonalDashboardList = computed(() => this.state().items.slice(0, 20));
   readonly count = computed(() => this.state().items.length);
   readonly currentPage = computed(() => this.state().pageInfo.currentPage);
   readonly hasNextPage = computed(() => this.state().pageInfo.hasNextPage);

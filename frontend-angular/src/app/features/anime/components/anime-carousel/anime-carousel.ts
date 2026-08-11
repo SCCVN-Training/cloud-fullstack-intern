@@ -7,16 +7,18 @@ import {
   computed,
   effect,
   input,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AnimeSeasonalItem } from '../../data-access/anime.schema';
 import { AnimeCard } from '../anime-card/anime-card';
 
 @Component({
   selector: 'app-anime-carousel',
   standalone: true,
-  imports: [AnimeCard],
+  imports: [AnimeCard, RouterLink],
   templateUrl: './anime-carousel.html',
   styleUrl: './anime-carousel.scss',
 })
@@ -25,6 +27,8 @@ export class AnimeCarousel implements AfterViewInit, OnDestroy {
   readonly loading = input(false);
   readonly autoSlideSpeed = input(0.5);
   readonly frameInterval = input(16);
+
+  readonly exploreMore = output<void>();
 
   private readonly viewport = viewChild<ElementRef<HTMLDivElement>>('viewport');
   private readonly restartEffect = effect(() => {
@@ -133,5 +137,9 @@ export class AnimeCarousel implements AfterViewInit, OnDestroy {
     if (!this.loopWidth || !this.totalSlides()) return;
     const progress = Math.min(this.offset / this.loopWidth, 0.999);
     this.currentSlide.set(Math.floor(progress * this.totalSlides()));
+  }
+
+  onExploreMoreClicked() {
+    this.exploreMore.emit();
   }
 }

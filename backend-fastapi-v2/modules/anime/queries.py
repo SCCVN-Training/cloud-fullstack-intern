@@ -19,6 +19,7 @@ query GetSeasonalAnime($season: MediaSeason, $year: Int, $page: Int, $perPage: I
             seasonYear: $year
             type: ANIME
             sort: POPULARITY_DESC
+            isAdult: false
         ) {
             id
             title { romaji english native }
@@ -31,6 +32,7 @@ query GetSeasonalAnime($season: MediaSeason, $year: Int, $page: Int, $perPage: I
             genres
             nextAiringEpisode { airingAt episode }
             siteUrl
+            format
         }
     }
 }
@@ -47,7 +49,7 @@ query SearchAnime($search: String, $page: Int, $perPage: Int) {
             hasNextPage
             currentPage
         }
-        media(search: $search, type: ANIME) {
+        media(search: $search, type: ANIME, isAdult: false) {
             id
             title { romaji english native }
             coverImage { large medium }
@@ -55,6 +57,7 @@ query SearchAnime($search: String, $page: Int, $perPage: Int) {
             description
             status
             siteUrl
+            format
         }
     }
 }

@@ -16,10 +16,11 @@
     <app-anime-carousel
       [animeList]="seasonalAnimeList()"
       [loading]="seasonalAnimeLoading()"
+      (exploreMore)="onExploreMore()"
     ></app-anime-carousel>
   </section>
 
-  <section class="section">
+  <!-- <section class="section">
     <h2>Collection</h2>
 
     <div class="collection-list">
@@ -95,5 +96,5 @@
         <p>Generate a complete ranking.</p>
       </div>
     </div>
-  </section>
+  </section> -->
 </div>

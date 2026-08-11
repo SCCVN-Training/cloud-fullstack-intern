@@ -42,10 +42,16 @@ export class DashboardHome implements OnInit {
   private readonly animeEvent = inject(AnimeEvent);
 
   readonly profile = this.profileStore.profile;
-  readonly seasonalAnimeList = this.animeSeasonalStore.items;
+  readonly seasonalAnimeList = this.animeSeasonalStore.seasonalDashboardList;
   readonly seasonalAnimeLoading = this.animeSeasonalStore.loading;
 
   ngOnInit(): void {
-    this.animeEvent.loadSeasonal(1);
+    if (this.animeSeasonalStore.count() === 0) {
+      this.animeEvent.loadSeasonal(1);
+    }
+  }
+
+  onExploreMore(): void {
+    this.router.navigate(['/dashboard/seasonal-anime']);
   }
 }

@@ -2,7 +2,7 @@
   <div class="poster-wrap">
     <img [src]="imageUrl()" [alt]="displayTitle() + ' poster'" loading="lazy" />
     <div class="poster-shade"></div>
-    <!-- <span class="card-number">{{ cardNumber() }}</span> -->
+    <span class="card-number">{{ formatText() }}</span>
     <!-- <button class="save-button" type="button" [attr.aria-label]="'Save ' + displayTitle()">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path

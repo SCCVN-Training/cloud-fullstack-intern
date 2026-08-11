@@ -1,8 +1,6 @@
 import { Routes } from '@angular/router';
 import { Dashboard } from './pages/dashboard';
 import { DashboardHome } from './pages/dashboard-home/dashboard-home';
-import { DashboardUserProfileEdit } from './pages/dashboard-user-profile-edit/dashboard-user-profile-edit';
-import { DashboardUserProfile } from './pages/dashboard-user-profile/dashboard-user-profile';
 
 // dashboard.routes.ts
 export const dashboardRoutes: Routes = [
@@ -16,11 +14,24 @@ export const dashboardRoutes: Routes = [
       },
       {
         path: 'profile',
-        component: DashboardUserProfile,
+        loadComponent: () =>
+          import('./pages/dashboard-user-profile/dashboard-user-profile').then(
+            (m) => m.DashboardUserProfile,
+          ),
       },
       {
         path: 'profile/edit',
-        component: DashboardUserProfileEdit,
+        loadComponent: () =>
+          import('./pages/dashboard-user-profile-edit/dashboard-user-profile-edit').then(
+            (m) => m.DashboardUserProfileEdit,
+          ),
+      },
+      {
+        path: 'seasonal-anime',
+        loadComponent: () =>
+          import('../anime/pages/seasonal-anime-list/seasonal-anime-list').then(
+            (m) => m.SeasonalAnimeList,
+          ),
       },
     ],
   },

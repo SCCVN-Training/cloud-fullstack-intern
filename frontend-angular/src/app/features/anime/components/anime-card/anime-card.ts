@@ -1,9 +1,11 @@
 import { Component, computed, input } from '@angular/core';
+import { MatChipsModule } from '@angular/material/chips';
 import { AnimeSeasonalItem } from '../../data-access/anime.schema';
 
 @Component({
   selector: 'app-anime-card',
   standalone: true,
+  imports: [MatChipsModule],
   templateUrl: './anime-card.html',
   styleUrl: './anime-card.scss',
 })
@@ -11,7 +13,11 @@ export class AnimeCard {
   readonly anime = input.required<AnimeSeasonalItem>();
 
   readonly displayTitle = computed(
-    () => this.anime().title.romaji || this.anime().title.english || this.anime().title.native || 'Untitled',
+    () =>
+      this.anime().title.romaji ||
+      this.anime().title.english ||
+      this.anime().title.native ||
+      'Untitled',
   );
 
   readonly displaySubtitle = computed(() => {
@@ -20,7 +26,8 @@ export class AnimeCard {
   });
 
   readonly imageUrl = computed(
-    () => this.anime().coverImage.large || this.anime().coverImage.medium || 'assets/placeholder.jpg',
+    () =>
+      this.anime().coverImage.large || this.anime().coverImage.medium || 'assets/placeholder.jpg',
   );
 
   readonly displayScore = computed(() => {
@@ -47,5 +54,8 @@ export class AnimeCard {
     return { shown, extra: genres.length - shown.length };
   });
 
-  readonly cardNumber = computed(() => String(this.anime().id).padStart(2, '0'));
+  readonly formatText = computed(() => {
+    const format = this.anime().format;
+    return format ? format.toUpperCase() : null;
+  });
 }

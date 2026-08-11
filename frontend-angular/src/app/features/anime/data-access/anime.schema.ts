@@ -80,6 +80,7 @@ export interface AnimeSeasonalItem {
   genres: string[];
   nextAiringEpisode?: AnimeNextAiring;
   siteUrl?: string;
+  format?: string; // TV, MOVIE, OVA, etc.
 }
 
 export interface AnimeSearchItem {
@@ -90,6 +91,7 @@ export interface AnimeSearchItem {
   description?: string;
   status: string;
   siteUrl?: string;
+  format?: string; // TV, MOVIE, OVA, etc.
 }
 
 // ============================================
