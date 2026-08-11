@@ -162,9 +162,15 @@ export class FileOperationsService {
     }
 
     return this.http.get<StorageContentResponse>(
-      FILE_OPERATION_ENDPOINTS.get_storage,
+      FILE_OPERATION_ENDPOINTS.getStorage,
       { params, withCredentials: true },
     );
+  }
+
+  getTrashedContents(): Observable<DriveItem[]> {
+    return this.http
+      .get<StorageContentResponse>(`${this.baseUrl}/trash`)
+      .pipe(map((res) => this.mapStorageContentToDriveItems(res)));
   }
 
   requestPresignedUpload(
