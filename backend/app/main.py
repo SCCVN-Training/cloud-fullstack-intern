@@ -11,6 +11,8 @@ from app.modules.skills.router import router as skills_router
 from app.modules.bookings.router import router as bookings_router
 from app.core.exceptions import register_exception_handlers
 
+from app.modules.training.router import router as training_router 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Create database tables on application startup
@@ -49,6 +51,8 @@ app.include_router(profiles_router)
 app.include_router(reviews_router)
 app.include_router(skills_router)
 app.include_router(bookings_router)
+
+app.include_router(training_router)
 
 # Root Endpoint
 @app.get("/")
