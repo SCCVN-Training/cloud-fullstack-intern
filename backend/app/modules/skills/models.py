@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import List, Optional
 
-from sqlalchemy import String, UUID, Boolean, Integer, Float, Text, ForeignKey, ARRAY, DateTime
+from sqlalchemy import String, UUID, Boolean, Integer, Float, Text, ForeignKey, ARRAY, JSON, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
@@ -33,12 +33,12 @@ class Skill(Base):
     available_slots: Mapped[int] = mapped_column(Integer, default=0)
     language: Mapped[str] = mapped_column(String(50), default="English")
     
-    tags: Mapped[List[str]] = mapped_column(ARRAY(String), default=list)
+    tags: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String).with_variant(JSON(), "sqlite"), default=list)
     featured: Mapped[bool] = mapped_column(Boolean, default=False)
     
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     
     # Optional fields mapped to JSON/Text for simplicity
     about_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    learning_outcomes: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
-    prerequisites: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
+    learning_outcomes: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String).with_variant(JSON(), "sqlite"), nullable=True)
+    prerequisites: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String).with_variant(JSON(), "sqlite"), nullable=True)
