@@ -16,6 +16,42 @@ FROM nephos.files
 WHERE owner_id = $1 AND is_trashed = FALSE
 """
 
+# Check current usage and limit
+GET_USER_STORAGE_QUOTA = """
+    SELECT storage_used, storage_quota 
+    FROM nephos.users 
+    WHERE id = :user_id;
+"""
+
+# Pre-flight check: returns TRUE if the user has enough space for the incoming file
+CHECK_STORAGE_AVAILABLE = """
+    SELECT (storage_used + :requested_bytes) <= storage_quota AS has_space
+    FROM nephos.users 
+    WHERE id = :user_id;
+"""
+
+# Atomic storage increment/decrement (prevents race conditions)
+UPDATE_USER_STORAGE_USAGE = """
+    UPDATE nephos.users 
+    SET storage_used = storage_used + :delta_bytes,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = :user_id
+    RETURNING storage_used, storage_quota;
+"""
+
+# Hard sync query to recalculate storage from active (non-trashed) files
+RECALCULATE_USER_STORAGE = """
+    UPDATE nephos.users
+    SET storage_used = COALESCE((
+        SELECT SUM(size_bytes)
+        FROM nephos.files
+        WHERE owner_id = :user_id AND is_trashed = FALSE
+    ), 0),
+    updated_at = CURRENT_TIMESTAMP
+    WHERE id = :user_id
+    RETURNING storage_used;
+"""
+
 CREATE_FOLDER = """
 INSERT INTO nephos.folders (owner_id, parent_folder_id, folder_name)
 VALUES ($1, $2, $3)
