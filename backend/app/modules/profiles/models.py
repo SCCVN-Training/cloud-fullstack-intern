@@ -1,6 +1,7 @@
 import uuid
+from typing import Optional
 
-from sqlalchemy import String, UUID, Integer, ForeignKey, ARRAY
+from sqlalchemy import String, UUID, Integer, ForeignKey, ARRAY, JSON
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -10,17 +11,12 @@ class Profile(Base):
     __tablename__ = "profiles"
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
 
-    # One-to-one with User — unique enforces at most one profile per user
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True),
-        ForeignKey("users.id", ondelete="CASCADE"),
-        unique=True,
-        nullable=False
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"),
+        unique=True, nullable=False
     )
 
     full_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
@@ -29,24 +25,15 @@ class Profile(Base):
     age: Mapped[int | None] = mapped_column(Integer, nullable=True)
     gender: Mapped[str | None] = mapped_column(String(20), nullable=True)
 
-    # Simple array columns — good enough for training scope.
-    # A normalized skills/interests + join-table design is the
-    # "correct" relational approach but is out of scope for now.
-    interests: Mapped[list[str]] = mapped_column(
-        ARRAY(String), nullable=False, default=list
+    # ARRAY on Postgres, JSON on SQLite (test DB) — same Python-side behavior
+    interests: Mapped[Optional[list[str]]] = mapped_column(
+        ARRAY(String).with_variant(JSON(), "sqlite"), nullable=False, default=list
     )
-    skills_learning: Mapped[list[str]] = mapped_column(
-        ARRAY(String), nullable=False, default=list
+    skills_learning: Mapped[Optional[list[str]]] = mapped_column(
+        ARRAY(String).with_variant(JSON(), "sqlite"), nullable=False, default=list
     )
-    skills_taught: Mapped[list[str]] = mapped_column(
-        ARRAY(String), nullable=False, default=list
+    skills_taught: Mapped[Optional[list[str]]] = mapped_column(
+        ARRAY(String).with_variant(JSON(), "sqlite"), nullable=False, default=list
     )
 
-    # True once the user has submitted the onboarding form (full_name, age,
-    # gender, interests, skills_learning). Drives the frontend's
-    # login -> onboarding vs. login -> homepage branch. Explicit flag
-    # instead of inferring from empty fields, so clearing a field later
-    # doesn't accidentally re-trigger onboarding.
-    is_onboarded: Mapped[bool] = mapped_column(
-        default=False, nullable=False
-    )
+    is_onboarded: Mapped[bool] = mapped_column(default=False, nullable=False)
