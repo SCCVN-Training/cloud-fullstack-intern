@@ -167,10 +167,67 @@ export class FileOperationsService {
     );
   }
 
+  getStorageUsage(): Observable<{ used_bytes: number; total_bytes: number }> {
+    return this.http.get<{ used_bytes: number; total_bytes: number }>(
+      FILE_OPERATION_ENDPOINTS.storageUsage,
+      { withCredentials: true },
+    );
+  }
+
   getTrashedContents(): Observable<DriveItem[]> {
     return this.http
-      .get<StorageContentResponse>(`${this.baseUrl}/trash`)
-      .pipe(map((res) => this.mapStorageContentToDriveItems(res)));
+      .get<{ folders: BackendFolderResponse[]; files: BackendFileResponse[] }>(
+        FILE_OPERATION_ENDPOINTS.getTrashed,
+        { withCredentials: true },
+      )
+      .pipe(
+        map((res) => {
+          const folders = (res.folders || []).map((f) => this.toDriveFolder(f));
+          const files = (res.files || []).map((f) => this.toDriveFile(f));
+          return [...folders, ...files];
+        }),
+      );
+  }
+
+  restoreFile(fileId: string) {
+    return this.http
+      .post<BackendFileResponse>(
+        FILE_OPERATION_ENDPOINTS.restoreFile(fileId),
+        {},
+        { withCredentials: true },
+      )
+      .pipe(map((r) => this.toDriveFile(r)));
+  }
+
+  restoreFolder(folderId: string) {
+    return this.http
+      .post<BackendFolderResponse>(
+        FILE_OPERATION_ENDPOINTS.restoreFolder(folderId),
+        {},
+        { withCredentials: true },
+      )
+      .pipe(map((r) => this.toDriveFolder(r)));
+  }
+
+  hardDeleteFile(fileId: string) {
+    return this.http.delete<{ message: string }>(
+      FILE_OPERATION_ENDPOINTS.hardDeleteFile(fileId),
+      { withCredentials: true },
+    );
+  }
+
+  hardDeleteFolder(folderId: string) {
+    return this.http.delete<{ message: string }>(
+      FILE_OPERATION_ENDPOINTS.hardDeleteFolder(folderId),
+      { withCredentials: true },
+    );
+  }
+
+  emptyTrash() {
+    return this.http.delete<{ message: string }>(
+      FILE_OPERATION_ENDPOINTS.emptyTrash,
+      { withCredentials: true },
+    );
   }
 
   requestPresignedUpload(

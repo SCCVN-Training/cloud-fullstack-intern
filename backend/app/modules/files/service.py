@@ -94,9 +94,11 @@ class R2StorageGateway:
                 Bucket=self.bucket_name,
                 Key=object_name,
             )
-        except ClientError:
-            # Silence deletion exceptions to avoid masking primary application errors
-            pass
+        except ClientError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Failed to delete object from Cloudflare R2.",
+            ) from exc
 
     async def generate_presigned_put_url(
         self,
@@ -1264,6 +1266,16 @@ class FileOperationsService:
 
         return StreamingResponse(stream_generator(), status_code=status_code, media_type=media_type, headers=headers)
 
+    async def get_storage_usage(
+        self,
+        conn: asyncpg.Connection,
+        current_user: dict[str, Any],
+    ) -> schemas.StorageUsageResponse:
+        used = await self.repo.get_storage_usage(conn, current_user["id"])
+        total = getattr(settings, "STORAGE_QUOTA_BYTES", 20 * 1024 ** 3)
+        return schemas.StorageUsageResponse(used_bytes=used, total_bytes=total)
+
+
     async def get_storage_contents(
         self,
         conn: asyncpg.Connection,
@@ -1277,6 +1289,21 @@ class FileOperationsService:
 
         folders_raw = await self.repo.list_user_folders(conn, current_user["id"], parent_folder_id)
         files_raw = await self.repo.list_user_files(conn, current_user["id"], parent_folder_id)
+
+        return schemas.StorageContentResponse(
+            folders=[self._as_folder_response(f) for f in folders_raw],
+            files=[self._as_file_response(f) for f in files_raw],
+        )
+
+    async def get_trashed_contents(
+        self,
+        conn: asyncpg.Connection,
+        current_user: dict[str, Any],
+    ) -> schemas.StorageContentResponse:
+        """Return trashed folders and files owned by the current user."""
+        owner_id = current_user["id"]
+        folders_raw = await self.repo.list_trashed_folders_by_owner(conn, owner_id)
+        files_raw = await self.repo.list_trashed_files_by_owner(conn, owner_id)
 
         return schemas.StorageContentResponse(
             folders=[self._as_folder_response(f) for f in folders_raw],

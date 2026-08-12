@@ -8,9 +8,8 @@ describe('Trash', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Trash]
-    })
-    .compileComponents();
+      imports: [Trash],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Trash);
     component = fixture.componentInstance;

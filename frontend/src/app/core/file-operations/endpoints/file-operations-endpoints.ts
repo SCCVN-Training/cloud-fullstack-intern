@@ -17,14 +17,15 @@ export const FILE_OPERATION_ENDPOINTS = {
     `${environment.apiUrl}/api/v1/storage/files/${fileId}`,
   trashFolder: (folderId: string) =>
     `${environment.apiUrl}/api/v1/storage/folders/${folderId}`,
-  getTrashed: '${environment.apiUrl}/api/v1/storage/retrieve/trashed',
-  restoreFile: (fileID: String) =>
-    `${environment.apiUrl}/api/v1/restore/file/${fileID}`,
-  restoreFolder: (folderID: String) =>
-    `${environment.apiUrl}/api/v1/restore/file/${folderID}`,
-  hardDeleteFile: (fileID: String) =>
-    `${environment.apiUrl}/api/v1/remove/${fileID}`,
-  hardDeleteFolder: (folderID: String) =>
-    `${environment.apiUrl}/api/v1/remove/${folderID}`,
-  emptyTrash: `${environment.apiUrl}/api/v1/trash/empty`,
+  getTrashed: `${environment.apiUrl}/api/v1/storage/trash`,
+  restoreFile: (fileID: string) =>
+    `${environment.apiUrl}/api/v1/storage/trash/files/${fileID}/restore`,
+  restoreFolder: (folderID: string) =>
+    `${environment.apiUrl}/api/v1/storage/trash/folders/${folderID}/restore`,
+  hardDeleteFile: (fileID: string) =>
+    `${environment.apiUrl}/api/v1/storage/trash/files/${fileID}`,
+  hardDeleteFolder: (folderID: string) =>
+    `${environment.apiUrl}/api/v1/storage/trash/folders/${folderID}`,
+  emptyTrash: `${environment.apiUrl}/api/v1/storage/trash/empty`,
+  storageUsage: `${environment.apiUrl}/api/v1/storage/usage`,
 };

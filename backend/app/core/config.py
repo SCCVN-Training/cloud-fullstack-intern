@@ -14,10 +14,13 @@ class Settings(BaseSettings):
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE: int
     REFRESH_TOKEN_EXPIRE: int
+    
+    STORAGE_QUOTA_BYTES: int
 
-    R2_ENDPOINT_URL: str | None = None
-    R2_ACCESS_KEY_ID: str | None = None
-    R2_SECRET_ACCESS_KEY: str | None = None
+    # Cloudflare R2 configuration (S3-compatible)
+    R2_ENDPOINT_URL: str 
+    R2_ACCESS_KEY_ID: str
+    R2_SECRET_ACCESS_KEY: str 
     R2_BUCKET_NAME: str = "nephos"
 
     # Load from .env file

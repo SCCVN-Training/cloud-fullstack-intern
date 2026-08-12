@@ -10,6 +10,11 @@ SELECT id, owner_id, parent_folder_id, storage_key, file_name, size_bytes, mime_
 FROM nephos.files
 WHERE id = $1
 """
+GET_STORAGE_USAGE = """
+SELECT COALESCE(SUM(size_bytes), 0)::BIGINT AS used_bytes
+FROM nephos.files
+WHERE owner_id = $1 AND is_trashed = FALSE
+"""
 
 CREATE_FOLDER = """
 INSERT INTO nephos.folders (owner_id, parent_folder_id, folder_name)
@@ -154,19 +159,25 @@ WHERE path <@ $1
 """
 
 GET_ALL_TRASHED_FILES_BY_OWNER = """
-SELECT id, storage_key
+SELECT id, owner_id, parent_folder_id, storage_key, file_name, size_bytes, mime_type, content_hash,
+       path, is_trashed, trashed_at, created_at, updated_at
 FROM nephos.files
-WHERE owner_id = $1
-  AND is_trashed = TRUE
+WHERE owner_id = $1 AND is_trashed = TRUE
+  AND ($2::uuid IS NULL AND parent_folder_id IS NULL OR parent_folder_id = $2)
 """
 
 GET_ALL_TRASHED_FOLDERS_BY_OWNER = """
-SELECT id
+SELECT id, owner_id, parent_folder_id, folder_name, path, is_trashed, trashed_at, created_at, updated_at
 FROM nephos.folders
-WHERE owner_id = $1
-  AND is_trashed = TRUE
+WHERE owner_id = $1 AND is_trashed = TRUE
+  AND ($2::uuid IS NULL AND parent_folder_id IS NULL OR parent_folder_id = $2)
 """
-
+"""
+SELECT id, owner_id, parent_folder_id, folder_name, path, is_trashed, trashed_at, created_at, updated_at
+FROM nephos.folders
+WHERE owner_id = $1 AND is_trashed = FALSE
+  AND ($2::uuid IS NULL AND parent_folder_id IS NULL OR parent_folder_id = $2)
+"""
 
 DELETE_FILE_BY_ID = """
 DELETE FROM nephos.files WHERE id = $1

@@ -8,7 +8,6 @@ const REFRESH_URL = AUTH_ENDPOINTS.refresh;
 
 export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
-  // const token = auth.getAccessToken();
 
   return next(req).pipe(
     catchError((err: any) => {

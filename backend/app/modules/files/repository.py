@@ -18,6 +18,9 @@ class FileOperationsRepository:
     def _row_to_dict(row: asyncpg.Record | None) -> Optional[dict[str, Any]]:
         return dict(row) if row else None
 
+    async def get_storage_usage(self, conn: AsyncConn, owner_id: uuid.UUID) -> int:
+        return await conn.fetchval(queries.GET_STORAGE_USAGE, owner_id) or 0
+
     async def get_folder_by_id(self, conn: AsyncConn, folder_id: uuid.UUID) -> Optional[dict[str, Any]]:
         row = await conn.fetchrow(queries.GET_FOLDER_BY_ID, folder_id)
         return self._row_to_dict(row)
@@ -250,21 +253,23 @@ class FileOperationsRepository:
     async def list_trashed_files_by_owner(
         self, 
         conn: AsyncConn, 
-        owner_id: uuid.UUID
+        owner_id: uuid.UUID,
+        parent_folder_id: uuid.UUID | None = None
     ) -> list[dict[str, Any]]:
         rows = await conn.fetch(
             queries.GET_ALL_TRASHED_FILES_BY_OWNER, 
-            owner_id)
+            owner_id, parent_folder_id)
         return [dict(r) for r in rows]
 
     async def list_trashed_folders_by_owner(
         self, 
         conn: AsyncConn, 
-        owner_id: uuid.UUID
+        owner_id: uuid.UUID,
+        parent_folder_id: uuid.UUID | None = None
     ) -> list[dict[str, Any]]:
         rows = await conn.fetch(
             queries.GET_ALL_TRASHED_FOLDERS_BY_OWNER, 
-            owner_id)
+            owner_id, parent_folder_id)
         return [dict(r) for r in rows]
 
     async def delete_file_by_id(

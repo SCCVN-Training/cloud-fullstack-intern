@@ -23,6 +23,14 @@ async def get_storage_contents(
 ):
     return await service.get_storage_contents(conn, current_user, parent_folder_id)
 
+@router.get("/usage", response_model=schemas.StorageUsageResponse)
+async def get_storage_usage(
+    current_user: dict = Depends(get_current_user),
+    conn: asyncpg.Connection = Depends(get_db_connection),
+    service: FileOperationsService = Depends(FileOperationsService),
+):
+    return await service.get_storage_usage(conn, current_user)
+
 @router.post("/folders", response_model=schemas.FolderResponse, status_code=status.HTTP_201_CREATED)
 async def create_folder(
     payload: schemas.FolderCreateRequest,
@@ -221,3 +229,12 @@ async def restore_folder(
     service: FileOperationsService = Depends(FileOperationsService),
 ):
     return await service.restore_folder(conn, current_user, folder_id)
+
+
+@router.get("/trash", response_model=schemas.StorageContentResponse)
+async def get_trashed_contents(
+    current_user: dict = Depends(get_current_user),
+    conn: asyncpg.Connection = Depends(get_db_connection),
+    service: FileOperationsService = Depends(FileOperationsService),
+):
+    return await service.get_trashed_contents(conn, current_user)
