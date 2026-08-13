@@ -940,7 +940,7 @@ class FileOperationsService:
                 if new_name is None:
                             raise HTTPException(
                                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                                detail="Could not resolve a valid name for the restored folder."
+                                detail="Could not resolve a valid name for the restored file."
                             )
                 return await self.repo.restore_file(conn, file_id, new_name)
 

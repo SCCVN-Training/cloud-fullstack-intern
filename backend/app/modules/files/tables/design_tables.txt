@@ -1334,3 +1334,317 @@ $$ LANGUAGE plpgsql;
 --   resolve via resolve_file_name_collision() or overwrite in place
 --   accordingly, all under the same lock_naming_scope() convention.
 
+-- ============================================================================
+-- Migration: scale/correctness fixes
+-- ============================================================================
+-- 1. nephos.move_file()      -- file-move mirror of move_folder(), with the
+--                                same lock/collision handling move_folder()
+--                                already has. The bare `UPDATE files SET
+--                                parent_folder_id = $2` previously used by the
+--                                app had none of this.
+-- 2. sync_storage_usage()    -- trigger that keeps nephos.users.storage_used
+--    (+ trigger)                correct automatically on insert/trash/
+--                                restore/hard-delete, so it can no longer
+--                                drift out of sync with reality regardless of
+--                                which code path touches nephos.files.
+-- 3. storage_used CHECK      -- makes the quota an enforced invariant rather
+--                                than something the app promises to respect.
+-- 4. resolve_*_collision() / -- all four naming-collision resolvers capped
+--    resolve_restored_*_name()  at 1000 iterations so one abusive/messy
+--                                caller can't hold the naming-scope
+--                                advisory lock open indefinitely and stall
+--                                every other writer into that folder.
+-- ============================================================================
+
+
+-- ----------------------------------------------------------------------------
+-- 1. FILE MOVE -- mirror of nephos.move_folder(), file-shaped
+-- ----------------------------------------------------------------------------
+-- Unlike folder move, there is no 'merge' option for a single file -- a file
+-- collision can only be resolved by keeping both (suffix) or replacing the
+-- destination file outright. See the "App-layer contract for single-file
+-- move" comment already in the schema (section preceding this migration):
+--   1. Call move_file() with p_on_collision := NULL.
+--      * No collision -> succeeds, done.
+--      * Collision -> raises; catch this and prompt keep-both/replace.
+--   2. Re-call with p_on_collision := 'keep_duplicate' or 'replace'.
+CREATE OR REPLACE FUNCTION nephos.move_file(
+    p_file_id UUID,
+    p_dest_parent_folder_id UUID,
+    p_on_collision TEXT DEFAULT NULL  -- 'replace' | 'keep_duplicate' | NULL
+) RETURNS VOID AS $$
+DECLARE
+    v_owner_id UUID;
+    v_file_name TEXT;
+    v_colliding_id UUID;
+    v_new_name TEXT;
+BEGIN
+    SELECT owner_id, file_name INTO v_owner_id, v_file_name
+    FROM nephos.files WHERE id = p_file_id;
+
+    PERFORM nephos.lock_naming_scope(p_dest_parent_folder_id, v_owner_id);
+
+    SELECT id INTO v_colliding_id
+    FROM nephos.files
+    WHERE parent_folder_id IS NOT DISTINCT FROM p_dest_parent_folder_id
+      AND file_name = v_file_name
+      AND is_trashed = FALSE
+      AND (p_dest_parent_folder_id IS NOT NULL OR owner_id = v_owner_id)
+      AND id != p_file_id;
+
+    IF v_colliding_id IS NULL THEN
+        UPDATE nephos.files SET parent_folder_id = p_dest_parent_folder_id WHERE id = p_file_id;
+        RETURN;
+    END IF;
+
+    IF p_on_collision = 'replace' THEN
+        DELETE FROM nephos.files WHERE id = v_colliding_id;
+        UPDATE nephos.files SET parent_folder_id = p_dest_parent_folder_id WHERE id = p_file_id;
+
+    ELSIF p_on_collision = 'keep_duplicate' THEN
+        v_new_name := nephos.resolve_file_name_collision(p_dest_parent_folder_id, v_owner_id, v_file_name);
+        UPDATE nephos.files
+        SET file_name = v_new_name, parent_folder_id = p_dest_parent_folder_id
+        WHERE id = p_file_id;
+
+    ELSE
+        RAISE EXCEPTION 'File name collision at destination -- caller must specify p_on_collision (replace or keep_duplicate)';
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- ----------------------------------------------------------------------------
+-- 2 & 3. STORAGE USAGE -- self-maintaining counter + enforced quota
+-- ----------------------------------------------------------------------------
+-- Fires on any change to nephos.files that affects "active bytes owned by a
+-- user": insert of a non-trashed file, is_trashed flipping either direction,
+-- and hard delete of a still-active row. This is correct regardless of which
+-- code path (API, admin tool, background job, migration script) touches the
+-- table -- storage_used can no longer drift because a caller forgot a step.
+CREATE OR REPLACE FUNCTION nephos.sync_storage_usage() RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        IF NOT NEW.is_trashed THEN
+            UPDATE nephos.users SET storage_used = storage_used + NEW.size_bytes WHERE id = NEW.owner_id;
+        END IF;
+
+    ELSIF TG_OP = 'UPDATE' THEN
+        IF OLD.is_trashed = FALSE AND NEW.is_trashed = TRUE THEN
+            UPDATE nephos.users SET storage_used = storage_used - OLD.size_bytes WHERE id = OLD.owner_id;
+        ELSIF OLD.is_trashed = TRUE AND NEW.is_trashed = FALSE THEN
+            UPDATE nephos.users SET storage_used = storage_used + NEW.size_bytes WHERE id = NEW.owner_id;
+        END IF;
+
+    ELSIF TG_OP = 'DELETE' THEN
+        IF NOT OLD.is_trashed THEN
+            UPDATE nephos.users SET storage_used = storage_used - OLD.size_bytes WHERE id = OLD.owner_id;
+        END IF;
+    END IF;
+
+    RETURN NULL; -- AFTER trigger, return value ignored
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_sync_storage_usage ON nephos.files;
+CREATE TRIGGER trg_sync_storage_usage
+    AFTER INSERT OR UPDATE OF is_trashed OR DELETE ON nephos.files
+    FOR EACH ROW EXECUTE FUNCTION nephos.sync_storage_usage();
+
+-- Makes the quota an enforced invariant rather than a convention the app is
+-- trusted to respect. NOT VALID + VALIDATE avoids locking the whole table
+-- for existing rows if nephos.users is already populated -- drop the
+-- NOT VALID clause if running this on a fresh/empty table.
+-- DROP IF EXISTS first so this migration is safely re-runnable (Postgres has
+-- no ADD CONSTRAINT IF NOT EXISTS).
+ALTER TABLE nephos.users DROP CONSTRAINT IF EXISTS check_storage_within_quota;
+ALTER TABLE nephos.users
+    ADD CONSTRAINT check_storage_within_quota
+    CHECK (storage_used <= storage_quota) NOT VALID;
+ALTER TABLE nephos.users VALIDATE CONSTRAINT check_storage_within_quota;
+
+
+-- ----------------------------------------------------------------------------
+-- 4. COLLISION-LOOP CAP -- bound the naming-scope lock hold time
+-- ----------------------------------------------------------------------------
+-- Same as the existing function, with the unbounded LOOP capped so one
+-- client can't hold the naming-scope advisory lock open indefinitely by
+-- re-uploading the same filename thousands of times. Past the cap, fall back
+-- to a short random suffix rather than continuing to scan sequentially.
+CREATE OR REPLACE FUNCTION nephos.resolve_file_name_collision(
+    p_parent_folder_id UUID,
+    p_owner_id UUID,
+    p_file_name TEXT
+) RETURNS TEXT AS $$
+DECLARE
+    v_base TEXT;
+    v_ext TEXT;
+    v_candidate TEXT;
+    v_counter INT := 1;
+BEGIN
+    PERFORM nephos.lock_naming_scope(p_parent_folder_id, p_owner_id);
+
+    SELECT base, ext INTO v_base, v_ext FROM nephos.split_file_name(p_file_name);
+    v_candidate := v_base || ' (' || v_counter || ')' || v_ext;
+
+    LOOP
+        IF NOT EXISTS (
+            SELECT 1 FROM nephos.files
+            WHERE is_trashed = FALSE
+              AND file_name = v_candidate
+              AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
+              AND (p_parent_folder_id IS NOT NULL OR owner_id = p_owner_id)
+        ) THEN
+            RETURN v_candidate;
+        END IF;
+
+        v_counter := v_counter + 1;
+
+        IF v_counter > 1000 THEN
+            -- Bail out of sequential scanning; use a short random suffix
+            -- instead of holding the lock indefinitely.
+            v_candidate := v_base || ' (' || substr(md5(random()::text), 1, 8) || ')' || v_ext;
+        ELSE
+            v_candidate := v_base || ' (' || v_counter || ')' || v_ext;
+        END IF;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- Folder equivalent of the cap above -- used by move_folder()'s
+-- 'keep_duplicate' path, so it holds the same naming-scope lock for
+-- however many " (n)" suffixes are already taken.
+CREATE OR REPLACE FUNCTION nephos.resolve_folder_name_collision(
+    p_parent_folder_id UUID,
+    p_owner_id UUID,
+    p_folder_name TEXT
+) RETURNS TEXT AS $$
+DECLARE
+    v_candidate TEXT;
+    v_counter INT := 1;
+BEGIN
+    PERFORM nephos.lock_naming_scope(p_parent_folder_id, p_owner_id);
+
+    v_candidate := p_folder_name || ' (' || v_counter || ')';
+
+    LOOP
+        IF NOT EXISTS (
+            SELECT 1 FROM nephos.folders
+            WHERE is_trashed = FALSE
+              AND folder_name = v_candidate
+              AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
+              AND (p_parent_folder_id IS NOT NULL OR owner_id = p_owner_id)
+        ) THEN
+            RETURN v_candidate;
+        END IF;
+
+        v_counter := v_counter + 1;
+
+        IF v_counter > 1000 THEN
+            v_candidate := p_folder_name || ' (' || substr(md5(random()::text), 1, 8) || ')';
+        ELSE
+            v_candidate := p_folder_name || ' (' || v_counter || ')';
+        END IF;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- Restore resolvers loop too -- a subtree restore is bulk/cascading and
+-- never prompts (see original comment), so a folder with hundreds of
+-- previously-restored duplicates sitting in the same scope hits the same
+-- lock-held-open problem. Same cap, same random-suffix fallback, keeping
+-- the distinct "_restored" naming convention intact below the cap.
+CREATE OR REPLACE FUNCTION nephos.resolve_restored_file_name(
+    p_parent_folder_id UUID,
+    p_owner_id UUID,
+    p_file_name TEXT
+) RETURNS TEXT AS $$
+DECLARE
+    v_base TEXT;
+    v_ext TEXT;
+    v_candidate TEXT;
+    v_counter INT := 0;
+BEGIN
+    PERFORM nephos.lock_naming_scope(p_parent_folder_id, p_owner_id);
+
+    IF NOT EXISTS (
+        SELECT 1 FROM nephos.files
+        WHERE is_trashed = FALSE
+          AND file_name = p_file_name
+          AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
+          AND (p_parent_folder_id IS NOT NULL OR owner_id = p_owner_id)
+    ) THEN
+        RETURN p_file_name;
+    END IF;
+
+    SELECT base, ext INTO v_base, v_ext FROM nephos.split_file_name(p_file_name);
+    v_candidate := v_base || '_restored' || v_ext;
+
+    LOOP
+        IF NOT EXISTS (
+            SELECT 1 FROM nephos.files
+            WHERE is_trashed = FALSE
+              AND file_name = v_candidate
+              AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
+              AND (p_parent_folder_id IS NOT NULL OR owner_id = p_owner_id)
+        ) THEN
+            RETURN v_candidate;
+        END IF;
+
+        v_counter := v_counter + 1;
+
+        IF v_counter > 1000 THEN
+            v_candidate := v_base || '_restored (' || substr(md5(random()::text), 1, 8) || ')' || v_ext;
+        ELSE
+            v_candidate := v_base || '_restored (' || v_counter || ')' || v_ext;
+        END IF;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION nephos.resolve_restored_folder_name(
+    p_parent_folder_id UUID,
+    p_owner_id UUID,
+    p_folder_name TEXT
+) RETURNS TEXT AS $$
+DECLARE
+    v_candidate TEXT;
+    v_counter INT := 0;
+BEGIN
+    PERFORM nephos.lock_naming_scope(p_parent_folder_id, p_owner_id);
+
+    IF NOT EXISTS (
+        SELECT 1 FROM nephos.folders
+        WHERE is_trashed = FALSE
+          AND folder_name = p_folder_name
+          AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
+          AND (p_parent_folder_id IS NOT NULL OR owner_id = p_owner_id)
+    ) THEN
+        RETURN p_folder_name;
+    END IF;
+
+    v_candidate := p_folder_name || '_restored';
+
+    LOOP
+        IF NOT EXISTS (
+            SELECT 1 FROM nephos.folders
+            WHERE is_trashed = FALSE
+              AND folder_name = v_candidate
+              AND parent_folder_id IS NOT DISTINCT FROM p_parent_folder_id
+              AND (p_parent_folder_id IS NOT NULL OR owner_id = p_owner_id)
+        ) THEN
+            RETURN v_candidate;
+        END IF;
+
+        v_counter := v_counter + 1;
+
+        IF v_counter > 1000 THEN
+            v_candidate := p_folder_name || '_restored (' || substr(md5(random()::text), 1, 8) || ')';
+        ELSE
+            v_candidate := p_folder_name || '_restored (' || v_counter || ')';
+        END IF;
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
