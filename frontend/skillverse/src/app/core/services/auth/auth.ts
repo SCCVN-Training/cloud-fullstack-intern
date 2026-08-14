@@ -1,37 +1,21 @@
 import { Injectable, signal } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of, forkJoin, catchError, map, tap, switchMap } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import {
+  RegisterRequest,
+  OnboardingProfile,
+  UserRecord,
+  RegisterResponse,
+  LoginResponse,
+  CurrentUserResponse,
+  ProfileResponse,
+  UserUpdateRequest,
+  ProfileUpdateRequest,
+} from './auth.types';
+import { toUserRecord } from './auth.mapper';
 
-export interface RegisterRequest {
-  name: string;
-  email: string;
-  password: string;
-}
-
-export interface OnboardingProfile {
-  fullName: string;
-  age: number;
-  gender: string;
-  bio: string;
-  interests: string[];
-  skillsLearning: string[];
-  // Always 0 at onboarding time — grows later via the teaching/video-session
-  // flow, never entered manually here.
-  skillsTaught: number;
-}
-
-export interface UserRecord {
-  name: string;
-  email: string;
-  password: string;
-  avatar?: string;
-  // TODO: once wired to the real backend, this should come straight from
-  // GET /users/{id}/profile (e.g. profile.is_onboarded) instead of being
-  // tracked client-side.
-  isOnboarded?: boolean;
-  profile?: OnboardingProfile;
-  role?: 'user' | 'admin';
-}
+export type { RegisterRequest, OnboardingProfile, UserRecord } from './auth.types';
 
 @Injectable({
   providedIn: 'root',
@@ -40,33 +24,22 @@ export class AuthService {
   isLoggedIn = signal<boolean>(false);
   currentUser = signal<UserRecord | null>(null);
 
-  private readonly usersKey = 'skillverse_users';
+  private readonly tokenKey = 'access_token';
   private readonly currentUserKey = 'skillverse_current_user';
+  private readonly apiUrl = environment.apiUrl;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     if (typeof localStorage !== 'undefined') {
-      const storedLogin = localStorage.getItem('isLoggedIn');
+      const token = localStorage.getItem(this.tokenKey);
       const storedUser = localStorage.getItem(this.currentUserKey);
 
-      if (storedLogin === 'true') {
+      if (token) {
         this.isLoggedIn.set(true);
       }
-
       if (storedUser) {
         this.currentUser.set(JSON.parse(storedUser));
       }
     }
-  }
-
-  private loadUsers(): UserRecord[] {
-    if (typeof localStorage === 'undefined') return [];
-    const raw = localStorage.getItem(this.usersKey);
-    return raw ? JSON.parse(raw) : [];
-  }
-
-  private saveUsers(users: UserRecord[]): void {
-    if (typeof localStorage === 'undefined') return;
-    localStorage.setItem(this.usersKey, JSON.stringify(users));
   }
 
   private setCurrentUser(user: UserRecord | null): void {
@@ -82,19 +55,9 @@ export class AuthService {
   }
 
   // Returns true once the current user has completed the onboarding form.
-  // Used by the login flow (and can be used by a route guard) to decide
-  // whether to send someone to /onboarding or straight to the homepage.
   needsOnboarding(): boolean {
     const user = this.currentUser();
     return !!user && !user.isOnboarded;
-  }
-
-  login(): void {
-    this.isLoggedIn.set(true);
-
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('isLoggedIn', 'true');
-    }
   }
 
   logout(): void {
@@ -102,80 +65,113 @@ export class AuthService {
     this.setCurrentUser(null);
 
     if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem(this.tokenKey);
     }
   }
 
+  // POST /auth/register
   register(request: RegisterRequest): Observable<boolean> {
-    const users = this.loadUsers();
+    const body = {
+      user_name: request.name,
+      email: request.email,
+      password: request.password,
+    };
 
-    if (users.some((user) => user.email === request.email)) {
-      return of(false).pipe(delay(1500));
-    }
-
-    // New accounts always start un-onboarded — mirrors the backend, where
-    // /auth/register creates an empty Profile row alongside the User row.
-    users.push({ ...request, isOnboarded: false });
-    this.saveUsers(users);
-
-    return of(true).pipe(delay(1500));
-  }
-
-  authenticate(email: string, password: string): Observable<boolean> {
-    const user = this.loadUsers().find(
-      (item) => item.email === email && item.password === password,
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/auth/register`, body).pipe(
+      map(() => true),
+      catchError(() => of(false)),
     );
-
-    if (!user) {
-      return of(false).pipe(delay(1500));
-    }
-
-    this.setCurrentUser(user);
-    this.login();
-    return of(true).pipe(delay(1500));
   }
 
-  loginWithGoogle(user: { firstName?: string; email?: string; photoUrl?: string }): void {
-    const email = user.email ?? '';
-    const users = this.loadUsers();
-    const existing = users.find((item) => item.email === email);
+  // POST /auth/login, then GET /auth/me + GET /users/{id}/profile to
+  // populate currentUser. Chained with switchMap (not a fire-and-forget
+  // tap) so the returned Observable only emits `true` once currentUser()
+  // is actually populated — callers like login.ts read needsOnboarding()
+  // right after this resolves, and that read would race a fire-and-forget
+  // fetchCurrentUser() call.
+  authenticate(email: string, password: string): Observable<boolean> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password }).pipe(
+      tap((res) => {
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(this.tokenKey, res.access_token);
+        }
+        this.isLoggedIn.set(true);
+      }),
+      switchMap(() => this.fetchCurrentUser()),
+      map((user) => user !== null),
+      catchError(() => of(false)),
+    );
+  }
 
-    const current: UserRecord = existing ?? {
+  // GET /auth/me, then GET /users/{id}/profile — requires the
+  // Authorization header, added by the auth interceptor (see
+  // core/interceptors/auth.interceptor.ts).
+  fetchCurrentUser(): Observable<UserRecord | null> {
+    return this.http.get<CurrentUserResponse>(`${this.apiUrl}/auth/me`).pipe(
+      switchMap((res) =>
+        this.http.get<ProfileResponse>(`${this.apiUrl}/users/${res.id}/profile`).pipe(
+          map((profile) => toUserRecord(res, profile)),
+          // A brand-new user's profile row is created server-side at
+          // registration, but if that ever fails, treat "no profile" as
+          // "not onboarded" rather than failing the whole login.
+          catchError(() => of(toUserRecord(res, null))),
+        ),
+      ),
+      tap((user) => this.setCurrentUser(user)),
+      catchError(() => {
+        this.logout();
+        return of(null);
+      }),
+    );
+  }
+
+  // Google login isn't backed by a real endpoint yet — kept as a local
+  // stand-in until the backend adds Google OAuth support.
+  loginWithGoogle(user: { firstName?: string; email?: string; photoUrl?: string }): void {
+    const current: UserRecord = {
       name: user.firstName ?? 'Google User',
-      email,
+      email: user.email ?? '',
       password: '',
       avatar: user.photoUrl,
       isOnboarded: false,
     };
-
-    if (!existing) {
-      users.push(current);
-      this.saveUsers(users);
-    }
-
     this.setCurrentUser(current);
-    this.login();
+    this.isLoggedIn.set(true);
   }
 
-  // Called from the onboarding page on submit. In the mock/local-storage
-  // version this just merges the profile into the stored user record.
-  //
-  // TODO: replace body with a real call once the backend is wired up, e.g.:
-  //   return this.http.patch(`/users/${this.currentUser()!.id}/profile`, profile)
-  //     .pipe(map(() => true));
+  // PATCH /users/{id}/profile — persists is_onboarded and the rest of the
+  // onboarding form. Refetches afterward instead of trusting a
+  // locally-built object, so the UI reflects exactly what the server
+  // stored (e.g. skillsTaught is server-computed, never client-set).
   completeOnboarding(profile: OnboardingProfile): Observable<boolean> {
     const current = this.currentUser();
-    if (!current) {
+    if (!current?.id) {
       return of(false);
     }
 
-    this.persistUpdatedUser({ ...current, isOnboarded: true, profile });
-    return of(true).pipe(delay(800));
+    const body: ProfileUpdateRequest = {
+      full_name: profile.fullName,
+      bio: profile.bio,
+      age: profile.age,
+      gender: profile.gender,
+      interests: profile.interests,
+      skills_learning: profile.skillsLearning,
+      is_onboarded: true,
+    };
+
+    return this.http
+      .patch<ProfileResponse>(`${this.apiUrl}/users/${current.id}/profile`, body)
+      .pipe(
+        switchMap(() => this.fetchCurrentUser()),
+        map((user) => user !== null),
+        catchError(() => of(false)),
+      );
   }
 
-  // Used by the Personal Information card's Update button.
-  // TODO: replace with PATCH /users/{id}/profile once wired to the backend
-  // (full_name -> name, bio stays under profile.bio).
+  // Splits across two owners, matching the backend: name/email live on
+  // User (PATCH /users/{id}), bio/age/gender live on Profile
+  // (PATCH /users/{id}/profile). Both run in parallel via forkJoin, then
+  // the merged result is refetched once.
   updateAccountInfo(updates: {
     name?: string;
     email?: string;
@@ -184,80 +180,82 @@ export class AuthService {
     gender?: string;
   }): Observable<boolean> {
     const current = this.currentUser();
-    if (!current) {
+    if (!current?.id) {
       return of(false);
     }
 
-    const updatedUser: UserRecord = {
-      ...current,
-      name: updates.name ?? current.name,
-      email: updates.email ?? current.email,
-      profile: current.profile
-        ? {
-            ...current.profile,
-            bio: updates.bio ?? current.profile.bio,
-            age: updates.age ?? current.profile.age,
-            gender: updates.gender ?? current.profile.gender,
-          }
-        : current.profile,
-    };
+    const userPatch$ =
+      updates.name || updates.email
+        ? this.http.patch<UserUpdateRequest>(`${this.apiUrl}/users/${current.id}`, {
+            user_name: updates.name,
+            email: updates.email,
+          })
+        : of(null);
 
-    this.persistUpdatedUser(updatedUser);
-    return of(true).pipe(delay(600));
+    const profilePatch$ =
+      updates.bio !== undefined || updates.age !== undefined || updates.gender !== undefined
+        ? this.http.patch<ProfileUpdateRequest>(`${this.apiUrl}/users/${current.id}/profile`, {
+            bio: updates.bio,
+            age: updates.age,
+            gender: updates.gender,
+          })
+        : of(null);
+
+    return forkJoin([userPatch$, profilePatch$]).pipe(
+      switchMap(() => this.fetchCurrentUser()),
+      map((user) => user !== null),
+      catchError(() => of(false)),
+    );
   }
 
-  // Used by the Delete button's confirmation dialog.
-  // TODO: replace with a real call to DELETE /users/{id} once wired to
-  // the backend — that endpoint already exists and cascades to the
-  // Profile row automatically.
+  // DELETE /users/{id}
   deleteAccount(): Observable<boolean> {
     const current = this.currentUser();
-    if (!current) {
+    if (!current?.id) {
       return of(false);
     }
-
-    const users = this.loadUsers().filter((u) => u.email !== current.email);
-    this.saveUsers(users);
-    this.logout();
-
-    return of(true).pipe(delay(600));
+    return this.http.delete(`${this.apiUrl}/users/${current.id}`).pipe(
+      map(() => {
+        this.logout();
+        return true;
+      }),
+      catchError(() => of(false)),
+    );
   }
 
-  // Used by Skills I'm Learning / Interests add & delete on the profile page.
-  // TODO: replace with PATCH /users/{id}/profile once wired to the backend
-  // (send only the changed array field — interests or skills_learning).
+  // PATCH /users/{id}/profile — used for the inline add/remove controls
+  // on "Skills I'm Learning" and "Interests". Only the fields present in
+  // `updates` are sent.
   updateProfileFields(updates: Partial<OnboardingProfile>): Observable<boolean> {
     const current = this.currentUser();
-    if (!current || !current.profile) {
+    if (!current?.id) {
       return of(false);
     }
 
-    this.persistUpdatedUser({ ...current, profile: { ...current.profile, ...updates } });
-    return of(true).pipe(delay(300));
+    const body: ProfileUpdateRequest = {};
+    if (updates.interests !== undefined) body.interests = updates.interests;
+    if (updates.skillsLearning !== undefined) body.skills_learning = updates.skillsLearning;
+
+    return this.http
+      .patch<ProfileResponse>(`${this.apiUrl}/users/${current.id}/profile`, body)
+      .pipe(
+        switchMap(() => this.fetchCurrentUser()),
+        map((user) => user !== null),
+        catchError(() => of(false)),
+      );
   }
 
-  // Used by the avatar upload button on the profile page.
-  // TODO: real backend integration should upload the file (multipart) to
-  // an endpoint that returns a hosted URL, then PATCH profile.avatar_url
-  // with that URL — storing a full data: URL server-side isn't practical.
+  // NOT wired to the backend yet — see auth.types.ts ProfileUpdateRequest.
+  // Profile.avatar_url is capped at 255 chars server-side, and a base64
+  // data URL from a 3MB image is millions of characters — sending it
+  // as-is fails a 422, not a silent no-op. Needs an S3 upload step first
+  // (Week 6); left as a local-only stub until then.
   updateAvatar(avatarDataUrl: string): Observable<boolean> {
     const current = this.currentUser();
     if (!current) {
       return of(false);
     }
-
-    this.persistUpdatedUser({ ...current, avatar: avatarDataUrl });
-    return of(true).pipe(delay(400));
-  }
-
-  private persistUpdatedUser(updatedUser: UserRecord): void {
-    this.setCurrentUser(updatedUser);
-
-    const users = this.loadUsers();
-    const index = users.findIndex((u) => u.email === updatedUser.email);
-    if (index > -1) {
-      users[index] = updatedUser;
-      this.saveUsers(users);
-    }
+    this.setCurrentUser({ ...current, avatar: avatarDataUrl });
+    return of(true);
   }
 }

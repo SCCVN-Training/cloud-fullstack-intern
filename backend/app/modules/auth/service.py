@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.enums import UserRole
 from app.modules.users.models import User
 from app.modules.users.repository import UserRepository
+from app.modules.profiles.service import ProfileService
 from app.core.security import (
     hash_password,
     verify_password,
@@ -55,6 +56,11 @@ class AuthService:
             db,
             new_user
         )
+
+        # Every user gets an empty profile row on registration so
+        # GET/PATCH /users/{id}/profile never 404s for a fresh account,
+        # and so is_onboarded starts as a real, persisted `false`.
+        await ProfileService.create_default_profile(db, new_user.id)
 
         return RegisterResponse.model_validate(
             new_user
