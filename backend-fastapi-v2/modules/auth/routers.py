@@ -3,7 +3,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.database import get_db, get_mongo_db
-from shared.dependencies import get_current_user
+from modules.auth.dependencies import get_current_user
 from shared.models import ApiResponse
 
 from modules.auth.schemas import (
@@ -138,6 +138,7 @@ async def refresh_session(
     status_code=status.HTTP_200_OK,
 )
 async def logout(
+    request: Request,
     response: Response,
     service: AuthService = Depends(get_auth_service),
 ):
@@ -146,7 +147,7 @@ async def logout(
 
     Clears authentication cookies.
     """
-    return await service.logout(response=response)
+    return await service.logout(request=request, response=response)
 
 
 @auth_router.get(

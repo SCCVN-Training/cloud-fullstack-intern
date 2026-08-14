@@ -109,7 +109,12 @@ class ProfileRateLimiter:
         forwarded = request.headers.get("X-Forwarded-For")
         if forwarded:
             return forwarded.split(",")[0].strip()
-        return request.client.host or "unknown"
+
+        # Handle case where request.client is None
+        if request.client:
+            return request.client.host or "unknown"
+
+        return "unknown"
 
 
 # ============================================
@@ -117,5 +122,5 @@ class ProfileRateLimiter:
 # ============================================
 async def get_profile_rate_limiter() -> ProfileRateLimiter:
     """Dependency for profile module rate limiter."""
-    base_limiter = get_rate_limiter()
+    base_limiter = await get_rate_limiter()
     return ProfileRateLimiter(base_limiter)

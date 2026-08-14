@@ -12,7 +12,7 @@ from modules.anime.services.anilist_service import AniListService
 from modules.anime.schemas import AnimeSeasonalResponse, AnimeSearchResponse
 from modules.anime.rate_limit import AnimeRateLimiter, get_anime_rate_limiter
 from modules.anime.services.cache_manager import AnimeCacheManager
-from shared.dependencies import get_current_user
+from modules.auth.dependencies import get_current_user
 from modules.auth.models import UserAccountModel
 from modules.anime.services.season import get_current_season
 

@@ -66,12 +66,18 @@ class AuthRateLimiter:
             window_seconds=window,
         )
 
+    # modules/auth/rate_limit.py
     def _get_client_ip(self, request: Request) -> str:
         """Get client IP from request."""
         forwarded = request.headers.get("X-Forwarded-For")
         if forwarded:
             return forwarded.split(",")[0].strip()
-        return request.client.host or "unknown"
+
+        # Handle case where request.client is None
+        if request.client:
+            return request.client.host or "unknown"
+
+        return "unknown"
 
 
 # ============================================
@@ -79,5 +85,5 @@ class AuthRateLimiter:
 # ============================================
 async def get_auth_rate_limiter() -> AuthRateLimiter:
     """Dependency for auth rate limiter."""
-    base_limiter = get_rate_limiter()
+    base_limiter = await get_rate_limiter()
     return AuthRateLimiter(base_limiter)

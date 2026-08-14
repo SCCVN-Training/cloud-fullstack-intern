@@ -114,29 +114,29 @@ class ProfileRepository(BaseRepository[UserProfileModel]):
 
         return result.scalar_one_or_none()
 
-    async def update_profile_by_user_id(
-        self,
-        user_id: UUID,
-        **kwargs,
-    ) -> Optional[UserProfileModel]:
-        """
-        Update profile and return the updated instance.
+    # async def update_profile_by_user_id(
+    #     self,
+    #     user_id: UUID,
+    #     **kwargs,
+    # ) -> Optional[UserProfileModel]:
+    #     """
+    #     Update profile and return the updated instance.
 
-        Args:
-            user_id: User's UUID
-            **kwargs: Fields to update
+    #     Args:
+    #         user_id: User's UUID
+    #         **kwargs: Fields to update
 
-        Returns:
-            Updated profile instance if found, None otherwise
-        """
-        # First check if profile exists
-        profile = await self.get_by_user_id(user_id)
-        if not profile:
-            return None
+    #     Returns:
+    #         Updated profile instance if found, None otherwise
+    #     """
+    #     # First check if profile exists
+    #     profile = await self.get_by_user_id(user_id)
+    #     if not profile:
+    #         return None
 
-        # Update the profile
-        updated_profile = await self.update(profile.user_id, **kwargs)
-        return updated_profile
+    #     # Update the profile
+    #     updated_profile = await self.update(profile.user_id, **kwargs)
+    #     return updated_profile
 
     # ============ Delete Methods ============
 
@@ -154,4 +154,7 @@ class ProfileRepository(BaseRepository[UserProfileModel]):
         if not profile:
             return False
 
-        return await self.delete(profile.id)
+        await self.session.delete(profile)
+        await self.session.commit()
+        return True
+

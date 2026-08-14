@@ -11,6 +11,8 @@ import redis.asyncio as redis
 from shared.config import settings
 from modules.anime.schemas import AnimeSeasonalItem
 
+from shared.database import get_redis_client_sync
+
 
 class AnimeCacheManager:
     """
@@ -30,10 +32,7 @@ class AnimeCacheManager:
 
     def _get_redis_client(self) -> redis.Redis:
         """Get Redis client from settings."""
-        return redis.from_url(
-            settings.redis_url,
-            decode_responses=True
-        )
+        return get_redis_client_sync()
 
     def _get_cache_key(self, prefix: str, *args, **kwargs) -> str:
         """Generate consistent cache key."""

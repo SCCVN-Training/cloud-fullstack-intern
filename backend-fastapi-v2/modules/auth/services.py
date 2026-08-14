@@ -266,8 +266,23 @@ class AuthService:
 
     # ============ Logout ============
 
-    async def logout(self, response: Response) -> dict:
+    async def logout(self, request: Request, response: Response) -> dict:
         """Logout user - clear authentication cookies."""
+        access_token = request.cookies.get("access_token")
+
+        if not access_token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Access token cookie missing.",
+            )
+
+        user_id = verify_token(access_token, token_type="access")
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or expired access token.",
+            )
+
         self._clear_authentication_cookies(response)
 
         return {

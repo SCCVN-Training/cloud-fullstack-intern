@@ -10,11 +10,13 @@ import redis.asyncio as redis
 
 from shared.config import settings
 
+from shared.database import get_redis_client_sync
+
 
 class BaseRateLimiter:
     """Base sliding window rate limiter."""
 
-    def __init__(self, redis_client: redis.Redis, key_prefix: Optional[str] = None):
+    def __init__(self, redis_client: Optional[redis.Redis] = None, key_prefix: Optional[str] = None):
         """
         Initialize rate limiter with Redis client.
 
@@ -22,8 +24,12 @@ class BaseRateLimiter:
             redis_client: Async Redis client instance.
             key_prefix: Prefix for all Redis keys. Defaults to settings.cache_prefix_rate_limit.
         """
-        self.redis = redis_client
+        self.redis = redis_client or self._get_redis_client()
         self.key_prefix = key_prefix or settings.cache_prefix_rate_limit
+
+    def _get_redis_client(self) -> redis.Redis:
+        """Get Redis client from settings."""
+        return get_redis_client_sync()
 
     def _get_key(self, identifier: str, endpoint: str) -> str:
         """Generate Redis key for rate limit tracking."""
@@ -97,15 +103,10 @@ class BaseRateLimiter:
 # DEPENDENCY INJECTION
 # ============================================
 @lru_cache
-def get_rate_limiter() -> BaseRateLimiter:
+async def get_rate_limiter() -> BaseRateLimiter:
     """
     Dependency for getting rate limiter instance.
 
     Uses settings.redis_url and settings.cache_prefix_rate_limit.
     """
-    redis_client = redis.from_url(
-        settings.redis_url,
-        decode_responses=True,
-        # Optional: add connection pool settings here if needed
-    )
-    return BaseRateLimiter(redis_client)
+    return BaseRateLimiter()
