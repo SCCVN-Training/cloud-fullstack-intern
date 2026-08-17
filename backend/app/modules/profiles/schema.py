@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 class ProfileResponse(BaseModel):
     id: uuid.UUID
     user_id: uuid.UUID
-    full_name: Optional[str] = None
+    user_name: str
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
     age: Optional[int] = None
@@ -31,11 +31,11 @@ class ProfileResponse(BaseModel):
     }
 
     @classmethod
-    def from_model(cls, profile) -> "ProfileResponse":
+    def from_model(cls, profile, user_name: str) -> "ProfileResponse":
         return cls(
             id=profile.id,
             user_id=profile.user_id,
-            full_name=profile.full_name,
+            user_name=user_name,
             bio=profile.bio,
             avatar_url=profile.avatar_url,
             age=profile.age,
@@ -51,7 +51,6 @@ class ProfileResponse(BaseModel):
 
 # PATCH /users/{id}/profile — partial update, self or admin
 class ProfileUpdate(BaseModel):
-    full_name: Optional[str] = Field(None, max_length=100)
     bio: Optional[str] = Field(None, max_length=500)
     avatar_url: Optional[str] = Field(None, max_length=255)
     age: Optional[int] = Field(None, ge=0, le=150)

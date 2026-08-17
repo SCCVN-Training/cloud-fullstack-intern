@@ -13,7 +13,6 @@ export function toUserRecord(
     isOnboarded: profile?.is_onboarded ?? false,
     profile: profile
       ? {
-          fullName: profile.full_name ?? '',
           bio: profile.bio ?? '',
           age: profile.age ?? 0,
           gender: profile.gender ?? '',

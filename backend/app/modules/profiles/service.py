@@ -3,11 +3,12 @@ import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.users.models import User
+from app.modules.users.repository import UserRepository
 from app.modules.profiles.models import Profile
 from app.modules.profiles.repository import ProfileRepository
 from app.modules.profiles.schema import ProfileResponse, ProfileUpdate
 from app.common.enums import UserRole
-from app.core.exceptions import ProfileNotFoundException, ForbiddenException
+from app.core.exceptions import ProfileNotFoundException, ForbiddenException, UserNotFoundException
 
 
 class ProfileService:
@@ -25,7 +26,14 @@ class ProfileService:
 
         ProfileService._ensure_self_or_admin(current_user, target_user_id)
 
-        return ProfileResponse.from_model(profile)
+        # user_name lives on User, not Profile — fetch the *target* user's
+        # row (not current_user, since an admin may be viewing someone
+        # else's profile).
+        target_user = await UserRepository.get_by_id(db, target_user_id)
+        if target_user is None:
+            raise UserNotFoundException("User not found")
+
+        return ProfileResponse.from_model(profile, user_name=target_user.user_name)
 
     # UPDATE — the profile owner, or an admin. Partial update (PATCH semantics).
     @staticmethod
@@ -47,7 +55,11 @@ class ProfileService:
 
         updated_profile = await ProfileRepository.update(db, profile, update_data)
 
-        return ProfileResponse.from_model(updated_profile)
+        target_user = await UserRepository.get_by_id(db, target_user_id)
+        if target_user is None:
+            raise UserNotFoundException("User not found")
+
+        return ProfileResponse.from_model(updated_profile, user_name=target_user.user_name)
 
     # Called from AuthService right after a new user registers —
     # every user gets an empty profile row so GET never 404s unexpectedly

@@ -98,24 +98,14 @@ describe('Onboarding Component', () => {
   describe('Form Initialization', () => {
     it('should initialize the form with empty fields', () => {
       expect(component.onboardingForm).toBeDefined();
-      expect(component.onboardingForm.get('fullName')?.value).toBe('');
       expect(component.onboardingForm.get('age')?.value).toBe(null);
       expect(component.onboardingForm.get('gender')?.value).toBe('');
       expect(component.onboardingForm.get('bio')?.value).toBe('');
     });
 
     it('should have correct validators for each field', () => {
-      const fullNameControl = component.onboardingForm.get('fullName');
       const ageControl = component.onboardingForm.get('age');
       const genderControl = component.onboardingForm.get('gender');
-
-      // Test required validators
-      fullNameControl?.setValue('');
-      expect(fullNameControl?.valid).toBeFalsy();
-      expect(fullNameControl?.errors?.['required']).toBeTruthy();
-
-      fullNameControl?.setValue('J');
-      expect(fullNameControl?.errors?.['minlength']).toBeTruthy();
 
       ageControl?.setValue('');
       expect(ageControl?.valid).toBeFalsy();
@@ -238,7 +228,6 @@ describe('Onboarding Component', () => {
 
       // Fill valid form
       component.onboardingForm.patchValue({
-        fullName: 'Jane Doe',
         age: 25,
         gender: 'female',
         bio: 'I love learning',
@@ -271,7 +260,6 @@ describe('Onboarding Component', () => {
       };
 
       component.onboardingForm.patchValue({
-        fullName: 'Jane Doe',
         age: 25,
         gender: 'female',
       });
@@ -291,7 +279,6 @@ describe('Onboarding Component', () => {
       };
 
       component.onboardingForm.patchValue({
-        fullName: 'Jane Doe',
         age: 25,
         gender: 'female',
       });
@@ -312,13 +299,13 @@ describe('Onboarding Component', () => {
       expect(form).toBeTruthy();
 
       const inputs = fixture.debugElement.queryAll(By.css('input'));
-      expect(inputs.length).toBeGreaterThanOrEqual(4); // fullName, age, interest, skill
+      expect(inputs.length).toBeGreaterThanOrEqual(3); // age, interest, skill
     });
 
     it('should show error messages for invalid fields', () => {
-      const fullNameInput = fixture.debugElement.query(By.css('#fullName')).nativeElement;
-      fullNameInput.dispatchEvent(new Event('blur'));
-      fullNameInput.dispatchEvent(new Event('input'));
+      const ageInput = fixture.debugElement.query(By.css('#age')).nativeElement;
+      ageInput.dispatchEvent(new Event('blur'));
+      ageInput.dispatchEvent(new Event('input'));
       fixture.detectChanges();
 
       const errorTexts = fixture.debugElement.queryAll(By.css('.error-text'));
@@ -332,7 +319,6 @@ describe('Onboarding Component', () => {
 
     it('should enable submit button when form is valid', () => {
       component.onboardingForm.patchValue({
-        fullName: 'Jane Doe',
         age: 25,
         gender: 'female',
       });
@@ -434,14 +420,6 @@ describe('Onboarding Component', () => {
   });
 
   describe('Form Integration', () => {
-    it('should bind fullName input correctly', () => {
-      const input = fixture.debugElement.query(By.css('#fullName')).nativeElement;
-      input.value = 'Jane Doe';
-      input.dispatchEvent(new Event('input'));
-
-      expect(component.onboardingForm.get('fullName')?.value).toBe('Jane Doe');
-    });
-
     it('should bind age input correctly', () => {
       const input = fixture.debugElement.query(By.css('#age')).nativeElement;
       input.value = '25';
@@ -469,31 +447,29 @@ describe('Onboarding Component', () => {
   });
 
   describe('Error Handling', () => {
-    it('should show required error for full name', () => {
-      const control = component.onboardingForm.get('fullName');
-      control?.setValue('');
+    it('should show min age error for an age below 13', () => {
+      const control = component.onboardingForm.get('age');
+      control?.setValue(10);
       control?.markAsTouched();
       fixture.detectChanges();
 
       const errors = fixture.debugElement.queryAll(
-        By.css('.form-group:first-child .error-text small'),
+        By.css('.form-row .form-group:first-child .error-text small'),
       );
-      const hasError = errors.some((e) => e.nativeElement.textContent === 'Full name is required.');
+      const hasError = errors.some((e) => e.nativeElement.textContent.trim() === 'Enter a valid age.');
       expect(hasError).toBeTruthy();
     });
 
-    it('should show minlength error for short full name', () => {
-      const control = component.onboardingForm.get('fullName');
-      control?.setValue('J');
+    it('should show max age error for an age above 120', () => {
+      const control = component.onboardingForm.get('age');
+      control?.setValue(150);
       control?.markAsTouched();
       fixture.detectChanges();
 
       const errors = fixture.debugElement.queryAll(
-        By.css('.form-group:first-child .error-text small'),
+        By.css('.form-row .form-group:first-child .error-text small'),
       );
-      const hasError = errors.some(
-        (e) => e.nativeElement.textContent === 'Full name is too short.',
-      );
+      const hasError = errors.some((e) => e.nativeElement.textContent.trim() === 'Enter a valid age.');
       expect(hasError).toBeTruthy();
     });
 
@@ -575,7 +551,6 @@ describe('Onboarding Component', () => {
     it('should handle missing form values gracefully', () => {
       // Set form to invalid state
       component.onboardingForm.patchValue({
-        fullName: '',
         age: null,
         gender: '',
       });

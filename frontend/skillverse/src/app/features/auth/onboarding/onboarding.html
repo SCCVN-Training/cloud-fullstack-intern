@@ -14,33 +14,6 @@
     </header>
 
     <form class="auth-form" [formGroup]="onboardingForm" (ngSubmit)="onSubmit()">
-      <!-- Full name -->
-      <div class="form-group">
-        <label class="text-label-sm form-label" for="fullName">Full name</label>
-        <div
-          class="input-wrapper"
-          [class.input-error]="
-            f['fullName'].invalid && (f['fullName'].dirty || f['fullName'].touched)
-          "
-        >
-          <span class="material-symbols-outlined input-icon">badge</span>
-          <input
-            class="form-input text-body-md"
-            id="fullName"
-            formControlName="fullName"
-            placeholder="Jane Doe"
-            type="text"
-          />
-        </div>
-        <div
-          *ngIf="f['fullName'].invalid && (f['fullName'].dirty || f['fullName'].touched)"
-          class="error-text"
-        >
-          <small *ngIf="f['fullName'].errors?.['required']">Full name is required.</small>
-          <small *ngIf="f['fullName'].errors?.['minlength']">Full name is too short.</small>
-        </div>
-      </div>
-
       <!-- Age + Gender -->
       <div class="form-row">
         <div class="form-group">

@@ -16,6 +16,17 @@ class Review(Base):
         default=uuid.uuid4
     )
 
+    # One review per booking — the learner reviews the mentor once the
+    # session is complete. unique=True enforces the ERD's zero-or-one
+    # BOOKINGS--REVIEWS cardinality at the database level, not just in
+    # application code.
+    booking_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("bookings.id", ondelete="CASCADE"),
+        unique=True,
+        nullable=False
+    )
+
     # The user who wrote the review
     reviewer_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -30,8 +41,30 @@ class Review(Base):
         nullable=False
     )
 
-    rating: Mapped[int] = mapped_column(Integer, nullable=False)
-    comment: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    rating: Mapped[int] = mapped_column(
+        Integer, 
+        nullable=False
+    )
+
+    knowledge_rating: Mapped[int] = mapped_column(
+        Integer, 
+        nullable=False
+    )
+
+    communication_rating: Mapped[int] = mapped_column(
+        Integer, 
+        nullable=False
+    )
+
+    video_audio_rating: Mapped[int] = mapped_column(
+        Integer, 
+        nullable=False
+    )
+
+    feedback: Mapped[str | None] = mapped_column(
+        String(1000), 
+        nullable=True
+    )
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

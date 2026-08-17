@@ -86,7 +86,7 @@
         <!-- READ-ONLY VIEW -->
         <div class="info-view" *ngIf="!isEditingInfo()">
           <div class="info-row">
-            <span class="info-label">Full Name</span>
+            <span class="info-label">Username</span>
             <span class="info-value">{{ authService.currentUser()?.name || '—' }}</span>
           </div>
           <div class="info-row">
@@ -103,7 +103,7 @@
         <form class="info-form" *ngIf="isEditingInfo()" (ngSubmit)="saveEdit()">
           <div class="form-row split">
             <div class="form-group">
-              <label>Full Name</label>
+              <label>Username</label>
               <input type="text" class="form-input" name="editName" [(ngModel)]="editName" />
             </div>
           </div>

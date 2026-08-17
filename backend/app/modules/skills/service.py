@@ -13,7 +13,7 @@ class SkillService:
     
     @classmethod
     async def _format_skill_response(cls, db: AsyncSession, skill: Skill) -> SkillResponse:
-        # Fetch the instructor's profile to get avatar, full name, etc.
+        # Fetch the instructor's profile to get avatar, user name, etc.
         # This could be optimized with eager loading in a real-world scenario
         instructor_profile = await ProfileRepository.get_by_user_id(db, skill.instructor_id)
         
@@ -23,7 +23,6 @@ class SkillService:
         avatar = "https://ui-avatars.com/api/?name=User"
         
         if instructor_profile:
-            name = instructor_profile.full_name or skill.instructor.user_name
             bio = instructor_profile.bio or "No bio provided."
             if instructor_profile.avatar_url:
                 avatar = instructor_profile.avatar_url
