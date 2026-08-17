@@ -94,7 +94,7 @@ jobs:
       NEON_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/testdb
       MONGODB_CONNECTION_URI: mongodb://localhost:27017
       MONGODB_DATABASE_NAME: test_logs
-      REDIS_URL: rediss://localhost:6379
+      REDIS_URL: redis://localhost:6379 # <-- FIXED: removed "rediss://"
       CACHE_PREFIX_RATE_LIMIT: test_limiter
 
       JWT_SECRET_KEY: test_secret_key_32_chars_long_enough
@@ -124,9 +124,98 @@ jobs:
           pip install aiosqlite mongomock-motor fakeredis
           pip install alembic asyncpg
 
-      - name: Wait for services to be ready
+      # ============================================
+      # STEP: Test Database Connectivity
+      # ============================================
+      - name: Test database connectivity
         run: |
-          sleep 10
+          echo "========================================"
+          echo "Testing PostgreSQL connection..."
+          echo "========================================"
+          python -c "
+          import asyncio
+          import asyncpg
+          import os
+
+          async def test_postgres():
+              try:
+                  conn = await asyncpg.connect(
+                      host='localhost',
+                      port=5432,
+                      database='testdb',
+                      user='postgres',
+                      password='postgres'
+                  )
+                  result = await conn.fetchval('SELECT 1')
+                  print(f'✅ PostgreSQL connected successfully! Result: {result}')
+                  await conn.close()
+                  return True
+              except Exception as e:
+                  print(f'❌ PostgreSQL connection failed: {e}')
+                  return False
+
+          success = asyncio.run(test_postgres())
+          if not success:
+              exit(1)
+          "
+
+          echo ""
+          echo "========================================"
+          echo "Testing MongoDB connection..."
+          echo "========================================"
+          python -c "
+          import asyncio
+          from motor.motor_asyncio import AsyncIOMotorClient
+
+          async def test_mongodb():
+              try:
+                  client = AsyncIOMotorClient('mongodb://localhost:27017', serverSelectionTimeoutMS=5000)
+                  await client.admin.command('ping')
+                  print('✅ MongoDB connected successfully!')
+                  client.close()
+                  return True
+              except Exception as e:
+                  print(f'❌ MongoDB connection failed: {e}')
+                  return False
+
+          success = asyncio.run(test_mongodb())
+          if not success:
+              exit(1)
+          "
+
+          echo ""
+          echo "========================================"
+          echo "Testing Redis connection..."
+          echo "========================================"
+          python -c "
+          import asyncio
+          import redis.asyncio as redis
+
+          async def test_redis():
+              try:
+                  client = redis.from_url('redis://localhost:6379', decode_responses=True)
+                  result = await client.ping()
+                  print(f'✅ Redis connected successfully! Ping: {result}')
+                  await client.aclose()
+                  return True
+              except Exception as e:
+                  print(f'❌ Redis connection failed: {e}')
+                  return False
+
+          success = asyncio.run(test_redis())
+          if not success:
+              exit(1)
+          "
+
+          echo ""
+          echo "========================================"
+          echo "✅ All database connections successful!"
+          echo "========================================"
+
+      - name: Wait for services to be fully ready
+        run: |
+          echo "Waiting for services to be fully ready..."
+          sleep 5
           echo "✅ Services should be ready"
 
       - name: Create database tables
