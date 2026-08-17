@@ -122,7 +122,7 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov pytest-asyncio httpx
           pip install aiosqlite mongomock-motor fakeredis
-          pip install alembic psycopg2
+          pip install alembic asyncpg
 
       - name: Wait for services to be ready
         run: |
