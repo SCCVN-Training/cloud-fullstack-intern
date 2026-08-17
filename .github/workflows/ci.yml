@@ -91,10 +91,10 @@ jobs:
       GITHUB_ACTIONS: true
       RUN_REAL_INTEGRATION: true
 
-      NEON_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
-      MONGODB_CONNECTION_URI: mongodb://localhost:27017
+      NEON_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/testdb
+      MONGODB_CONNECTION_URI: mongodb+srv://localhost:27017
       MONGODB_DATABASE_NAME: test_logs
-      REDIS_URL: redis://localhost:6379
+      REDIS_URL: rediss://localhost:6379
       CACHE_PREFIX_RATE_LIMIT: test_limiter
 
       JWT_SECRET_KEY: test_secret_key_32_chars_long_enough
@@ -138,7 +138,7 @@ jobs:
             import os
 
             # Set environment variables for the script
-            os.environ['NEON_DATABASE_URL'] = 'postgresql://postgres:postgres@localhost:5432/testdb'
+            os.environ['NEON_DATABASE_URL'] = 'postgresql+asyncpg://postgres:postgres@localhost:5432/testdb'
 
             async def main():
                 try:
@@ -161,7 +161,7 @@ jobs:
             asyncio.run(main())
             "
         env:
-          NEON_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+          NEON_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/testdb
 
       - name: Run tests
         run: |
