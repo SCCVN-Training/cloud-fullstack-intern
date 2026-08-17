@@ -222,36 +222,55 @@ jobs:
         run: |
           echo "Creating database tables..."
           python -c "
-            import asyncio
-            import sys
-            import os
+          import asyncio
+          import sys
+          import os
 
-            # Set environment variables for the script
-            os.environ['NEON_DATABASE_URL'] = 'postgresql+asyncpg://postgres:postgres@localhost:5432/testdb'
+          os.environ['NEON_DATABASE_URL'] = 'postgresql+asyncpg://postgres:postgres@localhost:5432/testdb'
 
-            async def main():
-                try:
-                    from shared.database import init_db
-                    await init_db()
-                    print('✅ Database tables created successfully')
-                except ImportError as e:
-                    print(f'⚠️ Could not import init_db: {e}')
-                    print('Attempting to create tables using SQLAlchemy...')
-                    try:
-                        from sqlalchemy import text
-                        from shared.database import neon_async_engine, Base
-                        async with neon_async_engine.begin() as conn:
-                            await conn.run_sync(Base.metadata.create_all)
-                        print('✅ Database tables created via SQLAlchemy')
-                    except Exception as e2:
-                        print(f'❌ Could not create tables: {e2}')
-                        sys.exit(1)
+          async def main():
+              try:
+                  from sqlalchemy.ext.asyncio import create_async_engine
+                  from sqlalchemy import text
 
-            asyncio.run(main())
-            "
+                  # Create engine directly
+                  engine = create_async_engine(
+                      'postgresql+asyncpg://postgres:postgres@localhost:5432/testdb',
+                      echo=True
+                  )
+
+                  # Import ALL models to register them with Base
+                  # This is the critical step that's missing!
+                  from shared.database import Base
+                  from modules.auth.models import UserAccountModel  # Import your models
+                  from modules.profile.models import UserProfileModel  # Import your models
+
+                  # Create tables
+                  async with engine.begin() as conn:
+                      await conn.run_sync(Base.metadata.create_all)
+
+                  print('✅ Database tables created successfully')
+
+                  # Verify tables exist
+                  async with engine.begin() as conn:
+                      result = await conn.execute(text(
+                          \"SELECT tablename FROM pg_tables WHERE schemaname='public'\"
+                      ))
+                      tables = [row[0] for row in result]
+                      print(f'📋 Tables created: {tables}')
+
+                  await engine.dispose()
+
+              except Exception as e:
+                  print(f'❌ Could not create tables: {e}')
+                  import traceback
+                  traceback.print_exc()
+                  sys.exit(1)
+
+          asyncio.run(main())
+          "
         env:
           NEON_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/testdb
-
       - name: Run tests
         run: |
           pytest -v --cov=modules.auth --cov=shared --cov-report=term-missing --cov-report=xml
