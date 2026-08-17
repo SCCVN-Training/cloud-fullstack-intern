@@ -1,5 +1,6 @@
 # tests/conftest.py
 # ============ ADD THIS AT THE VERY TOP ============
+import asyncio
 import os
 import sys
 import pytest
@@ -63,9 +64,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from main import app  # Your FastAPI app factory
 from shared.database import get_db
-
-# ---------- 1. OVERRIDE DEPENDENCIES FOR TESTING ----------
-# (We'll use these in integration tests later)
 
 # ---------- 2. ASYNC CLIENT FIXTURE ----------
 @pytest.fixture

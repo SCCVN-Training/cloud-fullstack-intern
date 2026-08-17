@@ -4,7 +4,7 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.pool import NullPool
+from sqlalchemy.pool import NullPool, StaticPool
 
 from shared.config import settings
 from shared.database import get_db, get_mongo_db, get_redis_client
@@ -24,8 +24,13 @@ if RUNNING_REAL_INTEGRATION:
     )
 
     print("🍃 Using REAL MongoDB")
-    # DO NOT create a global client - create per test
-    # We'll create it in the fixture
+    from motor.motor_asyncio import AsyncIOMotorClient
+    test_mongo_client = AsyncIOMotorClient(
+        settings.mongodb_connection_uri,
+        maxPoolSize=10,
+        minPoolSize=1,
+        serverSelectionTimeoutMS=5000,
+    )
 
     print("📦 Using REAL Redis")
     import redis.asyncio as redis
@@ -36,15 +41,20 @@ if RUNNING_REAL_INTEGRATION:
     )
 
 else:
+    # ==========================================
+    # SQLite FIX: Use StaticPool to share the same connection
+    # ==========================================
     print("🐘 Using SQLite in-memory (local)")
+
+    # Create engine with StaticPool to ensure all connections share the same in-memory DB
     test_engine = create_async_engine(
         "sqlite+aiosqlite:///:memory:",
         echo=False,
-        poolclass=NullPool,
+        poolclass=StaticPool,  # <-- CRITICAL: Share the same connection
+        connect_args={"check_same_thread": False},  # <-- Allow multiple greenlets
     )
 
     print("🍃 Using mongomock (local)")
-    # mongomock doesn't have event loop issues
     from mongomock_motor import AsyncMongoMockClient
     test_mongo_client = AsyncMongoMockClient()
 
@@ -70,38 +80,32 @@ TestSessionLocal = async_sessionmaker(
     autoflush=False,
 )
 
+test_mongo_db = test_mongo_client[settings.mongodb_database_name]
+
 # ============================================
-# FIX: Create MongoDB client per test
+# CREATE TABLES (Using the same engine connection)
 # ============================================
-@pytest.fixture
-async def test_mongo_db():
-    """Create a fresh MongoDB client for each test."""
-    if RUNNING_REAL_INTEGRATION:
-        from motor.motor_asyncio import AsyncIOMotorClient
-        # Create a new client for each test
-        client = AsyncIOMotorClient(
-            settings.mongodb_connection_uri,
-            maxPoolSize=10,
-            minPoolSize=1,
-            serverSelectionTimeoutMS=5000,
-        )
-        db = client[settings.mongodb_database_name]
-        yield db
-        # Cleanup after test
-        client.close()
+@pytest.fixture(scope="session", autouse=True)
+async def setup_database():
+    """Create tables once before all tests."""
+    if not RUNNING_REAL_INTEGRATION:
+        # For SQLite: Use TestSessionLocal to share the same connection
+        async with TestSessionLocal() as session:
+            # Create users table
+            await session.execute(text("""
+                CREATE TABLE IF NOT EXISTS users (
+                    id TEXT PRIMARY KEY,
+                    email TEXT UNIQUE NOT NULL,
+                    hashed_password TEXT NOT NULL,
+                    is_active BOOLEAN DEFAULT 1,
+                    created_at_utc DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """))
+            await session.commit()
+            print("✅ SQLite users table created")
     else:
-        # For local tests, use the shared mongomock client
-        from mongomock_motor import AsyncMongoMockClient
-        client = AsyncMongoMockClient()
-        db = client[settings.mongodb_database_name]
-        yield db
-        # No cleanup needed for mongomock
-
-
-@pytest.fixture
-async def test_redis_client():
-    """Provide Redis client for tests."""
-    yield test_redis_client
+        # For PostgreSQL, Alembic should have created tables
+        print("✅ Using existing PostgreSQL tables (created by Alembic)")
 
 # ---------- Override Dependencies ----------
 async def override_get_db():
@@ -116,30 +120,11 @@ async def override_get_db():
             await session.close()
 
 async def override_get_mongo_db():
-    """Override get_mongo_db to use test database."""
-    # This will be overridden by the fixture in tests
-    # We'll use dependency override with a fixture
-    if RUNNING_REAL_INTEGRATION:
-        from motor.motor_asyncio import AsyncIOMotorClient
-        client = AsyncIOMotorClient(
-            settings.mongodb_connection_uri,
-            maxPoolSize=10,
-            minPoolSize=1,
-            serverSelectionTimeoutMS=5000,
-        )
-        db = client[settings.mongodb_database_name]
-        yield db
-        client.close()
-    else:
-        from mongomock_motor import AsyncMongoMockClient
-        client = AsyncMongoMockClient()
-        db = client[settings.mongodb_database_name]
-        yield db
+    yield test_mongo_db
 
 async def override_get_redis_client():
     yield test_redis_client
 
-# Apply overrides
 app.dependency_overrides[get_db] = override_get_db
 app.dependency_overrides[get_mongo_db] = override_get_mongo_db
 app.dependency_overrides[get_redis_client] = override_get_redis_client
@@ -177,34 +162,22 @@ async def clean_database():
             if RUNNING_REAL_INTEGRATION:
                 await session.execute(text("TRUNCATE TABLE users CASCADE;"))
             else:
+                # SQLite: Check if table exists before deleting
                 result = await session.execute(text(
                     "SELECT name FROM sqlite_master WHERE type='table' AND name='users'"
                 ))
                 if result.fetchone():
                     await session.execute(text("DELETE FROM users;"))
+                    print("✅ SQLite users table cleaned")
             await session.commit()
         except Exception as e:
             print(f"⚠️ Cleanup warning: {e}")
             await session.rollback()
 
-    # Clean MongoDB - use a fresh connection
+    # Clean MongoDB
     try:
-        if RUNNING_REAL_INTEGRATION:
-            from motor.motor_asyncio import AsyncIOMotorClient
-            client = AsyncIOMotorClient(
-                settings.mongodb_connection_uri,
-                serverSelectionTimeoutMS=5000,
-            )
-            db = client[settings.mongodb_database_name]
-            for collection_name in await db.list_collection_names():
-                await db[collection_name].delete_many({})
-            client.close()
-        else:
-            from mongomock_motor import AsyncMongoMockClient
-            client = AsyncMongoMockClient()
-            db = client[settings.mongodb_database_name]
-            for collection_name in await db.list_collection_names():
-                await db[collection_name].delete_many({})
+        for collection_name in await test_mongo_db.list_collection_names():
+            await test_mongo_db[collection_name].delete_many({})
     except Exception as e:
         print(f"⚠️ MongoDB cleanup warning: {e}")
 
@@ -228,3 +201,27 @@ async def client():
 async def test_db_session():
     async with TestSessionLocal() as session:
         yield session
+
+# ==========================================
+# FIX: GRACEFUL TEARDOWN OF GLOBAL CONNECTIONS
+# ==========================================
+@pytest.fixture(scope="session", autouse=True)
+async def close_global_connections():
+    """
+    Ensures all global connection pools are gracefully closed after the test suite finishes.
+    This prevents memory leaks and hanging CI pipelines during the teardown phase.
+    """
+    # Yield control to let all test cases execute first
+    yield
+
+    print("\n🧹 Closing global database and Redis connections...")
+
+    if RUNNING_REAL_INTEGRATION:
+        # Close PostgreSQL connection pool
+        await test_engine.dispose()
+
+        # Close MongoDB connection
+        test_mongo_client.close()
+
+        # Close Redis connection pool
+        await test_redis_client.aclose()
