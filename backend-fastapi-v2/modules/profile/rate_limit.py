@@ -122,5 +122,5 @@ class ProfileRateLimiter:
 # ============================================
 async def get_profile_rate_limiter() -> ProfileRateLimiter:
     """Dependency for profile module rate limiter."""
-    base_limiter = await get_rate_limiter()
+    base_limiter = get_rate_limiter()
     return ProfileRateLimiter(base_limiter)

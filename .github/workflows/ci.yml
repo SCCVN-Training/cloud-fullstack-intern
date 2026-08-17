@@ -51,6 +51,137 @@ jobs:
         working-directory: backend-fastapi-v2
 
     services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis/redis-stack:7.2.0-v0
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      ENVIRONMENT: test
+      DEBUG: true
+      GITHUB_ACTIONS: true
+      RUN_REAL_INTEGRATION: true
+
+      NEON_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+      MONGODB_CONNECTION_URI: mongodb://localhost:27017
+      MONGODB_DATABASE_NAME: test_logs
+      REDIS_URL: redis://localhost:6379
+      CACHE_PREFIX_RATE_LIMIT: test_limiter
+
+      JWT_SECRET_KEY: test_secret_key_32_chars_long_enough
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+
+      ENABLE_AUTH: true
+      ENABLE_PROFILE: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: backend-fastapi-v2/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-asyncio httpx
+          pip install aiosqlite mongomock-motor fakeredis
+          pip install alembic
+
+      - name: Wait for services to be ready
+        run: |
+          sleep 10
+          echo "✅ Services should be ready"
+
+      - name: Create database tables
+        run: |
+          echo "Creating database tables..."
+          python -c "
+            import asyncio
+            import sys
+            import os
+
+            # Set environment variables for the script
+            os.environ['NEON_DATABASE_URL'] = 'postgresql://postgres:postgres@localhost:5432/testdb'
+
+            async def main():
+                try:
+                    from shared.database import init_db
+                    await init_db()
+                    print('✅ Database tables created successfully')
+                except ImportError as e:
+                    print(f'⚠️ Could not import init_db: {e}')
+                    print('Attempting to create tables using SQLAlchemy...')
+                    try:
+                        from sqlalchemy import text
+                        from shared.database import neon_async_engine, Base
+                        async with neon_async_engine.begin() as conn:
+                            await conn.run_sync(Base.metadata.create_all)
+                        print('✅ Database tables created via SQLAlchemy')
+                    except Exception as e2:
+                        print(f'❌ Could not create tables: {e2}')
+                        sys.exit(1)
+
+            asyncio.run(main())
+            "
+        env:
+          NEON_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+
+      - name: Run tests
+        run: |
+          pytest -v --cov=modules.auth --cov=shared --cov-report=term-missing --cov-report=xml
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        if: success()
+        with:
+          file: backend-fastapi-v2/coverage.xml
+          flags: backend
+          token: ${{ secrets.CODECOV_TOKEN }}
+    name: Backend V2 (FastAPI)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend-fastapi-v2
+
+    services:
       # ============ PostgreSQL ============
       postgres:
         image: postgres:18

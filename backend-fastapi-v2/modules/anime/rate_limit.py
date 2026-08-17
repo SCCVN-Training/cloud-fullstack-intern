@@ -67,5 +67,5 @@ class AnimeRateLimiter:
 
 async def get_anime_rate_limiter() -> AnimeRateLimiter:
     """Dependency for anime module rate limiter."""
-    base_limiter = await get_rate_limiter()
+    base_limiter = get_rate_limiter()
     return AnimeRateLimiter(base_limiter)

@@ -85,5 +85,5 @@ class AuthRateLimiter:
 # ============================================
 async def get_auth_rate_limiter() -> AuthRateLimiter:
     """Dependency for auth rate limiter."""
-    base_limiter = await get_rate_limiter()
+    base_limiter = get_rate_limiter()
     return AuthRateLimiter(base_limiter)

@@ -103,7 +103,7 @@ class BaseRateLimiter:
 # DEPENDENCY INJECTION
 # ============================================
 @lru_cache
-async def get_rate_limiter() -> BaseRateLimiter:
+def get_rate_limiter() -> BaseRateLimiter:
     """
     Dependency for getting rate limiter instance.
 
