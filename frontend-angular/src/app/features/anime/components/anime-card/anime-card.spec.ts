@@ -14,29 +14,11 @@ describe('AnimeCard', () => {
     fixture = TestBed.createComponent(AnimeCard);
 
     const mockAnime = {
-      mal_id: 1,
+      id: 1,
       title: '',
-      title_english: null,
-      title_japanese: null,
-      score: null,
-
-      season: null,
-      year: null,
-
-      synopsis: null,
-
-      url: '',
-
-      trailer: {
-        url: null,
-      },
-
-      images: {
-        jpg: {
-          image_url: '',
-          large_image_url: '',
-        },
-      },
+      coverImage: {},
+      status: '',
+      genres: [],
     };
 
     fixture.componentRef.setInput('anime', mockAnime);

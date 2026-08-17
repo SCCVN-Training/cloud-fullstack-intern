@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideRouter } from '@angular/router';
 import { AnimeCarousel } from './anime-carousel';
 
 describe('AnimeCarousel', () => {
@@ -9,6 +10,7 @@ describe('AnimeCarousel', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AnimeCarousel],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AnimeCarousel);
