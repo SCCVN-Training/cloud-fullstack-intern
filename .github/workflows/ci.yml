@@ -92,7 +92,7 @@ jobs:
       RUN_REAL_INTEGRATION: true
 
       NEON_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/testdb
-      MONGODB_CONNECTION_URI: mongodb+srv://localhost:27017
+      MONGODB_CONNECTION_URI: mongodb://localhost:27017
       MONGODB_DATABASE_NAME: test_logs
       REDIS_URL: rediss://localhost:6379
       CACHE_PREFIX_RATE_LIMIT: test_limiter
