@@ -30,6 +30,7 @@ class Booking(Base):
     mentor = relationship("User", foreign_keys=[mentor_id], backref="teaching_bookings")
 
     # Details
+    duration: Mapped[int | None] = mapped_column(Integer, nullable=True)
     session_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     session_notes: Mapped[str] = mapped_column(Text, nullable=True)
     

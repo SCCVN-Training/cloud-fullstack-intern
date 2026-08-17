@@ -4,6 +4,8 @@ from app.common.enums import UserRole
 from app.modules.users.models import User
 from app.modules.users.repository import UserRepository
 from app.modules.profiles.service import ProfileService
+from app.modules.wallets.service import WalletService
+from app.modules.wallets.service import WalletService
 from app.core.security import (
     hash_password,
     verify_password,
@@ -61,6 +63,10 @@ class AuthService:
         # GET/PATCH /users/{id}/profile never 404s for a fresh account,
         # and so is_onboarded starts as a real, persisted `false`.
         await ProfileService.create_default_profile(db, new_user.id)
+
+        # Same reasoning as the profile row — a wallet at 0 balance so
+        # GET /users/{id}/wallet never 404s for a fresh account.
+        await WalletService.create_default_wallet(db, new_user.id)
 
         return RegisterResponse.model_validate(
             new_user

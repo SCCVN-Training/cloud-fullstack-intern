@@ -9,11 +9,16 @@ from app.modules.users.models import User
 from app.modules.reviews.service import ReviewService
 from app.modules.reviews.schema import ReviewCreate, ReviewItem, ReviewSummary
 
-router = APIRouter(prefix="/users/{reviewee_id}/reviews", tags=["Reviews"])
+# Read: reviews received by a user, shown on their profile
+user_reviews_router = APIRouter(prefix="/users/{reviewee_id}/reviews", tags=["Reviews"])
 
+# Write: leaving a review is scoped to a specific completed booking, not
+# an open "review anyone's profile" action — see ReviewService for the
+# authorization rules this enforces.
+booking_reviews_router = APIRouter(prefix="/bookings/{booking_id}/reviews", tags=["Reviews"])
 
 # GET REVIEWS FOR A USER (public to any authenticated user)
-@router.get("", response_model=ReviewSummary, status_code=status.HTTP_200_OK)
+@user_reviews_router.get("", response_model=ReviewSummary, status_code=status.HTTP_200_OK)
 async def get_reviews(
     reviewee_id: uuid.UUID,
     limit: int | None = Query(default=10, ge=1, le=50),
@@ -24,12 +29,12 @@ async def get_reviews(
     return await ReviewService.get_reviews_for_user(db, reviewee_id, limit, offset)
 
 
-# CREATE A REVIEW (any authenticated user, except reviewing themselves)
-@router.post("", response_model=ReviewItem, status_code=status.HTTP_201_CREATED)
+# CREATE A REVIEW (only the learner on a completed booking, once)
+@booking_reviews_router.post("", response_model=ReviewItem, status_code=status.HTTP_201_CREATED)
 async def create_review(
-    reviewee_id: uuid.UUID,
+    booking_id: uuid.UUID,
     review_data: ReviewCreate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return await ReviewService.create_review(db, reviewee_id, review_data, current_user)
+    return await ReviewService.create_review(db, booking_id, review_data, current_user)

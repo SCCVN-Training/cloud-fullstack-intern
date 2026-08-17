@@ -41,7 +41,6 @@ export class Onboarding {
     private router: Router,
   ) {
     this.onboardingForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(2)]],
       age: [null, [Validators.required, Validators.min(13), Validators.max(120)]],
       gender: ['', [Validators.required]],
       bio: [''],
@@ -87,10 +86,9 @@ export class Onboarding {
 
     this.isLoading$.next(true);
 
-    const { fullName, age, gender, bio } = this.onboardingForm.value;
+    const { age, gender, bio } = this.onboardingForm.value;
 
     const profile: OnboardingProfile = {
-      fullName,
       age,
       gender,
       bio: bio || '',

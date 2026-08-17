@@ -4,6 +4,7 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.reviews.models import Review
+from app.modules.users.models import User
 from app.modules.profiles.models import Profile
 
 
@@ -18,7 +19,8 @@ class ReviewRepository:
         return result.scalar_one()
 
     # Reviews for a user, newest first, with the reviewer's display name
-    # and avatar joined in from their Profile. limit=None returns all.
+    # (from User.user_name) and avatar (from their Profile) joined in.
+    # limit=None returns all.
     @staticmethod
     async def list_for_reviewee(
         db: AsyncSession,
@@ -27,8 +29,9 @@ class ReviewRepository:
         offset: int = 0,
     ) -> list[tuple[Review, str | None, str | None]]:
         stmt = (
-            select(Review, Profile.full_name, Profile.avatar_url)
-            .join(Profile, Profile.user_id == Review.reviewer_id)
+            select(Review, User.user_name, Profile.avatar_url)
+            .join(User, User.id == Review.reviewer_id)
+            .outerjoin(Profile, Profile.user_id == Review.reviewer_id)
             .where(Review.reviewee_id == reviewee_id)
             .order_by(Review.created_at.desc())
             .offset(offset)
@@ -38,6 +41,13 @@ class ReviewRepository:
 
         result = await db.execute(stmt)
         return result.all()
+
+        # Enforces "one review per booking" at the application layer too
+    # (the DB unique constraint on booking_id is the hard backstop).
+    @staticmethod
+    async def get_by_booking_id(db: AsyncSession, booking_id: uuid.UUID) -> Review | None:
+        result = await db.execute(select(Review).where(Review.booking_id == booking_id))
+        return result.scalar_one_or_none()
 
     @staticmethod
     async def create(db: AsyncSession, review: Review) -> Review:

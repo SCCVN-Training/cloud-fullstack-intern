@@ -7,7 +7,6 @@ export interface RegisterRequest {
 }
 
 export interface OnboardingProfile {
-  fullName: string;
   age: number;
   gender: string;
   bio: string;
@@ -49,7 +48,7 @@ export interface CurrentUserResponse {
 export interface ProfileResponse {
   id: string;
   user_id: string;
-  full_name: string | null;
+  user_name: string;
   bio: string | null;
   avatar_url: string | null;
   age: number | null;
@@ -70,7 +69,6 @@ export interface UserUpdateRequest {
 }
 
 export interface ProfileUpdateRequest {
-  full_name?: string;
   bio?: string;
   avatar_url?: string;
   age?: number;

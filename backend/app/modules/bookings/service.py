@@ -17,11 +17,11 @@ class BookingService:
     async def _format_booking_response(cls, db: AsyncSession, booking: Booking) -> BookingResponse:
         # Fetch related data for convenience in the frontend
         skill = await SkillRepository.get_by_id(db, booking.skill_id)
-        learner_profile = await ProfileRepository.get_by_user_id(db, booking.learner_id)
-        mentor_profile = await ProfileRepository.get_by_user_id(db, booking.mentor_id)
-        
-        learner_name = learner_profile.full_name if learner_profile else "Unknown Learner"
-        mentor_name = mentor_profile.full_name if mentor_profile else "Unknown Mentor"
+        learner = await UserRepository.get_by_id(db, booking.learner_id)
+        mentor = await UserRepository.get_by_id(db, booking.mentor_id)
+
+        learner_name = learner.user_name if learner else "Unknown Learner"
+        mentor_name = mentor.user_name if mentor else "Unknown Mentor"
         skill_title = skill.title if skill else "Unknown Skill"
         
         booking_dict = {
@@ -91,6 +91,7 @@ class BookingService:
             learner_id=current_user.id,
             mentor_id=skill.instructor_id,
             session_date=booking_in.session_date,
+            duration=booking_in.duration,
             session_notes=booking_in.session_notes,
             status=BookingStatus.PENDING,
             price_paid=skill.price

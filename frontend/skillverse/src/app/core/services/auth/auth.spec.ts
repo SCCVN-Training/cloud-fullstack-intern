@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { firstValueFrom } from 'rxjs';
-import { vi } from 'vitest';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
 
 import { AuthService } from './auth';
 import { environment } from '../../../../environments/environment';
@@ -11,54 +11,12 @@ describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
 
-  const apiUrl = environment.apiUrl;
-
-  const fakeUserId = 'user-123';
-  const fakeCurrentUserResponse = {
-    id: fakeUserId,
-    user_name: 'Cherry',
-    email: 'cherry@test.com',
-  };
-  const fakeProfileResponse = {
-    id: 'profile-1',
-    user_id: fakeUserId,
-    full_name: 'Cherry Nguyen',
-    bio: 'Hello!',
-    avatar_url: null,
-    age: 25,
-    gender: 'female',
-    interests: ['design'],
-    skills_learning: ['Figma'],
-    skills_learning_total: 1,
-    skills_taught: [],
-    skills_taught_total: 0,
-    is_onboarded: true,
-  };
-
   beforeEach(() => {
-    // Mock localStorage
-    let store: Record<string, string> = {};
-
-    const mockLocalStorage = {
-      getItem: vi.fn((key: string) => (key in store ? store[key] : null)),
-      setItem: vi.fn((key: string, value: string) => {
-        store[key] = value;
-      }),
-      removeItem: vi.fn((key: string) => {
-        delete store[key];
-      }),
-      clear: vi.fn(() => {
-        store = {};
-      }),
-    };
-
-    Object.defineProperty(globalThis, 'localStorage', {
-      value: mockLocalStorage,
-      writable: true,
-    });
+    localStorage.clear();
 
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      imports: [HttpClientTestingModule],
+      providers: [AuthService],
     });
 
     service = TestBed.inject(AuthService);
@@ -67,246 +25,557 @@ describe('AuthService', () => {
 
   afterEach(() => {
     httpMock.verify();
+    localStorage.clear();
   });
 
-  // =====================================
-  // Service
-  // =====================================
-
-  it('should create', () => {
-    expect(service).toBeTruthy();
-  });
-
-  // =====================================
-  // Initialization
-  // =====================================
-
-  it('should initialize with isLoggedIn=false when localStorage is empty', () => {
-    expect(service.isLoggedIn()).toBe(false);
-    expect(service.currentUser()).toBeNull();
-  });
-
-  it('should initialize with isLoggedIn=true when a token is already stored', () => {
-    localStorage.setItem('access_token', 'existing-token');
-
-    const restored = TestBed.inject(AuthService);
-
-    expect(restored.isLoggedIn()).toBe(true);
-  });
-
-  // =====================================
-  // Register
-  // =====================================
-
-  it('should register successfully', async () => {
-    const resultPromise = firstValueFrom(
-      service.register({ name: 'Cherry', email: 'cherry@test.com', password: '12345678' }),
-    );
-
-    const req = httpMock.expectOne(`${apiUrl}/auth/register`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({
-      user_name: 'Cherry',
-      email: 'cherry@test.com',
-      password: '12345678',
+  describe('constructor', () => {
+    it('should create the service', () => {
+      expect(service).toBeTruthy();
     });
-    req.flush({ id: fakeUserId, user_name: 'Cherry', email: 'cherry@test.com' });
 
-    expect(await resultPromise).toBe(true);
+    it('should restore login state from localStorage', () => {
+      localStorage.setItem('access_token', 'test-token');
+
+      const newService = TestBed.inject(AuthService);
+
+      expect(newService.isLoggedIn()).toBe(true);
+    });
+
+    it('should restore current user from localStorage', () => {
+      const user = {
+        id: '1',
+        name: 'John',
+        email: 'john@example.com',
+        password: '',
+        isOnboarded: true,
+      };
+
+      localStorage.setItem(
+        'skillverse_current_user',
+        JSON.stringify(user),
+      );
+
+      const newService = TestBed.inject(AuthService);
+
+      expect(newService.currentUser()).toEqual(user);
+    });
   });
 
-  it('should return false when register fails', async () => {
-    const resultPromise = firstValueFrom(
-      service.register({ name: 'Cherry', email: 'taken@test.com', password: '12345678' }),
-    );
+  describe('logout', () => {
+    it('should clear authentication state', () => {
+      localStorage.setItem('access_token', 'token');
 
-    const req = httpMock.expectOne(`${apiUrl}/auth/register`);
-    req.flush({ detail: 'Email already exists' }, { status: 400, statusText: 'Bad Request' });
+      service.isLoggedIn.set(true);
 
-    expect(await resultPromise).toBe(false);
+      service.logout();
+
+      expect(service.isLoggedIn()).toBe(false);
+      expect(service.currentUser()).toBeNull();
+      expect(localStorage.getItem('access_token')).toBeNull();
+      expect(localStorage.getItem('skillverse_current_user')).toBeNull();
+    });
   });
 
-  // =====================================
-  // Login / authenticate
-  // =====================================
+  describe('needsOnboarding', () => {
+    it('should return true when user has not completed onboarding', () => {
+      service.currentUser.set({
+        id: '1',
+        name: 'John',
+        email: 'john@example.com',
+        password: '',
+        isOnboarded: false,
+      });
 
-  it('should log in, store the token, and populate currentUser', async () => {
-    const resultPromise = firstValueFrom(service.authenticate('cherry@test.com', 'password123'));
+      expect(service.needsOnboarding()).toBe(true);
+    });
 
-    const loginReq = httpMock.expectOne(`${apiUrl}/auth/login`);
-    expect(loginReq.request.method).toBe('POST');
-    loginReq.flush({ access_token: 'fake-jwt', token_type: 'bearer' });
+    it('should return false when user has completed onboarding', () => {
+      service.currentUser.set({
+        id: '1',
+        name: 'John',
+        email: 'john@example.com',
+        password: '',
+        isOnboarded: true,
+      });
 
-    const meReq = httpMock.expectOne(`${apiUrl}/auth/me`);
-    meReq.flush(fakeCurrentUserResponse);
+      expect(service.needsOnboarding()).toBe(false);
+    });
 
-    const profileReq = httpMock.expectOne(`${apiUrl}/users/${fakeUserId}/profile`);
-    profileReq.flush(fakeProfileResponse);
-
-    expect(await resultPromise).toBe(true);
-    expect(service.isLoggedIn()).toBe(true);
-    expect(localStorage.setItem).toHaveBeenCalledWith('access_token', 'fake-jwt');
-
-    const user = service.currentUser();
-    expect(user?.name).toBe('Cherry');
-    expect(user?.isOnboarded).toBe(true);
-    expect(user?.profile?.skillsLearning).toEqual(['Figma']);
+    it('should return false when there is no current user', () => {
+      expect(service.needsOnboarding()).toBe(false);
+    });
   });
 
-  it('should return false when login fails', async () => {
-    const resultPromise = firstValueFrom(service.authenticate('cherry@test.com', 'wrong-pass'));
+  describe('register', () => {
+    it('should return true when registration succeeds', () => {
+      service
+        .register({
+          name: 'John',
+          email: 'john@example.com',
+          password: 'password123',
+        })
+        .subscribe((result) => {
+          expect(result).toBe(true);
+        });
 
-    const loginReq = httpMock.expectOne(`${apiUrl}/auth/login`);
-    loginReq.flush({ detail: 'Invalid credentials' }, { status: 401, statusText: 'Unauthorized' });
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/auth/register`,
+      );
 
-    expect(await resultPromise).toBe(false);
-    expect(service.isLoggedIn()).toBe(false);
+      expect(req.request.method).toBe('POST');
+
+      expect(req.request.body).toEqual({
+        user_name: 'John',
+        email: 'john@example.com',
+        password: 'password123',
+      });
+
+      req.flush({
+        id: '1',
+        user_name: 'John',
+        email: 'john@example.com',
+      });
+    });
+
+    it('should return false when registration fails', () => {
+      service
+        .register({
+          name: 'John',
+          email: 'john@example.com',
+          password: 'password123',
+        })
+        .subscribe((result) => {
+          expect(result).toBe(false);
+        });
+
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/auth/register`,
+      );
+
+      req.flush(
+        { detail: 'Registration failed' },
+        {
+          status: 400,
+          statusText: 'Bad Request',
+        },
+      );
+    });
   });
 
-  it('should still resolve when the profile fetch fails (treat as not onboarded)', async () => {
-    const resultPromise = firstValueFrom(service.authenticate('cherry@test.com', 'password123'));
+  describe('authenticate', () => {
+    it('should login and fetch current user', () => {
+      service
+        .authenticate('john@example.com', 'password123')
+        .subscribe((result) => {
+          expect(result).toBe(true);
+          expect(service.isLoggedIn()).toBe(true);
 
-    httpMock.expectOne(`${apiUrl}/auth/login`).flush({ access_token: 'fake-jwt', token_type: 'bearer' });
-    httpMock.expectOne(`${apiUrl}/auth/me`).flush(fakeCurrentUserResponse);
-    httpMock
-      .expectOne(`${apiUrl}/users/${fakeUserId}/profile`)
-      .flush({ detail: 'Profile not found' }, { status: 404, statusText: 'Not Found' });
+          expect(service.currentUser()).toEqual({
+            id: '1',
+            name: 'John',
+            email: 'john@example.com',
+            password: '',
+            avatar: undefined,
+            isOnboarded: true,
+            profile: {
+              bio: 'Hello',
+              age: 25,
+              gender: 'Male',
+              interests: ['Coding'],
+              skillsLearning: ['Python'],
+              skillsTaught: 2,
+            },
+          });
+        });
 
-    expect(await resultPromise).toBe(true);
-    expect(service.currentUser()?.isOnboarded).toBe(false);
-    expect(service.currentUser()?.profile).toBeUndefined();
-  });
+      const loginRequest = httpMock.expectOne(
+        `${environment.apiUrl}/auth/login`,
+      );
 
-  // =====================================
-  // needsOnboarding
-  // =====================================
+      expect(loginRequest.request.method).toBe('POST');
 
-  it('needsOnboarding should be true when there is a user but isOnboarded is false', async () => {
-    const resultPromise = firstValueFrom(service.authenticate('cherry@test.com', 'password123'));
-    httpMock.expectOne(`${apiUrl}/auth/login`).flush({ access_token: 'fake-jwt', token_type: 'bearer' });
-    httpMock.expectOne(`${apiUrl}/auth/me`).flush(fakeCurrentUserResponse);
-    httpMock
-      .expectOne(`${apiUrl}/users/${fakeUserId}/profile`)
-      .flush({ ...fakeProfileResponse, is_onboarded: false });
-    await resultPromise;
+      loginRequest.flush({
+        access_token: 'test-token',
+        token_type: 'bearer',
+      });
 
-    expect(service.needsOnboarding()).toBe(true);
-  });
+      const meRequest = httpMock.expectOne(
+        `${environment.apiUrl}/auth/me`,
+      );
 
-  it('needsOnboarding should be false when there is no current user', () => {
-    expect(service.needsOnboarding()).toBe(false);
-  });
+      expect(meRequest.request.method).toBe('GET');
 
-  // =====================================
-  // Logout
-  // =====================================
+      meRequest.flush({
+        id: '1',
+        user_name: 'John',
+        email: 'john@example.com',
+      });
 
-  it('should clear token and currentUser on logout', async () => {
-    const resultPromise = firstValueFrom(service.authenticate('cherry@test.com', 'password123'));
-    httpMock.expectOne(`${apiUrl}/auth/login`).flush({ access_token: 'fake-jwt', token_type: 'bearer' });
-    httpMock.expectOne(`${apiUrl}/auth/me`).flush(fakeCurrentUserResponse);
-    httpMock.expectOne(`${apiUrl}/users/${fakeUserId}/profile`).flush(fakeProfileResponse);
-    await resultPromise;
+      const profileRequest = httpMock.expectOne(
+        `${environment.apiUrl}/users/1/profile`,
+      );
 
-    service.logout();
+      expect(profileRequest.request.method).toBe('GET');
 
-    expect(service.isLoggedIn()).toBe(false);
-    expect(service.currentUser()).toBeNull();
-    expect(localStorage.removeItem).toHaveBeenCalledWith('access_token');
-  });
-
-  // =====================================
-  // completeOnboarding
-  // =====================================
-
-  it('should return false from completeOnboarding when there is no current user', async () => {
-    const result = await firstValueFrom(
-      service.completeOnboarding({
-        fullName: 'Cherry',
+      profileRequest.flush({
+        id: 'profile-1',
+        user_id: '1',
+        user_name: 'John',
+        bio: 'Hello',
+        avatar_url: null,
         age: 25,
-        gender: 'female',
-        bio: '',
+        gender: 'Male',
+        interests: ['Coding'],
+        skills_learning: ['Python'],
+        skills_learning_total: 1,
+        skills_taught: [],
+        skills_taught_total: 2,
+        is_onboarded: true,
+      });
+    });
+
+    it('should return false when login fails', () => {
+      service
+        .authenticate('john@example.com', 'wrong-password')
+        .subscribe((result) => {
+          expect(result).toBe(false);
+          expect(service.isLoggedIn()).toBe(false);
+        });
+
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/auth/login`,
+      );
+
+      req.flush(
+        { detail: 'Invalid credentials' },
+        {
+          status: 401,
+          statusText: 'Unauthorized',
+        },
+      );
+    });
+  });
+
+  describe('completeOnboarding', () => {
+    it('should update onboarding through the backend', () => {
+      service.currentUser.set({
+        id: '1',
+        name: 'John',
+        email: 'john@example.com',
+        password: '',
+        isOnboarded: false,
+      });
+
+      service
+        .completeOnboarding({
+          age: 25,
+          gender: 'Male',
+          bio: 'Hello',
+          interests: ['Coding'],
+          skillsLearning: ['Python'],
+          skillsTaught: 0,
+        })
+        .subscribe((result) => {
+          expect(result).toBe(true);
+        });
+
+      const patchRequest = httpMock.expectOne(
+        `${environment.apiUrl}/users/1/profile`,
+      );
+
+      expect(patchRequest.request.method).toBe('PATCH');
+
+      expect(patchRequest.request.body).toEqual({
+        bio: 'Hello',
+        age: 25,
+        gender: 'Male',
+        interests: ['Coding'],
+        skills_learning: ['Python'],
+        is_onboarded: true,
+      });
+
+      patchRequest.flush({
+        id: 'profile-1',
+        user_id: '1',
+        user_name: 'John',
+        bio: 'Hello',
+        avatar_url: null,
+        age: 25,
+        gender: 'Male',
+        interests: ['Coding'],
+        skills_learning: ['Python'],
+        skills_learning_total: 1,
+        skills_taught: [],
+        skills_taught_total: 0,
+        is_onboarded: true,
+      });
+
+      const meRequest = httpMock.expectOne(
+        `${environment.apiUrl}/auth/me`,
+      );
+
+      expect(meRequest.request.method).toBe('GET');
+
+      meRequest.flush({
+        id: '1',
+        user_name: 'John',
+        email: 'john@example.com',
+      });
+
+      const profileRequest = httpMock.expectOne(
+        `${environment.apiUrl}/users/1/profile`,
+      );
+
+      expect(profileRequest.request.method).toBe('GET');
+
+      profileRequest.flush({
+        id: 'profile-1',
+        user_id: '1',
+        user_name: 'John',
+        bio: 'Hello',
+        avatar_url: null,
+        age: 25,
+        gender: 'Male',
+        interests: ['Coding'],
+        skills_learning: ['Python'],
+        skills_learning_total: 1,
+        skills_taught: [],
+        skills_taught_total: 0,
+        is_onboarded: true,
+      });
+    });
+  });
+
+  describe('updateAccountInfo', () => {
+    it('should update user and profile separately', () => {
+      service.currentUser.set({
+        id: '1',
+        name: 'Old Name',
+        email: 'old@example.com',
+        password: '',
+        isOnboarded: true,
+        profile: {
+          age: 20,
+          gender: 'Male',
+          bio: 'Old bio',
+          interests: [],
+          skillsLearning: [],
+          skillsTaught: 0,
+        },
+      });
+
+      service
+        .updateAccountInfo({
+          name: 'New Name',
+          email: 'new@example.com',
+          bio: 'New bio',
+          age: 25,
+          gender: 'Male',
+        })
+        .subscribe((result) => {
+          expect(result).toBe(true);
+        });
+
+      const requests = httpMock.match((request) =>
+        request.method === 'PATCH',
+      );
+
+      expect(requests.length).toBe(2);
+
+      const userRequest = requests.find((request) =>
+        request.request.url.endsWith('/users/1'),
+      );
+
+      const profileRequest = requests.find((request) =>
+        request.request.url.endsWith('/users/1/profile'),
+      );
+
+      expect(userRequest).toBeTruthy();
+      expect(profileRequest).toBeTruthy();
+
+      userRequest!.flush({
+        id: '1',
+        user_name: 'New Name',
+        email: 'new@example.com',
+      });
+
+      profileRequest!.flush({
+        id: 'profile-1',
+        user_id: '1',
+        user_name: 'New Name',
+        bio: 'New bio',
+        avatar_url: null,
+        age: 25,
+        gender: 'Male',
         interests: [],
-        skillsLearning: [],
-        skillsTaught: 0,
-      }),
-    );
+        skills_learning: [],
+        skills_learning_total: 0,
+        skills_taught: [],
+        skills_taught_total: 0,
+        is_onboarded: true,
+      });
 
-    expect(result).toBe(false);
-  });
+      const meRequest = httpMock.expectOne(
+        `${environment.apiUrl}/auth/me`,
+      );
 
-  it('should PATCH the profile and refetch on completeOnboarding', async () => {
-    // log in first so there's a currentUser to act on
-    const loginPromise = firstValueFrom(service.authenticate('cherry@test.com', 'password123'));
-    httpMock.expectOne(`${apiUrl}/auth/login`).flush({ access_token: 'fake-jwt', token_type: 'bearer' });
-    httpMock.expectOne(`${apiUrl}/auth/me`).flush(fakeCurrentUserResponse);
-    httpMock
-      .expectOne(`${apiUrl}/users/${fakeUserId}/profile`)
-      .flush({ ...fakeProfileResponse, is_onboarded: false });
-    await loginPromise;
+      meRequest.flush({
+        id: '1',
+        user_name: 'New Name',
+        email: 'new@example.com',
+      });
 
-    const resultPromise = firstValueFrom(
-      service.completeOnboarding({
-        fullName: 'Cherry Nguyen',
+      const profileRequestAfterUpdate = httpMock.expectOne(
+        `${environment.apiUrl}/users/1/profile`,
+      );
+
+      profileRequestAfterUpdate.flush({
+        id: 'profile-1',
+        user_id: '1',
+        user_name: 'New Name',
+        bio: 'New bio',
+        avatar_url: null,
         age: 25,
-        gender: 'female',
-        bio: 'Hello!',
-        interests: ['design'],
-        skillsLearning: ['Figma'],
-        skillsTaught: 0,
-      }),
-    );
-
-    const patchReq = httpMock.expectOne(`${apiUrl}/users/${fakeUserId}/profile`);
-    expect(patchReq.request.method).toBe('PATCH');
-    expect(patchReq.request.body.is_onboarded).toBe(true);
-    patchReq.flush({ ...fakeProfileResponse, is_onboarded: true });
-
-    // completeOnboarding refetches via fetchCurrentUser()
-    httpMock.expectOne(`${apiUrl}/auth/me`).flush(fakeCurrentUserResponse);
-    httpMock.expectOne(`${apiUrl}/users/${fakeUserId}/profile`).flush({ ...fakeProfileResponse, is_onboarded: true });
-
-    expect(await resultPromise).toBe(true);
-    expect(service.currentUser()?.isOnboarded).toBe(true);
+        gender: 'Male',
+        interests: [],
+        skills_learning: [],
+        skills_learning_total: 0,
+        skills_taught: [],
+        skills_taught_total: 0,
+        is_onboarded: true,
+      });
+    });
   });
 
-  // =====================================
-  // deleteAccount
-  // =====================================
+  describe('updateProfileFields', () => {
+    it('should update interests and learning skills', () => {
+      service.currentUser.set({
+        id: '1',
+        name: 'John',
+        email: 'john@example.com',
+        password: '',
+        isOnboarded: true,
+        profile: {
+          age: 25,
+          gender: 'Male',
+          bio: '',
+          interests: [],
+          skillsLearning: [],
+          skillsTaught: 0,
+        },
+      });
 
-  it('should DELETE the user and log out on success', async () => {
-    const loginPromise = firstValueFrom(service.authenticate('cherry@test.com', 'password123'));
-    httpMock.expectOne(`${apiUrl}/auth/login`).flush({ access_token: 'fake-jwt', token_type: 'bearer' });
-    httpMock.expectOne(`${apiUrl}/auth/me`).flush(fakeCurrentUserResponse);
-    httpMock.expectOne(`${apiUrl}/users/${fakeUserId}/profile`).flush(fakeProfileResponse);
-    await loginPromise;
+      service
+        .updateProfileFields({
+          interests: ['Coding', 'Music'],
+          skillsLearning: ['Python'],
+        })
+        .subscribe((result) => {
+          expect(result).toBe(true);
+        });
 
-    const resultPromise = firstValueFrom(service.deleteAccount());
+      const patchRequest = httpMock.expectOne(
+        `${environment.apiUrl}/users/1/profile`,
+      );
 
-    const deleteReq = httpMock.expectOne(`${apiUrl}/users/${fakeUserId}`);
-    expect(deleteReq.request.method).toBe('DELETE');
-    deleteReq.flush(null);
+      expect(patchRequest.request.method).toBe('PATCH');
 
-    expect(await resultPromise).toBe(true);
-    expect(service.isLoggedIn()).toBe(false);
-    expect(service.currentUser()).toBeNull();
+      expect(patchRequest.request.body).toEqual({
+        interests: ['Coding', 'Music'],
+        skills_learning: ['Python'],
+      });
+
+      patchRequest.flush({
+        id: 'profile-1',
+        user_id: '1',
+        user_name: 'John',
+        bio: '',
+        avatar_url: null,
+        age: 25,
+        gender: 'Male',
+        interests: ['Coding', 'Music'],
+        skills_learning: ['Python'],
+        skills_learning_total: 1,
+        skills_taught: [],
+        skills_taught_total: 0,
+        is_onboarded: true,
+      });
+
+      const meRequest = httpMock.expectOne(
+        `${environment.apiUrl}/auth/me`,
+      );
+
+      meRequest.flush({
+        id: '1',
+        user_name: 'John',
+        email: 'john@example.com',
+      });
+
+      const profileAfterUpdate = httpMock.expectOne(
+        `${environment.apiUrl}/users/1/profile`,
+      );
+
+      profileAfterUpdate.flush({
+        id: 'profile-1',
+        user_id: '1',
+        user_name: 'John',
+        bio: '',
+        avatar_url: null,
+        age: 25,
+        gender: 'Male',
+        interests: ['Coding', 'Music'],
+        skills_learning: ['Python'],
+        skills_learning_total: 1,
+        skills_taught: [],
+        skills_taught_total: 0,
+        is_onboarded: true,
+      });
+    });
   });
 
-  // =====================================
-  // updateAvatar (local-only stub — see auth.ts comment)
-  // =====================================
+  describe('deleteAccount', () => {
+    it('should delete the account and logout', () => {
+      service.currentUser.set({
+        id: '1',
+        name: 'John',
+        email: 'john@example.com',
+        password: '',
+        isOnboarded: true,
+      });
 
-  it('should update avatar locally without making an HTTP call', async () => {
-    const loginPromise = firstValueFrom(service.authenticate('cherry@test.com', 'password123'));
-    httpMock.expectOne(`${apiUrl}/auth/login`).flush({ access_token: 'fake-jwt', token_type: 'bearer' });
-    httpMock.expectOne(`${apiUrl}/auth/me`).flush(fakeCurrentUserResponse);
-    httpMock.expectOne(`${apiUrl}/users/${fakeUserId}/profile`).flush(fakeProfileResponse);
-    await loginPromise;
+      service.isLoggedIn.set(true);
 
-    const result = await firstValueFrom(service.updateAvatar('data:image/png;base64,fakedata'));
+      service.deleteAccount().subscribe((result) => {
+        expect(result).toBe(true);
+        expect(service.isLoggedIn()).toBe(false);
+        expect(service.currentUser()).toBeNull();
+      });
 
-    expect(result).toBe(true);
-    expect(service.currentUser()?.avatar).toBe('data:image/png;base64,fakedata');
-    httpMock.expectNone(`${apiUrl}/users/${fakeUserId}/profile`);
+      const req = httpMock.expectOne(
+        `${environment.apiUrl}/users/1`,
+      );
+
+      expect(req.request.method).toBe('DELETE');
+
+      req.flush({});
+    });
+  });
+
+  describe('updateAvatar', () => {
+    it('should update the avatar locally', () => {
+      service.currentUser.set({
+        id: '1',
+        name: 'John',
+        email: 'john@example.com',
+        password: '',
+        isOnboarded: true,
+      });
+
+      service.updateAvatar('data:image/png;base64,test');
+
+      expect(service.currentUser()?.avatar).toBe(
+        'data:image/png;base64,test',
+      );
+    });
   });
 });

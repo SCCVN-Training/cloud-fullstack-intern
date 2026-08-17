@@ -6,9 +6,12 @@ from app.core.database import Base, engine
 from app.modules.auth.router import router as auth_router
 from app.modules.users.router import router as users_router, admin_router as users_admin_router
 from app.modules.profiles.router import router as profiles_router
-from app.modules.reviews.router import router as reviews_router
+from app.modules.reviews.router import user_reviews_router, booking_reviews_router
 from app.modules.skills.router import router as skills_router
 from app.modules.bookings.router import router as bookings_router
+from app.modules.wallets.router import router as wallets_router
+from app.modules.transactions.router import router as transactions_router
+from app.modules.wallets.router import router as wallets_router
 from app.core.exceptions import register_exception_handlers
 
 from app.modules.training.router import router as training_router 
@@ -48,9 +51,13 @@ app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(users_admin_router)
 app.include_router(profiles_router)
-app.include_router(reviews_router)
+app.include_router(user_reviews_router)
+app.include_router(booking_reviews_router)
 app.include_router(skills_router)
 app.include_router(bookings_router)
+app.include_router(wallets_router)
+app.include_router(transactions_router)
+app.include_router(wallets_router)
 
 app.include_router(training_router)
 

@@ -150,7 +150,6 @@ export class AuthService {
     }
 
     const body: ProfileUpdateRequest = {
-      full_name: profile.fullName,
       bio: profile.bio,
       age: profile.age,
       gender: profile.gender,
