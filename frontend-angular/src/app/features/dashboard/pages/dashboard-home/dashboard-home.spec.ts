@@ -7,6 +7,13 @@ describe('DashboardHome', () => {
   let component: DashboardHome;
   let fixture: ComponentFixture<DashboardHome>;
 
+  beforeAll(() => {
+    Object.defineProperty(HTMLElement.prototype, 'scrollTo', {
+      value: vi.fn(),
+      writable: true,
+    });
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DashboardHome],
