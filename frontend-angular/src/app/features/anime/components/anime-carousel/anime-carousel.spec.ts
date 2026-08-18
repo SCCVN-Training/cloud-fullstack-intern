@@ -7,6 +7,13 @@ describe('AnimeCarousel', () => {
   let component: AnimeCarousel;
   let fixture: ComponentFixture<AnimeCarousel>;
 
+  beforeAll(() => {
+    Object.defineProperty(HTMLElement.prototype, 'scrollTo', {
+      value: vi.fn(),
+      writable: true,
+    });
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AnimeCarousel],
