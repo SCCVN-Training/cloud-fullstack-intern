@@ -73,30 +73,105 @@ SEED_PROFILES = {
 # (title, category, description, instructor user_name, price, duration,
 #  level, requirements, tags)
 SEED_SKILLS = [
+    # 1
     (
-        "Python Fundamentals for Beginners",
-        "Programming",
-        "Learn Python from scratch: variables, control flow, functions, and "
-        "basic data structures, with hands-on exercises every session.",
+        "Angular Fundamentals",
+        "Web Development",
+        "Learn Angular components, services, routing, forms, dependency "
+        "injection, and the structure of a modern Angular application.",
         "alice_dev",
-        25,
+        35,
         "60 min",
-        "Beginner",
-        "A laptop with Python 3.10+ installed. No prior experience needed.",
-        ["python", "programming", "beginner"],
+        "Intermediate",
+        "Basic HTML, CSS, and TypeScript knowledge.",
+        ["angular", "typescript", "frontend"],
     ),
+
+    # 2
     (
-        "SQL & Database Design Basics",
-        "Programming",
-        "Understand relational databases, write real SQL queries, and learn "
-        "how to design a normalized schema for a small application.",
+        "Docker & Container Fundamentals",
+        "DevOps",
+        "Learn containers, Dockerfiles, images, volumes, networks, and "
+        "Docker Compose for running multi-service applications locally.",
         "alice_dev",
-        30,
-        "45 min",
-        "Beginner",
-        "Basic comfort with a computer. No SQL experience required.",
-        ["sql", "databases"],
+        40,
+        "75 min",
+        "Intermediate",
+        "Basic command-line and application development knowledge.",
+        ["docker", "containers", "devops"],
     ),
+
+    # 3
+    (
+        "REST API Design",
+        "Web Development",
+        "Learn how to design clean REST APIs using resources, HTTP methods, "
+        "status codes, DTOs, validation, pagination, and error responses.",
+        "alice_dev",
+        40,
+        "60 min",
+        "Intermediate",
+        "Basic understanding of HTTP and backend development.",
+        ["rest", "api", "backend", "web-development"],
+    ),
+
+    # 4
+    (
+        "FastAPI Backend Development",
+        "Programming",
+        "Build modern REST APIs with Python and FastAPI, including routing, "
+        "request validation, dependency injection, and API documentation.",
+        "alice_dev",
+        35,
+        "60 min",
+        "Intermediate",
+        "Basic Python knowledge and familiarity with HTTP APIs.",
+        ["python", "fastapi", "backend", "api"],
+    ),
+
+    # 5
+    (
+        "AWS Cloud Fundamentals",
+        "Cloud",
+        "Understand AWS regions, availability zones, IAM, S3, EC2, Lambda, "
+        "and the fundamentals of deploying applications to the cloud.",
+        "alice_dev",
+        45,
+        "75 min",
+        "Intermediate",
+        "Basic web development knowledge.",
+        ["aws", "cloud", "iam", "s3"],
+    ),
+
+    # 6
+    (
+        "Technical Interview Preparation",
+        "Career",
+        "Practice technical interview questions covering programming, "
+        "databases, APIs, system design, and software engineering concepts.",
+        "alice_dev",
+        35,
+        "60 min",
+        "Intermediate",
+        "Some programming experience recommended.",
+        ["interview", "career", "programming", "system-design"],
+    ),
+
+    # 7
+    (
+        "Machine Learning Fundamentals",
+        "Data Science",
+        "Explore the fundamentals of machine learning including datasets, "
+        "features, training, testing, classification, and model evaluation.",
+        "alice_dev",
+        50,
+        "90 min",
+        "Intermediate",
+        "Basic Python and introductory mathematics.",
+        ["machine-learning", "python", "data-science"],
+    ),
+
+    # 8
     (
         "Intro to System Design",
         "Programming",
@@ -107,7 +182,7 @@ SEED_SKILLS = [
         "90 min",
         "Intermediate",
         "Comfortable with at least one backend language and basic databases.",
-        ["system-design", "architecture"],
+        ["system-design", "architecture", "backend"],
     ),
 ]
 

@@ -244,17 +244,26 @@ export class AuthService {
       );
   }
 
-  // NOT wired to the backend yet — see auth.types.ts ProfileUpdateRequest.
-  // Profile.avatar_url is capped at 255 chars server-side, and a base64
-  // data URL from a 3MB image is millions of characters — sending it
-  // as-is fails a 422, not a silent no-op. Needs an S3 upload step first
-  // (Week 6); left as a local-only stub until then.
-  updateAvatar(avatarDataUrl: string): Observable<boolean> {
+  // POST /users/{id}/profile/avatar — multipart upload. Backend saves the
+  // file (locally for now, S3 later) and returns the updated profile with
+  // a real avatar_url already set, so we just fold that into currentUser.
+  updateAvatar(file: File): Observable<boolean> {
     const current = this.currentUser();
-    if (!current) {
+    if (!current?.id) {
       return of(false);
     }
-    this.setCurrentUser({ ...current, avatar: avatarDataUrl });
-    return of(true);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http
+      .post<ProfileResponse>(`${this.apiUrl}/users/${current.id}/profile/avatar`, formData)
+      .pipe(
+        map((profileRes) => {
+          this.setCurrentUser({ ...current, avatar: profileRes.avatar_url ?? current.avatar });
+          return true;
+        }),
+        catchError(() => of(false)),
+      );
   }
 }

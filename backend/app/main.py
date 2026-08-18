@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 
 from app.core.database import Base, engine
+from app.core.config import settings
 from app.modules.auth.router import router as auth_router
 from app.modules.users.router import router as users_router, admin_router as users_admin_router
 from app.modules.profiles.router import router as profiles_router
@@ -11,7 +13,6 @@ from app.modules.skills.router import router as skills_router
 from app.modules.bookings.router import router as bookings_router
 from app.modules.wallets.router import router as wallets_router
 from app.modules.transactions.router import router as transactions_router
-from app.modules.wallets.router import router as wallets_router
 from app.core.exceptions import register_exception_handlers
 
 from app.modules.training.router import router as training_router 
@@ -31,6 +32,14 @@ app = FastAPI(
 
 # Register Global Exception Handlers
 register_exception_handlers(app)
+
+# Serve locally-uploaded files (avatars for now) at /media/... — a
+# stand-in for S3 until that's wired up in Week 7-8. os.makedirs here
+# so this doesn't 404/error on a completely fresh checkout with no
+# uploads yet.
+import os
+os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
+app.mount("/media", StaticFiles(directory=settings.MEDIA_ROOT), name="media")
 
 # CORS — allows the Angular dev server (localhost:4200) to call this API
 # from the browser. Tighten allow_origins to your real domain(s) before
@@ -57,7 +66,6 @@ app.include_router(skills_router)
 app.include_router(bookings_router)
 app.include_router(wallets_router)
 app.include_router(transactions_router)
-app.include_router(wallets_router)
 
 app.include_router(training_router)
 

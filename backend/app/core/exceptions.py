@@ -42,6 +42,10 @@ class WalletNotFoundException(AppException):
 class InsufficientBalanceException(AppException):
     pass
 
+# Invalid avatar upload (wrong type / too large)
+class InvalidAvatarException(AppException):
+    pass
+
 # JWT Token Exception
 class InvalidTokenException(AppException):
     pass
@@ -148,6 +152,19 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def insufficient_balance_handler(
         request: Request,
         exc: InsufficientBalanceException
+    ):
+        return JSONResponse(
+            status_code=422,
+            content={
+                "detail": exc.message
+            }
+        )
+
+    # Invalid avatar upload
+    @app.exception_handler(InvalidAvatarException)
+    async def invalid_avatar_handler(
+        request: Request,
+        exc: InvalidAvatarException
     ):
         return JSONResponse(
             status_code=422,

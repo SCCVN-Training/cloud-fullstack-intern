@@ -75,18 +75,23 @@ export class Login {
     this.authService.authenticate(email, password).subscribe({
       next: (success) => {
         this.isLoading$.next(false);
+
         if (success) {
           this.toastService.showSuccess('Login successful!');
-          this.router.navigate([this.authService.needsOnboarding() ? '/onboarding' : '/']);
+
+          const user = this.authService.currentUser();
+
+          if (user?.role === 'admin') {
+            this.router.navigate(['/admin/dashboard']);
+          } else if (this.authService.needsOnboarding()) {
+            this.router.navigate(['/onboarding']);
+          } else {
+            this.router.navigate(['/']);
+          }
         } else {
           this.errorMessage$.next('Invalid email or password.');
           this.toastService.showError('Email or password is incorrect.');
         }
-      },
-      error: (err) => {
-        this.isLoading$.next(false);
-        console.error('Connection error', err);
-        this.toastService.showError('System connection error!');
       },
     });
   }

@@ -43,6 +43,7 @@ export interface CurrentUserResponse {
   id: string;
   user_name: string;
   email: string;
+  role: string;
 }
 
 export interface ProfileResponse {

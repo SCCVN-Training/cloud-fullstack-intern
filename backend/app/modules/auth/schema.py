@@ -34,6 +34,7 @@ class CurrentUserResponse(BaseModel):
     id: uuid.UUID
     user_name: str
     email: EmailStr
+    role: str
 
     model_config = {
         "from_attributes": True

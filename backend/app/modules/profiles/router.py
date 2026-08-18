@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, File, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -31,3 +31,16 @@ async def update_profile(
     current_user: User = Depends(get_current_user),
 ):
     return await ProfileService.update_profile(db, user_id, updates, current_user)
+
+
+# UPLOAD AVATAR (self or admin) — multipart file upload, not JSON. Saves
+# the file (locally for now — see app/core/storage.py) and PATCHes
+# Profile.avatar_url to the resulting URL in one step.
+@router.post("/avatar", response_model=ProfileResponse, status_code=status.HTTP_200_OK)
+async def upload_avatar(
+    user_id: uuid.UUID,
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return await ProfileService.update_avatar(db, user_id, file, current_user)

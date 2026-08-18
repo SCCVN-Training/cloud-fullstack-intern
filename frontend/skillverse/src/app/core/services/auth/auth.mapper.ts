@@ -9,6 +9,7 @@ export function toUserRecord(
     name: user.user_name,
     email: user.email,
     password: '',
+    role: user.role === 'ADMIN' ? 'admin' : 'user',
     avatar: profile?.avatar_url ?? undefined,
     isOnboarded: profile?.is_onboarded ?? false,
     profile: profile

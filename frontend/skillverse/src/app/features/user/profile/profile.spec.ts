@@ -48,8 +48,8 @@ class MockAuthService {
     return of(true);
   };
 
-  updateAvatar = (dataUrl: string) => {
-    this.userData.avatar = dataUrl;
+  updateAvatar = (file: File) => {
+    this.userData.avatar = `mock-uploaded-url/${file.name}`;
     return of(true);
   };
 
@@ -382,86 +382,29 @@ describe('Profile Component', () => {
       Object.defineProperty(file, 'size', { value: 1 * 1024 * 1024 });
       const event = { target: { files: [file], value: '' } } as any;
 
-      const originalFileReader = window.FileReader;
-
-      class MockFileReader {
-        onload: any = null;
-        onerror: any = null;
-        result = 'data:image/jpeg;base64,test';
-        readAsDataURL() {
-          setTimeout(() => {
-            if (this.onload) {
-              const loadEvent = { target: { result: this.result } };
-              this.onload(loadEvent);
-            }
-          }, 0);
-        }
-        abort() {}
-        readAsArrayBuffer() {}
-        readAsBinaryString() {}
-        readAsText() {}
-        addEventListener() {}
-        removeEventListener() {}
-        dispatchEvent() {
-          return true;
-        }
-        readyState: number = 2;
-        error: any = null;
-      }
-
-      window.FileReader = MockFileReader as any;
-
       component.onAvatarSelected(event);
 
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
       expect(component.isUploadingAvatar()).toBe(false);
       const successes = mockToastService.getSuccesses();
       expect(successes).toContain('Profile photo updated.');
-      window.FileReader = originalFileReader;
     });
 
-    it('should handle file reader error', async () => {
+    it('should show an error if the upload itself fails', async () => {
       const file = new File([''], 'test.jpg', { type: 'image/jpeg' });
       Object.defineProperty(file, 'size', { value: 1 * 1024 * 1024 });
       const event = { target: { files: [file], value: '' } } as any;
 
-      const originalFileReader = window.FileReader;
-
-      class MockFileReader {
-        onload: any = null;
-        onerror: any = null;
-        readAsDataURL() {
-          setTimeout(() => {
-            if (this.onerror) {
-              const errorEvent = new ProgressEvent('error');
-              this.onerror(errorEvent);
-            }
-          }, 0);
-        }
-        abort() {}
-        readAsArrayBuffer() {}
-        readAsBinaryString() {}
-        readAsText() {}
-        addEventListener() {}
-        removeEventListener() {}
-        dispatchEvent() {
-          return true;
-        }
-        readyState: number = 2;
-        error: any = null;
-        result: any = null;
-      }
-
-      window.FileReader = MockFileReader as any;
+      mockAuthService.updateAvatar = () => of(false);
 
       component.onAvatarSelected(event);
 
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
+      expect(component.isUploadingAvatar()).toBe(false);
       const errors = mockToastService.getErrors();
-      expect(errors).toContain('Could not read that file. Please try again.');
-      window.FileReader = originalFileReader;
+      expect(errors).toContain('Could not update photo. Please try again.');
     });
   });
 

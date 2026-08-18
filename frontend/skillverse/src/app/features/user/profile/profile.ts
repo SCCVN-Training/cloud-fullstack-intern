@@ -179,30 +179,20 @@ export class Profile {
 
     this.isUploadingAvatar.set(true);
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = reader.result as string;
-
-      this.authService.updateAvatar(dataUrl).subscribe({
-        next: (success) => {
-          this.isUploadingAvatar.set(false);
-          if (success) {
-            this.toastService.showSuccess('Profile photo updated.');
-          } else {
-            this.toastService.showError('Could not update photo. Please try again.');
-          }
-        },
-        error: () => {
-          this.isUploadingAvatar.set(false);
-          this.toastService.showError('Connection error! Please try again.');
-        },
-      });
-    };
-    reader.onerror = () => {
-      this.isUploadingAvatar.set(false);
-      this.toastService.showError('Could not read that file. Please try again.');
-    };
-    reader.readAsDataURL(file);
+    this.authService.updateAvatar(file).subscribe({
+      next: (success) => {
+        this.isUploadingAvatar.set(false);
+        if (success) {
+          this.toastService.showSuccess('Profile photo updated.');
+        } else {
+          this.toastService.showError('Could not update photo. Please try again.');
+        }
+      },
+      error: () => {
+        this.isUploadingAvatar.set(false);
+        this.toastService.showError('Connection error! Please try again.');
+      },
+    });
   }
 
   // ---- Skills I'm Learning ----

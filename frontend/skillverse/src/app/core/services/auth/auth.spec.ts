@@ -1,8 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { AuthService } from './auth';
 import { environment } from '../../../../environments/environment';
@@ -50,10 +47,7 @@ describe('AuthService', () => {
         isOnboarded: true,
       };
 
-      localStorage.setItem(
-        'skillverse_current_user',
-        JSON.stringify(user),
-      );
+      localStorage.setItem('skillverse_current_user', JSON.stringify(user));
 
       const newService = TestBed.inject(AuthService);
 
@@ -118,9 +112,7 @@ describe('AuthService', () => {
           expect(result).toBe(true);
         });
 
-      const req = httpMock.expectOne(
-        `${environment.apiUrl}/auth/register`,
-      );
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/register`);
 
       expect(req.request.method).toBe('POST');
 
@@ -148,9 +140,7 @@ describe('AuthService', () => {
           expect(result).toBe(false);
         });
 
-      const req = httpMock.expectOne(
-        `${environment.apiUrl}/auth/register`,
-      );
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/register`);
 
       req.flush(
         { detail: 'Registration failed' },
@@ -164,33 +154,29 @@ describe('AuthService', () => {
 
   describe('authenticate', () => {
     it('should login and fetch current user', () => {
-      service
-        .authenticate('john@example.com', 'password123')
-        .subscribe((result) => {
-          expect(result).toBe(true);
-          expect(service.isLoggedIn()).toBe(true);
+      service.authenticate('john@example.com', 'password123').subscribe((result) => {
+        expect(result).toBe(true);
+        expect(service.isLoggedIn()).toBe(true);
 
-          expect(service.currentUser()).toEqual({
-            id: '1',
-            name: 'John',
-            email: 'john@example.com',
-            password: '',
-            avatar: undefined,
-            isOnboarded: true,
-            profile: {
-              bio: 'Hello',
-              age: 25,
-              gender: 'Male',
-              interests: ['Coding'],
-              skillsLearning: ['Python'],
-              skillsTaught: 2,
-            },
-          });
+        expect(service.currentUser()).toEqual({
+          id: '1',
+          name: 'John',
+          email: 'john@example.com',
+          password: '',
+          avatar: undefined,
+          isOnboarded: true,
+          profile: {
+            bio: 'Hello',
+            age: 25,
+            gender: 'Male',
+            interests: ['Coding'],
+            skillsLearning: ['Python'],
+            skillsTaught: 2,
+          },
         });
+      });
 
-      const loginRequest = httpMock.expectOne(
-        `${environment.apiUrl}/auth/login`,
-      );
+      const loginRequest = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
 
       expect(loginRequest.request.method).toBe('POST');
 
@@ -199,9 +185,7 @@ describe('AuthService', () => {
         token_type: 'bearer',
       });
 
-      const meRequest = httpMock.expectOne(
-        `${environment.apiUrl}/auth/me`,
-      );
+      const meRequest = httpMock.expectOne(`${environment.apiUrl}/auth/me`);
 
       expect(meRequest.request.method).toBe('GET');
 
@@ -211,9 +195,7 @@ describe('AuthService', () => {
         email: 'john@example.com',
       });
 
-      const profileRequest = httpMock.expectOne(
-        `${environment.apiUrl}/users/1/profile`,
-      );
+      const profileRequest = httpMock.expectOne(`${environment.apiUrl}/users/1/profile`);
 
       expect(profileRequest.request.method).toBe('GET');
 
@@ -235,16 +217,12 @@ describe('AuthService', () => {
     });
 
     it('should return false when login fails', () => {
-      service
-        .authenticate('john@example.com', 'wrong-password')
-        .subscribe((result) => {
-          expect(result).toBe(false);
-          expect(service.isLoggedIn()).toBe(false);
-        });
+      service.authenticate('john@example.com', 'wrong-password').subscribe((result) => {
+        expect(result).toBe(false);
+        expect(service.isLoggedIn()).toBe(false);
+      });
 
-      const req = httpMock.expectOne(
-        `${environment.apiUrl}/auth/login`,
-      );
+      const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
 
       req.flush(
         { detail: 'Invalid credentials' },
@@ -279,9 +257,7 @@ describe('AuthService', () => {
           expect(result).toBe(true);
         });
 
-      const patchRequest = httpMock.expectOne(
-        `${environment.apiUrl}/users/1/profile`,
-      );
+      const patchRequest = httpMock.expectOne(`${environment.apiUrl}/users/1/profile`);
 
       expect(patchRequest.request.method).toBe('PATCH');
 
@@ -310,9 +286,7 @@ describe('AuthService', () => {
         is_onboarded: true,
       });
 
-      const meRequest = httpMock.expectOne(
-        `${environment.apiUrl}/auth/me`,
-      );
+      const meRequest = httpMock.expectOne(`${environment.apiUrl}/auth/me`);
 
       expect(meRequest.request.method).toBe('GET');
 
@@ -322,9 +296,7 @@ describe('AuthService', () => {
         email: 'john@example.com',
       });
 
-      const profileRequest = httpMock.expectOne(
-        `${environment.apiUrl}/users/1/profile`,
-      );
+      const profileRequest = httpMock.expectOne(`${environment.apiUrl}/users/1/profile`);
 
       expect(profileRequest.request.method).toBe('GET');
 
@@ -376,15 +348,11 @@ describe('AuthService', () => {
           expect(result).toBe(true);
         });
 
-      const requests = httpMock.match((request) =>
-        request.method === 'PATCH',
-      );
+      const requests = httpMock.match((request) => request.method === 'PATCH');
 
       expect(requests.length).toBe(2);
 
-      const userRequest = requests.find((request) =>
-        request.request.url.endsWith('/users/1'),
-      );
+      const userRequest = requests.find((request) => request.request.url.endsWith('/users/1'));
 
       const profileRequest = requests.find((request) =>
         request.request.url.endsWith('/users/1/profile'),
@@ -415,9 +383,7 @@ describe('AuthService', () => {
         is_onboarded: true,
       });
 
-      const meRequest = httpMock.expectOne(
-        `${environment.apiUrl}/auth/me`,
-      );
+      const meRequest = httpMock.expectOne(`${environment.apiUrl}/auth/me`);
 
       meRequest.flush({
         id: '1',
@@ -425,9 +391,7 @@ describe('AuthService', () => {
         email: 'new@example.com',
       });
 
-      const profileRequestAfterUpdate = httpMock.expectOne(
-        `${environment.apiUrl}/users/1/profile`,
-      );
+      const profileRequestAfterUpdate = httpMock.expectOne(`${environment.apiUrl}/users/1/profile`);
 
       profileRequestAfterUpdate.flush({
         id: 'profile-1',
@@ -474,9 +438,7 @@ describe('AuthService', () => {
           expect(result).toBe(true);
         });
 
-      const patchRequest = httpMock.expectOne(
-        `${environment.apiUrl}/users/1/profile`,
-      );
+      const patchRequest = httpMock.expectOne(`${environment.apiUrl}/users/1/profile`);
 
       expect(patchRequest.request.method).toBe('PATCH');
 
@@ -501,9 +463,7 @@ describe('AuthService', () => {
         is_onboarded: true,
       });
 
-      const meRequest = httpMock.expectOne(
-        `${environment.apiUrl}/auth/me`,
-      );
+      const meRequest = httpMock.expectOne(`${environment.apiUrl}/auth/me`);
 
       meRequest.flush({
         id: '1',
@@ -511,9 +471,7 @@ describe('AuthService', () => {
         email: 'john@example.com',
       });
 
-      const profileAfterUpdate = httpMock.expectOne(
-        `${environment.apiUrl}/users/1/profile`,
-      );
+      const profileAfterUpdate = httpMock.expectOne(`${environment.apiUrl}/users/1/profile`);
 
       profileAfterUpdate.flush({
         id: 'profile-1',
@@ -551,9 +509,7 @@ describe('AuthService', () => {
         expect(service.currentUser()).toBeNull();
       });
 
-      const req = httpMock.expectOne(
-        `${environment.apiUrl}/users/1`,
-      );
+      const req = httpMock.expectOne(`${environment.apiUrl}/users/1`);
 
       expect(req.request.method).toBe('DELETE');
 
@@ -571,11 +527,10 @@ describe('AuthService', () => {
         isOnboarded: true,
       });
 
-      service.updateAvatar('data:image/png;base64,test');
+      const file = new File(['test image content'], 'avatar.png', { type: 'image/png' });
 
-      expect(service.currentUser()?.avatar).toBe(
-        'data:image/png;base64,test',
-      );
+      service.updateAvatar(file);
+      expect(service.currentUser()?.avatar).toBe('data:image/png;base64,test');
     });
   });
 });
