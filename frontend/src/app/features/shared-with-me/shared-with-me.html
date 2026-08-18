@@ -7,23 +7,21 @@
       [totalBytes]="totalBytes()"
       [activeNav]="currentNav()"
       (navChange)="switchNav($any($event))"
-      (upload)="onUploadTrigger()"
       (collapsedChange)="onSidebarCollapseChange($event)"
     ></app-side-panel>
 
     <main class="main-canvas" [class.sidebar-collapsed]="isSidebarCollapsed()">
       <section class="content-section">
         <header class="section-header">
-          <!-- Breadcrumbs -->
           @if (breadcrumbs().length > 0) {
           <nav class="breadcrumb-nav" aria-label="Folder path">
-            <a class="breadcrumb-link" [routerLink]="currentSection() === 'shared-with-me' ? '/drive/shared-with-me' : '/drive/root'">
-              <mat-icon class="breadcrumb-home-icon">{{ currentSection() === 'shared-with-me' ? 'group' : 'home' }}</mat-icon>
+            <a class="breadcrumb-link" routerLink="/drive/shared-with-me">
+              <mat-icon class="breadcrumb-home-icon">group</mat-icon>
             </a>
             @for (crumb of breadcrumbs(); track crumb.id; let last = $last) {
               <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
               @if (!last) {
-                <a class="breadcrumb-link" [routerLink]="'/drive/' + currentSection() + '/folder/' + crumb.id">{{ crumb.name }}</a>
+                <a class="breadcrumb-link" [routerLink]="'/drive/shared-with-me/folder/' + crumb.id">{{ crumb.name }}</a>
               } @else {
                 <span class="breadcrumb-current">{{ crumb.name }}</span>
               }
@@ -31,7 +29,7 @@
           </nav>
           } @else {
           <h2>{{ pageTitle() }}</h2>
-          <p>{{ currentSection() === 'shared-with-me' ? 'Files and folders shared with you.' : 'Access your stored files and folders.' }}</p>
+          <p>Files and folders shared with you.</p>
           }
         </header>
 
@@ -43,12 +41,7 @@
         } @else if (items().length === 0) {
         <div class="empty-state">
           <mat-icon class="empty-icon">folder_open</mat-icon>
-          <p class="empty-label">This folder is empty.</p>
-          @if (canWrite()) {
-          <button mat-stroked-button color="primary" (click)="onUploadTrigger()">
-            <mat-icon>upload</mat-icon> Upload files or create a folder
-          </button>
-          }
+          <p class="empty-label">No items have been shared with you.</p>
         </div>
         } @else {
         <div class="cards-grid">
@@ -58,7 +51,6 @@
             (open)="onOpenItem($event)"
             (download)="onDownloadItem($event)"
             (share)="onShareItem($event)"
-            (trash)="onTrashItem($event)"
           ></app-drive-item-card>
           }
         </div>
@@ -70,8 +62,5 @@
   <app-mobile-bottom-nav
     [currentNav]="currentNav()"
     (navChange)="switchNav($any($event))"
-    (upload)="onUploadTrigger()"
   ></app-mobile-bottom-nav>
-
-  <app-upload-widget></app-upload-widget>
 </div>
