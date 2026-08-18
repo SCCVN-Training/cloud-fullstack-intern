@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   HostListener,
@@ -22,7 +23,7 @@ import { AnimeSeasonalStore } from '../../data-access/with-anime-store';
   templateUrl: './seasonal-anime-list.html',
   styleUrl: './seasonal-anime-list.scss',
 })
-export class SeasonalAnimeList implements OnInit, OnDestroy {
+export class SeasonalAnimeList implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLElement>;
 
   private readonly seasonalAnimeStore = inject(AnimeSeasonalStore);
@@ -46,23 +47,27 @@ export class SeasonalAnimeList implements OnInit, OnDestroy {
     if (this.seasonalAnimeStore.count() === 0) {
       this.animeEvent.loadSeasonal(1);
     }
+  }
 
-    // Setup scroll listener after view initialization
-    setTimeout(() => {
-      this.setupScrollListener();
-    }, 100);
+  ngAfterViewInit(): void {
+    this.setupScrollListener();
   }
 
   private setupScrollListener(): void {
     if (!this.scrollContainer) return;
 
-    fromEvent(this.scrollContainer.nativeElement, 'scroll')
+    fromEvent(window, 'scroll')
       .pipe(throttleTime(100), takeUntil(this.destroy$))
       .subscribe(() => {
-        const element = this.scrollContainer.nativeElement;
-        const scrollTop = element.scrollTop;
-        const scrollHeight = element.scrollHeight;
-        const clientHeight = element.clientHeight;
+        // const element = this.scrollContainer.nativeElement;
+        // const scrollTop = element.scrollTop;
+        // const scrollHeight = element.scrollHeight;
+        // const clientHeight = element.clientHeight;
+        // const remaining = scrollHeight - scrollTop - clientHeight;
+
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = document.documentElement.clientHeight;
         const remaining = scrollHeight - scrollTop - clientHeight;
 
         this.showScrollTop.set(scrollTop > 500);
@@ -111,12 +116,16 @@ export class SeasonalAnimeList implements OnInit, OnDestroy {
   }
 
   scrollToTop(): void {
-    if (this.scrollContainer) {
-      this.scrollContainer.nativeElement.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-    }
+    // if (this.scrollContainer) {
+    //   this.scrollContainer.nativeElement.scrollTo({
+    //     top: 0,
+    //     behavior: 'smooth',
+    //   });
+    // }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   }
 
   trackById(index: number, anime: AnimeSeasonalItem): number | string {
