@@ -1,4 +1,3 @@
-argon2
 argon2_cffi
 apscheduler
 pytest
