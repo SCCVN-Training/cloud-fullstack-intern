@@ -92,6 +92,7 @@ export interface AnimeSearchItem {
   status: string;
   siteUrl?: string;
   format?: string; // TV, MOVIE, OVA, etc.
+  seasonYear?: number;
 }
 
 // ============================================

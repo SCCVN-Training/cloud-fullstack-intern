@@ -1,0 +1,52 @@
+.export-controls-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.export-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+
+  button {
+    flex: 1; /* Cho phép 2 nút dàn đều chiều ngang */
+    min-width: 120px;
+    border-radius: 8px; /* Bo góc mềm mại hơn */
+  }
+}
+
+.export-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+
+  &.ready {
+    color: #10b981; /* Màu xanh lá (Emerald) cho trạng thái sẵn sàng */
+  }
+
+  &.busy {
+    color: var(--primary-blue, #2563eb); /* Màu xanh dương cho trạng thái đang xử lý */
+  }
+
+  .status-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* --- Responsive trên Mobile --- */
+@media (max-width: 580px) {
+  .export-actions {
+    flex-direction: column; /* Xếp dọc 2 nút nếu màn hình quá nhỏ */
+
+    button {
+      width: 100%;
+    }
+  }
+}

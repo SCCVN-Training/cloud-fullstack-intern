@@ -82,4 +82,9 @@ export class AnimeEffect {
       }),
     );
   }
+
+  clearSearch(): Observable<void> {
+    this.searchReducer.reset();
+    return EMPTY;
+  }
 }

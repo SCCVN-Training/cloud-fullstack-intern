@@ -1,0 +1,59 @@
+/* --- Khung ngoài của Switcher --- */
+.mode-switcher {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+
+  /* Ép các nút bên trong chia đều không gian */
+  mat-button-toggle {
+    flex: 1;
+  }
+}
+
+/* --- Nội dung bên trong nút --- */
+.toggle-content {
+  display: flex;
+  flex-direction: column; /* Đẩy icon lên trên text giống file cũ */
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  gap: 6px;
+
+  mat-icon {
+    font-size: 22px;
+    height: 22px;
+    width: 22px;
+    color: #6b7280; /* Màu xám cho trạng thái chưa chọn */
+    transition: color 0.2s ease;
+  }
+
+  span {
+    font-family:
+      'Inter',
+      system-ui,
+      -apple-system,
+      sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #4b5563;
+    line-height: 1;
+    transition: color 0.2s ease;
+  }
+}
+
+/* --- Trạng thái Active (Được chọn) --- */
+/* Ghi đè CSS mặc định của Material Toggle để đổi sang màu xanh Primary */
+::ng-deep .mode-switcher .mat-button-toggle-checked {
+  background-color: var(--primary-blue, #2563eb) !important;
+
+  .toggle-content {
+    mat-icon,
+    span {
+      color: #ffffff; /* Chữ trắng khi đang active */
+    }
+  }
+}

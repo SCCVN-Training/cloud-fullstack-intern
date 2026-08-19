@@ -1,0 +1,17 @@
+<mat-button-toggle-group
+  class="mode-switcher"
+  [attr.aria-label]="label()"
+  [value]="active()"
+  (change)="changed.emit($event.value)"
+  hideSingleSelectionIndicator="true"
+>
+  @for (mode of modes(); track mode.id) {
+    <mat-button-toggle [value]="mode.id">
+      <!-- Bọc nội dung để giữ nguyên layout icon nằm trên text -->
+      <div class="toggle-content">
+        <mat-icon>{{ mode.icon }}</mat-icon>
+        <span>{{ mode.label }}</span>
+      </div>
+    </mat-button-toggle>
+  }
+</mat-button-toggle-group>

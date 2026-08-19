@@ -33,6 +33,13 @@ export const dashboardRoutes: Routes = [
             (m) => m.SeasonalAnimeList,
           ),
       },
+      {
+        path: 'image-generation',
+        loadComponent: () =>
+          import('../image-generation/pages/image-generation/image-generation').then(
+            (m) => m.ImageGeneration,
+          ),
+      },
     ],
   },
 ];

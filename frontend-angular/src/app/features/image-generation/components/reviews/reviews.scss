@@ -1,0 +1,506 @@
+/* --- Typography Variables --- */
+$font-primary:
+  'Inter',
+  system-ui,
+  -apple-system,
+  sans-serif;
+$font-mono: 'ui-monospace', 'SFMono-Regular', Consolas, monospace;
+
+.page-wrap {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 40px 5vw;
+}
+
+/* --- Page Header --- */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--primary-blue, #2563eb);
+  font-family: $font-mono;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 32px;
+  height: 2px;
+  background: var(--primary-blue, #2563eb);
+}
+
+.page-title {
+  max-width: 750px;
+  margin: 20px 0 16px;
+  color: #111827;
+  font-family: $font-primary;
+  font-size: clamp(40px, 6vw, 80px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+
+  em {
+    color: var(--primary-blue, #2563eb);
+    font-style: normal;
+  }
+}
+
+.page-intro {
+  max-width: 550px;
+  color: #4b5563;
+  font-family: $font-primary;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* --- Layout Grid --- */
+.template-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr; /* Nới rộng một xíu cho Material components */
+  gap: 60px;
+  align-items: start;
+  margin-top: 50px;
+
+  @media (max-width: 992px) {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+/* --- Control Panel (Cột trái) --- */
+.control-panel {
+  position: sticky;
+  top: 40px;
+}
+
+.panel-kicker {
+  color: #6b7280;
+  font-family: $font-mono;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+.panel-title {
+  margin: 0 0 12px;
+  color: #111827;
+  font-family: $font-primary;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.panel-copy {
+  color: #4b5563;
+  font-family: $font-primary;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 30px;
+}
+
+.control-rule {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+  margin: 20px 0;
+}
+
+/* --- Material Form Controls --- */
+.review-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.material-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.field-label {
+  color: #374151;
+  font-family: $font-mono;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  strong {
+    color: var(--primary-blue, #2563eb);
+    font-size: 14px;
+  }
+}
+
+/* --- Material Export Card --- */
+.export-card {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  box-shadow: none !important; /* Xóa bóng mặc định của thẻ Card */
+
+  mat-card-header {
+    margin-bottom: 16px;
+  }
+
+  mat-card-title {
+    font-family: $font-primary;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  mat-card-subtitle {
+    font-family: $font-primary;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #64748b;
+    margin-top: 4px;
+  }
+}
+
+/* --- Preview Canvas (Cột phải) --- */
+.canvas-frame {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  background: #f3f4f6;
+}
+
+.canvas-meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px 16px;
+  color: #6b7280;
+  font-family: $font-mono;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.rank-canvas {
+  overflow: hidden;
+  border-radius: 16px;
+  color: #111827;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.review-image {
+  position: relative;
+  /* Tự động lùn xuống trên màn hình nhỏ, cao nhất là 320px */
+  height: clamp(200px, 40vw, 320px);
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(17, 24, 39, 0.9));
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.review-image-label {
+  position: absolute;
+  z-index: 1;
+  bottom: clamp(16px, 4vw, 24px); /* Thu gọn lề trên mobile */
+  left: clamp(20px, 5vw, 40px);
+  color: #a7f3d0;
+  font-family: $font-mono;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.review-body {
+  /* Tự thu lề từ 40px xuống còn 24px trên mobile */
+  padding: clamp(24px, 6vw, 40px);
+}
+
+.canvas-brand {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  color: #6b7280;
+  font-family: $font-mono;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  strong {
+    color: #111827;
+    font-family: $font-primary;
+    font-size: 14px;
+    font-weight: 800;
+  }
+}
+
+.review-title {
+  margin: 0 0 16px;
+  font-family: $font-primary;
+  /* Chữ tự động nhỏ lại để không bị tràn dòng */
+  font-size: clamp(24px, 6vw, 48px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.review-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  color: #6b7280;
+  font-family: $font-mono;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  /* CSS cho thẻ Dynamic Tag */
+  .tag {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+
+    &.masterpiece {
+      color: #064e3b;
+      background: #d1fae5;
+    }
+    &.worth {
+      color: #1e3a8a;
+      background: #dbeafe;
+    }
+    &.average {
+      color: #78350f;
+      background: #fef3c7;
+    }
+    &.bad {
+      color: #7f1d1d;
+      background: #fee2e2;
+    }
+  }
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 20px);
+  margin-top: clamp(24px, 5vw, 40px);
+}
+
+.rating-number {
+  color: var(--primary-blue, #2563eb);
+  font-family: $font-primary;
+  /* Chữ số tự thu từ 72px xuống 48px */
+  font-size: clamp(48px, 10vw, 72px);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+
+.stars-container {
+  position: relative;
+  display: inline-block;
+  font-size: clamp(14px, 3vw, 18px); /* Nhỏ lại trên mobile */
+  letter-spacing: 4px;
+  color: #e5e7eb;
+  margin-bottom: 4px;
+
+  .stars-filled {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    color: var(--primary-blue, #2563eb);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+.rating-label {
+  color: #6b7280;
+  font-family: $font-mono;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.review-quote {
+  margin: clamp(24px, 5vw, 32px) 0 0;
+  color: #374151;
+  font-family: $font-primary;
+  /* Tự động thu nhỏ cỡ chữ nội dung review */
+  font-size: clamp(16px, 4vw, 20px);
+  font-weight: 500;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 40px;
+  color: #6b7280;
+  font-family: $font-mono;
+  font-size: 12px;
+
+  mat-icon {
+    font-size: 32px;
+    height: 32px;
+    width: 32px;
+    color: #9ca3af;
+  }
+
+  strong {
+    color: #111827;
+  }
+}
+
+.profile-avatar {
+  display: block;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.canvas-footer {
+  display: flex;
+  justify-content: space-between;
+  /* Thu hẹp lề footer trên màn hình nhỏ */
+  padding: clamp(16px, 4vw, 24px) clamp(24px, 6vw, 40px);
+  border-top: 1px solid #f3f4f6;
+  color: #9ca3af;
+  font-family: $font-mono;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+
+  strong {
+    color: #111827;
+  }
+}
+
+/* --- Nút Select Anime --- */
+.select-anime-btn {
+  margin-bottom: 24px;
+  height: 48px;
+  border-radius: 8px;
+  font-family: $font-primary;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* --- Fieldset vô hiệu hóa (Ngăn tương tác) --- */
+.editor-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+
+  &:disabled {
+    opacity: 0.5; /* Làm mờ form khi chưa chọn anime */
+    pointer-events: none; /* Khóa tương tác chuột */
+  }
+}
+
+/* --- Khu vực Canvas mở rộng --- */
+.canvas-wrapper {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 600px; /* Chiều cao mặc định để màn hình khóa đẹp */
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.rank-canvas {
+  /* Dời border-radius và box-shadow lên wrapper để khi blur không bị tràn lề */
+  border-radius: 0;
+  box-shadow: none;
+  transition: filter 0.3s ease;
+
+  &.blur-content {
+    filter: blur(4px) grayscale(30%); /* Hiệu ứng làm mờ nội dung card cũ lúc đang tải card mới */
+  }
+}
+
+/* --- Màn hình khóa (Chưa chọn anime) --- */
+.locked-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  background: #f8fafc;
+  z-index: 10;
+
+  mat-icon {
+    font-size: 64px;
+    height: 64px;
+    width: 64px;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+  }
+
+  h3 {
+    font-family: $font-primary;
+    font-size: 24px;
+    font-weight: 700;
+    color: #334155;
+    margin: 0 0 10px;
+  }
+
+  p {
+    font-family: $font-primary;
+    font-size: 15px;
+    color: #64748b;
+    max-width: 320px;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+/* --- Màn hình Loading --- */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6); /* Nền trắng hơi mờ đè lên card */
+  z-index: 20;
+  backdrop-filter: blur(2px);
+
+  span {
+    margin-top: 16px;
+    font-family: $font-primary;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary-blue, #2563eb);
+  }
+}

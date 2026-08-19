@@ -22,6 +22,9 @@ export class AnimeEvent {
         debounceTime(300),
         distinctUntilChanged((prev, curr) => prev.query === curr.query),
         switchMap(({ query }) => {
+          if (!query.trim()) {
+            return this.animeEffect.clearSearch();
+          }
           // Fresh search always starts at page 1 and REPLACES old results
           return this.animeEffect.searchAnime(query, 1, false);
         }),

@@ -1,0 +1,155 @@
+<section class="page-wrap">
+  <div class="eyebrow">Review Template</div>
+  <h1 class="page-title">Share your<br /><em>thoughts.</em></h1>
+  <p class="page-intro">
+    Give your favorite anime the thoughtful review it deserves. Your profile and anime details are
+    automatically synced.
+  </p>
+
+  <div class="template-layout">
+    <aside class="control-panel">
+      <div class="panel-kicker">Review Details</div>
+      <h2 class="panel-title">Make it<br />personal.</h2>
+      <p class="panel-copy">
+        Select an anime, adjust your rating, and write a thoughtful review. Everything updates in
+        the live preview.
+      </p>
+
+      <div class="review-editor">
+        <!-- Nút Chọn / Đổi Anime -->
+        <button
+          mat-flat-button
+          color="primary"
+          class="full-width select-anime-btn"
+          (click)="openSearchDialog()"
+        >
+          <mat-icon>{{ selectedAnime() ? 'edit' : 'search' }}</mat-icon>
+          {{ selectedAnime() ? 'Change Anime' : 'Select Anime to Review' }}
+        </button>
+
+        <!-- Bọc Form bằng fieldset để vô hiệu hóa khi chưa có anime -->
+        <fieldset class="editor-fieldset" [disabled]="!selectedAnime() || isLoadingAnime()">
+          <div class="material-field-group">
+            <span class="field-label"
+              >Your Rating: <strong>{{ rating() | number: '1.1-1' }}</strong> / 10</span
+            >
+            <mat-slider min="1" max="10" step="0.5" discrete class="full-width">
+              <!-- [(ngModel)] với signal từ Angular 17.2+ không cần thêm () -->
+              <input matSliderThumb [(ngModel)]="rating" />
+            </mat-slider>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Your review</mat-label>
+            <textarea
+              matInput
+              [(ngModel)]="review"
+              placeholder="What did you think about this anime?"
+              rows="5"
+            ></textarea>
+          </mat-form-field>
+        </fieldset>
+      </div>
+
+      <hr class="control-rule" />
+
+      <!-- Export Area cũng bị vô hiệu hóa tương tự -->
+      <fieldset class="editor-fieldset" [disabled]="!selectedAnime() || isLoadingAnime()">
+        <mat-card class="export-card" appearance="outlined">
+          <mat-card-header>
+            <mat-icon mat-card-avatar color="primary">photo_camera</mat-icon>
+            <mat-card-title>Ready to share?</mat-card-title>
+            <mat-card-subtitle
+              >Download your beautifully formatted review card as an image.</mat-card-subtitle
+            >
+          </mat-card-header>
+          <mat-card-content>
+            <app-export-controls [target]="exportTarget" filename="anime-review" />
+          </mat-card-content>
+        </mat-card>
+      </fieldset>
+    </aside>
+
+    <div class="canvas-frame">
+      <div class="canvas-meta"><span>Live preview</span><span>1080 × 1350 px</span></div>
+
+      <!-- Wrapper cho khu vực hiển thị Card -->
+      <div class="canvas-wrapper">
+        <!-- Màn hình Loading -->
+        @if (isLoadingAnime()) {
+          <div class="loading-overlay">
+            <mat-spinner diameter="48"></mat-spinner>
+            <span>Preparing your canvas...</span>
+          </div>
+        }
+
+        <!-- Màn hình khóa lúc ban đầu (Chưa chọn anime) -->
+        @if (!selectedAnime() && !isLoadingAnime()) {
+          <div class="locked-state">
+            <mat-icon>movie_filter</mat-icon>
+            <h3>No Anime Selected</h3>
+            <p>Click "Select Anime to Review" on the left to start crafting your card.</p>
+          </div>
+        }
+
+        <!-- Review Card (Chỉ hiện rõ khi đã có Anime) -->
+        <div
+          class="rank-canvas review-canvas"
+          #exportTarget
+          [class.blur-content]="isLoadingAnime()"
+          [style.visibility]="selectedAnime() ? 'visible' : 'hidden'"
+        >
+          <div class="review-image">
+            <!-- Nếu chưa có ảnh thì sẽ không bị lỗi do đã ẩn -->
+            <img [src]="image()" [alt]="title()" crossorigin="anonymous" />
+            <span class="review-image-label">A review by {{ displayName }}</span>
+          </div>
+
+          <div class="review-body">
+            <div class="canvas-brand"><strong>OTAKUTORY</strong><span>Personal review</span></div>
+            <h2 class="review-title">{{ title() }}</h2>
+            <div class="review-meta">
+              @if (rating() >= 8.5) {
+                <span class="tag masterpiece">Masterpiece</span>
+              } @else if (rating() >= 7) {
+                <span class="tag worth">Worth the watch</span>
+              } @else if (rating() >= 5) {
+                <span class="tag average">Average</span>
+              } @else {
+                <span class="tag bad">Not Recommended</span>
+              }
+              <span>{{ displayName }}</span
+              ><span>2024—25</span>
+            </div>
+            <div class="rating-row">
+              <span class="rating-number">{{ rating() | number: '1.1-1' }}</span>
+              <div>
+                <div class="stars-container" [title]="rating() + ' out of 10'">
+                  <div class="stars-empty">★★★★★★★★★★</div>
+                  <!-- Tính phần trăm fill: (rating / 10) * 100 -->
+                  <div class="stars-filled" [style.width.%]="(rating() / 10) * 100">★★★★★★★★★★</div>
+                </div>
+              </div>
+            </div>
+            <!-- Hiện placeholder động nếu chưa nhập review -->
+            <p class="review-quote">“{{ review() || 'Write your review to see it here...' }}”</p>
+            <div class="review-author">
+              @if (avatarUrl) {
+                <img [src]="avatarUrl" alt="Profile" class="profile-avatar" />
+              } @else {
+                <mat-icon>account_circle</mat-icon>
+              }
+              <span
+                >Reviewed by <strong>{{ displayName }}</strong></span
+              >
+            </div>
+          </div>
+
+          <div class="canvas-footer">
+            <span>Thoughts worth keeping</span><strong>otakutory.com</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
