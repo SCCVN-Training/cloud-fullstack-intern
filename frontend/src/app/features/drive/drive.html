@@ -6,10 +6,9 @@
       [activeNav]="currentNav()"
       (navChange)="switchNav($any($event))"
       (upload)="onUploadTrigger()"
-      (collapsedChange)="onSidebarCollapseChange($event)"
     ></app-side-panel>
 
-    <main class="main-canvas" [class.sidebar-collapsed]="isSidebarCollapsed()">
+    <main class="main-canvas">
       <section class="content-section">
         <header class="section-header">
           <app-breadcrumb

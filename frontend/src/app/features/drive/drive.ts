@@ -106,8 +106,6 @@ export class Drive implements OnInit, OnDestroy {
 
   currentNav = signal<SidePanelNavKey>('home');
   isLoading = signal<boolean>(false);
-  isSidebarCollapsed = signal<boolean>(false);
-
   // Current navigation state
   currentSection = signal<DriveSection>('root');
   currentFolderId = signal<string | null>(null);
@@ -275,10 +273,6 @@ export class Drive implements OnInit, OnDestroy {
       );
       this.router.navigateByUrl('/drive/root');
     }
-  }
-
-  onSidebarCollapseChange(collapsed: boolean): void {
-    this.isSidebarCollapsed.set(collapsed);
   }
 
   switchNav(nav: SidePanelNavKey) {

@@ -53,7 +53,6 @@ export class Trash implements OnInit, OnDestroy {
 
   // State signals
   isLoading = signal<boolean>(false);
-  isSidebarCollapsed = signal<boolean>(false);
   currentNav = signal<SidePanelNavKey>('trash');
 
   items = signal<DriveItem[]>([]);
@@ -184,10 +183,6 @@ export class Trash implements OnInit, OnDestroy {
 
   switchNav(nav: SidePanelNavKey): void {
     this.currentNav.set(nav);
-  }
-
-  onSidebarCollapseChange(collapsed: boolean): void {
-    this.isSidebarCollapsed.set(collapsed);
   }
 
   onUploadTrigger(): void {
