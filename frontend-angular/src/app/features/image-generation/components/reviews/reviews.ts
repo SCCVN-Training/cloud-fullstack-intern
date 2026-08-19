@@ -30,7 +30,6 @@ import { ExportControls } from '../../components/export-controls/export-controls
     MatButtonModule,
     MatDialogModule,
     MatProgressSpinnerModule,
-    AnimeSearchDialog,
   ],
   templateUrl: './reviews.html',
   styleUrl: './reviews.scss',
