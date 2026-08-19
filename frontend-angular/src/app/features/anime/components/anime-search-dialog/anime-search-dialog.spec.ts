@@ -16,7 +16,11 @@ describe('AnimeSearchDialog', () => {
       providers: [
         {
           provide: MatDialogRef,
-          useValue: { close: () => {} }, // Mock hàm close để tránh lỗi khi component gọi this.dialogRef.close()
+          useValue: {
+            close: () => {
+              /* empty */
+            },
+          }, // Mock hàm close để tránh lỗi khi component gọi this.dialogRef.close()
         },
         {
           provide: MAT_DIALOG_DATA,
