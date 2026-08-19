@@ -181,10 +181,6 @@ export class Trash implements OnInit, OnDestroy {
     );
   }
 
-  switchNav(nav: SidePanelNavKey): void {
-    this.currentNav.set(nav);
-  }
-
   onUploadTrigger(): void {
     // When initiating upload from Trash page, redirect to active drive root
     this.router.navigateByUrl('/drive/root');

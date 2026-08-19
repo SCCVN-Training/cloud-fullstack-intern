@@ -2,10 +2,7 @@
   <app-dashboard-header></app-dashboard-header>
 
   <div class="workspace-container">
-    <app-side-panel
-      [activeNav]="currentNav()"
-      (navChange)="switchNav($any($event))"
-    ></app-side-panel>
+    <app-side-panel [activeNav]="currentNav()"></app-side-panel>
 
     <main class="main-canvas">
       <section class="content-section">
@@ -45,8 +42,5 @@
     </main>
   </div>
 
-  <app-mobile-bottom-nav
-    [activeNav]="currentNav()"
-    (navChange)="switchNav($any($event))"
-  ></app-mobile-bottom-nav>
+  <app-mobile-bottom-nav [activeNav]="currentNav()"></app-mobile-bottom-nav>
 </div>

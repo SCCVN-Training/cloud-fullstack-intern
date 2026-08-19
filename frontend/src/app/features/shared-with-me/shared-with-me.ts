@@ -55,7 +55,6 @@ export class SharedWithMe implements OnInit, OnDestroy {
 
   currentNav = signal<SidePanelNavKey>('shared');
   isLoading = signal<boolean>(false);
-  isSidebarCollapsed = signal<boolean>(false);
 
   currentFolderId = signal<string | null>(null);
   breadcrumbs = signal<BreadcrumbItem[]>([]);
@@ -191,14 +190,6 @@ export class SharedWithMe implements OnInit, OnDestroy {
       duration: 4000,
     });
     this.router.navigateByUrl('/drive/shared-with-me');
-  }
-
-  switchNav(nav: SidePanelNavKey) {
-    if (nav !== 'shared') this.router.navigateByUrl(`/drive/root`);
-  }
-
-  onSidebarCollapseChange(collapsed: boolean): void {
-    this.isSidebarCollapsed.set(collapsed);
   }
 
   onOpenItem(item: DriveItem): void {

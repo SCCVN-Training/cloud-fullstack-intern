@@ -143,12 +143,6 @@ export class UserProfile implements OnInit {
     this.activeSideNav.set(''); // Clear active highlight on side panel links
   }
 
-  // Triggered when user navigates using the side panel or mobile bottom nav
-  switchNav(navItem: SidePanelNavKey): void {
-    this.activeSideNav.set(navItem);
-    this.isProfileActive.set(false);
-  }
-
   onUploadTrigger(): void {
     console.log('Upload action triggered');
   }

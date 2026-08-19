@@ -5,10 +5,7 @@
   <!-- 2. WORKSPACE CONTAINER -->
   <div class="workspace-container">
     <!-- Side Panel handles storage & main file views -->
-    <app-side-panel
-      [activeNav]="activeSideNav()"
-      (navChange)="switchNav($event)"
-    ></app-side-panel>
+    <app-side-panel [activeNav]="activeSideNav()"></app-side-panel>
 
     <!-- MAIN CANVAS -->
     <main class="main-canvas">

@@ -4,7 +4,6 @@
   <div class="workspace-container">
     <app-side-panel
       [activeNav]="currentNav()"
-      (navChange)="switchNav($any($event))"
       (upload)="onUploadTrigger()"
     ></app-side-panel>
 
@@ -58,7 +57,6 @@
 
   <app-mobile-bottom-nav
     [activeNav]="currentNav()"
-    (navChange)="switchNav($any($event))"
     (upload)="onUploadTrigger()"
   ></app-mobile-bottom-nav>
 

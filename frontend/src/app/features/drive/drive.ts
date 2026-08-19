@@ -226,7 +226,20 @@ export class Drive implements OnInit, OnDestroy {
     this.initialized = true;
 
     this.currentFolderId.set(folderId);
-    this.currentNav.set('home');
+
+    if (path.includes('shared-with-me')) {
+      this.currentNav.set('shared');
+    } else if (path.includes('trash')) {
+      this.currentNav.set('trash');
+    } else if (path.includes('starred')) {
+      // this.currentNav.set('starred');
+      // Placeholder until Favorites page is implemented
+      this.currentNav.set('home');
+    } else if (path.includes('recent')) {
+      this.currentNav.set('recent');
+    } else {
+      this.currentNav.set('home'); // Default fallback
+    }
 
     if (folderId) {
       this.fetchBreadcrumbs(folderId, false);
@@ -273,10 +286,6 @@ export class Drive implements OnInit, OnDestroy {
       );
       this.router.navigateByUrl('/drive/root');
     }
-  }
-
-  switchNav(nav: SidePanelNavKey) {
-    this.currentNav.set(nav);
   }
 
   onUploadTrigger(): void {
