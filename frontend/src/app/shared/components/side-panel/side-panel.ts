@@ -57,7 +57,7 @@ export class SidePanel {
       label: 'Shared with me',
       route: '/drive/shared-with-me',
     },
-    { key: 'starred', icon: 'star', label: 'Starred', route: '/drive/root' },
+    { key: 'starred', icon: 'star', label: 'Favorites', route: '/drive/root' },
     { key: 'trash', icon: 'delete', label: 'Trash', route: '/trash' },
   ];
 

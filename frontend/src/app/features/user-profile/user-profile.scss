@@ -21,6 +21,21 @@
   padding: 32px;
   padding-bottom: 80px;
 
+  @media (min-width: 769px) {
+    :host:has(app-side-panel.is-collapsed) & {
+      margin-left: 72px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+    padding: 16px;
+
+    &.sidebar-collapsed {
+      margin-left: 0;
+    }
+  }
+
   .content-container {
     max-width: 896px; // ~ max-w-4xl
     margin: 0 auto;

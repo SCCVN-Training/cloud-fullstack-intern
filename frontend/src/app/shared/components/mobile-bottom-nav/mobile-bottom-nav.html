@@ -10,9 +10,11 @@
       <span>{{ item.label | uppercase }}</span>
     </button>
     }
-  </div>
 
-  <button class="fab-upload" (click)="upload.emit()">
-    <mat-icon>add</mat-icon>
-  </button>
+    <button class="nav-tab upload-tab" (click)="upload.emit()">
+      <div class="upload-btn-inner">
+        <mat-icon>add</mat-icon>
+      </div>
+    </button>
+  </div>
 </nav>
