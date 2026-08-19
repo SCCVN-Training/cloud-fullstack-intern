@@ -58,7 +58,7 @@
   </div>
 
   <app-mobile-bottom-nav
-    [currentNav]="currentNav()"
+    [activeNav]="currentNav()"
     (navChange)="switchNav($any($event))"
     (upload)="onUploadTrigger()"
   ></app-mobile-bottom-nav>
