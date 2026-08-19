@@ -3,8 +3,6 @@
 
   <div class="workspace-container">
     <app-side-panel
-      [usedBytes]="usedBytes()"
-      [totalBytes]="totalBytes()"
       [activeNav]="currentNav()"
       (navChange)="switchNav($any($event))"
       (upload)="onUploadTrigger()"
@@ -18,7 +16,8 @@
             [breadcrumbs]="breadcrumbs()"
             [section]="currentSection() === 'shared-with-me' ? 'shared-with-me' : 'drive'"
             [title]="pageTitle()"
-            [description]="currentSection() === 'shared-with-me' ? 'Files and folders shared with you.' : 'Access your stored files and folders.'">
+            [description]="currentSection() === 'shared-with-me' ? 'Files and folders shared with you.' : 'Access your stored files and folders.'"
+          >
           </app-breadcrumb>
         </header>
 
@@ -32,7 +31,11 @@
           <mat-icon class="empty-icon">folder_open</mat-icon>
           <p class="empty-label">This folder is empty.</p>
           @if (canWrite()) {
-          <button mat-stroked-button color="primary" (click)="onUploadTrigger()">
+          <button
+            mat-stroked-button
+            color="primary"
+            (click)="onUploadTrigger()"
+          >
             <mat-icon>upload</mat-icon> Upload files or create a folder
           </button>
           }
