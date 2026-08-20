@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { BrowseSkillsPage } from './browse-skills';
-import { SkillService } from '../../../core/services/skill/skill.service';
+import { SkillListResponse, SkillService } from '../../../core/services/skill/skill.service';
 import { Skill } from '../../../core/models/skill.model';
 
 const mockSkills: Skill[] = [
@@ -32,6 +32,9 @@ const mockSkills: Skill[] = [
   },
 ];
 
+const mockResponse: SkillListResponse = { total: mockSkills.length, skills: mockSkills };
+const emptyResponse: SkillListResponse = { total: 0, skills: [] };
+
 describe('BrowseSkillsPage', () => {
   let component: BrowseSkillsPage;
   let fixture: ComponentFixture<BrowseSkillsPage>;
@@ -45,7 +48,7 @@ describe('BrowseSkillsPage', () => {
         {
           provide: SkillService,
           useValue: {
-            getSkills: vi.fn().mockReturnValue(of(mockSkills)),
+            getSkills: vi.fn().mockReturnValue(of(mockResponse)),
           },
         },
       ],
@@ -61,10 +64,13 @@ describe('BrowseSkillsPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load skills from SkillService', () => {
-    expect(skillService.getSkills).toHaveBeenCalled();
+  it('should load skills from SkillService with pagination params', () => {
+    expect(skillService.getSkills).toHaveBeenCalledWith(
+      expect.objectContaining({ skip: 0, limit: component.pageSize }),
+    );
     expect(component.isLoading()).toBe(false);
-    expect(component.displayedSkills().length).toBe(mockSkills.length);
+    expect(component.skillsList().length).toBe(mockSkills.length);
+    expect(component.total()).toBe(mockSkills.length);
   });
 
   it('should render skill card', () => {
@@ -73,20 +79,34 @@ describe('BrowseSkillsPage', () => {
     expect(compiled.querySelector('.card-title')?.textContent).toContain(mockSkills[0].title);
   });
 
-  it('should show empty search state when search value is empty', async () => {
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+  it('should debounce search input and re-query the backend with the term', async () => {
+    vi.useFakeTimers();
+    const getSkillsSpy = skillService.getSkills as ReturnType<typeof vi.fn>;
+    getSkillsSpy.mockClear();
 
-    input.value = 'empty';
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+    input.value = 'react';
     input.dispatchEvent(new Event('input'));
 
+    vi.advanceTimersByTime(400);
+    fixture.detectChanges();
+
+    expect(getSkillsSpy).toHaveBeenCalledWith(expect.objectContaining({ search: 'react', skip: 0 }));
+    vi.useRealTimers();
+  });
+
+  it('should show empty state when the backend returns no results', async () => {
+    const getSkillsSpy = skillService.getSkills as ReturnType<typeof vi.fn>;
+    getSkillsSpy.mockReturnValue(of(emptyResponse));
+
+    component.clearFilters();
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(component.isSearchEmpty).toBe(true);
+    expect(component.isEmpty()).toBe(true);
 
     const compiled = fixture.nativeElement as HTMLElement;
-
     expect(compiled.querySelector('.empty-state')).not.toBeNull();
     expect(compiled.querySelector('.btn-clear')).not.toBeNull();
   });

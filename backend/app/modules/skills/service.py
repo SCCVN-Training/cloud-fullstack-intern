@@ -49,9 +49,15 @@ class SkillService:
         skip: int = 0, 
         limit: int = 20,
         search: Optional[str] = None,
-        category: Optional[str] = None
+        category: Optional[str] = None,
+        min_rating: Optional[float] = None,
+        min_price: Optional[int] = None,
+        max_price: Optional[int] = None,
+        sort: Optional[str] = None,
     ) -> SkillListResponse:
-        total, skills = await SkillRepository.get_all(db, skip, limit, search, category)
+        total, skills = await SkillRepository.get_all(
+            db, skip, limit, search, category, min_rating, min_price, max_price, sort
+        )
         
         # Format all skills
         response_skills = []
@@ -60,6 +66,10 @@ class SkillService:
             response_skills.append(formatted_skill)
             
         return SkillListResponse(total=total, skills=response_skills)
+
+    @classmethod
+    async def get_categories(cls, db: AsyncSession) -> List[str]:
+        return await SkillRepository.get_distinct_categories(db)
 
     @classmethod
     async def get_skill_by_id(cls, db: AsyncSession, skill_id: uuid.UUID) -> SkillResponse:
