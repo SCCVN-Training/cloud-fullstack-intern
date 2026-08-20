@@ -1,10 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
+from slowapi.errors import RateLimitExceeded
 
 from app.core.database import Base, engine
 from app.core.config import settings
+from app.core.rate_limit import limiter
 from app.modules.auth.router import router as auth_router
 from app.modules.users.router import router as users_router, admin_router as users_admin_router
 from app.modules.profiles.router import router as profiles_router
@@ -32,6 +35,19 @@ app = FastAPI(
 
 # Register Global Exception Handlers
 register_exception_handlers(app)
+
+# Rate limiting — attach the shared limiter to app.state (required by
+# slowapi so @limiter.limit(...) decorators on routers can find it), and
+# translate a blocked request into the same {"detail": ...} shape the
+# rest of the API already uses instead of slowapi's default body.
+app.state.limiter = limiter
+
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        content={"detail": f"Rate limit exceeded: {exc.detail}. Please slow down and try again shortly."},
+    )
 
 # Serve locally-uploaded files (avatars for now) at /media/... — a
 # stand-in for S3 until that's wired up in Week 7-8. os.makedirs here

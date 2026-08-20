@@ -9,7 +9,33 @@ describe('AuthService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    localStorage.clear();
+    const storage = {
+      store: new Map<string, string>(),
+      clear() {
+        this.store.clear();
+      },
+      getItem(key: string) {
+        return this.store.has(key) ? this.store.get(key)! : null;
+      },
+      setItem(key: string, value: string) {
+        this.store.set(key, value);
+      },
+      removeItem(key: string) {
+        this.store.delete(key);
+      },
+      key(index: number) {
+        return Array.from(this.store.keys())[index] ?? null;
+      },
+      get length() {
+        return this.store.size;
+      },
+    };
+
+    Object.defineProperty(globalThis, 'localStorage', {
+      value: storage,
+      configurable: true,
+      writable: true,
+    });
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -22,7 +48,7 @@ describe('AuthService', () => {
 
   afterEach(() => {
     httpMock.verify();
-    localStorage.clear();
+    globalThis.localStorage?.clear();
   });
 
   describe('constructor', () => {
@@ -32,6 +58,12 @@ describe('AuthService', () => {
 
     it('should restore login state from localStorage', () => {
       localStorage.setItem('access_token', 'test-token');
+      
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule],
+        providers: [AuthService],
+      });
 
       const newService = TestBed.inject(AuthService);
 
@@ -45,9 +77,16 @@ describe('AuthService', () => {
         email: 'john@example.com',
         password: '',
         isOnboarded: true,
+        role: 'user',
       };
 
       localStorage.setItem('skillverse_current_user', JSON.stringify(user));
+
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule],
+        providers: [AuthService],
+      });
 
       const newService = TestBed.inject(AuthService);
 
@@ -164,6 +203,7 @@ describe('AuthService', () => {
           email: 'john@example.com',
           password: '',
           avatar: undefined,
+          role: 'user',
           isOnboarded: true,
           profile: {
             bio: 'Hello',
@@ -529,8 +569,28 @@ describe('AuthService', () => {
 
       const file = new File(['test image content'], 'avatar.png', { type: 'image/png' });
 
-      service.updateAvatar(file);
-      expect(service.currentUser()?.avatar).toBe('data:image/png;base64,test');
+      service.updateAvatar(file).subscribe((result) => {
+        expect(result).toBe(true);
+        expect(service.currentUser()?.avatar).toBe('data:image/png;base64,test');
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}/users/1/profile/avatar`);
+
+      req.flush({
+        id: 'profile-1',
+        user_id: '1',
+        user_name: 'John',
+        bio: '',
+        avatar_url: 'data:image/png;base64,test',
+        age: 25,
+        gender: 'Male',
+        interests: [],
+        skills_learning: [],
+        skills_learning_total: 0,
+        skills_taught: [],
+        skills_taught_total: 0,
+        is_onboarded: true,
+      });
     });
   });
 });

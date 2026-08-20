@@ -20,40 +20,57 @@
           placeholder="Search for skills..."
           type="text"
           #searchInput
+          [value]="searchTerm()"
           (input)="onSearch(searchInput.value)"
         />
       </div>
 
       <div class="filters-wrapper">
-        <button class="filter-btn">
-          Category
-          <span class="material-symbols-outlined">expand_more</span>
-        </button>
+        <div class="filter-dropdown">
+          <select
+            class="filter-btn sort-select"
+            [value]="selectedSort()"
+            (change)="selectSort($any($event.target).value)"
+          >
+            @for (choice of sortChoices; track choice.value) {
+              <option [value]="choice.value">{{ choice.label }}</option>
+            }
+          </select>
+        </div>
 
-        <button class="filter-btn">
-          Rating
-          <span class="material-symbols-outlined">star</span>
-        </button>
+        <div class="price-range">
+          <input
+            class="price-input"
+            type="number"
+            min="0"
+            placeholder="Min price"
+            [value]="minPrice()"
+            (input)="onMinPriceChange($any($event.target).value)"
+          />
+          <span class="price-range-sep">–</span>
+          <input
+            class="price-input"
+            type="number"
+            min="0"
+            placeholder="Max price"
+            [value]="maxPrice()"
+            (input)="onMaxPriceChange($any($event.target).value)"
+          />
+        </div>
       </div>
     </div>
   </header>
 
-  @if (!isSearchEmpty) {
+  @if (!isEmpty()) {
     <section class="skill-grid grid-3 gap-md">
       @if (isLoading()) {
         <p>Loading skills...</p>
       } @else {
-        @for (skill of displayedSkills(); track skill.id) {
+        @for (skill of skillsList(); track skill.id) {
           <article class="skill-card group">
             <!-- Image -->
             <div class="card-image-wrapper">
               <img class="card-image" [src]="skill.image" [alt]="skill.title" />
-
-              <div class="coin-badge text-primary text-label-sm">
-                <span class="material-symbols-outlined icon-sm"> toll </span>
-
-                {{ skill.price }}
-              </div>
             </div>
 
             <!-- Content -->
@@ -95,12 +112,19 @@
               </div>
 
               <!-- Button -->
-              <button
-                class="btn-view text-primary text-label-md"
-                [routerLink]="['/skill-details', skill.id]"
-              >
-                View Details
-              </button>
+              <div class="card-footer">
+                <span class="price-tag text-primary text-title-md">
+                  <span class="material-symbols-outlined icon-sm">toll</span>
+                  {{ skill.price }}
+                </span>
+
+                <button
+                  class="btn-view text-primary text-label-md"
+                  [routerLink]="['/skill-details', skill.id]"
+                >
+                  View Details
+                </button>
+              </div>
             </div>
           </article>
         }
