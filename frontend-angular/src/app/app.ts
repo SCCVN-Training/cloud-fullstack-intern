@@ -13,6 +13,6 @@ export class App {
   readonly appStore = inject(AppStore);
 
   // constructor() {
-  //   inject(AppEvent).initializeApp();
+  //   inject(AppEvent).initializeAppAsync();
   // }
 }

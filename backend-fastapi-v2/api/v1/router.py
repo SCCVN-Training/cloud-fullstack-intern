@@ -4,6 +4,7 @@ from shared.config import settings
 # Import module routers
 from modules.auth.routers import auth_router
 from modules.profile.routers import profile_router
+from modules.anime.routers import anime_router
 
 # Main API Gateway router
 router = APIRouter(
@@ -20,10 +21,9 @@ if settings.enable_auth:
 if settings.enable_profile:
     router.include_router(profile_router)
 
-# Future modules (commented out until created)
-# if settings.enable_anime:
-#     from modules.anime.router import anime_router
-#     router.include_router(anime_router)
+
+if settings.enable_anime:
+    router.include_router(anime_router)
 
 # if settings.enable_manga:
 #     from modules.manga.router import manga_router

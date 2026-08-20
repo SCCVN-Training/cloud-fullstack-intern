@@ -23,18 +23,31 @@ Otakutory is a web application where users can create a personal profile and sha
 ### Frontend
 
 ```bash
-cd frontend
+cd frontend-angular
 npm install
-ng serve
+npm start
 ```
 
 ### Backend
 
+#### Monolithic
+
 ```bash
-cd backend
+cd backend-fastapi-v2
+python -m venv venv
+.\venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
+
+#### Microservices (using uv)
+
+```bash
+cd microservices
+uv sync --all-packages
+```
+
+After that, run the file `run-services.bat`
 
 ## Contribution
 

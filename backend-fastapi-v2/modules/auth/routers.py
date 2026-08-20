@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.database import get_db, get_mongo_db
-from shared.dependencies import get_current_user
+from modules.auth.dependencies import get_current_user
 from shared.models import ApiResponse
 
 from modules.auth.schemas import (
@@ -14,6 +14,8 @@ from modules.auth.schemas import (
 )
 from modules.auth.services import AuthService
 from modules.auth.models import UserAccountModel
+from modules.auth.rate_limit import AuthRateLimiter, get_auth_rate_limiter
+
 # ============ Router Setup ============
 
 auth_router = APIRouter(
@@ -40,9 +42,11 @@ async def get_auth_service(
     status_code=status.HTTP_201_CREATED,
 )
 async def register(
+    request: Request,
     payload: RegisterRequest,
     response: Response,
     service: AuthService = Depends(get_auth_service),
+    rate_limiter: AuthRateLimiter = Depends(get_auth_rate_limiter),
 ):
     """
     Register a new user.
@@ -52,6 +56,14 @@ async def register(
 
     Sets authentication cookies (auto-login).
     """
+    allowed, remaining, retry_after = await rate_limiter.check_register(request)
+    if not allowed:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many registration attempts. Please try again later.",
+            headers={"Retry-After": str(retry_after)},
+        )
+
     return await service.register(
         request=payload,
         response=response,
@@ -64,15 +76,26 @@ async def register(
     status_code=status.HTTP_200_OK,
 )
 async def login(
+    request: Request,
     payload: LoginRequest,
     response: Response,
     service: AuthService = Depends(get_auth_service),
+    rate_limiter: AuthRateLimiter = Depends(get_auth_rate_limiter)
 ):
     """
     Login user.
 
     Validates credentials and sets authentication cookies.
     """
+
+    allowed, remaining, retry_after = await rate_limiter.check_login(request)
+
+    if not allowed:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many login attempts. Please try again later.",
+            headers={"Retry-After": str(retry_after)},
+        )
     return await service.login(
         request=payload,
         response=response,
@@ -88,6 +111,7 @@ async def refresh_session(
     request: Request,
     response: Response,
     service: AuthService = Depends(get_auth_service),
+    rate_limiter: AuthRateLimiter = Depends(get_auth_rate_limiter)
 ):
     """
     Refresh session using refresh token cookie.
@@ -95,6 +119,13 @@ async def refresh_session(
     Called when access token expires.
     Sets new access_token cookie.
     """
+    allowed, remaining, retry_after = await rate_limiter.check_refresh(request)
+    if not allowed:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many refresh attempts. Please try again later.",
+            headers={"Retry-After": str(retry_after)},
+        )
     return await service.refresh_session(
         request=request,
         response=response,
@@ -107,6 +138,7 @@ async def refresh_session(
     status_code=status.HTTP_200_OK,
 )
 async def logout(
+    request: Request,
     response: Response,
     service: AuthService = Depends(get_auth_service),
 ):
@@ -115,7 +147,7 @@ async def logout(
 
     Clears authentication cookies.
     """
-    return await service.logout(response=response)
+    return await service.logout(request=request, response=response)
 
 
 @auth_router.get(
@@ -124,13 +156,22 @@ async def logout(
     status_code=status.HTTP_200_OK,
 )
 async def get_me(
+    request: Request,
     current_user: UserAccountModel = Depends(get_current_user),
+    rate_limiter: AuthRateLimiter = Depends(get_auth_rate_limiter)
 ):
     """
     Get current authenticated user.
 
     Returns user data from access token cookie.
     """
+    allowed, remaining, retry_after = await rate_limiter.check_me(request)
+    if not allowed:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many requests. Please try again later.",
+            headers={"Retry-After": str(retry_after)},
+        )
     return {
         "message": "Current user retrieved successfully.",
         "data": {

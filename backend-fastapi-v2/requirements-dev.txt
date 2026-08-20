@@ -1,0 +1,12 @@
+# Development dependencies
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+httpx>=0.24.0
+
+# In-memory databases (no Docker!)
+aiosqlite>=0.19.0          # SQLite with async support
+mongomock-motor>=0.0.11    # MongoDB in-memory mock
+fakeredis[lua]>=2.19.0     # Redis in-memory mock
+python-dotenv>=1.0.0       # Load .env.test

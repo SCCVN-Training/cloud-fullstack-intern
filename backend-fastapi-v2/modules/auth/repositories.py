@@ -42,17 +42,17 @@ class AuthRepository(BaseRepository[UserAccountModel]):
         )
         return result.scalar_one_or_none()
 
-    async def get_active_users(self) -> list[UserAccountModel]:
-        """
-        Get all active users.
+    # async def get_active_users(self) -> list[UserAccountModel]:
+    #     """
+    #     Get all active users.
 
-        Returns:
-            List of active users
-        """
-        result = await self.session.execute(
-            select(UserAccountModel).where(UserAccountModel.is_active == True)
-        )
-        return result.scalars().all()
+    #     Returns:
+    #         List of active users
+    #     """
+    #     result = await self.session.execute(
+    #         select(UserAccountModel).where(UserAccountModel.is_active == True)
+    #     )
+    #     return result.scalars().all()
 
     async def check_email_exists(self, email: str) -> bool:
         """
@@ -69,26 +69,26 @@ class AuthRepository(BaseRepository[UserAccountModel]):
         )
         return result.scalar_one_or_none() is not None
 
-    async def deactivate_user(self, user_id: UUID) -> Optional[UserAccountModel]:
-        """
-        Soft delete a user (set is_active=False).
+    # async def deactivate_user(self, user_id: UUID) -> Optional[UserAccountModel]:
+    #     """
+    #     Soft delete a user (set is_active=False).
 
-        Args:
-            user_id: UserAccountModel ID to deactivate
+    #     Args:
+    #         user_id: UserAccountModel ID to deactivate
 
-        Returns:
-            Updated user if found, None otherwise
-        """
-        return await self.update(user_id, is_active=False)
+    #     Returns:
+    #         Updated user if found, None otherwise
+    #     """
+    #     return await self.update(user_id, is_active=False)
 
-    async def reactivate_user(self, user_id: UUID) -> Optional[UserAccountModel]:
-        """
-        Reactivate a user (set is_active=True).
+    # async def reactivate_user(self, user_id: UUID) -> Optional[UserAccountModel]:
+    #     """
+    #     Reactivate a user (set is_active=True).
 
-        Args:
-            user_id: UserAccountModel ID to reactivate
+    #     Args:
+    #         user_id: UserAccountModel ID to reactivate
 
-        Returns:
-            Updated user if found, None otherwise
-        """
-        return await self.update(user_id, is_active=True)
+    #     Returns:
+    #         Updated user if found, None otherwise
+    #     """
+    #     return await self.update(user_id, is_active=True)

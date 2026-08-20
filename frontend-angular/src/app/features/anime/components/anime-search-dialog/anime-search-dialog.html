@@ -1,0 +1,93 @@
+<div class="dialog-container">
+  <div mat-dialog-title class="dialog-header">
+    <h2 class="m-0">Find Anime</h2>
+    <button mat-icon-button (click)="close()" tabindex="-1">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div mat-dialog-content class="dialog-content">
+    <!-- Thanh tìm kiếm -->
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        placeholder="Type an anime title (e.g. Frieren, Naruto...)"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearch($event)"
+        autocomplete="off"
+        cdkFocusInitial
+      />
+      @if (searchQuery) {
+        <button mat-icon-button matSuffix (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <!-- Thanh Loading -->
+    <div class="loading-wrapper">
+      @if (isLoading()) {
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      }
+    </div>
+
+    <!-- Danh sách kết quả -->
+    <div class="results-container" (scroll)="onScroll($event)">
+      @if (!isLoading() && !isTyping() && searchQuery && searchResults().length === 0) {
+        <div class="empty-state">
+          <mat-icon>search_off</mat-icon>
+          <p>No anime found for "{{ searchQuery }}"</p>
+        </div>
+      }
+
+      @for (anime of searchResults(); track anime.id) {
+        <div class="result-item" [class.disabled]="isExcluded(anime.id)">
+          <img
+            [src]="anime.coverImage?.medium || anime.coverImage?.large"
+            [alt]="anime.title?.romaji"
+            class="anime-thumb"
+            crossorigin="anonymous"
+          />
+
+          <div class="anime-info">
+            <h3 class="anime-title">{{ anime.title?.english || anime.title?.romaji }}</h3>
+            <div class="anime-meta">
+              <span class="year">{{ anime.seasonYear || 'N/A' }}</span>
+              <span class="dot">•</span>
+              <span class="format">{{ anime.format || 'TV' }}</span>
+
+              @if (isExcluded(anime.id)) {
+                <span class="already-selected">Already added</span>
+              }
+            </div>
+          </div>
+
+          <!-- Nút + tròn nhỏ được đẩy sang góc phải -->
+          @if (!isExcluded(anime.id)) {
+            <div class="anime-action">
+              <button
+                mat-icon-button
+                color="primary"
+                class="add-btn"
+                (click)="selectAnime(anime)"
+                title="Select Anime"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      }
+
+      @if (isLoading() && searchResults().length > 0) {
+        <div
+          class="loading-more-indicator"
+          style="text-align: center; padding: 16px; color: #94a3b8; font-size: 12px"
+        >
+          Loading more anime...
+        </div>
+      }
+    </div>
+  </div>
+</div>

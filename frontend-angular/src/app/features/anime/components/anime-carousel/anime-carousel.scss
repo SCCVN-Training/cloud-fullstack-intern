@@ -1,0 +1,126 @@
+@import '../../../../app.scss';
+
+:host {
+  display: block;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto; // center the whole carousel
+  padding: 0 16px; // add side padding to prevent touching edges
+}
+
+.viewport-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.viewport {
+  display: flex;
+  gap: 14px; // reduced from 18px
+  width: 100%;
+  padding: 4px 0 10px;
+  overflow-x: auto;
+  scroll-behavior: auto;
+  scrollbar-width: none;
+  outline: none;
+}
+
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+.viewport:focus-visible {
+  box-shadow: 0 0 0 1px $primary-blue;
+}
+
+.carousel-card {
+  // Smaller, more responsive sizing
+  flex: 0 0 clamp(160px, 14vw, 220px);
+}
+
+.skeleton-card {
+  height: 320px;
+  border-radius: 3px;
+  background: #e8e8e8;
+  background: linear-gradient(90deg, #e8e8e8 25%, #f5f5f5 50%, #e8e8e8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.carousel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px; // slightly reduced
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 14px; // slightly narrower
+  height: 2px;
+  padding: 0;
+  border: 0;
+  background: #45444c;
+  cursor: pointer;
+  transition:
+    width 220ms ease,
+    background 220ms ease;
+}
+
+.dot.active {
+  width: 30px;
+  background: $primary-blue;
+}
+
+.drag-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #67656d;
+  font-size: 9px; // smaller
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.drag-line {
+  width: 20px;
+  height: 1px;
+  background: #67656d;
+}
+
+// Mobile adjustments
+@media (max-width: 760px) {
+  :host {
+    padding: 0 8px;
+  }
+  .viewport {
+    gap: 10px;
+  }
+  .carousel-card {
+    flex-basis: 140px; // smaller on mobile
+  }
+  .drag-hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    scroll-behavior: auto;
+  }
+  .skeleton-card {
+    animation: none;
+  }
+}

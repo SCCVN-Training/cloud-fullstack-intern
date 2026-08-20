@@ -1,0 +1,71 @@
+<div class="seasonal-anime-container">
+  <!-- Header -->
+  <div class="header">
+    <h2>Seasonal Anime</h2>
+    <span class="count">{{ seasonalAnimeList().length }} titles</span>
+  </div>
+
+  <!-- Single Scroll Container -->
+  <div #scrollContainer class="scroll-container">
+    <!-- Anime Grid - Smaller Cards -->
+    <div class="anime-grid">
+      @for (anime of seasonalAnimeList(); track trackById($index, anime)) {
+        <app-anime-card
+          [anime]="anime"
+          [class.loading-item]="seasonalAnimeLoading()"
+          class="compact-card"
+        >
+        </app-anime-card>
+      } @empty {
+        @if (!seasonalAnimeLoading()) {
+          <div class="empty-state">
+            <span class="empty-icon">📺</span>
+            <span>No seasonal anime available</span>
+            <button (click)="retryLoad()" class="retry-btn">Retry</button>
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Loading Indicator -->
+    @if (seasonalAnimeLoading() && seasonalAnimeList().length > 0) {
+      <div class="loader-wrapper">
+        <div class="loader">
+          <div class="spinner"></div>
+          <span>Loading more anime...</span>
+        </div>
+      </div>
+    }
+
+    <!-- End of List -->
+    @if (!seasonalAnimeHasNextPage() && seasonalAnimeList().length > 0) {
+      <div class="end-message">
+        <span class="end-icon">🎉</span>
+        <span>You've reached the end!</span>
+        <span class="end-subtext">{{ seasonalAnimeList().length }} anime loaded</span>
+      </div>
+    }
+
+    <!-- Initial Loading -->
+    @if (seasonalAnimeLoading() && seasonalAnimeList().length === 0) {
+      <div class="initial-loading">
+        <div class="spinner-large"></div>
+        <span>Loading seasonal anime...</span>
+      </div>
+    }
+
+    <!-- Error State -->
+    @if (seasonalAnimeError()) {
+      <div class="error-state">
+        <span class="error-icon">⚠️</span>
+        <span class="error-message">{{ seasonalAnimeError() }}</span>
+        <button (click)="retryLoad()" class="retry-btn">Try Again</button>
+      </div>
+    }
+
+    <!-- Scroll to Top Button -->
+    @if (showScrollTop()) {
+      <button class="scroll-top-btn" (click)="scrollToTop()" aria-label="Scroll to top">↑</button>
+    }
+  </div>
+</div>

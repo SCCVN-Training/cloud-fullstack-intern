@@ -28,8 +28,8 @@ from .security import (
     verify_password,
 )
 from .repositories import BaseRepository
-from .dependencies import get_current_user, get_current_user_optional
 from .utils import get_logger
+from .rate_limiter import BaseRateLimiter, get_rate_limiter
 
 __all__ = [
     # Config
@@ -62,10 +62,10 @@ __all__ = [
     # Repositories
     "BaseRepository",
 
-    # Dependencies
-    "get_current_user",
-    "get_current_user_optional",
-
     # Utils
     "get_logger",
+
+    # Rate Limiter
+    "BaseRateLimiter",
+    "get_rate_limiter",
 ]

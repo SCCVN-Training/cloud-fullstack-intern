@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - dev-du
-      # - du-feature/**
-      # - du-fix/**
-      # - du-chore/**
-      # - du-docs/**
-      # - du-refactor/**
 
   pull_request:
     branches:
@@ -30,9 +25,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24 # Latest Active LTS version
+          node-version: 24
           cache: npm
-          cache-dependency-path: frontend-angular/package-lock.json # Fixed path mismatch
+          cache-dependency-path: frontend-angular/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -57,24 +52,58 @@ jobs:
 
     services:
       postgres:
-        image: postgres:18 # Upgraded to the newest stable Postgres major version
-
+        image: postgres:18
         env:
           POSTGRES_DB: testdb
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-
         ports:
           - 5432:5432
-
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis/redis-stack:7.2.0-v0
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+      ENVIRONMENT: test
+      DEBUG: true
+      GITHUB_ACTIONS: true
+      RUN_REAL_INTEGRATION: true
+
+      NEON_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/testdb
+      MONGODB_CONNECTION_URI: mongodb://localhost:27017
+      MONGODB_DATABASE_NAME: test_logs
+      REDIS_URL: redis://localhost:6379 # <-- FIXED: removed "rediss://"
+      CACHE_PREFIX_RATE_LIMIT: test_limiter
+
+      JWT_SECRET_KEY: test_secret_key_32_chars_long_enough
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+
+      ENABLE_AUTH: true
+      ENABLE_PROFILE: true
 
     steps:
       - name: Checkout repository
@@ -83,15 +112,173 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.14" # Upgraded to the latest stable Python release
+          python-version: "3.14"
           cache: pip
-          cache-dependency-path: backend-fastapi-v2/requirements.txt # Optional: Added pip caching
+          cache-dependency-path: backend-fastapi-v2/requirements.txt
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest
+          pip install pytest pytest-cov pytest-asyncio httpx
+          pip install aiosqlite mongomock-motor fakeredis
+          pip install alembic asyncpg
 
-      - name: Run backend tests
-        run: pytest
+      # ============================================
+      # STEP: Test Database Connectivity
+      # ============================================
+      - name: Test database connectivity
+        run: |
+          echo "========================================"
+          echo "Testing PostgreSQL connection..."
+          echo "========================================"
+          python -c "
+          import asyncio
+          import asyncpg
+          import os
+
+          async def test_postgres():
+              try:
+                  conn = await asyncpg.connect(
+                      host='localhost',
+                      port=5432,
+                      database='testdb',
+                      user='postgres',
+                      password='postgres'
+                  )
+                  result = await conn.fetchval('SELECT 1')
+                  print(f'✅ PostgreSQL connected successfully! Result: {result}')
+                  await conn.close()
+                  return True
+              except Exception as e:
+                  print(f'❌ PostgreSQL connection failed: {e}')
+                  return False
+
+          success = asyncio.run(test_postgres())
+          if not success:
+              exit(1)
+          "
+
+          echo ""
+          echo "========================================"
+          echo "Testing MongoDB connection..."
+          echo "========================================"
+          python -c "
+          import asyncio
+          from motor.motor_asyncio import AsyncIOMotorClient
+
+          async def test_mongodb():
+              try:
+                  client = AsyncIOMotorClient('mongodb://localhost:27017', serverSelectionTimeoutMS=5000)
+                  await client.admin.command('ping')
+                  print('✅ MongoDB connected successfully!')
+                  client.close()
+                  return True
+              except Exception as e:
+                  print(f'❌ MongoDB connection failed: {e}')
+                  return False
+
+          success = asyncio.run(test_mongodb())
+          if not success:
+              exit(1)
+          "
+
+          echo ""
+          echo "========================================"
+          echo "Testing Redis connection..."
+          echo "========================================"
+          python -c "
+          import asyncio
+          import redis.asyncio as redis
+
+          async def test_redis():
+              try:
+                  client = redis.from_url('redis://localhost:6379', decode_responses=True)
+                  result = await client.ping()
+                  print(f'✅ Redis connected successfully! Ping: {result}')
+                  await client.aclose()
+                  return True
+              except Exception as e:
+                  print(f'❌ Redis connection failed: {e}')
+                  return False
+
+          success = asyncio.run(test_redis())
+          if not success:
+              exit(1)
+          "
+
+          echo ""
+          echo "========================================"
+          echo "✅ All database connections successful!"
+          echo "========================================"
+
+      - name: Wait for services to be fully ready
+        run: |
+          echo "Waiting for services to be fully ready..."
+          sleep 5
+          echo "✅ Services should be ready"
+
+      - name: Create database tables
+        run: |
+          echo "Creating database tables..."
+          python -c "
+          import asyncio
+          import sys
+          import os
+
+          os.environ['NEON_DATABASE_URL'] = 'postgresql+asyncpg://postgres:postgres@localhost:5432/testdb'
+
+          async def main():
+              try:
+                  from sqlalchemy.ext.asyncio import create_async_engine
+                  from sqlalchemy import text
+
+                  # Create engine directly
+                  engine = create_async_engine(
+                      'postgresql+asyncpg://postgres:postgres@localhost:5432/testdb',
+                      echo=True
+                  )
+
+                  # Import ALL models to register them with Base
+                  # This is the critical step that's missing!
+                  from shared.database import Base
+                  from modules.auth.models import UserAccountModel  # Import your models
+                  from modules.profile.models import UserProfileModel  # Import your models
+
+                  # Create tables
+                  async with engine.begin() as conn:
+                      await conn.run_sync(Base.metadata.create_all)
+
+                  print('✅ Database tables created successfully')
+
+                  # Verify tables exist
+                  async with engine.begin() as conn:
+                      result = await conn.execute(text(
+                          \"SELECT tablename FROM pg_tables WHERE schemaname='public'\"
+                      ))
+                      tables = [row[0] for row in result]
+                      print(f'📋 Tables created: {tables}')
+
+                  await engine.dispose()
+
+              except Exception as e:
+                  print(f'❌ Could not create tables: {e}')
+                  import traceback
+                  traceback.print_exc()
+                  sys.exit(1)
+
+          asyncio.run(main())
+          "
+        env:
+          NEON_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/testdb
+      - name: Run tests
+        run: |
+          pytest -v --cov=modules.auth --cov=shared --cov-report=term-missing --cov-report=xml
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v4
+        if: success()
+        with:
+          file: backend-fastapi-v2/coverage.xml
+          flags: backend
+          token: ${{ secrets.CODECOV_TOKEN }}

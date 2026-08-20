@@ -1,0 +1,28 @@
+<div class="export-controls-container">
+  <div class="export-actions">
+    <!-- Nút phụ (PNG) dùng viền -->
+    <button matButton [disabled]="busy()" (click)="download('png')">
+      <mat-icon>image</mat-icon>
+      PNG
+    </button>
+
+    <!-- Nút chính (JPG) dùng nền đặc -->
+    <button matButton [disabled]="busy()" (click)="download('jpg')">
+      <mat-icon>download</mat-icon>
+      JPG
+    </button>
+  </div>
+
+  <!-- Trạng thái Export -->
+  @if (busy()) {
+    <div class="export-status busy">
+      <mat-spinner diameter="16"></mat-spinner>
+      <span>Preparing your high-res image…</span>
+    </div>
+  } @else {
+    <div class="export-status ready">
+      <mat-icon class="status-icon">check_circle</mat-icon>
+      <span>Ready to export</span>
+    </div>
+  }
+</div>

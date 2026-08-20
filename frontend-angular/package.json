@@ -20,6 +20,8 @@
     "@angular/material": "^22.0.5",
     "@angular/platform-browser": "^22.0.0",
     "@angular/router": "^22.0.0",
+    "html-to-image": "^1.11.13",
+    "immer": "^11.1.16",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
