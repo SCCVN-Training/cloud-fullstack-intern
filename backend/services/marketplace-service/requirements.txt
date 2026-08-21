@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+sqlalchemy>=2.0
+# Same driver as identity-service — see that service's requirements.txt
+# comment. Must match whatever's in the DATABASE_URL prefix in .env.
+psycopg[binary,pool]
+aiosqlite
+pydantic
+pydantic-settings
+python-jose[cryptography]
+python-dotenv
+slowapi
+httpx
+boto3
+moto[secretsmanager]
+pytest
+pytest-asyncio

@@ -1,0 +1,34 @@
+# Documentation/reference only — you don't have Docker installed
+# locally, so this is NOT the way to run the project for Week 5. Use
+# scripts/run-identity.sh + scripts/run-marketplace.sh (or the .bat
+# equivalents) instead; see scripts/run-all.sh/.bat to launch both.
+#
+# This file exists to show the containerized-deployment shape of the
+# architecture for the presentation deck, and as a ready-to-use setup
+# for whenever Docker (or an AWS deployment step) is actually available.
+# It intentionally does NOT include a database container — both services
+# are configured to point at the same external Neon Postgres project
+# (two schemas), matching the local setup; add a `db:` service here only
+# if you switch to a fully local/containerized Postgres later.
+
+services:
+  identity-service:
+    build: ./services/identity-service
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./services/identity-service/.env
+    volumes:
+      - identity-media:/app/media
+
+  marketplace-service:
+    build: ./services/marketplace-service
+    ports:
+      - "8002:8002"
+    env_file:
+      - ./services/marketplace-service/.env
+    depends_on:
+      - identity-service
+
+volumes:
+  identity-media:
