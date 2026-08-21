@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { of, throwError } from 'rxjs';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 import { Login } from './login';
 import { AuthService } from '@core/auth/services/auth.service';
@@ -9,20 +10,19 @@ import { AuthService } from '@core/auth/services/auth.service';
 describe('Login', () => {
   let component: Login;
   let fixture: ComponentFixture<Login>;
-  let authServiceSpy: jasmine.SpyObj<AuthService>;
-  let routerSpy: jasmine.SpyObj<Router>;
+
+  let authServiceSpy: { login: ReturnType<typeof vi.fn> };
+  let routerSpy: { navigate: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
-    // Set up spies to safely mock our dependencies
-    authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
-    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    authServiceSpy = { login: vi.fn() };
+    routerSpy = { navigate: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [Login],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
-        { provide: Router, useValue: routerSpy },
-        provideNoopAnimations(), // Required for MatFormFieldModule and MatInputModule
+        { provide: Router, useValue: routerSpy }
       ],
     }).compileComponents();
 
@@ -36,21 +36,21 @@ describe('Login', () => {
   });
 
   it('should toggle password visibility', () => {
-    expect(component.showPassword).toBeFalse();
+    expect(component.showPassword).toBe(false);
     component.togglePassword();
-    expect(component.showPassword).toBeTrue();
+    expect(component.showPassword).toBe(true);
   });
 
   it('should mark all controls as touched if form is invalid on submit', () => {
-    spyOn(component.loginForm, 'markAllAsTouched');
+    const markAllAsTouchedSpy = vi.spyOn(component.loginForm, 'markAllAsTouched');
     component.onSubmit();
 
-    expect(component.loginForm.markAllAsTouched).toHaveBeenCalled();
+    expect(markAllAsTouchedSpy).toHaveBeenCalled();
     expect(authServiceSpy.login).not.toHaveBeenCalled();
   });
 
   it('should navigate to /drive on successful login', () => {
-    authServiceSpy.login.and.returnValue(of({ email: 'test@nephos.com' }));
+    authServiceSpy.login.mockReturnValue(of({ email: 'test@nephos.com' }));
 
     component.loginForm.patchValue({
       email: 'test@nephos.com',
@@ -59,12 +59,12 @@ describe('Login', () => {
 
     component.onSubmit();
 
-    expect(component.isLoading()).toBeFalse();
+    expect(component.isLoading()).toBe(false);
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/drive']);
   });
 
   it('should set an error message signal on failed login', () => {
-    authServiceSpy.login.and.returnValue(throwError(() => new Error('Auth failed')));
+    authServiceSpy.login.mockReturnValue(throwError(() => new Error('Auth failed')));
 
     component.loginForm.patchValue({
       email: 'test@nephos.com',
@@ -73,7 +73,30 @@ describe('Login', () => {
 
     component.onSubmit();
 
-    expect(component.isLoading()).toBeFalse();
+    expect(component.isLoading()).toBe(false);
     expect(component.errorMessage()).toBe('Invalid email or password. Please try again.');
+  });
+
+  // --- New DOM Rendering Tests ---
+
+  it('should display the error banner when errorMessage signal is set', () => {
+    const testError = 'Invalid email or password. Please try again.';
+    component.errorMessage.set(testError);
+    fixture.detectChanges(); // Trigger change detection to update the DOM
+
+    const errorBanner = fixture.debugElement.query(By.css('.error-banner'));
+    expect(errorBanner).toBeTruthy();
+    expect(errorBanner.nativeElement.textContent).toContain(testError);
+  });
+
+  it('should render the loading spinner and "Signing In..." text when isLoading signal is true', () => {
+    component.isLoading.set(true);
+    fixture.detectChanges();
+
+    const spinner = fixture.debugElement.query(By.css('mat-spinner'));
+    const buttonContent = fixture.debugElement.query(By.css('.button-content')).nativeElement;
+
+    expect(spinner).toBeTruthy();
+    expect(buttonContent.textContent).toContain('Signing In...');
   });
 });
