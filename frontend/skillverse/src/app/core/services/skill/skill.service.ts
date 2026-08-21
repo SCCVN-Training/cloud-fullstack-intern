@@ -36,7 +36,7 @@ export interface SkillQuery {
   providedIn: 'root',
 })
 export class SkillService {
-  private apiUrl = `${environment.apiUrl}/skills`;
+  private apiUrl = `${environment.marketplaceApiUrl}/skills`;
 
   constructor(private http: HttpClient) {}
 

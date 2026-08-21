@@ -8,7 +8,7 @@ import { ReviewCreateRequest, ReviewItemResponse } from './review.types';
   providedIn: 'root',
 })
 export class ReviewService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.marketplaceApiUrl;
 
   constructor(private http: HttpClient) {}
 

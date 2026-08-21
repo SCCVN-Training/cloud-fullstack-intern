@@ -26,7 +26,7 @@ export class AuthService {
 
   private readonly tokenKey = 'access_token';
   private readonly currentUserKey = 'skillverse_current_user';
-  private readonly apiUrl = environment.apiUrl;
+  private readonly apiUrl = environment.identityApiUrl;
 
   constructor(private http: HttpClient) {
     if (typeof localStorage !== 'undefined') {
@@ -167,9 +167,12 @@ export class AuthService {
       );
   }
 
-  // Splits across two owners, matching the backend: name/email live on
-  // User (PATCH /users/{id}), bio/age/gender live on Profile
-  // (PATCH /users/{id}/profile). Both run in parallel via forkJoin, then
+  // Splits across two owners, matching the backend: email is a User
+  // field (PATCH /users/{id} — the account's login credentials). name
+  // is the "Full Name" shown throughout the app, which is
+  // Profile.user_name — a display-name override, distinct from the
+  // login handle — so it goes to PATCH /users/{id}/profile alongside
+  // bio/age/gender. Both requests run in parallel via forkJoin, then
   // the merged result is refetched once.
   updateAccountInfo(updates: {
     name?: string;
@@ -183,17 +186,19 @@ export class AuthService {
       return of(false);
     }
 
-    const userPatch$ =
-      updates.name || updates.email
-        ? this.http.patch<UserUpdateRequest>(`${this.apiUrl}/users/${current.id}`, {
-            user_name: updates.name,
-            email: updates.email,
-          })
-        : of(null);
+    const userPatch$ = updates.email
+      ? this.http.patch<UserUpdateRequest>(`${this.apiUrl}/users/${current.id}`, {
+          email: updates.email,
+        })
+      : of(null);
 
     const profilePatch$ =
-      updates.bio !== undefined || updates.age !== undefined || updates.gender !== undefined
+      updates.name !== undefined ||
+      updates.bio !== undefined ||
+      updates.age !== undefined ||
+      updates.gender !== undefined
         ? this.http.patch<ProfileUpdateRequest>(`${this.apiUrl}/users/${current.id}/profile`, {
+            user_name: updates.name,
             bio: updates.bio,
             age: updates.age,
             gender: updates.gender,
