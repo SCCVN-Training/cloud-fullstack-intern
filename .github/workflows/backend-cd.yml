@@ -135,3 +135,38 @@ jobs:
             docker push $REGISTRY/$IMAGE_NAME:$IMAGE_TAG
             docker push $REGISTRY/$IMAGE_NAME:latest
           done
+
+      - name: Setup kubectl
+        # Use an action to install and configure kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "latest"
+
+      - name: Update Kubeconfig
+        # Connect to the AWS EKS cluster
+        run: |
+          aws eks update-kubeconfig --region ap-southeast-1 --name du-microservices-cluster
+
+      - name: Generate real Kubernetes manifests and Deploy
+        working-directory: .
+        env:
+          # Pass the GitHub Secret into the bash environment
+          AWS_ACCOUNT_ID: ${{ secrets.DU_AWS_ACCOUNT_ID }}
+        run: |
+          # Create a temporary real directory in the GitHub Actions runner
+          mkdir -p k8s/real
+
+          # Loop through all template files and substitute variables
+          for file in k8s/template/*.yaml; do
+            # Extract just the filename (e.g., auth-deployment.yaml)
+            filename=$(basename -- "$file")
+
+            # Replace placeholders like ${AWS_ACCOUNT_ID} and output to the real folder
+            envsubst < "$file" > "k8s/real/$filename"
+          done
+
+          # Apply the generated real manifests to the EKS cluster
+          kubectl apply -f k8s/real/
+
+          # Restart the deployments to pull the newest images
+          kubectl rollout restart deployment auth-service profile-service anime-service
