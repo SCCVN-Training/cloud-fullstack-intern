@@ -1,11 +1,16 @@
 name: Frontend CD
 
 on:
-  workflow_dispatch:
-  workflow_run:
-    workflows: ["Du's Frontend CI"]
-    types:
-      - completed
+  # workflow_dispatch:
+  # workflow_run:
+  #   workflows: ["Du's Frontend CI"]
+  #   types:
+  #     - completed
+  #   branches:
+  #     - dev-du
+
+  # Temporarily add push event to force GitHub to recognize and run this workflow on the dev branch
+  push:
     branches:
       - dev-du
 
