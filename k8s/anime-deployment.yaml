@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anime-service
+  namespace: default
+  labels:
+    app: anime-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: anime-service
+  template:
+    metadata:
+      labels:
+        app: anime-service
+    spec:
+      containers:
+        - name: anime
+          # Pull the latest image from AWS ECR repository
+          image: 414628022468.dkr.ecr.ap-southeast-1.amazonaws.com/otakutory-anime-service:latest
+          ports:
+            - containerPort: 8003
+          env:
+            - name: PYTHONPATH
+              value: "/app/anime-service"
+            - name: PORT
+              value: "8003"
+            # Add other required environment variables here
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: anime-service
+  namespace: default
+spec:
+  selector:
+    app: anime-service
+  ports:
+    - protocol: TCP
+      port: 8003
+      targetPort: 8003
+  type: ClusterIP

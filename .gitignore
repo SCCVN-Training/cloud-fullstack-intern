@@ -1,33 +1,48 @@
-# Angular specific
-/dist/
-/out-tsc/
-/tmp/
-/coverage/
-/e2e/test-output/
-/.angular/
-.angular/
+# =========================
+# System and Editor Files
+# =========================
+.vscode/
+.idea/
+.DS_Store
 
-# Node modules and dependency files
-/node_modules/
-/package-lock.json
-/yarn.lock
+# =========================
+# Terraform (CRITICAL SECURITY)
+# =========================
+# Prevent AWS credentials, states, and plugin binaries from being leaked
+**/.terraform/
+**/.terraform.*
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+crash.log
 
-# Environment files
-/.env
+# =========================
+# Python & Microservices
+# =========================
+# Prevent pushing heavy environments and secrets
+**/.venv/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/.pytest_cache/
+**/.env
+**/.env.secrets
+**/.env.local
+# Note: Do not ignore .env.example or .env.shared so others know the template
 
-# Angular CLI and build artefacts
-/.angular-cli.json
-/.ng/
+# =========================
+# Frontend Angular
+# =========================
+**/node_modules/
+**/dist/
+**/.angular/
+**/coverage/
 
-# TypeScript cache
-*.tsbuildinfo
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-.vscode
-
-backend-fastapi-v2
-backend-fastapi
+# =========================
+# Legacy/Obsolete Folders
+# =========================
+# Ignore these until senpai is brave enough to delete them permanently
+old-workflows/
+backend-fastapi/
+backend-fastapi-v2/
