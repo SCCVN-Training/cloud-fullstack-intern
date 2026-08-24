@@ -13,6 +13,9 @@ on:
   push:
     branches:
       - dev-du
+    paths:
+      - "microservices/**"
+      - ".github/workflows/backend-cd.yml"
 
 # MUST HAVE TO USE OICD ROLE
 permissions:

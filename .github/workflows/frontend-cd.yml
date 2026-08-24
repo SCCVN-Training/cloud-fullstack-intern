@@ -13,6 +13,9 @@ on:
   push:
     branches:
       - dev-du
+    paths:
+      - "frontend-angular/**"
+      - ".github/workflows/frontend-cd.yml"
 
 permissions:
   id-token: write
