@@ -130,5 +130,30 @@ resource "aws_eks_node_group" "nodes" {
     aws_iam_role_policy_attachment.eks_worker_node_policy,
     aws_iam_role_policy_attachment.eks_cni_policy,
     aws_iam_role_policy_attachment.eks_container_registry,
+    aws_iam_role_policy_attachment.eks_secrets_attachment,
   ]
+}
+
+resource "aws_iam_policy" "eks_secrets_policy" {
+  name        = "du_eks_secrets_policy"
+  description = "Allow EKS nodes to read secrets from AWS Secrets Manager"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "secretsmanager:GetSecretValue"
+        ]
+        # It is recommended to restrict this to the specific secret ARN in production
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Attach the secrets policy to the worker node role
+resource "aws_iam_role_policy_attachment" "eks_secrets_attachment" {
+  role       = aws_iam_role.eks_node_role.name
+  policy_arn = aws_iam_policy.eks_secrets_policy.arn
 }
