@@ -123,7 +123,7 @@ class Settings(BaseSettings):
                 print("🔄 Fetching secrets from AWS Secrets Manager...")
                 client = boto3.client("secretsmanager", region_name="ap-southeast-1")
 
-                response = client.get_secret_value(SecretId="du-microservices-secrets")
+                response = client.get_secret_value(SecretId="du-otakutory-microservices-secrets")
                 aws_secrets = json.loads(response["SecretString"])
 
                 print("✅ Successfully loaded secrets from AWS.")
