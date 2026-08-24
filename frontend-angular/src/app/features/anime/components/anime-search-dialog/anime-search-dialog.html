@@ -7,6 +7,7 @@
   </div>
 
   <div mat-dialog-content class="dialog-content">
+    <!-- Thanh tìm kiếm -->
     <mat-form-field appearance="outline" class="search-field">
       <mat-icon matPrefix>search</mat-icon>
       <input
@@ -24,12 +25,14 @@
       }
     </mat-form-field>
 
+    <!-- Thanh Loading -->
     <div class="loading-wrapper">
       @if (isLoading()) {
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
       }
     </div>
 
+    <!-- Danh sách kết quả -->
     <div class="results-container" (scroll)="onScroll($event)">
       @if (!isLoading() && !isTyping() && searchQuery && searchResults().length === 0) {
         <div class="empty-state">
@@ -48,9 +51,7 @@
           />
 
           <div class="anime-info">
-            <a class="anime-title" [href]="anime.siteUrl || ''">{{
-              anime.title?.english || anime.title?.romaji
-            }}</a>
+            <h3 class="anime-title">{{ anime.title?.english || anime.title?.romaji }}</h3>
             <div class="anime-meta">
               <span class="year">{{ anime.seasonYear || 'N/A' }}</span>
               <span class="dot">•</span>
@@ -62,6 +63,7 @@
             </div>
           </div>
 
+          <!-- Nút + tròn nhỏ được đẩy sang góc phải -->
           @if (!isExcluded(anime.id)) {
             <div class="anime-action">
               <button

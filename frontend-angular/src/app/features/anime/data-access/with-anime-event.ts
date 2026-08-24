@@ -81,9 +81,4 @@ export class AnimeEvent {
     console.log('[Anime Event]: loadMoreSearch called with query', query, 'and page', page);
     this.animeEffect.searchAnime(query, page, true).subscribe();
   }
-
-  clearSearch(): void {
-    console.log('[Anime Event]: clearSearch called');
-    this.animeEffect.clearSearch().subscribe();
-  }
 }

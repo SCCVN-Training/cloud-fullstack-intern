@@ -28,6 +28,3 @@ yarn-debug.log*
 yarn-error.log*
 
 .vscode
-
-backend-fastapi-v2
-backend-fastapi

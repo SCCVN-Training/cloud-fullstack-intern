@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, OnDestroy, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -8,12 +8,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
+// TODO: Import đúng đường dẫn các file của bạn
 import { AnimeSearchItem } from '../../data-access/anime.schema';
 import { AnimeEvent } from '../../data-access/with-anime-event';
 import { AnimeSearchStore } from '../../data-access/with-anime-store';
 
 export interface AnimeSearchDialogData {
-  excludeIds?: number[];
+  excludeIds?: number[]; // Mảng chứa ID các anime không cho phép chọn lại
 }
 
 @Component({
@@ -32,13 +33,15 @@ export interface AnimeSearchDialogData {
   templateUrl: './anime-search-dialog.html',
   styleUrl: './anime-search-dialog.scss',
 })
-export class AnimeSearchDialog implements OnDestroy {
+export class AnimeSearchDialog {
   private readonly dialogRef = inject(MatDialogRef<AnimeSearchDialog>);
   private readonly data = inject<AnimeSearchDialogData>(MAT_DIALOG_DATA);
 
+  // Inject Event và Store của bạn
   private readonly animeEvent = inject(AnimeEvent);
-  private readonly animeSearchStore = inject(AnimeSearchStore);
+  private readonly animeSearchStore = inject(AnimeSearchStore); // Hoặc SearchStore tùy cấu trúc của bạn
 
+  // Bindings ra giao diện (Đảm bảo tên biến khớp với Store của bạn)
   readonly searchResults = this.animeSearchStore.items;
   readonly isLoading = this.animeSearchStore.loading;
 
@@ -48,11 +51,14 @@ export class AnimeSearchDialog implements OnDestroy {
   currentPage = 1;
 
   constructor() {
-    effect(() => {
-      if (this.isLoading()) {
-        this.isTyping.set(false);
-      }
-    });
+    effect(
+      () => {
+        if (this.isLoading()) {
+          this.isTyping.set(false);
+        }
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   onSearch(query: string): void {
@@ -83,7 +89,7 @@ export class AnimeSearchDialog implements OnDestroy {
     this.searchQuery = '';
     this.isTyping.set(false);
     this.currentPage = 1;
-    this.animeEvent.clearSearch();
+    this.animeEvent.search('');
   }
   selectAnime(anime: AnimeSearchItem): void {
     if (this.isExcluded(anime.id)) return;
@@ -97,9 +103,5 @@ export class AnimeSearchDialog implements OnDestroy {
 
   close(): void {
     this.dialogRef.close();
-  }
-
-  ngOnDestroy(): void {
-    this.clearSearch();
   }
 }

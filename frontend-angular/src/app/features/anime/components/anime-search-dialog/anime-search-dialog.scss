@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-height: 80vh;
+  max-height: 80vh; /* Giới hạn chiều cao dialog */
 }
 
 .dialog-header {
@@ -22,10 +22,10 @@
 }
 
 .dialog-content {
-  padding: 20px 24px 0 !important;
+  padding: 20px 24px 0 !important; /* Ghi đè padding mặc định của Material */
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; /* Ẩn cuộn ngoài, chỉ cuộn list kết quả */
 }
 
 .search-field {
@@ -37,7 +37,7 @@
 }
 
 .loading-wrapper {
-  height: 4px;
+  height: 4px; /* Giữ sẵn không gian để thanh progress bar không làm giật layout */
   margin-bottom: 12px;
 
   mat-progress-bar {
@@ -48,10 +48,10 @@
 .results-container {
   flex: 1;
   overflow-y: auto;
-  margin: 0 -24px;
+  margin: 0 -24px; /* Đẩy list ra sát lề dialog */
   padding: 0 24px 24px;
 
-
+  /* Tùy chỉnh thanh cuộn cho gọn */
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -61,17 +61,17 @@
   }
 }
 
-
+/* --- Từng dòng kết quả --- */
 .result-item {
   display: flex;
-  align-items: center;
+  align-items: center; /* Căn giữa theo chiều dọc để nút + luôn ở giữa */
   gap: 16px;
   padding: 12px;
   border-radius: 12px;
   transition: all 0.2s ease;
   border: 1px solid transparent;
 
-
+  /* Giữ lại hiệu ứng hover nhẹ cho đẹp nhưng bỏ hiệu ứng lướt sang phải */
   &:hover:not(.disabled) {
     background: #f8fafc;
     border-color: #e2e8f0;
@@ -80,7 +80,7 @@
   &.disabled {
     opacity: 0.5;
     filter: grayscale(80%);
-    pointer-events: none;
+    pointer-events: none; /* Khóa hoàn toàn chuột khi đã bị disable */
   }
 }
 
@@ -88,10 +88,10 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  flex: 1;
+  flex: 1; /* Lấy hết phần không gian trống để đẩy nút + sát mép phải */
 }
 
-
+/* --- Nút Add --- */
 .anime-action {
   display: flex;
   align-items: center;
@@ -99,7 +99,7 @@
   padding-left: 8px;
 
   .add-btn {
-
+    /* Thêm tí nền mờ mờ cho nút + để nó nổi bật, bo tròn chuẩn Material */
     background-color: rgba(37, 99, 235, 0.08);
     transition:
       transform 0.2s ease,
@@ -107,11 +107,11 @@
 
     &:hover {
       background-color: rgba(37, 99, 235, 0.15);
-      transform: scale(1.1);
+      transform: scale(1.1); /* Phóng to nhẹ khi hover */
     }
 
     mat-icon {
-
+      /* Chỉnh icon đậm lên 1 chút cho rõ */
       font-weight: bold;
     }
   }
@@ -122,7 +122,7 @@
   height: 68px;
   object-fit: cover;
   border-radius: 6px;
-  background: #e2e8f0;
+  background: #e2e8f0; /* Màu nền chờ load ảnh */
 }
 
 .anime-title {
@@ -133,7 +133,7 @@
   color: #1e293b;
   line-height: 1.3;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 2; /* Cắt chữ thành dấu ... nếu dài quá 2 dòng */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -152,7 +152,7 @@
   }
 
   .already-selected {
-    margin-left: auto;
+    margin-left: auto; /* Đẩy sang tận cùng bên phải */
     color: #ef4444;
     font-size: 10px;
     font-weight: 600;
@@ -162,7 +162,7 @@
   }
 }
 
-
+/* --- Trạng thái rỗng --- */
 .empty-state {
   display: flex;
   flex-direction: column;
