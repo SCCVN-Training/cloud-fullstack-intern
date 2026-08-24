@@ -1,11 +1,12 @@
 name: Du's Backend CI
 
 on:
-  push:
-    branches: [dev-du]
-    paths:
-      - "microservices/**"
-      - ".github/workflows/backend-ci.yml"
+  # Professional way, but only check this on pull request
+  # push:
+  #   branches: [dev-du]
+  #   paths:
+  #     - "microservices/**"
+  #     - ".github/workflows/backend-ci.yml"
   pull_request:
     branches: [dev-du]
     paths:
@@ -76,7 +77,10 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Run Ruff
+      - name: Run Ruff format checking
+        run: uvx ruff format --check .
+
+      - name: Run Ruff linting
         run: uvx ruff check .
 
       - name: Run Tests (Placeholder)
