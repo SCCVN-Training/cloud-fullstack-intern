@@ -25,12 +25,13 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 # Expected values: auth, profile, anime
 ARG SERVICE_NAME
 
-# Set it as an environment variable so the CMD can use it
-ENV SERVICE_DIR=${SERVICE_NAME}
+# Force the working directory to jump inside the specific microservice folder
+# (e.g., /app/auth-service, /app/profile-service)
+WORKDIR /app/${SERVICE_NAME}-service
 
 # Expose the standard FastAPI port
 EXPOSE 8000
 
-# Start the application using uv to ensure the virtual environment is activated
-# This assumes your entrypoint is named main.py and exposes an 'app' instance
-CMD uv run uvicorn ${SERVICE_DIR}.main:app --host 0.0.0.0 --port 8000
+# Start the application locally from within the service directory
+# Now it can find main.py directly without complex module paths
+CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
