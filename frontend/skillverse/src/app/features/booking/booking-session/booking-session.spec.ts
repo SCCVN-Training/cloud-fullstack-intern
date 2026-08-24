@@ -1,206 +1,162 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { of, throwError } from 'rxjs';
+import { vi } from 'vitest';
 
 import { BookingSession } from './booking-session';
+import { SkillService } from '../../../core/services/skill/skill.service';
+import { BookingService } from '../../../core/services/booking/booking.service';
+import { Skill } from '../../../core/models/skill.model';
+import { Booking } from '../../../core/models/booking.model';
+
+const mockSkill: Skill = {
+  id: 'react-architecture-patterns',
+  title: 'React Architecture Patterns',
+  category: 'Development',
+  description: 'Learn modern frontend architecture.',
+  image: '/assets/images/skill-react.png',
+  price: 120,
+  duration: '2h',
+  level: 'Intermediate',
+  requirements: 'Basic React knowledge',
+  rating: 4.8,
+  reviewCount: 42,
+  instructorName: 'Jane Doe',
+  instructorTitle: 'Senior Developer',
+  instructorBio: 'Frontend expert',
+  instructorAvatar: '/assets/images/jane-avatar.png',
+  availableSlots: 5,
+  language: 'English',
+  tags: ['react', 'architecture'],
+  featured: false,
+  createdAt: '2026-07-01',
+};
+
+const mockBooking: Booking = {
+  id: 'booking-1',
+  skillId: mockSkill.id,
+  learnerId: 'learner-1',
+  mentorId: 'mentor-1',
+  sessionDate: '2026-08-25T10:00:00Z',
+  status: 'PENDING',
+  pricePaid: mockSkill.price,
+  createdAt: '2026-08-24T00:00:00Z',
+  updatedAt: '2026-08-24T00:00:00Z',
+};
 
 describe('BookingSession', () => {
   let component: BookingSession;
   let fixture: ComponentFixture<BookingSession>;
+  let skillService: { getSkillById: ReturnType<typeof vi.fn> };
+  let bookingService: { createBooking: ReturnType<typeof vi.fn> };
+  let router: Router;
 
-  beforeEach(async () => {
+  async function setup(skillId: string | null = mockSkill.id) {
+    skillService = { getSkillById: vi.fn().mockReturnValue(of(mockSkill)) };
+    bookingService = { createBooking: vi.fn().mockReturnValue(of(mockBooking)) };
+
     await TestBed.configureTestingModule({
       imports: [BookingSession],
+      providers: [
+        provideRouter([]),
+        { provide: Router, useValue: { navigate: vi.fn() } },
+        { provide: SkillService, useValue: skillService },
+        { provide: BookingService, useValue: bookingService },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: { get: () => skillId } } },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BookingSession);
     component = fixture.componentInstance;
-
+    router = TestBed.inject(Router);
     fixture.detectChanges();
-  });
+  }
 
   afterEach(() => {
-    fixture.destroy();
+    fixture?.destroy();
   });
 
-  // =====================================
-  // Component
-  // =====================================
-
-  it('should create', () => {
+  it('should create', async () => {
+    await setup();
     expect(component).toBeTruthy();
   });
 
-  // =====================================
-  // Page Header
-  // =====================================
+  it('should load the skill from the route param', async () => {
+    await setup();
+    expect(skillService.getSkillById).toHaveBeenCalledWith(mockSkill.id);
+    expect(component.skill()?.title).toBe(mockSkill.title);
+  });
 
-  it('should render the page title', () => {
+  it('should render the loaded skill title and real price', async () => {
+    await setup();
     const element = fixture.nativeElement as HTMLElement;
 
-    expect(element.textContent).toContain('Confirm Your Skill Session');
+    expect(element.textContent).toContain(mockSkill.title);
+    expect(element.textContent).toContain(`${mockSkill.price} LC`);
   });
 
-  it('should render the page subtitle', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain(
-      'Review your session details, add any notes, and confirm your booking.',
-    );
+  it('should show an error state when no skillId is present in the route', async () => {
+    await setup(null);
+    expect(component.errorMessage()).toContain('No skill selected');
+    expect(skillService.getSkillById).not.toHaveBeenCalled();
   });
 
-  // =====================================
-  // Booking Step
-  // =====================================
+  it('should show an error state when the skill fails to load', async () => {
+    skillService = { getSkillById: vi.fn().mockReturnValue(throwError(() => new Error('boom'))) };
+    bookingService = { createBooking: vi.fn() };
 
-  it('should render the booking step', () => {
-    const element = fixture.nativeElement as HTMLElement;
+    await TestBed.configureTestingModule({
+      imports: [BookingSession],
+      providers: [
+        provideRouter([]),
+        { provide: Router, useValue: { navigate: vi.fn() } },
+        { provide: SkillService, useValue: skillService },
+        { provide: BookingService, useValue: bookingService },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => mockSkill.id } } },  },
+      ],
+    }).compileComponents();
+    fixture = TestBed.createComponent(BookingSession);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
 
-    expect(element.textContent).toContain('Booking');
+    expect(component.errorMessage()).toContain('Unable to load this skill');
   });
 
-  // =====================================
-  // Session Notes
-  // =====================================
+  it('should submit a booking with the skillId, chosen date, and notes', async () => {
+    await setup();
+    component.sessionNotes.set('Focus on hooks');
+    component.sessionDateTime.set('2026-08-25T10:00');
 
-  it('should render the session notes section', () => {
-    const element = fixture.nativeElement as HTMLElement;
+    component.confirmBooking();
 
-    expect(element.textContent).toContain('Session Notes');
+    expect(bookingService.createBooking).toHaveBeenCalledWith({
+      skillId: mockSkill.id,
+      sessionDate: new Date('2026-08-25T10:00').toISOString(),
+      sessionNotes: 'Focus on hooks',
+    });
   });
 
-  it('should render the session notes textarea', () => {
-    const textarea = fixture.nativeElement.querySelector('#session-notes') as HTMLTextAreaElement;
+  it('should navigate to my-bookings after a successful booking', async () => {
+    await setup();
+    const navigateSpy = vi.spyOn(router, 'navigate');
 
-    expect(textarea).toBeTruthy();
-    expect(textarea.rows).toBe(4);
+    component.confirmBooking();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/user/my-bookings']);
   });
 
-  it('should render the session notes placeholder', () => {
-    const textarea = fixture.nativeElement.querySelector('#session-notes') as HTMLTextAreaElement;
-
-    expect(textarea.placeholder).toContain(
-      "Example: I'd like to dive deep into decorators and context managers in Python 3.12...",
-    );
-  });
-
-  // =====================================
-  // Booking Tags
-  // =====================================
-
-  it('should render all booking tags', () => {
-    const tags = fixture.nativeElement.querySelectorAll(
-      '.booking-tag',
-    ) as NodeListOf<HTMLButtonElement>;
-
-    expect(tags.length).toBe(3);
-
-    expect(tags[0].textContent?.trim()).toBe('#Decorators');
-    expect(tags[1].textContent?.trim()).toBe('#AsyncIO');
-    expect(tags[2].textContent?.trim()).toBe('#MetaClasses');
-  });
-
-  // =====================================
-  // What To Expect
-  // =====================================
-
-  it('should render the what to expect section', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('What to Expect');
-  });
-
-  it('should render three expectation items', () => {
-    const items = fixture.nativeElement.querySelectorAll('.booking-expect-item');
-
-    expect(items.length).toBe(3);
-  });
-
-  it('should render the online video session information', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('Online video session');
-    expect(element.textContent).toContain('Meet your mentor through SkillVerse Video Rooms.');
-  });
-
-  it('should render the 60-minute session information', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('60-minute session');
-    expect(element.textContent).toContain('Your selected time slot is reserved for one hour.');
-  });
-
-  it('should render the protected payment information', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('Protected payment');
-    expect(element.textContent).toContain(
-      'Coins are released after the session is completed and verified.',
-    );
-  });
-
-  // =====================================
-  // Booking Summary
-  // =====================================
-
-  it('should render the booking summary', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('Booking Summary');
-  });
-
-  it('should render the booking date', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('Tuesday, Oct 8, 2024');
-  });
-
-  it('should render the booking time', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('11:30 AM — 12:30 PM (60 min)');
-  });
-
-  it('should render the booking platform', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('SkillVerse Video Rooms');
-  });
-
-  it('should render the total cost', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('450 LC');
-    expect(element.textContent).toContain('Luminous Coins');
-  });
-
-  // =====================================
-  // Confirmation
-  // =====================================
-
-  it('should render the confirm booking button', () => {
-    const buttons = fixture.nativeElement.querySelectorAll('button');
-
-    const confirmButton = Array.from(buttons).find((button) =>
-      (button as HTMLElement).textContent?.includes('Confirm Booking'),
+  it('should show a submit error message when booking creation fails', async () => {
+    await setup();
+    bookingService.createBooking.mockReturnValue(
+      throwError(() => ({ error: { detail: 'No slots available' } })),
     );
 
-    expect(confirmButton).toBeTruthy();
-  });
+    component.confirmBooking();
 
-  // =====================================
-  // Trust Badge
-  // =====================================
-
-  it('should render the SkillVerse Guarantee', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('SkillVerse Guarantee');
-  });
-
-  it('should render the payment guarantee message', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain(
-      'Coins are only released after the session is completed and verified.',
-    );
+    expect(component.submitError()).toBe('No slots available');
+    expect(component.isSubmitting()).toBe(false);
   });
 });

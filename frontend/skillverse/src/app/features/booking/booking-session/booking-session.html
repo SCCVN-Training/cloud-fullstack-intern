@@ -1,224 +1,288 @@
 <main class="booking-session-page">
-  <!-- Page Header -->
-  <header class="booking-session-header">
-    <div>
-      <p class="booking-session-eyebrow">BOOK A SESSION</p>
-
-      <h1 class="booking-session-title">Confirm Your Skill Session</h1>
-
-      <p class="booking-session-subtitle">
-        Review your session details, add any notes, and confirm your booking.
-      </p>
+  @if (isLoading()) {
+    <div class="glass-card p-lg rounded-lg text-center">
+      <p>Loading session details…</p>
     </div>
-
-    <div class="booking-session-step">
-      <span class="material-symbols-outlined">event_available</span>
-
-      <span>Booking</span>
+  } @else if (errorMessage()) {
+    <div class="glass-card p-lg rounded-lg text-center">
+      <p>{{ errorMessage() }}</p>
     </div>
-  </header>
+  } @else if (skill(); as s) {
+    <!-- Page Header -->
+    <header class="booking-session-header">
+      <div>
+        <p class="booking-session-eyebrow">BOOK A SESSION</p>
 
-  <!-- Main Content -->
-  <div class="booking-session-grid">
-    <!-- ======================================== -->
-    <!-- Left: Session Details -->
-    <!-- ======================================== -->
+        <h1 class="booking-session-title">Confirm Your Skill Session</h1>
 
-    <div class="booking-session-main">
-      <!-- Session Notes -->
-      <section class="glass-card p-md md:p-lg rounded-lg">
-        <h2 class="font-title-lg text-title-lg mb-md flex items-center gap-base">
-          <span class="material-symbols-outlined text-primary">notes</span>
-          Session Notes
-        </h2>
+        <p class="booking-session-subtitle">
+          Booking "{{ s.title }}" — review your session details, add any notes, and confirm.
+        </p>
+      </div>
 
-        <div class="space-y-sm">
-          <label for="session-notes" class="text-label-sm text-on-surface-variant">
-            What would you like to focus on during this session?
-          </label>
+      <div class="booking-session-step">
+        <span class="material-symbols-outlined">event_available</span>
 
-          <textarea
-            id="session-notes"
-            class="w-full bg-surface-container/50 border-outline-variant rounded-lg p-md focus:ring-primary focus:border-primary transition-all text-body-md booking-session-notes"
-            placeholder="Example: I'd like to dive deep into decorators and context managers in Python 3.12..."
-            rows="4"
-          ></textarea>
+        <span>Booking</span>
+      </div>
+    </header>
 
-          <div class="flex gap-base flex-wrap">
-            <button type="button" class="booking-tag">#Decorators</button>
+    <!-- Main Content -->
+    <div class="booking-session-grid">
+      <!-- ======================================== -->
+      <!-- Left: Session Details -->
+      <!-- ======================================== -->
 
-            <button type="button" class="booking-tag">#AsyncIO</button>
+      <div class="booking-session-main">
+        <!-- Select Date & Time -->
+        <section class="glass-card p-md md:p-lg rounded-lg">
+          <h2 class="font-title-lg text-title-lg mb-md flex items-center gap-base">
+            <span class="material-symbols-outlined text-primary">event</span>
+            Select Date &amp; Time
+          </h2>
 
-            <button type="button" class="booking-tag">#MetaClasses</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- What to Expect -->
-      <section class="glass-card p-md md:p-lg rounded-lg">
-        <h2 class="font-title-lg text-title-lg mb-md flex items-center gap-base">
-          <span class="material-symbols-outlined text-primary"> checklist </span>
-
-          What to Expect
-        </h2>
-
-        <div class="booking-expect-list">
-          <div class="booking-expect-item">
-            <div class="booking-expect-icon">
-              <span class="material-symbols-outlined">videocam</span>
-            </div>
-
-            <div>
-              <p class="booking-expect-title">Online video session</p>
-
-              <p class="booking-expect-description">
-                Meet your mentor through SkillVerse Video Rooms.
-              </p>
-            </div>
-          </div>
-
-          <div class="booking-expect-item">
-            <div class="booking-expect-icon">
-              <span class="material-symbols-outlined">schedule</span>
-            </div>
-
-            <div>
-              <p class="booking-expect-title">60-minute session</p>
-
-              <p class="booking-expect-description">
-                Your selected time slot is reserved for one hour.
-              </p>
-            </div>
-          </div>
-
-          <div class="booking-expect-item">
-            <div class="booking-expect-icon">
-              <span class="material-symbols-outlined">verified</span>
-            </div>
-
-            <div>
-              <p class="booking-expect-title">Protected payment</p>
-
-              <p class="booking-expect-description">
-                Coins are released after the session is completed and verified.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- ======================================== -->
-    <!-- Right: Summary & Confirmation -->
-    <!-- ======================================== -->
-
-    <aside class="booking-session-sidebar">
-      <div class="sticky top-28 space-y-md">
-        <!-- Booking Summary -->
-        <section
-          class="glass-card p-md md:p-lg rounded-lg border-2 border-primary/10 overflow-hidden relative"
-        >
-          <div
-            class="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 rounded-full blur-3xl"
-          ></div>
-
-          <h2 class="font-title-lg text-title-lg mb-lg">Booking Summary</h2>
-
-          <div class="space-y-md relative z-10">
-            <!-- Date -->
-            <div class="flex items-start gap-sm">
-              <span
-                class="material-symbols-outlined text-primary-container p-2 bg-primary/5 rounded-lg"
-              >
-                calendar_month
-              </span>
-
-              <div>
-                <p class="text-label-sm text-on-surface-variant">Date</p>
-
-                <p class="font-label-md text-on-surface">Tuesday, Oct 8, 2024</p>
+          <div class="date-time-grid">
+            <div class="calendar-placeholder">
+              <!-- Simple month + day grid (replace with real calendar component if available) -->
+              <div class="month-bar">
+                <button type="button" class="chev">&lt;</button>
+                <div>October 2024</div>
+                <button type="button" class="chev">&gt;</button>
+              </div>
+              <div class="days-row">Mo Tu We Th Fr Sa Su</div>
+              <div class="days-grid">
+                <!-- small day buttons for demo -->
+                <button type="button" class="day">28</button>
+                <button type="button" class="day">29</button>
+                <button type="button" class="day">30</button>
+                <button type="button" class="day">1</button>
+                <button type="button" class="day active">8</button>
+                <!-- ... -->
               </div>
             </div>
 
-            <!-- Time -->
-            <div class="flex items-start gap-sm">
-              <span
-                class="material-symbols-outlined text-primary-container p-2 bg-primary/5 rounded-lg"
-              >
-                schedule
-              </span>
+            <div class="slot-list">
+              <div class="slot-header">Available Slots (Oct 8)</div>
 
-              <div>
-                <p class="text-label-sm text-on-surface-variant">Time</p>
+              <div class="slot-pills">
+                <button type="button" class="slot-btn" (click)="selectSlot('09:00')">
+                  09:00 AM
+                </button>
+                <button type="button" class="slot-btn selected" (click)="selectSlot('11:30')">
+                  11:30 AM
+                </button>
+                <button type="button" class="slot-btn" (click)="selectSlot('14:00')">
+                  02:00 PM
+                </button>
+                <button type="button" class="slot-btn" (click)="selectSlot('16:30')">
+                  04:30 PM
+                </button>
+                <button type="button" class="slot-btn disabled" disabled>07:00 PM</button>
+              </div>
 
-                <p class="font-label-md text-on-surface">11:30 AM — 12:30 PM (60 min)</p>
+              <div class="note text-label-sm text-on-surface-variant">
+                Times are shown in your local timezone
               </div>
             </div>
+          </div>
+        </section>
+        <!-- Session Notes -->
+        <section class="glass-card p-md md:p-lg rounded-lg">
+          <h2 class="font-title-lg text-title-lg mb-md flex items-center gap-base">
+            <span class="material-symbols-outlined text-primary">notes</span>
+            Session Notes
+          </h2>
 
-            <!-- Platform -->
-            <div class="flex items-start gap-sm">
-              <span
-                class="material-symbols-outlined text-primary-container p-2 bg-primary/5 rounded-lg"
-              >
-                location_on
-              </span>
+          <div class="space-y-sm">
+            <label for="session-notes" class="text-label-sm text-on-surface-variant">
+              What would you like to focus on during this session?
+            </label>
+
+            <textarea
+              id="session-notes"
+              class="w-full bg-surface-container/50 border-outline-variant rounded-lg p-md focus:ring-primary focus:border-primary transition-all text-body-md booking-session-notes"
+              placeholder="Example: I'd like to dive deep into decorators and context managers in Python 3.12..."
+              rows="4"
+              [ngModel]="sessionNotes()"
+              (ngModelChange)="sessionNotes.set($event)"
+            ></textarea>
+
+            <div class="flex gap-base flex-wrap">
+              <button type="button" class="booking-tag">#Decorators</button>
+
+              <button type="button" class="booking-tag">#AsyncIO</button>
+
+              <button type="button" class="booking-tag">#MetaClasses</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- What to Expect -->
+        <section class="glass-card p-md md:p-lg rounded-lg">
+          <h2 class="font-title-lg text-title-lg mb-md flex items-center gap-base">
+            <span class="material-symbols-outlined text-primary"> checklist </span>
+
+            What to Expect
+          </h2>
+
+          <div class="booking-expect-list">
+            <div class="booking-expect-item">
+              <div class="booking-expect-icon">
+                <span class="material-symbols-outlined">videocam</span>
+              </div>
 
               <div>
-                <p class="text-label-sm text-on-surface-variant">Platform</p>
+                <p class="booking-expect-title">Online video session</p>
 
-                <p class="font-label-md text-on-surface">SkillVerse Video Rooms</p>
-              </div>
-            </div>
-
-            <hr class="border-outline-variant/30 my-md" />
-
-            <!-- Cost -->
-            <div class="flex justify-between items-center bg-primary-container/20 p-md rounded-lg">
-              <span class="font-label-md text-on-surface"> Total Cost </span>
-
-              <div class="text-right">
-                <p class="font-headline-lg-mobile text-primary">450 LC</p>
-
-                <p class="text-[10px] text-on-surface-variant uppercase tracking-widest">
-                  Luminous Coins
+                <p class="booking-expect-description">
+                  Meet your mentor through SkillVerse Video Rooms.
                 </p>
               </div>
             </div>
 
-            <!-- Confirm -->
-            <button
-              type="button"
-              class="w-full btn-primary-gradient text-white py-md rounded-full font-title-lg text-body-lg shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-base"
-            >
-              <span class="material-symbols-outlined">verified</span>
+            <div class="booking-expect-item">
+              <div class="booking-expect-icon">
+                <span class="material-symbols-outlined">schedule</span>
+              </div>
 
-              Confirm Booking
-            </button>
-          </div>
-        </section>
+              <div>
+                <p class="booking-expect-title">60-minute session</p>
 
-        <!-- Trust Badge -->
-        <section
-          class="bg-surface-container-low p-md rounded-lg border border-outline-variant/30 flex items-center gap-md"
-        >
-          <div class="bg-secondary/10 p-2 rounded-full">
-            <span
-              class="material-symbols-outlined text-secondary"
-              style="font-variation-settings: 'FILL' 1"
-            >
-              security
-            </span>
-          </div>
+                <p class="booking-expect-description">
+                  Your selected time slot is reserved for one hour.
+                </p>
+              </div>
+            </div>
 
-          <div>
-            <p class="text-label-md text-on-surface">SkillVerse Guarantee</p>
+            <div class="booking-expect-item">
+              <div class="booking-expect-icon">
+                <span class="material-symbols-outlined">verified</span>
+              </div>
 
-            <p class="text-label-sm text-on-surface-variant">
-              Coins are only released after the session is completed and verified.
-            </p>
+              <div>
+                <p class="booking-expect-title">Protected payment</p>
+
+                <p class="booking-expect-description">
+                  Coins are released after the session is completed and verified.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
       </div>
-    </aside>
-  </div>
+
+      <!-- ======================================== -->
+      <!-- Right: Summary & Confirmation -->
+      <!-- ======================================== -->
+
+      <aside class="booking-session-sidebar">
+        <div class="sticky top-28 space-y-md">
+          <!-- Booking Summary -->
+          <section
+            class="glass-card p-md md:p-lg rounded-lg border-2 border-primary/10 overflow-hidden relative"
+          >
+            <div
+              class="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 rounded-full blur-3xl"
+            ></div>
+
+            <h2 class="font-title-lg text-title-lg mb-lg">Booking Summary</h2>
+
+            <div class="space-y-md relative z-10">
+              <!-- Date & Time -->
+              <div class="flex items-start gap-sm">
+                <span
+                  class="material-symbols-outlined text-primary-container p-2 bg-primary/5 rounded-lg"
+                >
+                  calendar_month
+                </span>
+
+                <div class="w-full">
+                  <p class="text-label-sm text-on-surface-variant">Date &amp; Time</p>
+
+                  <input
+                    type="datetime-local"
+                    class="font-label-md text-on-surface bg-transparent border-none p-0 w-full"
+                    [ngModel]="sessionDateTime()"
+                    (ngModelChange)="sessionDateTime.set($event)"
+                  />
+                </div>
+              </div>
+
+              <!-- Platform -->
+              <div class="flex items-start gap-sm">
+                <span
+                  class="material-symbols-outlined text-primary-container p-2 bg-primary/5 rounded-lg"
+                >
+                  location_on
+                </span>
+
+                <div>
+                  <p class="text-label-sm text-on-surface-variant">Platform</p>
+
+                  <p class="font-label-md text-on-surface">SkillVerse Video Rooms</p>
+                </div>
+              </div>
+
+              <hr class="border-outline-variant/30 my-md" />
+
+              <!-- Cost -->
+              <div
+                class="flex justify-between items-center bg-primary-container/20 p-md rounded-lg"
+              >
+                <span class="font-label-md text-on-surface"> Total Cost </span>
+
+                <div class="text-right">
+                  <p class="font-headline-lg-mobile text-primary">{{ s.price }} LC</p>
+
+                  <p class="text-[10px] text-on-surface-variant uppercase tracking-widest">
+                    Luminous Coins
+                  </p>
+                </div>
+              </div>
+
+              @if (submitError()) {
+                <p class="text-body-sm" style="color: var(--color-error, #b3261e)">
+                  {{ submitError() }}
+                </p>
+              }
+
+              <!-- Confirm -->
+              <button
+                type="button"
+                class="w-full btn-primary-gradient text-white py-md rounded-full font-title-lg text-body-lg shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-base"
+                [disabled]="isSubmitting()"
+                (click)="confirmBooking()"
+              >
+                <span class="material-symbols-outlined">verified</span>
+
+                {{ isSubmitting() ? 'Confirming…' : 'Confirm Booking' }}
+              </button>
+            </div>
+          </section>
+
+          <!-- Trust Badge -->
+          <section
+            class="bg-surface-container-low p-md rounded-lg border border-outline-variant/30 flex items-center gap-md"
+          >
+            <div class="bg-secondary/10 p-2 rounded-full">
+              <span
+                class="material-symbols-outlined text-secondary"
+                style="font-variation-settings: 'FILL' 1"
+              >
+                security
+              </span>
+            </div>
+
+            <div>
+              <p class="text-label-md text-on-surface">SkillVerse Guarantee</p>
+
+              <p class="text-label-sm text-on-surface-variant">
+                Coins are only released after the session is completed and verified.
+              </p>
+            </div>
+          </section>
+        </div>
+      </aside>
+    </div>
+  }
 </main>

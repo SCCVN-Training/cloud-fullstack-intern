@@ -50,7 +50,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
-        path: 'booking',
+        path: 'booking/:skillId',
         component: BookingSession,
         canActivate: [authGuard],
       },
