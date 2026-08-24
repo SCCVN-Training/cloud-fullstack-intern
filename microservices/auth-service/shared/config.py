@@ -141,10 +141,15 @@ class Settings(BaseSettings):
                 )
                 aws_secrets = json.loads(response["SecretString"])
 
-                normalized_secrets = {k.lower(): v for k, v in aws_secrets.items()}
+                # Inject AWS secrets directly into the OS environment variables
+                # This allows Pydantic to naturally parse aliases and handle case insensitivity
+                for key, value in aws_secrets.items():
+                    os.environ[key] = str(value)
 
-                print("✅ Successfully loaded secrets from AWS.")
-                return cls(**normalized_secrets)
+                print("✅ Successfully loaded secrets from AWS and injected to OS.")
+
+                # Let Pydantic initialize normally by reading from the newly populated os.environ
+                return cls()
 
             except ImportError:
                 print("⚠️ Boto3 is not installed. Falling back to OS environments...")

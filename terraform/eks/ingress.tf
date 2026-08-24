@@ -11,7 +11,10 @@ resource "kubernetes_ingress_v1" "main_ingress" {
       "nginx.ingress.kubernetes.io/cors-allow-headers"      = "Authorization, Content-Type, X-Requested-With, X-User-Id"
       "nginx.ingress.kubernetes.io/cors-allow-credentials"  = "true"
     }
+
   }
+
+  depends_on = [aws_eks_node_group.nodes]
 
   spec {
     rule {

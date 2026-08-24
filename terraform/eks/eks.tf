@@ -79,6 +79,11 @@ resource "aws_eks_cluster" "main" {
     subnet_ids = aws_subnet.eks_subnet[*].id
   }
 
+  access_config {
+    authentication_mode                         = "API_AND_CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = true
+  }
+
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
@@ -206,4 +211,25 @@ resource "aws_iam_role_policy_attachment" "eks_pod_secrets_attachment" {
 # Output the Pod Role ARN so senpai can copy it easily
 output "pod_role_arn" {
   value = aws_iam_role.eks_pod_role.arn
+}
+
+# Fetch current AWS account ID automatically
+data "aws_caller_identity" "current" {}
+
+# Create an access entry for the GitHub Actions IAM Role
+resource "aws_eks_access_entry" "github_actions" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/GitHubActions_BackendDeployRole"
+  type          = "STANDARD"
+}
+
+# Grant Cluster Admin permissions so GitHub Actions can deploy manifests
+resource "aws_eks_access_policy_association" "github_actions_admin" {
+  cluster_name  = aws_eks_cluster.main.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = aws_eks_access_entry.github_actions.principal_arn
+
+  access_scope {
+    type = "cluster"
+  }
 }
