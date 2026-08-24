@@ -77,7 +77,7 @@ jobs:
         run: uv sync
 
       - name: Run Ruff
-        run: uvx run ruff check .
+        run: uvx ruff check .
 
       - name: Run Tests (Placeholder)
         run: uv run pytest -v || echo "Skipping tests for now"
