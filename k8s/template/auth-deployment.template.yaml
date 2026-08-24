@@ -15,10 +15,11 @@ spec:
       labels:
         app: auth-service
     spec:
+      serviceAccountName: app-service-account
       containers:
         - name: auth
           # Pull the latest image from AWS ECR repository
-          image: 414628022468.dkr.ecr.ap-southeast-1.amazonaws.com/otakutory-auth-service:latest
+          image: ${AWS_ACCOUNT_ID}.dkr.ecr.ap-southeast-1.amazonaws.com/otakutory-auth-service:latest
           ports:
             - containerPort: 8001
           env:
@@ -26,6 +27,8 @@ spec:
               value: "/app/auth-service"
             - name: PORT
               value: "8001"
+            - name: ENVIRONMENT
+              value: "production"
             # Add other required environment variables here
 ---
 apiVersion: v1

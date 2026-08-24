@@ -149,8 +149,10 @@ class Settings(BaseSettings):
                 )
                 aws_secrets = json.loads(response["SecretString"])
 
+                normalized_secrets = {k.lower(): v for k, v in aws_secrets.items()}
+
                 print("✅ Successfully loaded secrets from AWS.")
-                return cls(**aws_secrets)
+                return cls(**normalized_secrets)
 
             except ImportError:
                 print("⚠️ Boto3 is not installed. Falling back to OS environments...")

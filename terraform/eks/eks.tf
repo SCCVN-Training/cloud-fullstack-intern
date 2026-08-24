@@ -157,3 +157,53 @@ resource "aws_iam_role_policy_attachment" "eks_secrets_attachment" {
   role       = aws_iam_role.eks_node_role.name
   policy_arn = aws_iam_policy.eks_secrets_policy.arn
 }
+
+# ==========================================
+# IRSA: IAM Roles for Service Accounts
+# ==========================================
+
+# Fetch the EKS cluster OIDC issuer certificate
+data "tls_certificate" "eks" {
+  url = aws_eks_cluster.main.identity[0].oidc[0].issuer
+}
+
+# Create OIDC Provider for the cluster
+resource "aws_iam_openid_connect_provider" "eks" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.eks.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.main.identity[0].oidc[0].issuer
+}
+
+# Create a specific IAM Role for the Kubernetes Pods
+resource "aws_iam_role" "eks_pod_role" {
+  name = "du_eks_pod_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Effect = "Allow"
+      Principal = {
+        Federated = aws_iam_openid_connect_provider.eks.arn
+      }
+      Condition = {
+        "StringEquals" = {
+          # Bind this role strictly to the "app-service-account" in the "default" namespace
+          "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub" : "system:serviceaccount:default:app-service-account",
+          "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:aud" : "sts.amazonaws.com"
+        }
+      }
+    }]
+  })
+}
+
+# Attach the secrets policy to the POD role (Not the Node role!)
+resource "aws_iam_role_policy_attachment" "eks_pod_secrets_attachment" {
+  role       = aws_iam_role.eks_pod_role.name
+  policy_arn = aws_iam_policy.eks_secrets_policy.arn
+}
+
+# Output the Pod Role ARN so senpai can copy it easily
+output "pod_role_arn" {
+  value = aws_iam_role.eks_pod_role.arn
+}
