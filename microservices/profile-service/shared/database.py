@@ -1,4 +1,5 @@
-from typing import AsyncGenerator, Optional
+from collections.abc import AsyncGenerator
+
 import redis
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -36,7 +37,6 @@ async_session_factory = async_sessionmaker(
 
 class Base(DeclarativeBase):
     """Base class for all SQLAlchemy ORM models."""
-    pass
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
@@ -62,9 +62,10 @@ async def close_db() -> None:
     """Close database connections."""
     await neon_async_engine.dispose()
 
+
 # ============ Redis Setup ============
 
-_redis_client: Optional[redis.Redis] = None
+_redis_client: redis.Redis | None = None
 _redis_connected: bool = False
 
 
@@ -83,7 +84,8 @@ async def get_redis_client() -> AsyncGenerator[redis.Redis, None]:
     if _redis_client is None:
         try:
             import redis.asyncio as redis
-            logger.info(f"Connecting to Redis...")
+
+            logger.info("Connecting to Redis...")
             logger.info(f"URL: {settings.redis_url[:30]}...")
 
             _redis_client = redis.from_url(
@@ -128,12 +130,14 @@ def is_redis_connected() -> bool:
 
 # ============ Synchronous Redis Client (for non-async contexts) ============
 
+
 def get_redis_client_sync() -> redis.Redis:
     """
     Get a synchronous Redis client for use in non-async contexts.
     Use this for @lru_cache functions, startup scripts, etc.
     """
     import redis.asyncio as redis
+
     return redis.from_url(
         settings.redis_url,
         decode_responses=True,

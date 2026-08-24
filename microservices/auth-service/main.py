@@ -1,12 +1,16 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-from shared.database import init_db, close_db, init_mongo, close_mongo, is_mongo_connected
-from shared.config import settings
-from shared.logger import get_logger
-
 from modules.auth.routers import auth_router
+from shared.config import settings
+from shared.database import (
+    close_db,
+    close_mongo,
+    init_db,
+    init_mongo,
+    is_mongo_connected,
+)
+from shared.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -88,6 +92,7 @@ app.include_router(auth_router)
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(
         "main:app",
         host="0.0.0.0",

@@ -1,11 +1,10 @@
 import logging
 import sys
-from typing import Optional
 
 from shared.config import settings
 
 
-def get_logger(name: Optional[str] = None) -> logging.Logger:
+def get_logger(name: str | None = None) -> logging.Logger:
     """
     Get a configured logger instance.
 
@@ -36,8 +35,8 @@ def get_logger(name: Optional[str] = None) -> logging.Logger:
 
         # Formatter with timestamp and context
         formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
         )
         handler.setFormatter(formatter)
         logger.addHandler(handler)

@@ -3,20 +3,17 @@ Anime Module Router
 FastAPI endpoints for anime functionality.
 """
 
-from shared.logger import get_logger
-from typing import Optional
-
-from fastapi import APIRouter, Depends, HTTPException, status, Query, BackgroundTasks
-
-from modules.anime.services.anilist_service import AniListService
-from modules.anime.schemas import AnimeSeasonalResponse, AnimeSearchResponse
-from modules.anime.rate_limit import AnimeRateLimiter, get_anime_rate_limiter
-from modules.anime.services.cache_manager import AnimeCacheManager
-from modules.anime.services.season import get_current_season
-
-from modules.anime.dependencies import get_current_user_id
 from uuid import UUID
 
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
+from shared.logger import get_logger
+
+from modules.anime.dependencies import get_current_user_id
+from modules.anime.rate_limit import AnimeRateLimiter, get_anime_rate_limiter
+from modules.anime.schemas import AnimeSearchResponse, AnimeSeasonalResponse
+from modules.anime.services.anilist_service import AniListService
+from modules.anime.services.cache_manager import AnimeCacheManager
+from modules.anime.services.season import get_current_season
 
 anime_router = APIRouter(
     prefix="/anime",
@@ -35,6 +32,7 @@ logger = get_logger(__name__)
 # DEPENDENCIES
 # ============================================
 
+
 async def get_anime_service() -> AniListService:
     """Dependency for AniList service with cache."""
     cache_manager = AnimeCacheManager()
@@ -45,6 +43,7 @@ async def get_anime_service() -> AniListService:
 # ENDPOINTS
 # ============================================
 
+
 @anime_router.get(
     "/seasonal",
     response_model=AnimeSeasonalResponse,
@@ -52,25 +51,12 @@ async def get_anime_service() -> AniListService:
 )
 async def get_seasonal_anime(
     background_tasks: BackgroundTasks,
-    season: Optional[str] = Query(
-        None,
-        description="Season: WINTER, SPRING, SUMMER, FALL"
+    season: str | None = Query(
+        None, description="Season: WINTER, SPRING, SUMMER, FALL"
     ),
-    year: Optional[int] = Query(
-        None,
-        description="Year (e.g., 2025)"
-    ),
-    page: int = Query(
-        1,
-        ge=1,
-        description="Page number"
-    ),
-    per_page: int = Query(
-        25,
-        ge=1,
-        le=50,
-        description="Items per page (max 50)"
-    ),
+    year: int | None = Query(None, description="Year (e.g., 2025)"),
+    page: int = Query(1, ge=1, description="Page number"),
+    per_page: int = Query(25, ge=1, le=50, description="Items per page (max 50)"),
     current_user_id: UUID = Depends(get_current_user_id),
     service: AniListService = Depends(get_anime_service),
     rate_limiter: AnimeRateLimiter = Depends(get_anime_rate_limiter),
@@ -82,8 +68,10 @@ async def get_seasonal_anime(
     ✅ Background task fetches ALL pages and caches them
     ✅ Subsequent requests: Lightning fast from cache (< 100ms)
     """
-    logger.info(f"[Seasonal] Request started - user: {current_user_id}, "
-                f"season: {season}, year: {year}, page: {page}, per_page: {per_page}")
+    logger.info(
+        f"[Seasonal] Request started - user: {current_user_id}, "
+        f"season: {season}, year: {year}, page: {page}, per_page: {per_page}"
+    )
 
     # ✅ Auto-detect if not provided
     if season is None or year is None:
@@ -117,8 +105,10 @@ async def get_seasonal_anime(
             headers={"Retry-After": str(retry_after)},
         )
 
-    logger.info(f"[Seasonal] Calling service - season: {season_upper}, year: {year}, "
-                f"page: {page}, per_page: {per_page}")
+    logger.info(
+        f"[Seasonal] Calling service - season: {season_upper}, year: {year}, "
+        f"page: {page}, per_page: {per_page}"
+    )
 
     result = await service.get_seasonal_anime(
         season=season_upper,
@@ -128,8 +118,10 @@ async def get_seasonal_anime(
         background_tasks=background_tasks,
     )
 
-    logger.info(f"[Seasonal] Response successful - returned {len(result.media)} items, "
-                f"hasNextPage: {result.pageInfo.hasNextPage}")
+    logger.info(
+        f"[Seasonal] Response successful - returned {len(result.media)} items, "
+        f"hasNextPage: {result.pageInfo.hasNextPage}"
+    )
 
     return result
 
@@ -141,22 +133,9 @@ async def get_seasonal_anime(
 )
 async def search_anime(
     background_tasks: BackgroundTasks,
-    query: str = Query(
-        ...,
-        min_length=2,
-        description="Search term (min 2 characters)"
-    ),
-    page: int = Query(
-        1,
-        ge=1,
-        description="Page number"
-    ),
-    per_page: int = Query(
-        25,
-        ge=1,
-        le=50,
-        description="Items per page (max 50)"
-    ),
+    query: str = Query(..., min_length=2, description="Search term (min 2 characters)"),
+    page: int = Query(1, ge=1, description="Page number"),
+    per_page: int = Query(25, ge=1, le=50, description="Items per page (max 50)"),
     current_user_id: UUID = Depends(get_current_user_id),
     service: AniListService = Depends(get_anime_service),
     rate_limiter: AnimeRateLimiter = Depends(get_anime_rate_limiter),
@@ -168,8 +147,10 @@ async def search_anime(
     ✅ Background task caches the result
     ✅ Subsequent requests: Lightning fast from cache (< 100ms)
     """
-    logger.info(f"[Search] Request started - user: {current_user_id}, "
-                f"query: '{query}', page: {page}, per_page: {per_page}")
+    logger.info(
+        f"[Search] Request started - user: {current_user_id}, "
+        f"query: '{query}', page: {page}, per_page: {per_page}"
+    )
 
     # ✅ Rate limit check
     logger.debug(f"[Search] Checking rate limit for user: {current_user_id}")
@@ -185,7 +166,9 @@ async def search_anime(
             headers={"Retry-After": str(retry_after)},
         )
 
-    logger.info(f"[Search] Calling service - query: '{query}', page: {page}, per_page: {per_page}")
+    logger.info(
+        f"[Search] Calling service - query: '{query}', page: {page}, per_page: {per_page}"
+    )
 
     result = await service.search_anime(
         query=query,
@@ -194,8 +177,10 @@ async def search_anime(
         background_tasks=background_tasks,
     )
 
-    logger.info(f"[Search] Response successful - returned {len(result.media)} items, "
-                f"hasNextPage: {result.pageInfo.hasNextPage}")
+    logger.info(
+        f"[Search] Response successful - returned {len(result.media)} items, "
+        f"hasNextPage: {result.pageInfo.hasNextPage}"
+    )
 
     return result
 

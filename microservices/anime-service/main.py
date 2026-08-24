@@ -1,9 +1,9 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from modules.anime.routers import anime_router
 from shared.config import settings
 from shared.logger import get_logger
-from modules.anime.routers import anime_router
 
 logger = get_logger(__name__)
 
@@ -53,6 +53,7 @@ app.include_router(anime_router)
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(
         "main:app",
         host="0.0.0.0",

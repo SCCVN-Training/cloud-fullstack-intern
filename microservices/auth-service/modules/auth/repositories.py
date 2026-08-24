@@ -1,11 +1,7 @@
-from uuid import UUID
-from datetime import datetime, timezone
-from typing import Optional
-
+from shared.repositories import BaseRepository
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from shared.repositories import BaseRepository
 from modules.auth.models import UserAccountModel
 
 
@@ -27,7 +23,7 @@ class AuthRepository(BaseRepository[UserAccountModel]):
 
     # ============ Custom Query Methods ============
 
-    async def get_by_email(self, email: str) -> Optional[UserAccountModel]:
+    async def get_by_email(self, email: str) -> UserAccountModel | None:
         """
         Find a user by email address.
 

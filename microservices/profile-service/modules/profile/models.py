@@ -1,9 +1,8 @@
 from datetime import datetime, timezone
 
+from shared.database import Base
 from sqlalchemy import Boolean, Column, DateTime, String, Text
 from sqlalchemy.dialects.postgresql import UUID
-
-from shared.database import Base
 
 
 class UserProfileModel(Base):
@@ -48,7 +47,7 @@ class UserProfileModel(Base):
     )
 
     accent_color = Column(
-        String(7),      # #1976D2
+        String(7),  # #1976D2
         default="#1976D2",
         nullable=False,
     )

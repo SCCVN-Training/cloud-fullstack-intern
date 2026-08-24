@@ -1,20 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from shared.database import get_db
-from modules.profile.dependencies import get_current_user_id
-from shared.models import ApiResponse
-
-from modules.profile.services import ProfileService
-from modules.profile.schemas import (
-    CreateProfileRequest,
-    UpdateProfileRequest,
-    ProfileDataResponse,
-)
 from uuid import UUID
 
-from modules.profile.rate_limit import ProfileRateLimiter, get_profile_rate_limiter
+from fastapi import APIRouter, Depends, HTTPException, status
+from shared.database import get_db
+from shared.models import ApiResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from modules.profile.dependencies import get_current_user_id
+from modules.profile.schemas import (
+    CreateProfileRequest,
+    ProfileDataResponse,
+    UpdateProfileRequest,
+)
+from modules.profile.services import ProfileService
 
 # ============ Router Setup ============
 
@@ -26,6 +23,7 @@ profile_router = APIRouter(
 
 # ============ Dependencies ============
 
+
 async def get_profile_service(
     db: AsyncSession = Depends(get_db),
 ) -> ProfileService:
@@ -34,6 +32,7 @@ async def get_profile_service(
 
 
 # ============ Endpoints ============
+
 
 @profile_router.post(
     "",
@@ -45,7 +44,6 @@ async def create_profile(
     current_user_id: UUID = Depends(get_current_user_id),
     service: ProfileService = Depends(get_profile_service),
     # rate_limiter: ProfileRateLimiter = Depends(get_profile_rate_limiter)
-
 ):
     """
     Create a user profile.
@@ -71,14 +69,11 @@ async def create_profile(
     #         headers={"Retry-After": str(retry_after)},
     #     )
 
-
     profile = await service.create_profile(payload)
 
     return {
         "message": "Profile created successfully.",
-        "data": {
-            "profile": profile
-        },
+        "data": {"profile": profile},
     }
 
 
@@ -110,12 +105,8 @@ async def get_my_profile(
 
     profile = await service.get_profile_by_user_id(current_user_id)
 
-    return {
-        "message": "Profile retrieved successfully.",
-        "data": {
-            "profile": profile
-        }
-    }
+    return {"message": "Profile retrieved successfully.", "data": {"profile": profile}}
+
 
 @profile_router.patch(
     "/me",
@@ -150,12 +141,7 @@ async def update_my_profile(
         user_id=current_user_id,
     )
 
-    return {
-        "message": "Profile updated successfully.",
-        "data": {
-            "profile": profile
-        }
-    }
+    return {"message": "Profile updated successfully.", "data": {"profile": profile}}
 
 
 @profile_router.delete(

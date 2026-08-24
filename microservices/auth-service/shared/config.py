@@ -1,9 +1,9 @@
-import os
 import json
+import os
+
 from dotenv import load_dotenv
-from typing import Optional, Dict, Tuple
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, SecretStr
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Load shared first
 load_dotenv(dotenv_path="../.env.shared")
@@ -40,13 +40,13 @@ class Settings(BaseSettings):
     neon_database_url: str = Field(
         default="postgresql+asyncpg://postgres:postgres@localhost:5432/main",
         description="PostgreSQL connection string with asyncpg driver",
-        validation_alias="AUTH_NEON_DATABASE_URL"
+        validation_alias="AUTH_NEON_DATABASE_URL",
     )
 
     # ============ MongoDB ============
     mongodb_connection_uri: str = Field(
         default="mongodb://admin:admin@localhost:27017",
-        description="MongoDB connection URI"
+        description="MongoDB connection URI",
     )
     mongodb_database_name: str = "logs"
     mongodb_cache_database_name: str = "cache"
@@ -55,14 +55,14 @@ class Settings(BaseSettings):
     # ============ Upstash Redis ============
     redis_url: str = Field(
         default="redis://localhost:6379",
-        description="Redis connection URL for rate limiting and caching"
+        description="Redis connection URL for rate limiting and caching",
     )
 
     # ============ Security ============
     jwt_secret_key: SecretStr = Field(
         ...,
         min_length=32,
-        description="JWT secret key (must be at least 32 characters)"
+        description="JWT secret key (must be at least 32 characters)",
     )
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
@@ -106,7 +106,7 @@ class Settings(BaseSettings):
     # 5. HELPER METHODS
     # ====================================================================
 
-    def get_rate_limit(self, module: str, endpoint: str) -> Tuple[int, int]:
+    def get_rate_limit(self, module: str, endpoint: str) -> tuple[int, int]:
         limit_key = f"rate_limit_{module}_{endpoint}_limit"
         window_key = f"rate_limit_{module}_{endpoint}_window"
 
@@ -119,7 +119,7 @@ class Settings(BaseSettings):
         # env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
-        extra="allow"
+        extra="allow",
     )
 
     # ====================================================================
@@ -132,11 +132,12 @@ class Settings(BaseSettings):
         if current_env in ["production", "staging"]:
             try:
                 import boto3
-                print("🔄 Fetching secrets from AWS Secrets Manager...")
-                client = boto3.client('secretsmanager', region_name='ap-southeast-1')
 
-                response = client.get_secret_value(SecretId='du-microservices-secrets')
-                aws_secrets = json.loads(response['SecretString'])
+                print("🔄 Fetching secrets from AWS Secrets Manager...")
+                client = boto3.client("secretsmanager", region_name="ap-southeast-1")
+
+                response = client.get_secret_value(SecretId="du-microservices-secrets")
+                aws_secrets = json.loads(response["SecretString"])
 
                 print("✅ Successfully loaded secrets from AWS.")
                 return cls(**aws_secrets)
@@ -144,8 +145,11 @@ class Settings(BaseSettings):
             except ImportError:
                 print("⚠️ Boto3 is not installed. Falling back to OS environments...")
             except Exception as e:
-                print(f"⚠️ Failed to fetch from AWS: {e}. Falling back to OS environments...")
+                print(
+                    f"⚠️ Failed to fetch from AWS: {e}. Falling back to OS environments..."
+                )
 
         return cls()
+
 
 settings = Settings.load_with_fallback()

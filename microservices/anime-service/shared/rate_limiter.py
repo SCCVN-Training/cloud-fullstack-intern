@@ -2,21 +2,22 @@
 Base Rate Limiter - Reusable across all modules and microservices.
 No configs here - just the core logic.
 """
+
 import time
-from typing import Optional, Tuple
 from functools import lru_cache
 
 import redis.asyncio as redis
 
 from shared.config import settings
-
 from shared.database import get_redis_client_async
 
 
 class BaseRateLimiter:
     """Base sliding window rate limiter."""
 
-    def __init__(self, redis_client: Optional[redis.Redis] = None, key_prefix: Optional[str] = None):
+    def __init__(
+        self, redis_client: redis.Redis | None = None, key_prefix: str | None = None
+    ):
         """
         Initialize rate limiter with Redis client.
 
@@ -41,7 +42,7 @@ class BaseRateLimiter:
         endpoint: str,
         limit: int,
         window_seconds: int,
-    ) -> Tuple[bool, int, int]:
+    ) -> tuple[bool, int, int]:
         """
         Check if request is within rate limit.
 

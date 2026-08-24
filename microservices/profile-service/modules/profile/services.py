@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from modules.profile.repositories import ProfileRepository
 from modules.profile.schemas import (
     CreateProfileRequest,
-    UpdateProfileRequest,
     ProfileResponse,
+    UpdateProfileRequest,
 )
 
 
@@ -89,6 +89,7 @@ class ProfileService:
             )
 
         return ProfileResponse.model_validate(profile)
+
     # ============ Update ============
 
     async def update_profile(

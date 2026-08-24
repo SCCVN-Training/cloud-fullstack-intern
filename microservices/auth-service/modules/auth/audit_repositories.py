@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 from uuid import UUID
 
 from motor.motor_asyncio import AsyncIOMotorDatabase
@@ -26,8 +25,8 @@ class AuditLogRepository:
         self,
         user_id: UUID,
         email: str,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
     ) -> None:
         """
         Log a user registration event.
@@ -39,22 +38,24 @@ class AuditLogRepository:
             ip_address: IP address of registration (optional)
             user_agent: User agent string (optional)
         """
-        await self.collection.insert_one({
-            "event_type": "USER_REGISTERED",
-            "associated_user_id": str(user_id),
-            "email": email,
-            "ip_address": ip_address,
-            "user_agent": user_agent,
-            "timestamp_utc": datetime.now(timezone.utc),
-        })
+        await self.collection.insert_one(
+            {
+                "event_type": "USER_REGISTERED",
+                "associated_user_id": str(user_id),
+                "email": email,
+                "ip_address": ip_address,
+                "user_agent": user_agent,
+                "timestamp_utc": datetime.now(timezone.utc),
+            }
+        )
 
     async def log_login_attempt(
         self,
         email: str,
         success: bool,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
-        user_id: Optional[UUID] = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
+        user_id: UUID | None = None,
     ) -> None:
         """
         Log a login attempt (success or failure).
@@ -84,7 +85,7 @@ class AuditLogRepository:
         self,
         user_id: UUID,
         email: str,
-        ip_address: Optional[str] = None,
+        ip_address: str | None = None,
     ) -> None:
         """
         Log a password change event.
@@ -94,19 +95,21 @@ class AuditLogRepository:
             email: User's email
             ip_address: IP address of request
         """
-        await self.collection.insert_one({
-            "event_type": "PASSWORD_CHANGED",
-            "associated_user_id": str(user_id),
-            "email": email,
-            "ip_address": ip_address,
-            "timestamp_utc": datetime.now(timezone.utc),
-        })
+        await self.collection.insert_one(
+            {
+                "event_type": "PASSWORD_CHANGED",
+                "associated_user_id": str(user_id),
+                "email": email,
+                "ip_address": ip_address,
+                "timestamp_utc": datetime.now(timezone.utc),
+            }
+        )
 
     async def log_account_deactivation(
         self,
         user_id: UUID,
         email: str,
-        reason: Optional[str] = None,
+        reason: str | None = None,
     ) -> None:
         """
         Log an account deactivation event.
@@ -116,13 +119,15 @@ class AuditLogRepository:
             email: User's email
             reason: Reason for deactivation (optional)
         """
-        await self.collection.insert_one({
-            "event_type": "ACCOUNT_DEACTIVATED",
-            "associated_user_id": str(user_id),
-            "email": email,
-            "reason": reason,
-            "timestamp_utc": datetime.now(timezone.utc),
-        })
+        await self.collection.insert_one(
+            {
+                "event_type": "ACCOUNT_DEACTIVATED",
+                "associated_user_id": str(user_id),
+                "email": email,
+                "reason": reason,
+                "timestamp_utc": datetime.now(timezone.utc),
+            }
+        )
 
     # ============ Query Methods ============
 
@@ -143,9 +148,12 @@ class AuditLogRepository:
         Returns:
             List of audit log entries
         """
-        cursor = self.collection.find(
-            {"associated_user_id": str(user_id)}
-        ).sort("timestamp_utc", -1).skip(skip).limit(limit)
+        cursor = (
+            self.collection.find({"associated_user_id": str(user_id)})
+            .sort("timestamp_utc", -1)
+            .skip(skip)
+            .limit(limit)
+        )
 
         return await cursor.to_list(length=limit)
 
@@ -166,9 +174,12 @@ class AuditLogRepository:
         """
         cutoff = datetime.now(timezone.utc) - timedelta(days=days)
 
-        cursor = self.collection.find({
-            "event_type": "USER_REGISTERED",
-            "timestamp_utc": {"$gte": cutoff}
-        }).sort("timestamp_utc", -1).limit(limit)
+        cursor = (
+            self.collection.find(
+                {"event_type": "USER_REGISTERED", "timestamp_utc": {"$gte": cutoff}}
+            )
+            .sort("timestamp_utc", -1)
+            .limit(limit)
+        )
 
         return await cursor.to_list(length=limit)

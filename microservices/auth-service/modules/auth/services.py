@@ -1,26 +1,22 @@
-from datetime import timedelta
-from typing import Optional, Tuple
 from uuid import UUID
 
 from fastapi import HTTPException, Request, Response, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from shared.config import settings
 from shared.security import (
     create_access_token,
     create_refresh_token,
-    verify_token,
     get_password_hash,
     verify_password,
+    verify_token,
 )
-from shared.database import get_mongo_db
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from modules.auth.repositories import AuthRepository
 from modules.auth.audit_repositories import AuditLogRepository
+from modules.auth.repositories import AuthRepository
 from modules.auth.schemas import (
-    RegisterRequest,
     LoginRequest,
+    RegisterRequest,
     UserResponse,
 )
 
@@ -55,7 +51,7 @@ class AuthService:
         response: Response,
         user_id: UUID,
         email: str,
-    ) -> Tuple[str, str]:
+    ) -> tuple[str, str]:
         """
         Set HttpOnly cookies with access and refresh tokens.
         """
@@ -101,8 +97,8 @@ class AuthService:
         self,
         request: RegisterRequest,
         response: Response,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
     ) -> dict:
         """
         Register a new user.
@@ -130,7 +126,7 @@ class AuthService:
         if await self.auth_repo.check_email_exists(request.email):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="A user with this email address already exists."
+                detail="A user with this email address already exists.",
             )
 
         # 2. Create user (NO profile)
@@ -160,7 +156,7 @@ class AuthService:
             "message": "User registration successful. Please create your profile.",
             "data": {
                 "user": UserResponse.model_validate(user).model_dump(by_alias=True),
-            }
+            },
         }
 
     # ============ Login ============
@@ -169,8 +165,8 @@ class AuthService:
         self,
         request: LoginRequest,
         response: Response,
-        ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None,
+        ip_address: str | None = None,
+        user_agent: str | None = None,
     ) -> dict:
         """
         Authenticate a user and set cookies.
@@ -221,7 +217,7 @@ class AuthService:
             "message": "User login successful.",
             "data": {
                 "user": UserResponse.model_validate(user).model_dump(by_alias=True),
-            }
+            },
         }
 
     # ============ Session Restoration ============
@@ -322,5 +318,5 @@ class AuthService:
             "message": "Current user retrieved successfully.",
             "data": {
                 "user": UserResponse.model_validate(user).model_dump(by_alias=True),
-            }
+            },
         }

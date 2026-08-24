@@ -1,11 +1,8 @@
-from typing import Optional
-from uuid import UUID
-
 from fastapi import Depends, HTTPException, Request, status
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from shared.database import get_db
 from shared.security import verify_token
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from modules.auth.models import UserAccountModel
 from modules.auth.repositories import AuthRepository
 
@@ -66,7 +63,7 @@ async def get_current_user(
 async def get_current_user_optional(
     request: Request,
     db: AsyncSession = Depends(get_db),
-) -> Optional[UserAccountModel]:
+) -> UserAccountModel | None:
     """
     Optional dependency - doesn't raise error if not authenticated.
 

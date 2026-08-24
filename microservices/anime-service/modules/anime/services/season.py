@@ -1,11 +1,13 @@
 from datetime import datetime
 from enum import Enum
 
+
 class Season(str, Enum):
     WINTER = "WINTER"
     SPRING = "SPRING"
     SUMMER = "SUMMER"
     FALL = "FALL"
+
 
 def get_current_season() -> tuple[Season, int]:
     """Calculate current anime season based on today's date."""

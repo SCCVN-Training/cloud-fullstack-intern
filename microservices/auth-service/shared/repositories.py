@@ -1,11 +1,13 @@
-from typing import TypeVar, Generic, Type, Optional, List, Any
+from typing import Generic, TypeVar
 from uuid import UUID
-from sqlalchemy import delete, select, func, update
+
+from sqlalchemy import delete, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # Type variable for the model class
 # This allows the repository to work with any model type
 ModelType = TypeVar("ModelType")
+
 
 class BaseRepository(Generic[ModelType]):
     """
@@ -27,7 +29,7 @@ class BaseRepository(Generic[ModelType]):
                 ...
     """
 
-    def __init__(self, model: Type[ModelType], session: AsyncSession):
+    def __init__(self, model: type[ModelType], session: AsyncSession):
         """
         Initialize repository with model and session.
 
@@ -63,7 +65,7 @@ class BaseRepository(Generic[ModelType]):
         await self.session.refresh(instance)
         return instance
 
-    async def create_many(self, items: List[dict]) -> List[ModelType]:
+    async def create_many(self, items: list[dict]) -> list[ModelType]:
         """
         Create multiple records at once.
 
@@ -88,7 +90,7 @@ class BaseRepository(Generic[ModelType]):
 
     # ============ Read ============
 
-    async def get_by_id(self, id: UUID) -> Optional[ModelType]:
+    async def get_by_id(self, id: UUID) -> ModelType | None:
         """
         Get a record by its primary key ID.
 
@@ -103,7 +105,7 @@ class BaseRepository(Generic[ModelType]):
         )
         return result.scalar_one_or_none()
 
-    async def get_by_ids(self, ids: List[UUID]) -> List[ModelType]:
+    async def get_by_ids(self, ids: list[UUID]) -> list[ModelType]:
         """
         Get multiple records by their IDs.
 
@@ -118,7 +120,7 @@ class BaseRepository(Generic[ModelType]):
         )
         return result.scalars().all()
 
-    async def get_all(self, skip: int = 0, limit: int = 100) -> List[ModelType]:
+    async def get_all(self, skip: int = 0, limit: int = 100) -> list[ModelType]:
         """
         Get all records with pagination.
 
@@ -174,7 +176,7 @@ class BaseRepository(Generic[ModelType]):
 
     # ============ Update ============
 
-    async def update(self, id: UUID, **kwargs) -> Optional[ModelType]:
+    async def update(self, id: UUID, **kwargs) -> ModelType | None:
         """
         Update a record by ID.
 
@@ -205,7 +207,7 @@ class BaseRepository(Generic[ModelType]):
         await self.session.refresh(instance)
         return instance
 
-    async def update_bulk(self, ids: List[UUID], **kwargs) -> List[ModelType]:
+    async def update_bulk(self, ids: list[UUID], **kwargs) -> list[ModelType]:
         """
         Update multiple records at once.
 
@@ -245,7 +247,7 @@ class BaseRepository(Generic[ModelType]):
         await self.session.commit()
         return True
 
-    async def delete_bulk(self, ids: List[UUID]) -> int:
+    async def delete_bulk(self, ids: list[UUID]) -> int:
         """
         Delete multiple records by IDs.
 

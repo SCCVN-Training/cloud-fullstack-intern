@@ -3,9 +3,8 @@ Anime Module Rate Limits - Self-contained.
 Controls rate limits for anime-specific endpoints.
 """
 
-from typing import Tuple
-from shared.rate_limiter import BaseRateLimiter, get_rate_limiter
 from shared.config import settings
+from shared.rate_limiter import BaseRateLimiter, get_rate_limiter
 
 
 class AnimeRateLimiter:
@@ -15,7 +14,7 @@ class AnimeRateLimiter:
         self.rate_limiter = rate_limiter
         self.module_prefix = "anime"
 
-    async def check_seasonal(self, user_id: str) -> Tuple[bool, int, int]:
+    async def check_seasonal(self, user_id: str) -> tuple[bool, int, int]:
         """
         Check rate limit for seasonal anime endpoint.
 
@@ -30,7 +29,7 @@ class AnimeRateLimiter:
             window_seconds=window,
         )
 
-    async def check_search(self, user_id: str) -> Tuple[bool, int, int]:
+    async def check_search(self, user_id: str) -> tuple[bool, int, int]:
         """
         Check rate limit for search anime endpoint.
 
@@ -45,7 +44,7 @@ class AnimeRateLimiter:
             window_seconds=window,
         )
 
-    async def check_seasonal_all(self, user_id: str) -> Tuple[bool, int, int]:
+    async def check_seasonal_all(self, user_id: str) -> tuple[bool, int, int]:
         """
         Check rate limit for fetching ALL seasonal anime.
 
@@ -64,6 +63,7 @@ class AnimeRateLimiter:
 # ============================================
 # DEPENDENCY INJECTION
 # ============================================
+
 
 async def get_anime_rate_limiter() -> AnimeRateLimiter:
     """Dependency for anime module rate limiter."""

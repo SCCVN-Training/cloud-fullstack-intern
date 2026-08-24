@@ -3,15 +3,15 @@ Smart Cache Manager for Anime Module.
 Implements intelligent caching strategy for seasonal anime.
 """
 
-import json
 import hashlib
-from typing import Optional, List, Dict, Any
+import json
+from typing import Any
+
 import redis.asyncio as redis
-
 from shared.config import settings
-from modules.anime.schemas import AnimeSeasonalItem
-
 from shared.database import get_redis_client_async
+
+from modules.anime.schemas import AnimeSeasonalItem
 
 
 class AnimeCacheManager:
@@ -25,7 +25,7 @@ class AnimeCacheManager:
     4. Stale-while-revalidate: Serve stale cache while refreshing
     """
 
-    def __init__(self, redis_client: Optional[redis.Redis] = None):
+    def __init__(self, redis_client: redis.Redis | None = None):
         self.redis = redis_client or self._get_redis_client()
         self.default_ttl = settings.anilist_cache_ttl_l1  # Default 300s
         self.seasonal_ttl = 3600  # 1 hour for seasonal
@@ -53,7 +53,7 @@ class AnimeCacheManager:
         self,
         season: str,
         year: int,
-    ) -> Optional[List[AnimeSeasonalItem]]:
+    ) -> list[AnimeSeasonalItem] | None:
         """Get cached seasonal anime list."""
         cache_key = self._get_cache_key("seasonal", season=season, year=year)
 
@@ -68,8 +68,8 @@ class AnimeCacheManager:
         self,
         season: str,
         year: int,
-        data: List[AnimeSeasonalItem],
-        ttl: Optional[int] = None,
+        data: list[AnimeSeasonalItem],
+        ttl: int | None = None,
     ) -> None:
         """Cache seasonal anime list."""
         cache_key = self._get_cache_key("seasonal", season=season, year=year)
@@ -77,9 +77,7 @@ class AnimeCacheManager:
         # Convert to dict for JSON serialization
         serializable = [item.model_dump() for item in data]
         await self.redis.setex(
-            cache_key,
-            ttl or self.seasonal_ttl,
-            json.dumps(serializable)
+            cache_key, ttl or self.seasonal_ttl, json.dumps(serializable)
         )
 
     async def get_seasonal_paginated(
@@ -88,7 +86,7 @@ class AnimeCacheManager:
         year: int,
         page: int,
         per_page: int,
-    ) -> tuple[List[AnimeSeasonalItem], int, bool]:
+    ) -> tuple[list[AnimeSeasonalItem], int, bool]:
         """
         Get paginated seasonal anime from cache.
 
@@ -126,13 +124,10 @@ class AnimeCacheManager:
         query: str,
         page: int,
         per_page: int,
-    ) -> Optional[Dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         """Get cached search results."""
         cache_key = self._get_cache_key(
-            "search",
-            query=query.lower().strip(),
-            page=page,
-            per_page=per_page
+            "search", query=query.lower().strip(), page=page, per_page=per_page
         )
 
         cached = await self.redis.get(cache_key)
@@ -146,22 +141,15 @@ class AnimeCacheManager:
         query: str,
         page: int,
         per_page: int,
-        data: Dict[str, Any],
-        ttl: Optional[int] = None,
+        data: dict[str, Any],
+        ttl: int | None = None,
     ) -> None:
         """Cache search results."""
         cache_key = self._get_cache_key(
-            "search",
-            query=query.lower().strip(),
-            page=page,
-            per_page=per_page
+            "search", query=query.lower().strip(), page=page, per_page=per_page
         )
 
-        await self.redis.setex(
-            cache_key,
-            ttl or self.default_ttl,
-            json.dumps(data)
-        )
+        await self.redis.setex(cache_key, ttl or self.default_ttl, json.dumps(data))
 
     # ============================================
     # CACHE INVALIDATION

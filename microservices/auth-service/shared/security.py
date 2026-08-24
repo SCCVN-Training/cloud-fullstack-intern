@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Union
 from uuid import UUID
-from jose import jwt, JWTError
+
+from jose import JWTError, jwt
 from passlib.context import CryptContext
+
 from shared.config import settings
 
 # Password hashing context
@@ -12,7 +13,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # ============ JWT Functions ============
 
-def create_access_token(user_id: Union[UUID, str, int]) -> str:
+
+def create_access_token(user_id: UUID | str | int) -> str:
     """
     Create a JWT access token.
 
@@ -31,18 +33,18 @@ def create_access_token(user_id: Union[UUID, str, int]) -> str:
         minutes=settings.access_token_expire_minutes
     )
     data = {
-        "sub": user_id_str,      # Subject (who the token is for)
-        "exp": expires,          # Expiration time
-        "type": "access",        # Token type (for verification)
+        "sub": user_id_str,  # Subject (who the token is for)
+        "exp": expires,  # Expiration time
+        "type": "access",  # Token type (for verification)
     }
     return jwt.encode(
         data,
         settings.jwt_secret_key.get_secret_value(),
-        algorithm=settings.jwt_algorithm
+        algorithm=settings.jwt_algorithm,
     )
 
 
-def create_refresh_token(user_id: Union[UUID, str, int]) -> str:
+def create_refresh_token(user_id: UUID | str | int) -> str:
     """
     Create a JWT refresh token.
 
@@ -63,16 +65,16 @@ def create_refresh_token(user_id: Union[UUID, str, int]) -> str:
     data = {
         "sub": user_id_str,
         "exp": expires,
-        "type": "refresh",       # Different type for refresh tokens
+        "type": "refresh",  # Different type for refresh tokens
     }
     return jwt.encode(
         data,
         settings.jwt_secret_key.get_secret_value(),
-        algorithm=settings.jwt_algorithm
+        algorithm=settings.jwt_algorithm,
     )
 
 
-def verify_token(token: str, token_type: str = "access") -> Optional[UUID]:
+def verify_token(token: str, token_type: str = "access") -> UUID | None:
     """
     Verify a JWT token and extract the user ID as UUID.
 
@@ -87,7 +89,7 @@ def verify_token(token: str, token_type: str = "access") -> Optional[UUID]:
         payload = jwt.decode(
             token,
             settings.jwt_secret_key.get_secret_value(),
-            algorithms=[settings.jwt_algorithm]
+            algorithms=[settings.jwt_algorithm],
         )
 
         # Check token type matches
@@ -111,7 +113,7 @@ def verify_token(token: str, token_type: str = "access") -> Optional[UUID]:
         return None
 
 
-def verify_token_raw(token: str, token_type: str = "access") -> Optional[str]:
+def verify_token_raw(token: str, token_type: str = "access") -> str | None:
     """
     Verify JWT token and return raw string (for compatibility).
 
@@ -126,7 +128,7 @@ def verify_token_raw(token: str, token_type: str = "access") -> Optional[str]:
         payload = jwt.decode(
             token,
             settings.jwt_secret_key.get_secret_value(),
-            algorithms=[settings.jwt_algorithm]
+            algorithms=[settings.jwt_algorithm],
         )
 
         if payload.get("type") != token_type:
@@ -138,7 +140,7 @@ def verify_token_raw(token: str, token_type: str = "access") -> Optional[str]:
         return None
 
 
-def decode_token(token: str) -> Optional[dict]:
+def decode_token(token: str) -> dict | None:
     """
     Decode JWT token without verification (for debugging).
 
@@ -152,13 +154,14 @@ def decode_token(token: str) -> Optional[dict]:
         return jwt.decode(
             token,
             settings.jwt_secret_key.get_secret_value(),
-            algorithms=[settings.jwt_algorithm]
+            algorithms=[settings.jwt_algorithm],
         )
     except JWTError:
         return None
 
 
 # ============ Password Functions ============
+
 
 def get_password_hash(password: str) -> str:
     """

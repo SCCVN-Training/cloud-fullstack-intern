@@ -1,9 +1,9 @@
 # modules/auth/rate_limit.py (already have this)
 
-from typing import Tuple
+
 from fastapi import Request
-from shared.rate_limiter import BaseRateLimiter, get_rate_limiter
 from shared.config import settings
+from shared.rate_limiter import BaseRateLimiter, get_rate_limiter
 
 
 class AuthRateLimiter:
@@ -13,7 +13,7 @@ class AuthRateLimiter:
         self.rate_limiter = rate_limiter
         self.module_prefix = "auth"
 
-    async def check_login(self, request: Request) -> Tuple[bool, int, int]:
+    async def check_login(self, request: Request) -> tuple[bool, int, int]:
         """Check rate limit for login."""
         # ✅ Use IP as identifier (no user_id yet)
         ip = self._get_client_ip(request)
@@ -27,7 +27,7 @@ class AuthRateLimiter:
             window_seconds=window,
         )
 
-    async def check_register(self, request: Request) -> Tuple[bool, int, int]:
+    async def check_register(self, request: Request) -> tuple[bool, int, int]:
         """Check rate limit for registration."""
         ip = self._get_client_ip(request)
 
@@ -40,7 +40,7 @@ class AuthRateLimiter:
             window_seconds=window,
         )
 
-    async def check_refresh(self, request: Request) -> Tuple[bool, int, int]:
+    async def check_refresh(self, request: Request) -> tuple[bool, int, int]:
         """Check rate limit for refresh."""
         ip = self._get_client_ip(request)
 
@@ -53,7 +53,7 @@ class AuthRateLimiter:
             window_seconds=window,
         )
 
-    async def check_me(self, request: Request) -> Tuple[bool, int, int]:
+    async def check_me(self, request: Request) -> tuple[bool, int, int]:
         """Check rate limit for /me endpoint."""
         ip = self._get_client_ip(request)
 

@@ -1,16 +1,15 @@
 import json
 import os
-from typing import Optional, Dict, Tuple
+
 from dotenv import load_dotenv
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field, SecretStr
 
 load_dotenv(dotenv_path="../.env.shared")
 
 load_dotenv(dotenv_path="../.env.secrets")
 
 load_dotenv(dotenv_path=".env", override=True)
-
 
 
 class Settings(BaseSettings):
@@ -37,7 +36,7 @@ class Settings(BaseSettings):
     # ============ Upstash Redis ============
     redis_url: str = Field(
         default="redis://localhost:6379",
-        description="Redis connection URL for rate limiting and caching"
+        description="Redis connection URL for rate limiting and caching",
     )
     # ============ Feature Flags ============
     enable_anime: bool = True
@@ -76,7 +75,6 @@ class Settings(BaseSettings):
     cache_prefix_l2: str = "l2"
     cache_prefix_dedup: str = "dedup"
 
-
     # In Settings class
     ssl_verify: bool = Field(True, description="Enable SSL certificate verification")
 
@@ -84,7 +82,7 @@ class Settings(BaseSettings):
     # 5. HELPER METHODS
     # ====================================================================
 
-    def get_rate_limit(self, module: str, endpoint: str) -> Tuple[int, int]:
+    def get_rate_limit(self, module: str, endpoint: str) -> tuple[int, int]:
         """
         Get rate limit and window for a specific module endpoint.
 
@@ -100,7 +98,7 @@ class Settings(BaseSettings):
 
         return limit, window
 
-    def get_external_api_config(self, api_name: str) -> Dict[str, any]:
+    def get_external_api_config(self, api_name: str) -> dict[str, any]:
         """
         Get external API configuration.
 
@@ -110,7 +108,8 @@ class Settings(BaseSettings):
         """
         prefix = api_name.lower()
         return {
-            "url": getattr(self, f"{prefix}_graphql_url", None) or getattr(self, f"{prefix}_base_url", None),
+            "url": getattr(self, f"{prefix}_graphql_url", None)
+            or getattr(self, f"{prefix}_base_url", None),
             "rate_limit": getattr(self, f"{prefix}_rate_limit", 0),
             "rate_window": getattr(self, f"{prefix}_rate_window", 60),
             "cache_ttl_l1": getattr(self, f"{prefix}_cache_ttl_l1", 0),
@@ -131,7 +130,7 @@ class Settings(BaseSettings):
         # env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
-        extra="allow"
+        extra="allow",
     )
 
     @classmethod
@@ -141,11 +140,12 @@ class Settings(BaseSettings):
         if current_env in ["production", "staging"]:
             try:
                 import boto3
-                print("🔄 Fetching secrets from AWS Secrets Manager...")
-                client = boto3.client('secretsmanager', region_name='ap-southeast-1')
 
-                response = client.get_secret_value(SecretId='du-microservices-secrets')
-                aws_secrets = json.loads(response['SecretString'])
+                print("🔄 Fetching secrets from AWS Secrets Manager...")
+                client = boto3.client("secretsmanager", region_name="ap-southeast-1")
+
+                response = client.get_secret_value(SecretId="du-microservices-secrets")
+                aws_secrets = json.loads(response["SecretString"])
 
                 print("✅ Successfully loaded secrets from AWS.")
                 return cls(**aws_secrets)
@@ -153,7 +153,9 @@ class Settings(BaseSettings):
             except ImportError:
                 print("⚠️ Boto3 is not installed. Falling back to OS environments...")
             except Exception as e:
-                print(f"⚠️ Failed to fetch from AWS: {e}. Falling back to OS environments...")
+                print(
+                    f"⚠️ Failed to fetch from AWS: {e}. Falling back to OS environments..."
+                )
 
         return cls()
 

@@ -1,20 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, Request, Response, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
+from shared.database import get_db, get_mongo_db
+from shared.models import ApiResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from shared.database import get_db, get_mongo_db
 from modules.auth.dependencies import get_current_user
-from shared.models import ApiResponse
-
+from modules.auth.models import UserAccountModel
 from modules.auth.schemas import (
-    RegisterRequest,
     LoginRequest,
+    RegisterRequest,
     UserDataResponse,
-    UserResponse
+    UserResponse,
 )
 from modules.auth.services import AuthService
-from modules.auth.models import UserAccountModel
-from modules.auth.rate_limit import AuthRateLimiter, get_auth_rate_limiter
 
 # ============ Router Setup ============
 
@@ -26,6 +24,7 @@ auth_router = APIRouter(
 
 # ============ Dependencies ============
 
+
 async def get_auth_service(
     postgres: AsyncSession = Depends(get_db),
     mongo: AsyncIOMotorDatabase = Depends(get_mongo_db),
@@ -35,6 +34,7 @@ async def get_auth_service(
 
 
 # ============ Endpoints ============
+
 
 @auth_router.post(
     "/register",
@@ -176,18 +176,14 @@ async def get_me(
         "message": "Current user retrieved successfully.",
         "data": {
             "user": UserResponse.model_validate(current_user).model_dump(by_alias=True),
-        }
+        },
     }
 
+
 @auth_router.get("/verify", include_in_schema=False)
-async def verify_token(
-    current_user: UserAccountModel = Depends(get_current_user)
-):
+async def verify_token(current_user: UserAccountModel = Depends(get_current_user)):
     """
     Internal API for API Gateway
     Return Header With UserId
     """
-    return Response(
-        status_code=200,
-        headers={"X-User-Id": str(current_user.id)}
-    )
+    return Response(status_code=200, headers={"X-User-Id": str(current_user.id)})

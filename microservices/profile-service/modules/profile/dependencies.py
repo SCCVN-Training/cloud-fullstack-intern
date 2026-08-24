@@ -1,8 +1,12 @@
 from uuid import UUID
+
 from fastapi import Header, HTTPException, status
 
+
 async def get_current_user_id(
-    x_user_id: str = Header(default=None, alias="X-User-Id", description="Injected by API Gateway")
+    x_user_id: str = Header(
+        default=None, alias="X-User-Id", description="Injected by API Gateway"
+    ),
 ) -> UUID:
     """
     Trích xuất User ID từ Header do NGINX Ingress (hoặc API Gateway) truyền xuống.

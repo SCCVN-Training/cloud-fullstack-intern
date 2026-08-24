@@ -1,11 +1,11 @@
 from datetime import datetime, timezone
-from typing import Optional, Dict, Any
+from typing import Any
 from uuid import UUID
 
+from shared.repositories import BaseRepository
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from shared.repositories import BaseRepository
 from modules.profile.models import UserProfileModel
 
 
@@ -27,7 +27,7 @@ class ProfileRepository(BaseRepository[UserProfileModel]):
 
     # ============ Custom Query Methods ============
 
-    async def get_by_user_id(self, user_id: UUID) -> Optional[UserProfileModel]:
+    async def get_by_user_id(self, user_id: UUID) -> UserProfileModel | None:
         """
         Get profile by user ID.
 
@@ -76,7 +76,7 @@ class ProfileRepository(BaseRepository[UserProfileModel]):
             background_color="#F5F5F5",
             is_profile_public=True,
             created_at_utc=datetime.now(timezone.utc),
-            updated_at_utc=datetime.now(timezone.utc)
+            updated_at_utc=datetime.now(timezone.utc),
         )
 
         return profile
@@ -86,8 +86,8 @@ class ProfileRepository(BaseRepository[UserProfileModel]):
     async def patch_profile_by_user_id(
         self,
         user_id: UUID,
-        changes: Dict[str, Any],
-    ) -> Optional[UserProfileModel]:
+        changes: dict[str, Any],
+    ) -> UserProfileModel | None:
         """
         Update profile fields for a user.
 
@@ -157,4 +157,3 @@ class ProfileRepository(BaseRepository[UserProfileModel]):
         await self.session.delete(profile)
         await self.session.commit()
         return True
-

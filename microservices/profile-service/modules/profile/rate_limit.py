@@ -2,11 +2,10 @@
 Profile Module Rate Limits - Self-contained.
 Profile controls its own limits.
 """
-from typing import Tuple
-from fastapi import Request
 
-from shared.rate_limiter import BaseRateLimiter, get_rate_limiter
+from fastapi import Request
 from shared.config import settings
+from shared.rate_limiter import BaseRateLimiter, get_rate_limiter
 
 
 class ProfileRateLimiter:
@@ -16,7 +15,7 @@ class ProfileRateLimiter:
         self.rate_limiter = rate_limiter
         self.module_prefix = "profile"
 
-    async def check_get_profile(self, user_id: str) -> Tuple[bool, int, int]:
+    async def check_get_profile(self, user_id: str) -> tuple[bool, int, int]:
         """
         Check rate limit for getting profile.
 
@@ -31,7 +30,7 @@ class ProfileRateLimiter:
             window_seconds=window,
         )
 
-    async def check_update_profile(self, user_id: str) -> Tuple[bool, int, int]:
+    async def check_update_profile(self, user_id: str) -> tuple[bool, int, int]:
         """
         Check rate limit for updating profile.
 
@@ -46,7 +45,7 @@ class ProfileRateLimiter:
             window_seconds=window,
         )
 
-    async def check_delete_profile(self, user_id: str) -> Tuple[bool, int, int]:
+    async def check_delete_profile(self, user_id: str) -> tuple[bool, int, int]:
         """
         Check rate limit for deleting profile.
 
@@ -61,7 +60,7 @@ class ProfileRateLimiter:
             window_seconds=window,
         )
 
-    async def check_create_profile(self, user_id: str) -> Tuple[bool, int, int]:
+    async def check_create_profile(self, user_id: str) -> tuple[bool, int, int]:
         """
         Check rate limit for creating profile.
 
