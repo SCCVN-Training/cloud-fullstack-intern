@@ -1,0 +1,6 @@
+[tool.uv.workspace]
+members = [
+    "auth-service",
+    "profile-service",
+    "anime-service",
+]
