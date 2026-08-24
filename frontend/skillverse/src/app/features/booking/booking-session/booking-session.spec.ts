@@ -59,7 +59,6 @@ describe('BookingSession', () => {
       imports: [BookingSession],
       providers: [
         provideRouter([]),
-        { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: SkillService, useValue: skillService },
         { provide: BookingService, useValue: bookingService },
         {
@@ -112,10 +111,12 @@ describe('BookingSession', () => {
       imports: [BookingSession],
       providers: [
         provideRouter([]),
-        { provide: Router, useValue: { navigate: vi.fn() } },
         { provide: SkillService, useValue: skillService },
         { provide: BookingService, useValue: bookingService },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => mockSkill.id } } },  },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: { get: () => mockSkill.id } } },
+        },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(BookingSession);

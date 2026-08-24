@@ -1,6 +1,55 @@
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { forkJoin } from 'rxjs';
+
+import { AuthService } from '../../../core/services/auth/auth';
+import { BookingService } from '../../../core/services/booking/booking.service';
+import { Booking, BookingStatus } from '../../../core/models/booking.model';
+
+interface BookingViewModel {
+  id: string;
+  title: string;
+  mentor: string; // always the OTHER party — mentor name if I'm learning, learner name if I'm hosting
+  status: string;
+  statusColorClass: string;
+  statusIcon: string;
+  time: string;
+  avatar: string;
+  selected: boolean;
+  tab: 'Upcoming' | 'Completed' | 'Cancelled';
+  actionable: boolean; // only CONFIRMED bookings can actually be joined
+  banner: string;
+  dateStr: string;
+  timeStr: string;
+}
+
+const STATUS_DISPLAY: Record<BookingStatus, { label: string; colorClass: string; icon: string; tab: BookingViewModel['tab'] }> = {
+  PENDING: {
+    label: 'Pending',
+    colorClass: 'bg-surface-container-highest text-on-surface-variant',
+    icon: 'schedule',
+    tab: 'Upcoming',
+  },
+  CONFIRMED: {
+    label: 'Confirmed',
+    colorClass: 'bg-primary-container text-on-primary-container',
+    icon: 'check_circle',
+    tab: 'Upcoming',
+  },
+  COMPLETED: {
+    label: 'Completed',
+    colorClass: 'bg-secondary-container text-on-secondary-container',
+    icon: 'task_alt',
+    tab: 'Completed',
+  },
+  CANCELLED: {
+    label: 'Cancelled',
+    colorClass: 'bg-error-container text-on-error-container',
+    icon: 'cancel',
+    tab: 'Cancelled',
+  },
+};
 
 @Component({
   selector: 'app-my-bookings',
@@ -9,74 +58,89 @@ import { Component } from '@angular/core';
   templateUrl: './my-bookings.html',
   styleUrls: ['./my-bookings.scss'],
 })
-export class MyBookings {
-  activeTab: string = 'Upcoming';
-  tabs = ['Upcoming', 'Completed', 'Cancelled'];
+export class MyBookings implements OnInit {
+  activeTab: BookingViewModel['tab'] = 'Upcoming';
+  tabs: BookingViewModel['tab'][] = ['Upcoming', 'Completed', 'Cancelled'];
 
-  bookings = [
-    {
-      id: 1,
-      title: 'Advanced Figma Prototyping',
-      mentor: 'Sarah Jenkins',
-      status: 'Confirmed',
-      statusColorClass: 'bg-primary-container text-on-primary-container',
-      statusIcon: 'check_circle',
-      time: 'Tomorrow, 10:00 AM',
-      avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBASFV_UC95A9nGCvwqYimd5EXz_J2l2D5Y7i2N_ZwBUSIAJWZWmhyxhwn-WHHEXiLcECOIjL6i6S2EQg1yv2-xcc1YDRuPNWJtYzH_QepW6A6JDznq1H5l1L1YFI5t6zp_FurWj92KogA5vsLT9ExmYdzeyJhlZHlmXilVn9iDOhTSqU6SPqfnpqeAtWJDPfOGTmP6ive50YrMu8UzL9-sqQvanP6JlYQaxvSLua6mE6azZ8ALatTuduPcj1NzuSUZi_x9_8N1A8QD',
-      selected: true,
-      tab: 'Upcoming',
-      actionable: true,
-      banner: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBBqRZ6SLAVad5YPlQim8pzoaeEhbF6uAoFGCnABYfR-qcWoBqvMrOVIVAPVmmzdQWElquxEwFTLicIR6ykQGtnnolk1SrtlKXjU0mRjD5kvG_TmQeQPU44eu7UXGgtdwx6Ys0AmE51ayZK_jr04UeqP-9nM-U4WlymFBMU7iLhSnPH5iclZk0rh0_PJg5EOqfbyCpHr3d_Q7ayQEnoqOFg_R5M4EZltwhsM34IRszSvUhKeo5elR60EGxyZk4OWkJyGKwCsW8-nctk',
-      dateStr: 'Tomorrow, Oct 15',
-      timeStr: '10:00 AM - 11:30 AM (90 mins)'
-    },
-    {
-      id: 2,
-      title: 'Conversational Spanish for Beginners',
-      mentor: 'Carlos Mateo',
-      status: 'Pending',
-      statusColorClass: 'bg-surface-container-highest text-on-surface-variant',
-      statusIcon: 'schedule',
-      time: 'Oct 24, 2:30 PM',
-      avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA4sIwGp16fIJ9bF7a50C8OstSfRSOXgwrYGmqjLQtymkP4rmfSgv42s29tM-jxf0nlwu4mBaRvIRyzSuHsEHaYJOZEXLufxTWk29nqTexr_xg5mbL9aKHR5TbeFmF96fifXJZEBJwpepkAXogVBKUsi4FIbyuMnQUa6eLJHF-Nn-KaW8TTmmLy3kNXGD2rvlWVy50gkl1thiwEmtPmULRV4B-k8d9bP-vQyh0JmkjPczbQGQ92n_cXA5GtOiHuPRCMo0rNnHBdZYpP',
-      selected: false,
-      tab: 'Upcoming',
-      actionable: false,
-      banner: '',
-      dateStr: '',
-      timeStr: ''
-    },
-    {
-      id: 3,
-      title: 'Python Data Analysis Basics',
-      mentor: 'Elena Rostova',
-      status: 'Confirmed',
-      statusColorClass: 'bg-primary-container text-on-primary-container',
-      statusIcon: 'check_circle',
-      time: 'Oct 28, 6:00 PM',
-      avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDHho6DLt0Kmj-8Tc6B1SnZb4RnNFtRDIgUPAGN2WB24ZhsRskZILYGQDEZGlH3RtB3F90ZM6KDi_DTadYrXh8Qu0dh6o8V5ZQ859BxieI0fUuHFSdUDw59DZ6pmSwAR8JhUg69jPZu61uP57gGGm0lEpaZM38rg-hhY5r6q7i52c0-DK9_nIZ0zZCqpTOgZb-5CNh83mT9ea0OgWZsOCNrLDAOTM1DPFEq-nWsIlVXQEcWV5wNjOeyMwJoSfX5SJilhUhCW9KY8FbB',
-      selected: false,
-      tab: 'Upcoming',
-      actionable: true,
-      banner: '',
-      dateStr: '',
-      timeStr: ''
-    }
-  ];
+  bookings: BookingViewModel[] = [];
+  isLoading = true;
 
-  get filteredBookings() {
-    return this.bookings.filter(b => b.tab === this.activeTab);
-  }
-  
-  get selectedBooking() {
-    return this.bookings.find(b => b.selected) || this.bookings[0];
+  constructor(
+    private auth: AuthService,
+    private bookingService: BookingService,
+  ) {}
+
+  ngOnInit(): void {
+    // A user can be the learner on some bookings and the mentor
+    // (hosting) on others — fetch both sides and merge, so this page
+    // shows every session they're actually part of, not just half.
+    forkJoin({
+      asLearner: this.bookingService.getMyBookings(false),
+      asMentor: this.bookingService.getMyBookings(true),
+    }).subscribe({
+      next: ({ asLearner, asMentor }) => {
+        const currentUserId = this.auth.currentUser()?.id;
+        const merged = [...asLearner.bookings, ...asMentor.bookings].map((b) =>
+          this.toViewModel(b, currentUserId),
+        );
+        merged.sort((a, b) => a.dateStr.localeCompare(b.dateStr));
+        this.bookings = merged;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load bookings:', err);
+        this.isLoading = false;
+      },
+    });
   }
 
-  selectTab(tab: string) {
+  private toViewModel(booking: Booking, currentUserId: string | undefined): BookingViewModel {
+    const display = STATUS_DISPLAY[booking.status];
+    const isHosting = booking.mentorId === currentUserId;
+    const otherPartyName = (isHosting ? booking.learnerName : booking.mentorName) || 'Unknown';
+
+    const sessionDate = new Date(booking.sessionDate);
+    const dateStr = sessionDate.toLocaleDateString(undefined, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+    });
+    const timeStr = sessionDate.toLocaleTimeString(undefined, {
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+
+    return {
+      id: booking.id,
+      title: booking.skillTitle || 'Skill Session',
+      mentor: otherPartyName,
+      status: display.label,
+      statusColorClass: display.colorClass,
+      statusIcon: display.icon,
+      time: `${dateStr}, ${timeStr}`,
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(otherPartyName)}`,
+      selected: false,
+      tab: display.tab,
+      actionable: booking.status === 'CONFIRMED',
+      banner: '',
+      dateStr,
+      timeStr,
+    };
+  }
+
+  get filteredBookings(): BookingViewModel[] {
+    return this.bookings.filter((b) => b.tab === this.activeTab);
+  }
+
+  get selectedBooking(): BookingViewModel | undefined {
+    return this.bookings.find((b) => b.selected) || this.filteredBookings[0];
+  }
+
+  selectTab(tab: BookingViewModel['tab']): void {
     this.activeTab = tab;
   }
 
-  selectBooking(id: number) {
-    this.bookings.forEach(b => b.selected = (b.id === id));
+  selectBooking(id: string): void {
+    this.bookings.forEach((b) => (b.selected = b.id === id));
   }
 }

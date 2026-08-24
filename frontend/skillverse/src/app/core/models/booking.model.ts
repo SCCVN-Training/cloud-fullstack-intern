@@ -24,3 +24,9 @@ export interface Booking {
   learnerName?: string;
   mentorName?: string;
 }
+
+// Matches marketplace-service's BookingListResponse.
+export interface BookingListResponse {
+  total: number;
+  bookings: Booking[];
+}

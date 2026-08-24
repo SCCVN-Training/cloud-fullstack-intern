@@ -15,6 +15,7 @@ import { AboutUsPage } from './features/about-us/about-us';
 import { BrowseSkillsPage } from './features/skill-pages/browse-skills/browse-skills';
 import { SkillDetailsPage } from './features/skill-pages/skill-details/skill-details';
 import { BookingSession } from './features/booking/booking-session/booking-session';
+import { VideoCallSession } from './features/booking/video-call-session/video-call-session';
 import { SessionReview } from './features/booking/session-review/session-review';
 
 export const routes: Routes = [
@@ -55,7 +56,12 @@ export const routes: Routes = [
         canActivate: [authGuard],
       },
       {
-        path: 'session-review',
+        path: 'booking/session/:bookingId',
+        component: VideoCallSession,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'session-review/:bookingId',
         component: SessionReview,
         canActivate: [authGuard],
       },

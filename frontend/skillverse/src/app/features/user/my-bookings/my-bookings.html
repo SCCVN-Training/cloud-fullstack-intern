@@ -47,7 +47,11 @@
         <p class="text-body-md text-on-surface-variant mb-md">with <span class="font-semibold">{{ booking.mentor }}</span></p>
         
         <div class="flex gap-sm">
-          <button *ngIf="booking.actionable" class="btn-primary flex-1 py-sm rounded-full font-label-md text-on-primary">
+          <button
+            *ngIf="booking.actionable"
+            class="btn-primary flex-1 py-sm rounded-full font-label-md text-on-primary"
+            [routerLink]="['/booking/session', booking.id]"
+          >
             Join Session
           </button>
           <button *ngIf="!booking.actionable" class="btn-disabled flex-1 py-sm rounded-full font-label-md cursor-not-allowed">
@@ -107,7 +111,11 @@
         </div>
 
         <div class="flex flex-col gap-sm">
-          <button class="btn-primary w-full py-sm rounded-full font-label-md shadow-md text-on-primary">
+          <button
+            *ngIf="selectedBooking.actionable"
+            class="btn-primary w-full py-sm rounded-full font-label-md shadow-md text-on-primary"
+            [routerLink]="['/booking/session', selectedBooking.id]"
+          >
             Join Meeting Now
           </button>
           <button class="btn-outline w-full py-sm rounded-full font-label-md text-primary">
