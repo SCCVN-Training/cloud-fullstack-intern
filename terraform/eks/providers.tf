@@ -16,18 +16,15 @@ provider "aws" {
   region = "ap-southeast-1"
 }
 
-# Fetch authentication data for the EKS cluster
-data "aws_eks_cluster" "cluster" {
-  name = aws_eks_cluster.main.name
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = aws_eks_cluster.main.name
-}
-
-# Configure the Kubernetes provider using the dynamic EKS cluster credentials
+# Configure the Kubernetes provider directly from the EKS cluster resource
+# This forces Terraform to wait for the cluster endpoint to be available
 provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
+  host                   = aws_eks_cluster.main.endpoint
+  cluster_ca_certificate = base64decode(aws_eks_cluster.main.certificate_authority[0].data)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.main.name]
+    command     = "aws"
+  }
 }

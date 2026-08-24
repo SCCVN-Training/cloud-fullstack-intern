@@ -160,4 +160,5 @@ class Settings(BaseSettings):
 
         return cls()
 
+
 settings = Settings.load_with_fallback()
