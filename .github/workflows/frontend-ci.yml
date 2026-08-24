@@ -1,15 +1,16 @@
 name: Du's Frontend CI
 
 on:
-  push:
-    branches: [dev-du]
-    paths:
-      - "frontend-angular/**"
-      - ".github/workflows/frontend-ci.yml"
+  # push:
+  #   branches: [dev-du]
+  #   paths:
+  #     - "frontend-angular/**"
+  #     - ".github/workflows/frontend-ci.yml"
   pull_request:
     branches: [dev-du]
     paths:
       - "frontend-angular/**"
+      - ".github/workflows/frontend-ci.yml"
 
 jobs:
   build-and-test:
