@@ -31,7 +31,13 @@ validation, `429` rate limited.
 | PATCH | `/users/{user_id}/profile` | required (self or admin) | — | Partial update |
 | POST | `/users/{user_id}/profile/avatar` | required (self or admin) | — | Multipart avatar upload |
 | GET | `/users/{user_id}/wallet` | required (self or admin) | — | Wallet balance |
-| GET | `/users/{user_id}/transactions` | required (self or admin) | — | Transaction history |
+| POST | `/users/{user_id}/wallet/topup` | required (**self only**) | — | Add wallet balance via the top-up placeholder |
+| GET | `/users` | **admin only** | — | Paginated list of all users |
+| GET | `/users/{user_id}` | required (self or admin) | — | Get one user |
+| PATCH | `/users/{user_id}` | required (self or admin) | — | Partial update of user account |
+| PUT | `/users/{user_id}` | required (self or admin) | — | Full replacement of user account |
+| DELETE | `/users/{user_id}` | required (self or admin) | — | Delete a user |
+| GET | `/users/{user_id}/wallet/transactions` | required (self or admin) | — | Transaction history |
 | GET | `/internal/users/{user_id}/public` | **none** (internal) | 60/minute | Public display data for other services |
 | GET | `/health` | none | — | `{ service, status }` |
 
@@ -74,8 +80,47 @@ restrictions — e.g. a security group only allowing traffic from
 marketplace-service's subnet — rather than being reachable from the
 public internet at all.)
 
+### `GET /users`
+Admin only. Query parameters: `skip` (default `0`, min `0`) and `limit` (default `20`, range `1..100`).
+
+Response `200`:
+```json
+{ "total": 42, "users": [ { "id": "uuid", "user_name": "alice", "email": "alice@example.com" } ] }
+```
+Errors: `401` missing/invalid JWT, `403` non-admin, `422` invalid pagination.
+
+### `GET /users/{user_id}`
+Self or admin. Response `200`: `UserResponse` (`id`, `user_name`, `email`). Errors: `401`, `403`, `404`.
+
+### `PATCH /users/{user_id}`
+Self or admin. Partial update. Request:
+```json
+{ "user_name": "alice_dev", "email": "alice.new@example.com" }
+```
+Response `200`: updated `UserResponse`. Errors: `400` business/duplicate-email errors, `401`, `403`, `404`, `422`.
+
+### `PUT /users/{user_id}`
+Self or admin. Full replacement; both fields are required. Request:
+```json
+{ "user_name": "alice_dev", "email": "alice@example.com" }
+```
+Response `200`: updated `UserResponse`. Errors: `400`, `401`, `403`, `404`, `422`.
+
+### `DELETE /users/{user_id}`
+Self or admin. Response: `204 No Content`. Errors: `401`, `403`, `404`.
+
+### `POST /users/{user_id}/wallet/topup`
+Self only; this stands in for a real payment provider. Request:
+```json
+{ "amount": 5000, "description": "Wallet top-up" }
+```
+`amount` must be `> 0` and `<= 100000`; description defaults to `Wallet top-up` and has max length 255. Response `200`: `WalletResponse`. Errors: `401`, `403`, `404`, `422`.
+
+### `GET /users/{user_id}/wallet/transactions`
+Self or admin. Query parameters: `limit` (default `20`, range `1..100`) and `offset` (default `0`, min `0`). Response `200`: `TransactionListResponse`.
+
 ## DTOs (Pydantic schemas)
-See `app/modules/{auth,users,profiles,wallets,transactions}/schema.py`
+See `app/modules/auth/schema.py`, `app/modules/users/schema.py`, `app/modules/profiles/schema.py`, `app/modules/wallets/schema.py`, and `app/modules/transactions/schema.py`
 for the exact field-level contracts (types, validation constraints).
 Responses use `camelCase` over the wire (`alias_generator=to_camel`)
 even though the Python code is `snake_case`.

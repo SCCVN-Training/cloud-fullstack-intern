@@ -1,0 +1,14 @@
+   graph TB
+     subgraph Docker Host
+       subgraph identity-service container
+         IS[uvicorn :8001]
+       end
+       subgraph marketplace-service container
+         MS[uvicorn :8002]
+       end
+     end
+     ENV1[.env: identity-service] -.-> IS
+     ENV2[.env: marketplace-service] -.-> MS
+     IS --> DB[(Neon Postgres<br/>identity schema)]
+     MS --> DB2[(Neon Postgres<br/>marketplace schema)]
+     MS -->|internal REST| IS

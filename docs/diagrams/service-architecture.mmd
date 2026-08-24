@@ -1,0 +1,6 @@
+graph LR
+  A[Angular App] -->|REST + JWT| I[identity-service :8001]
+  A -->|REST + JWT| M[marketplace-service :8002]
+  M -->|"GET /internal/users/{id}/public"| I
+  I --> DBI[(Postgres schema: identity)]
+  M --> DBM[(Postgres schema: marketplace)]
