@@ -21,8 +21,10 @@ resource "kubernetes_ingress_v1" "protected_ingress" {
 
       # Auth middleware: Forward to auth-service verify endpoint
       # Using internal cluster DNS for auth-service
-      "nginx.ingress.kubernetes.io/auth-url"               = "http://auth-service.default.svc.cluster.local:8000/auth/verify"
+      "nginx.ingress.kubernetes.io/auth-url"               = "http://auth-service.default.svc.cluster.local:8001/auth/verify"
       "nginx.ingress.kubernetes.io/auth-response-headers"  = "X-User-Id"
+
+      "nginx.ingress.kubernetes.io/auth-send-cookie"       = "true"
 
       "nginx.ingress.kubernetes.io/use-regex"               = "true"
       "nginx.ingress.kubernetes.io/rewrite-target"         = "/$1/$3"
@@ -37,20 +39,24 @@ resource "kubernetes_ingress_v1" "protected_ingress" {
         path {
           path       = "/api/v1/(profile)(/|$)(.*)"
           path_type  = "ImplementationSpecific"
+          # path       = "/api/v1/profile"
+          # path_type  = "Prefix"
           backend {
             service {
               name = "profile-service"
-              port { number = 8000 }
+              port { number = 8002 }
             }
           }
         }
         path {
           path       = "/api/v1/(anime)(/|$)(.*)"
           path_type  = "ImplementationSpecific"
+          # path       = "/api/v1/anime"
+          # path_type  = "Prefix"
           backend {
             service {
               name = "anime-service"
-              port { number = 8000 }
+              port { number = 8003 }
             }
           }
         }

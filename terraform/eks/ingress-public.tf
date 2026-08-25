@@ -37,7 +37,7 @@ resource "kubernetes_ingress_v1" "public_ingress" {
           backend {
             service {
               name = "auth-service"
-              port { number = 8000 }
+              port { number = 8001 }
             }
           }
         }

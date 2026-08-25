@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, EMPTY, map, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, EMPTY, map, Observable, of, switchMap } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
 import { AuthApi } from '../../../features/auth/api/auth.api';
 import { AuthEffect } from '../../../features/auth/data-access/with-auth-effect';
@@ -67,12 +67,22 @@ export class AppEffect {
       }),
 
       switchMap(() => {
-        return this.authStore.isAuthenticated() ? this.profileEffect.getMyProfile() : of(void 0);
+        if (this.authStore.isAuthenticated()) {
+          return this.profileEffect.getMyProfile().pipe(
+            catchError((profileErr) => {
+              console.error('Failed to load profile during init:', profileErr);
+
+              return of(void 0);
+            }),
+          );
+        }
+        return of(void 0);
       }),
 
       tap(() => {
         this.reducer.patch({
           initialized: true,
+
           profileLoaded: this.authStore.isAuthenticated(),
         });
       }),
@@ -85,7 +95,6 @@ export class AppEffect {
             serverAvailable: true,
             initialized: true,
           });
-
           return of(void 0);
         }
 
@@ -96,7 +105,7 @@ export class AppEffect {
 
         this.notification.error('Server is currently unavailable or experiencing issues!');
 
-        return throwError(() => error);
+        return of(void 0);
       }),
 
       map(() => void 0),
