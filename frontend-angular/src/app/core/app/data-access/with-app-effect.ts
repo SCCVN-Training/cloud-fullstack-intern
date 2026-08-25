@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { catchError, EMPTY, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, EMPTY, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
 import { AuthApi } from '../../../features/auth/api/auth.api';
 import { AuthEffect } from '../../../features/auth/data-access/with-auth-effect';
@@ -30,10 +30,8 @@ export class AppEffect {
         });
       }),
 
-      // Restore authentication
       switchMap(() => this.authEffect.refreshSession()),
 
-      // Load profile only if authenticated
       switchMap(() => {
         return this.authStore.isAuthenticated() ? this.profileEffect.getMyProfile() : of(void 0);
       }),
@@ -79,14 +77,26 @@ export class AppEffect {
         });
       }),
 
-      catchError(() => {
+      catchError((error) => {
+        const status = error?.status || error?.error?.status;
+
+        if (status === 401) {
+          this.reducer.patch({
+            serverAvailable: true,
+            initialized: true,
+          });
+
+          return of(void 0);
+        }
+
         this.reducer.patch({
           serverAvailable: false,
           initialized: true,
         });
 
-        this.notification.error('Server is unavailable!');
-        return EMPTY;
+        this.notification.error('Server is currently unavailable or experiencing issues!');
+
+        return throwError(() => error);
       }),
 
       map(() => void 0),
