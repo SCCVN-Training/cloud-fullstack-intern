@@ -50,3 +50,6 @@ backend-fastapi-v2/
 
 # Ignore real Kubernetes manifests that contain real AWS Account IDs
 k8s/real
+
+*.sh
+*.bat

@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { catchError, EMPTY, map, Observable, of, switchMap } from 'rxjs';
 import { tap } from 'rxjs/internal/operators/tap';
+import { AuthApi } from '../../../features/auth/api/auth.api';
 import { AuthEffect } from '../../../features/auth/data-access/with-auth-effect';
 import { AuthStore } from '../../../features/auth/data-access/with-auth-store';
 import { UserProfileEffect } from '../../../features/user-profile/data-access/with-user-profile-effect';
@@ -13,6 +14,7 @@ import { AppReducer } from './with-app-reducer';
 })
 export class AppEffect {
   private readonly api = inject(AppApi);
+  private readonly authApi = inject(AuthApi);
   private readonly authEffect = inject(AuthEffect);
   private readonly authStore = inject(AuthStore);
   private readonly profileEffect = inject(UserProfileEffect);
@@ -32,6 +34,40 @@ export class AppEffect {
       switchMap(() => this.authEffect.refreshSession()),
 
       // Load profile only if authenticated
+      switchMap(() => {
+        return this.authStore.isAuthenticated() ? this.profileEffect.getMyProfile() : of(void 0);
+      }),
+
+      tap(() => {
+        this.reducer.patch({
+          initialized: true,
+          profileLoaded: this.authStore.isAuthenticated(),
+        });
+      }),
+
+      catchError(() => {
+        this.reducer.patch({
+          serverAvailable: false,
+          initialized: true,
+        });
+
+        this.notification.error('Server is unavailable!');
+        return EMPTY;
+      }),
+
+      map(() => void 0),
+    );
+  }
+
+  initializeAppWithoutHealth(): Observable<void> {
+    return this.authApi.refreshSession().pipe(
+      tap(() => {
+        this.reducer.patch({
+          serverAvailable: true,
+          version: '1.0.0',
+        });
+      }),
+
       switchMap(() => {
         return this.authStore.isAuthenticated() ? this.profileEffect.getMyProfile() : of(void 0);
       }),

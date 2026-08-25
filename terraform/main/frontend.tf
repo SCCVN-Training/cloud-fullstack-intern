@@ -44,6 +44,40 @@ resource "aws_cloudfront_distribution" "frontend_cdn" {
     origin_access_control_id = aws_cloudfront_origin_access_control.frontend_oac.id
   }
 
+  origin {
+    domain_name = "a57218d949ae846d4977909f22a3b25d-206018786.ap-southeast-1.elb.amazonaws.com"
+    origin_id   = "EKS-Backend-ALB"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only" # Assuming SSL is offloaded at CloudFront
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  ordered_cache_behavior {
+    path_pattern     = "/api/v1/*"
+    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "EKS-Backend-ALB"
+
+    viewer_protocol_policy = "redirect-to-https"
+
+    # Disable caching for APIs
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 0
+
+    forwarded_values {
+      query_string = true
+      headers      = ["Authorization", "Content-Type", "X-Requested-With", "X-User-Id", "Origin"]
+      cookies {
+        forward = "all"
+      }
+    }
+  }
+
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
