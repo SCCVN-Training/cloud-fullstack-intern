@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { EMPTY, Observable, catchError, finalize, map, of, switchMap, tap } from 'rxjs';
+import { EMPTY, Observable, catchError, finalize, map, switchMap, tap, throwError } from 'rxjs';
 
 import { NotificationService } from '../../../core/notification/services/notification.service';
 import { UserProfileApi } from '../../user-profile/api/user-profile.api';
@@ -123,10 +123,10 @@ export class AuthEffect {
       tap((response) => {
         this.reducer.setCurrentUser(response.data.user);
       }),
-      catchError(() => {
+      catchError((error) => {
         this.reducer.setError(null);
         this.reducer.setCurrentUser(null);
-        return of(void 0);
+        return throwError(() => error);
       }),
       finalize(() => {
         this.reducer.setLoading(false);

@@ -58,7 +58,7 @@ export class AppEffect {
   }
 
   initializeAppWithoutHealth(): Observable<void> {
-    return this.authApi.refreshSession().pipe(
+    return this.authEffect.refreshSession().pipe(
       tap(() => {
         this.reducer.patch({
           serverAvailable: true,
