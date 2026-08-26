@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, catchError, finalize, map, tap } from 'rxjs';
@@ -25,7 +24,7 @@ export class UserProfileEffect {
         this.reducer.patch({ profile: response.data });
       }),
       map(() => void 0),
-      catchError((error: HttpErrorResponse) => {
+      catchError(() => {
         this.reducer.setError(null);
         //this.notification.error(error.message || 'Failed to load profile');
         return EMPTY;
@@ -47,7 +46,7 @@ export class UserProfileEffect {
         this.router.navigate(['/dashboard', 'profile']);
       }),
       map(() => void 0),
-      catchError((error: HttpErrorResponse) => {
+      catchError(() => {
         this.reducer.setError(null);
         //this.notification.error(error.message || 'Failed to update profile');
         return EMPTY;
