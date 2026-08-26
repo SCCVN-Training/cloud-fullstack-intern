@@ -35,7 +35,7 @@ export class AnimeEffect {
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Failed to load seasonal anime. Please try again.';
         this.seasonalReducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
         return EMPTY;
       }),
       map(() => void 0),
@@ -73,7 +73,7 @@ export class AnimeEffect {
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Search failed. Please try again.';
         this.searchReducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
         return EMPTY;
       }),
       map(() => void 0),

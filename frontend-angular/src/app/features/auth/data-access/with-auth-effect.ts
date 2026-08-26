@@ -39,7 +39,7 @@ export class AuthEffect {
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Login failed. Please try again.';
         this.reducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
         return EMPTY;
       }),
       finalize(() => {
@@ -75,7 +75,7 @@ export class AuthEffect {
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Registration failed. Please try again.';
         this.reducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
         return EMPTY;
       }),
       finalize(() => {
@@ -100,7 +100,7 @@ export class AuthEffect {
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Log out failed. Please try again.';
         this.reducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
 
         // Even if backend call fails, wipe state locally
         this.reducer.logoutSuccess();
@@ -161,7 +161,7 @@ export class AuthEffect {
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Get profile failed. Please try again.';
         this.reducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
         this.reducer.setCurrentUser(null);
         return EMPTY;
       }),

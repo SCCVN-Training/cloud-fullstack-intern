@@ -27,7 +27,7 @@ export class UserProfileEffect {
       map(() => void 0),
       catchError((error: HttpErrorResponse) => {
         this.reducer.setError(null);
-        this.notification.error(error.message || 'Failed to load profile');
+        //this.notification.error(error.message || 'Failed to load profile');
         return EMPTY;
       }),
       finalize(() => {
@@ -49,7 +49,7 @@ export class UserProfileEffect {
       map(() => void 0),
       catchError((error: HttpErrorResponse) => {
         this.reducer.setError(null);
-        this.notification.error(error.message || 'Failed to update profile');
+        //this.notification.error(error.message || 'Failed to update profile');
         return EMPTY;
       }),
       finalize(() => {
