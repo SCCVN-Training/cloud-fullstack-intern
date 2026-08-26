@@ -27,9 +27,9 @@ export class AnimeEffect {
     return this.animeApi.getAnimeSeasonalPagination(page).pipe(
       tap((response) => {
         if (append) {
-          this.seasonalReducer.appendItems(response.media, response.pageInfo);
+          this.seasonalReducer.appendItems(response.data, response.meta);
         } else {
-          this.seasonalReducer.setItems(response.media, response.pageInfo);
+          this.seasonalReducer.setItems(response.data, response.meta);
         }
       }),
       catchError((error: HttpErrorResponse) => {
@@ -60,14 +60,14 @@ export class AnimeEffect {
       tap((response) => {
         // Convert PageInfo to SearchPageInfo (adds searchQuery)
         const searchPageInfo: SearchPageInfo = {
-          ...response.pageInfo,
+          ...response.meta,
           searchQuery: query,
         };
 
         if (append) {
-          this.searchReducer.appendItems(response.media, searchPageInfo);
+          this.searchReducer.appendItems(response.data, searchPageInfo);
         } else {
-          this.searchReducer.setItems(response.media, searchPageInfo);
+          this.searchReducer.setItems(response.data, searchPageInfo);
         }
       }),
       catchError((error: HttpErrorResponse) => {

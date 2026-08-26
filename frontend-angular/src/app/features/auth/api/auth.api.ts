@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiClient } from '../../../shared/api/api-client';
+import { ApiResponse } from '../../../shared/types/api-response';
 import { AUTH_ENDPOINTS } from '../constants/auth-endpoints';
-import { LoginPayload, LoginResponse, RegisterResponse } from '../data-access/auth.schema';
+import { LoginPayload, User } from '../data-access/auth.schema';
 
 @Injectable({
   providedIn: 'root',
@@ -10,11 +11,11 @@ export class AuthApi {
   private readonly api = inject(ApiClient);
 
   login(request: LoginPayload) {
-    return this.api.post<LoginResponse>(AUTH_ENDPOINTS.LOGIN, request);
+    return this.api.post<ApiResponse<User>>(AUTH_ENDPOINTS.LOGIN, request);
   }
 
   register(request: { email: string; password: string }) {
-    return this.api.post<RegisterResponse>(AUTH_ENDPOINTS.REGISTER, request);
+    return this.api.post<ApiResponse<User>>(AUTH_ENDPOINTS.REGISTER, request);
   }
 
   logout() {
@@ -26,6 +27,6 @@ export class AuthApi {
   }
 
   getCurrentUser() {
-    return this.api.get<LoginResponse>(AUTH_ENDPOINTS.ME);
+    return this.api.get<ApiResponse<User>>(AUTH_ENDPOINTS.ME);
   }
 }

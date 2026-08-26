@@ -46,8 +46,7 @@ class ProfileService:
             Created profile data
 
         Raises:
-            HTTPException 400: Profile already exists or display name taken
-            HTTPException 404: User not found (handled by auth service)
+            HTTPException 400: Profile already exists
         """
         try:
             profile = await self.repo.create_profile(
@@ -60,7 +59,7 @@ class ProfileService:
                 detail=str(e),
             )
 
-        return ProfileResponse.model_validate(profile)
+        return profile
 
     # ============ Read ============
 
@@ -88,7 +87,7 @@ class ProfileService:
                 detail="Profile not found for this user.",
             )
 
-        return ProfileResponse.model_validate(profile)
+        return profile
 
     # ============ Update ============
 
@@ -125,21 +124,14 @@ class ProfileService:
 
         if not changes:
             # No changes to apply
-            return ProfileResponse.model_validate(profile)
+            return profile
 
         # Update profile
         updated_profile = await self.repo.patch_profile_by_user_id(
             user_id,
             changes,
         )
-
-        if not updated_profile:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Profile not found.",
-            )
-
-        return ProfileResponse.model_validate(updated_profile)
+        return updated_profile
 
     # ============ Delete ============
 
@@ -166,10 +158,6 @@ class ProfileService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Profile not found for this user.",
             )
-
-        return {
-            "message": "Profile deleted successfully.",
-        }
 
     # ============ Check Existence ============
 

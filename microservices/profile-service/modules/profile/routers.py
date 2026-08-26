@@ -2,13 +2,14 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from shared.database import get_db
+from shared.docs import get_error_responses
 from shared.models import ApiResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from modules.profile.dependencies import get_current_user_id
 from modules.profile.schemas import (
     CreateProfileRequest,
-    ProfileDataResponse,
+    ProfileResponse,
     UpdateProfileRequest,
 )
 from modules.profile.services import ProfileService
@@ -36,8 +37,9 @@ async def get_profile_service(
 
 @profile_router.post(
     "",
-    response_model=ApiResponse[ProfileDataResponse],
+    response_model=ApiResponse[ProfileResponse],
     status_code=status.HTTP_201_CREATED,
+    responses=get_error_responses(400, 403),
 )
 async def create_profile(
     payload: CreateProfileRequest,
@@ -71,16 +73,17 @@ async def create_profile(
 
     profile = await service.create_profile(payload)
 
-    return {
-        "message": "Profile created successfully.",
-        "data": {"profile": profile},
-    }
+    return ApiResponse(
+        message="User Profile created successfully!",
+        data=ProfileResponse.model_validate(profile),
+    )
 
 
 @profile_router.get(
     "/me",
-    response_model=ApiResponse[ProfileDataResponse],
+    response_model=ApiResponse[ProfileResponse],
     status_code=status.HTTP_200_OK,
+    responses=get_error_responses(404),
 )
 async def get_my_profile(
     current_user_id: UUID = Depends(get_current_user_id),
@@ -105,13 +108,17 @@ async def get_my_profile(
 
     profile = await service.get_profile_by_user_id(current_user_id)
 
-    return {"message": "Profile retrieved successfully.", "data": {"profile": profile}}
+    return ApiResponse(
+        message="User Profile retrieved successfully.",
+        data=ProfileResponse.model_validate(profile),
+    )
 
 
 @profile_router.patch(
     "/me",
-    response_model=ApiResponse[ProfileDataResponse],
+    response_model=ApiResponse[ProfileResponse],
     status_code=status.HTTP_200_OK,
+    responses=get_error_responses(404),
 )
 async def update_my_profile(
     payload: UpdateProfileRequest,
@@ -141,13 +148,17 @@ async def update_my_profile(
         user_id=current_user_id,
     )
 
-    return {"message": "Profile updated successfully.", "data": {"profile": profile}}
+    return ApiResponse(
+        message="User Profile updated successfully.",
+        data=ProfileResponse.model_validate(profile),
+    )
 
 
 @profile_router.delete(
     "/me",
     response_model=ApiResponse,
     status_code=status.HTTP_200_OK,
+    responses=get_error_responses(404),
 )
 async def delete_my_profile(
     current_user_id: UUID = Depends(get_current_user_id),
@@ -171,8 +182,6 @@ async def delete_my_profile(
     #         headers={"Retry-After": str(retry_after)},
     #     )
 
-    result = await service.delete_profile(current_user_id)
+    await service.delete_profile(current_user_id)
 
-    return {
-        "message": result["message"],
-    }
+    return ApiResponse(message="User Profile deleted successfully!")

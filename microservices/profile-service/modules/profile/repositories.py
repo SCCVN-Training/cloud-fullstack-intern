@@ -98,9 +98,6 @@ class ProfileRepository(BaseRepository[UserProfileModel]):
         Returns:
             True if updated, False otherwise
         """
-        if not changes:
-            return False
-
         # Add updated_at timestamp
         changes["updated_at_utc"] = datetime.now(timezone.utc)
 

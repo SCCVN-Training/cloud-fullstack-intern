@@ -1,10 +1,11 @@
-export interface ApiListResponse<T> {
-  data: T[];
-  pagination: Pagination;
+export interface ApiResponse<Data> {
+  message: string;
+  data: Data;
+  meta: null;
 }
 
-export interface Pagination {
-  current_page: number;
-  has_next_page: boolean;
-  last_visible_page: number;
+export interface ApiResponseWithMeta<Data, Meta> {
+  message: string;
+  data: Data;
+  meta: Meta;
 }

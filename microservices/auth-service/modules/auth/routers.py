@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Response, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from shared.database import get_db, get_mongo_db
+from shared.docs import get_error_responses
 from shared.models import ApiResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -38,8 +39,9 @@ async def get_auth_service(
 
 @auth_router.post(
     "/register",
-    response_model=ApiResponse[UserDataResponse],
+    response_model=ApiResponse[UserResponse],
     status_code=status.HTTP_201_CREATED,
+    responses=get_error_responses(400),
 )
 async def register(
     request: Request,
@@ -64,16 +66,22 @@ async def register(
     #         headers={"Retry-After": str(retry_after)},
     #     )
 
-    return await service.register(
+    user = await service.register(
         request=payload,
         response=response,
+    )
+
+    return ApiResponse(
+        message="New user registered successful!",
+        data=UserResponse.model_validate(user).model_dump(by_alias=True),
     )
 
 
 @auth_router.post(
     "/login",
-    response_model=ApiResponse[UserDataResponse],
+    response_model=ApiResponse[UserResponse],
     status_code=status.HTTP_200_OK,
+    responses=get_error_responses(401, 403),
 )
 async def login(
     request: Request,
@@ -96,9 +104,14 @@ async def login(
     #         detail="Too many login attempts. Please try again later.",
     #         headers={"Retry-After": str(retry_after)},
     #     )
-    return await service.login(
+    user = await service.login(
         request=payload,
         response=response,
+    )
+
+    return ApiResponse(
+        message="User logged in successful!",
+        data=UserResponse.model_validate(user).model_dump(by_alias=True),
     )
 
 
@@ -106,6 +119,7 @@ async def login(
     "/refresh-session",  # ← Renamed from "restore-session"
     response_model=ApiResponse,
     status_code=status.HTTP_200_OK,
+    responses=get_error_responses(401),
 )
 async def refresh_session(
     request: Request,
@@ -126,16 +140,19 @@ async def refresh_session(
     #         detail="Too many refresh attempts. Please try again later.",
     #         headers={"Retry-After": str(retry_after)},
     #     )
-    return await service.refresh_session(
+    await service.refresh_session(
         request=request,
         response=response,
     )
+
+    return ApiResponse(message="Session refreshed!")
 
 
 @auth_router.post(
     "/logout",
     response_model=ApiResponse,
     status_code=status.HTTP_200_OK,
+    responses=get_error_responses(401),
 )
 async def logout(
     request: Request,
@@ -147,13 +164,15 @@ async def logout(
 
     Clears authentication cookies.
     """
-    return await service.logout(request=request, response=response)
+    await service.logout(request=request, response=response)
+    return ApiResponse(message="User logged out!")
 
 
 @auth_router.get(
     "/me",
     response_model=ApiResponse[UserDataResponse],
     status_code=status.HTTP_200_OK,
+    responses=get_error_responses(401),
 )
 async def get_me(
     request: Request,
