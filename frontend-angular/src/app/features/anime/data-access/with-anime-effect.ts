@@ -27,15 +27,15 @@ export class AnimeEffect {
     return this.animeApi.getAnimeSeasonalPagination(page).pipe(
       tap((response) => {
         if (append) {
-          this.seasonalReducer.appendItems(response.media, response.pageInfo);
+          this.seasonalReducer.appendItems(response.data, response.meta);
         } else {
-          this.seasonalReducer.setItems(response.media, response.pageInfo);
+          this.seasonalReducer.setItems(response.data, response.meta);
         }
       }),
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Failed to load seasonal anime. Please try again.';
         this.seasonalReducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
         return EMPTY;
       }),
       map(() => void 0),
@@ -60,20 +60,20 @@ export class AnimeEffect {
       tap((response) => {
         // Convert PageInfo to SearchPageInfo (adds searchQuery)
         const searchPageInfo: SearchPageInfo = {
-          ...response.pageInfo,
+          ...response.meta,
           searchQuery: query,
         };
 
         if (append) {
-          this.searchReducer.appendItems(response.media, searchPageInfo);
+          this.searchReducer.appendItems(response.data, searchPageInfo);
         } else {
-          this.searchReducer.setItems(response.media, searchPageInfo);
+          this.searchReducer.setItems(response.data, searchPageInfo);
         }
       }),
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Search failed. Please try again.';
         this.searchReducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
         return EMPTY;
       }),
       map(() => void 0),

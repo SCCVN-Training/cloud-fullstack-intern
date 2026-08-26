@@ -17,7 +17,6 @@ from modules.auth.repositories import AuthRepository
 from modules.auth.schemas import (
     LoginRequest,
     RegisterRequest,
-    UserResponse,
 )
 
 
@@ -151,13 +150,7 @@ class AuthService:
             email=user.email,
         )
 
-        # 5. Return response (with user_id for profile creation)
-        return {
-            "message": "User registration successful. Please create your profile.",
-            "data": {
-                "user": UserResponse.model_validate(user).model_dump(by_alias=True),
-            },
-        }
+        return user
 
     # ============ Login ============
 
@@ -213,12 +206,7 @@ class AuthService:
         )
 
         # 6. Return response
-        return {
-            "message": "User login successful.",
-            "data": {
-                "user": UserResponse.model_validate(user).model_dump(by_alias=True),
-            },
-        }
+        return user
 
     # ============ Session Restoration ============
 
@@ -256,10 +244,6 @@ class AuthService:
             email=user.email,
         )
 
-        return {
-            "message": "Session refreshed successfully.",
-        }
-
     # ============ Logout ============
 
     async def logout(self, request: Request, response: Response) -> dict:
@@ -280,10 +264,6 @@ class AuthService:
             )
 
         self._clear_authentication_cookies(response)
-
-        return {
-            "message": "User logout successful.",
-        }
 
     # ============ Current User ============
 
@@ -314,9 +294,4 @@ class AuthService:
                 detail="User not found or inactive.",
             )
 
-        return {
-            "message": "Current user retrieved successfully.",
-            "data": {
-                "user": UserResponse.model_validate(user).model_dump(by_alias=True),
-            },
-        }
+        return user

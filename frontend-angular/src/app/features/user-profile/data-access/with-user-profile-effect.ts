@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, catchError, finalize, map, tap } from 'rxjs';
@@ -22,12 +21,12 @@ export class UserProfileEffect {
     return this.api.getMyProfile().pipe(
       tap((response) => {
         this.reducer.setError(null);
-        this.reducer.patch({ profile: response.data.profile });
+        this.reducer.patch({ profile: response.data });
       }),
       map(() => void 0),
-      catchError((error: HttpErrorResponse) => {
+      catchError(() => {
         this.reducer.setError(null);
-        this.notification.error(error.message || 'Failed to load profile');
+        //this.notification.error(error.message || 'Failed to load profile');
         return EMPTY;
       }),
       finalize(() => {
@@ -42,14 +41,14 @@ export class UserProfileEffect {
     return this.api.updateMyProfile(payload).pipe(
       tap((response) => {
         this.reducer.setError(null);
-        this.reducer.patch({ profile: response.data.profile });
+        this.reducer.patch({ profile: response.data });
         this.notification.success('Profile updated successfully');
         this.router.navigate(['/dashboard', 'profile']);
       }),
       map(() => void 0),
-      catchError((error: HttpErrorResponse) => {
+      catchError(() => {
         this.reducer.setError(null);
-        this.notification.error(error.message || 'Failed to update profile');
+        //this.notification.error(error.message || 'Failed to update profile');
         return EMPTY;
       }),
       finalize(() => {

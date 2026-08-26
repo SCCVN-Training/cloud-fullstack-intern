@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from modules.profile.routers import profile_router
 from shared.config import settings
 from shared.database import close_db, init_db
@@ -47,6 +49,35 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
+
+# Standardize HTTP Exceptions
+@app.exception_handler(StarletteHTTPException)
+async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error_code": f"ERR_{exc.status_code}",
+            "message": exc.detail,
+            "details": None,
+        },
+    )
+
+
+# Standardize Validation Errors (e.g., wrong payload format)
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=422,
+        content={
+            "error_code": "VALIDATION_ERROR",
+            "message": "Invalid request payload",
+            "details": exc.errors(),
+        },
+    )
+
 
 # CORS
 # app.add_middleware(

@@ -16,7 +16,6 @@ from modules.anime.schemas import (
     AnimeSearchItem,
     AnimeSearchResponse,
     AnimeSeasonalItem,
-    AnimeSeasonalResponse,
     PageInfo,
 )
 from modules.anime.services.cache_manager import AnimeCacheManager
@@ -167,7 +166,7 @@ class AniListService:
         page: int = 1,
         per_page: int = 25,
         background_tasks: BackgroundTasks | None = None,
-    ) -> AnimeSeasonalResponse:
+    ) -> tuple[list, bool]:
         """
         Get seasonal anime with background cache refresh.
 
@@ -195,13 +194,14 @@ class AniListService:
                 f"[Seasonal] ✅ Cache hit for {season} {year} - returning {len(cached_items)} items "
                 f"(page {page} of {total // per_page + 1})"
             )
-            return AnimeSeasonalResponse(
-                pageInfo=PageInfo(
-                    hasNextPage=has_next,
-                    currentPage=page,
-                ),
-                media=cached_items,
-            )
+            # return AnimeSeasonalResponse(
+            #     pageInfo=PageInfo(
+            #         hasNextPage=has_next,
+            #         currentPage=page,
+            #     ),
+            #     media=cached_items,
+            # )
+            return cached_items, has_next
 
         logger.info(
             f"[Seasonal] ❌ Cache miss for {season} {year} - fetching first page only"
@@ -223,10 +223,11 @@ class AniListService:
                 )
                 if cached_items:
                     logger.info("[Seasonal] ♻️ Reused newly created cache successfully!")
-                    return AnimeSeasonalResponse(
-                        pageInfo=PageInfo(hasNextPage=has_next, currentPage=page),
-                        media=cached_items,
-                    )
+                    # return AnimeSeasonalResponse(
+                    #     pageInfo=PageInfo(hasNextPage=has_next, currentPage=page),
+                    #     media=cached_items,
+                    # )
+                    return cached_items, has_next
 
             raise HTTPException(
                 status_code=503,
@@ -249,13 +250,13 @@ class AniListService:
             )
             page_data = data.get("Page", {})
 
-            current_page_media = [
-                AnimeSeasonalItem(**item) for item in page_data.get("media", [])
-            ]
+            # current_page_media = [
+            #     AnimeSeasonalItem(**item) for item in page_data.get("media", [])
+            # ]
             has_next_page = page_data.get("pageInfo", {}).get("hasNextPage", False)
 
             logger.info(
-                f"[Seasonal] Current page fetched: {len(current_page_media)} items, "
+                f"[Seasonal] Current page fetched: {len(page_data.get('media', []))} items, "
                 f"hasNextPage: {has_next_page}"
             )
 
@@ -274,14 +275,19 @@ class AniListService:
                     "[Seasonal] No BackgroundTasks available - cache will not be built"
                 )
 
-            # ✅ Return first page immediately (don't wait for full cache)
-            return AnimeSeasonalResponse(
-                pageInfo=PageInfo(
-                    hasNextPage=has_next_page,
-                    currentPage=page,
-                ),
-                media=current_page_media,
-            )
+            # ✅ Return current page immediately (don't wait for full cache)
+            # return AnimeSeasonalResponse(
+            #     pageInfo=PageInfo(
+            #         hasNextPage=has_next_page,
+            #         currentPage=page,
+            #     ),
+            #     media=current_page_media,
+            # )
+            # meta = {
+            #     "hasNextPage": has_next_page,
+            #     "currentPage": page
+            # }
+            return page_data.get("media", []), has_next_page
 
         finally:
             pass
@@ -347,7 +353,7 @@ class AniListService:
         page: int = 1,
         per_page: int = 25,
         background_tasks: BackgroundTasks | None = None,
-    ) -> AnimeSearchResponse:
+    ) -> tuple[list, bool]:
         """
         Search anime with background cache refresh.
 
@@ -367,12 +373,15 @@ class AniListService:
                 f"[Search] ✅ Cache hit for '{query}' page {page} - "
                 f"{len(cached['media'])} items"
             )
-            return AnimeSearchResponse(
-                pageInfo=PageInfo(
-                    hasNextPage=cached["pageInfo"]["hasNextPage"],
-                    currentPage=cached["pageInfo"]["currentPage"],
-                ),
-                media=[AnimeSearchItem(**item) for item in cached["media"]],
+            # return AnimeSearchResponse(
+            #     pageInfo=PageInfo(
+            #         hasNextPage=cached["pageInfo"]["hasNextPage"],
+            #         currentPage=cached["pageInfo"]["currentPage"],
+            #     ),
+            #     media=[AnimeSearchItem(**item) for item in cached["media"]],
+            # )
+            return cached.get("media", []), cached.get("pageInfo", {}).get(
+                "hasNextPage", False
             )
 
         logger.info(
@@ -396,12 +405,15 @@ class AniListService:
                 cached = await self.cache.get_search_cache(query, page, per_page)
                 if cached:
                     logger.info("[Search] ♻️ Reused newly created cache successfully!")
-                    return AnimeSearchResponse(
-                        pageInfo=PageInfo(
-                            hasNextPage=cached["pageInfo"]["hasNextPage"],
-                            currentPage=cached["pageInfo"]["currentPage"],
-                        ),
-                        media=[AnimeSearchItem(**item) for item in cached["media"]],
+                    # return AnimeSearchResponse(
+                    #     pageInfo=PageInfo(
+                    #         hasNextPage=cached["pageInfo"]["hasNextPage"],
+                    #         currentPage=cached["pageInfo"]["currentPage"],
+                    #     ),
+                    #     media=[AnimeSearchItem(**item) for item in cached["media"]],
+                    # )
+                    return cached.get("media", []), cached.get("pageInfo", {}).get(
+                        "hasNextPage", False
                     )
 
             raise HTTPException(
@@ -424,17 +436,24 @@ class AniListService:
             data = await self._execute_query(SEARCH_ANIME_QUERY, variables)
             page_data = data.get("Page", {})
 
-            response = AnimeSearchResponse(
-                pageInfo=PageInfo(
-                    hasNextPage=page_data.get("pageInfo", {}).get("hasNextPage", False),
-                    currentPage=page_data.get("pageInfo", {}).get("currentPage", 1),
-                ),
-                media=[AnimeSearchItem(**item) for item in page_data.get("media", [])],
-            )
+            # response = AnimeSearchResponse(
+            #     pageInfo=PageInfo(
+            #         hasNextPage=page_data.get("pageInfo", {}).get("hasNextPage", False),
+            #         currentPage=page_data.get("pageInfo", {}).get("currentPage", 1),
+            #     ),
+            #     media=[AnimeSearchItem(**item) for item in page_data.get("media", [])],
+            # )
+
+            data = page_data.get("media", [])
+            has_next_page = page_data.get("pageInfo", {}).get("hasNextPage", False)
+            # meta = {
+            #     "hasNextPage": page_data.get("pageInfo", {}).get("hasNextPage", False),
+            #     "currentPage": page_data.get("pageInfo", {}).get("currentPage", 1)
+            # }
 
             logger.info(
-                f"[Search] API response: {len(response.media)} items, "
-                f"hasNextPage: {response.pageInfo.hasNextPage}"
+                f"[Search] API response: {len(data)} items, "
+                f"hasNextPage: {has_next_page}"
             )
 
             # ✅ Cache in background (don't wait)
@@ -449,7 +468,7 @@ class AniListService:
                     per_page,
                 )
 
-            return response
+            return data, has_next_page
 
         finally:
             pass

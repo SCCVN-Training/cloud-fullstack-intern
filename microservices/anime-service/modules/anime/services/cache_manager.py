@@ -11,8 +11,6 @@ import redis.asyncio as redis
 from shared.config import settings
 from shared.database import get_redis_client_async
 
-from modules.anime.schemas import AnimeSeasonalItem
-
 
 class AnimeCacheManager:
     """
@@ -53,14 +51,13 @@ class AnimeCacheManager:
         self,
         season: str,
         year: int,
-    ) -> list[AnimeSeasonalItem] | None:
+    ) -> list | None:
         """Get cached seasonal anime list."""
         cache_key = self._get_cache_key("seasonal", season=season, year=year)
 
         cached = await self.redis.get(cache_key)
         if cached:
-            data = json.loads(cached)
-            return [AnimeSeasonalItem(**item) for item in data]
+            return json.loads(cached)
 
         return None
 
@@ -68,7 +65,7 @@ class AnimeCacheManager:
         self,
         season: str,
         year: int,
-        data: list[AnimeSeasonalItem],
+        data: list,
         ttl: int | None = None,
     ) -> None:
         """Cache seasonal anime list."""
@@ -86,7 +83,7 @@ class AnimeCacheManager:
         year: int,
         page: int,
         per_page: int,
-    ) -> tuple[list[AnimeSeasonalItem], int, bool]:
+    ) -> tuple[list, int, bool]:
         """
         Get paginated seasonal anime from cache.
 
@@ -164,16 +161,30 @@ class AnimeCacheManager:
         """Manually invalidate all search caches for a query."""
         # Pattern matching for all search keys
         pattern = f"{settings.cache_prefix_l1}:anime:search:*{query.lower().strip()}*"
-        keys = await self.redis.keys(pattern)
-        if keys:
-            await self.redis.delete(*keys)
+        cursor = 0
+        while True:
+            cursor, keys = await self.redis.scan(cursor, match=pattern, count=100)
+            if keys:
+                await self.redis.delete(*keys)
+            if cursor == 0:
+                break
+        # keys = await self.redis.keys(pattern)
+        # if keys:
+        #     await self.redis.delete(*keys)
 
     async def clear_all(self) -> None:
         """Clear all anime caches (admin use only)."""
         pattern = f"{settings.cache_prefix_l1}:anime:*"
-        keys = await self.redis.keys(pattern)
-        if keys:
-            await self.redis.delete(*keys)
+        cursor = 0
+        while True:
+            cursor, keys = await self.redis.scan(cursor, match=pattern, count=100)
+            if keys:
+                await self.redis.delete(*keys)
+            if cursor == 0:
+                break
+        # keys = await self.redis.keys(pattern)
+        # if keys:
+        #     await self.redis.delete(*keys)
 
     async def acquire_lock(self, lock_key: str, ttl: int = 15) -> bool:
         """

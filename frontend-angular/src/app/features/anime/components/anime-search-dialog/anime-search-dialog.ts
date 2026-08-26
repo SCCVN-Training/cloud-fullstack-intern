@@ -68,11 +68,16 @@ export class AnimeSearchDialog implements OnDestroy {
   onScroll(event: Event): void {
     const target = event.target as HTMLElement;
 
-    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 50;
+    // Check if the user has scrolled near the bottom (within 80px)
+    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 80;
 
     if (isAtBottom && !this.isLoading() && !this.isTyping() && this.searchQuery) {
-      const hasNextPage = this.animeSearchStore.pageInfo()?.hasNextPage ?? true;
-      if (!hasNextPage) return;
+      const pageInfo = this.animeSearchStore.pageInfo();
+
+      // If pageInfo exists and hasNextPage is explicitly false, stop loading
+      if (pageInfo && pageInfo.hasNextPage === false) {
+        return;
+      }
 
       this.currentPage++;
       this.animeEvent.loadMoreSearch(this.searchQuery, this.currentPage);

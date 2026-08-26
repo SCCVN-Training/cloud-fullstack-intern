@@ -49,7 +49,7 @@ export class AppEffect {
           initialized: true,
         });
 
-        this.notification.error('Server is unavailable!');
+        //this.notification.error('Server is unavailable!');
         return EMPTY;
       }),
 
@@ -103,7 +103,7 @@ export class AppEffect {
           initialized: true,
         });
 
-        this.notification.error('Server is currently unavailable or experiencing issues!');
+        //this.notification.error('Server is currently unavailable or experiencing issues!');
 
         return of(void 0);
       }),

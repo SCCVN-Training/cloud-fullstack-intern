@@ -6,11 +6,17 @@ FastAPI endpoints for anime functionality.
 from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
+from shared.docs import get_error_responses
 from shared.logger import get_logger
+from shared.models import ApiResponse
 
 from modules.anime.dependencies import get_current_user_id
 from modules.anime.rate_limit import AnimeRateLimiter, get_anime_rate_limiter
-from modules.anime.schemas import AnimeSearchResponse, AnimeSeasonalResponse
+from modules.anime.schemas import (
+    AnimeSearchItem,
+    AnimeSeasonalItem,
+    PageInfo,
+)
 from modules.anime.services.anilist_service import AniListService
 from modules.anime.services.cache_manager import AnimeCacheManager
 from modules.anime.services.season import get_current_season
@@ -46,8 +52,9 @@ async def get_anime_service() -> AniListService:
 
 @anime_router.get(
     "/seasonal",
-    response_model=AnimeSeasonalResponse,
+    response_model=ApiResponse[list[AnimeSeasonalItem]],
     status_code=status.HTTP_200_OK,
+    responses=get_error_responses(429, 503),
 )
 async def get_seasonal_anime(
     background_tasks: BackgroundTasks,
@@ -110,7 +117,7 @@ async def get_seasonal_anime(
         f"page: {page}, per_page: {per_page}"
     )
 
-    result = await service.get_seasonal_anime(
+    return_data, return_has_next_page = await service.get_seasonal_anime(
         season=season_upper,
         year=year,
         page=page,
@@ -119,17 +126,22 @@ async def get_seasonal_anime(
     )
 
     logger.info(
-        f"[Seasonal] Response successful - returned {len(result.media)} items, "
-        f"hasNextPage: {result.pageInfo.hasNextPage}"
+        f"[Seasonal] Response successful - returned {len(return_data)} items, "
+        f"hasNextPage: {return_has_next_page}"
     )
 
-    return result
+    return ApiResponse(
+        message=f"Seasonal anime retrieved successfully for page {page}",
+        data=[AnimeSeasonalItem(**item) for item in return_data],
+        meta=PageInfo(hasNextPage=return_has_next_page, currentPage=page).model_dump(),
+    )
 
 
 @anime_router.get(
     "/search",
-    response_model=AnimeSearchResponse,
+    response_model=ApiResponse[list[AnimeSearchItem]],
     status_code=status.HTTP_200_OK,
+    responses=get_error_responses(429, 503),
 )
 async def search_anime(
     background_tasks: BackgroundTasks,
@@ -170,7 +182,7 @@ async def search_anime(
         f"[Search] Calling service - query: '{query}', page: {page}, per_page: {per_page}"
     )
 
-    result = await service.search_anime(
+    return_data, return_has_next_page = await service.search_anime(
         query=query,
         page=page,
         per_page=per_page,
@@ -178,11 +190,15 @@ async def search_anime(
     )
 
     logger.info(
-        f"[Search] Response successful - returned {len(result.media)} items, "
-        f"hasNextPage: {result.pageInfo.hasNextPage}"
+        f"[Search] Response successful - returned {len(return_data)} items, "
+        f"hasNextPage: {return_has_next_page}"
     )
 
-    return result
+    return ApiResponse(
+        message="Anime search results retrieved successfully!",
+        data=[AnimeSearchItem(**item) for item in return_data],
+        meta=PageInfo(hasNextPage=return_has_next_page, currentPage=page).model_dump(),
+    )
 
 
 # ============================================

@@ -84,6 +84,7 @@ export class AnimeEvent {
 
   clearSearch(): void {
     console.log('[Anime Event]: clearSearch called');
+    this.searchSubject.next({ query: '' });
     this.animeEffect.clearSearch().subscribe();
   }
 }

@@ -29,7 +29,7 @@ export class AuthEffect {
     return this.api.login(payload).pipe(
       tap((response) => {
         this.reducer.setError(null);
-        this.reducer.loginSuccess(response.data.user);
+        this.reducer.loginSuccess(response.data);
         this.notification.success(`Login successful!`);
       }),
       switchMap(() => this.profileEffect.getMyProfile()),
@@ -39,7 +39,7 @@ export class AuthEffect {
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Login failed. Please try again.';
         this.reducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
         return EMPTY;
       }),
       finalize(() => {
@@ -63,7 +63,7 @@ export class AuthEffect {
       }),
       switchMap((response) => {
         const profilePayload = {
-          userId: response.data.user.id,
+          userId: response.data.id,
           displayName: payload.displayName,
         };
         return this.profileApi.createProfile(profilePayload);
@@ -75,7 +75,7 @@ export class AuthEffect {
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Registration failed. Please try again.';
         this.reducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
         return EMPTY;
       }),
       finalize(() => {
@@ -100,7 +100,7 @@ export class AuthEffect {
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Log out failed. Please try again.';
         this.reducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
 
         // Even if backend call fails, wipe state locally
         this.reducer.logoutSuccess();
@@ -121,7 +121,7 @@ export class AuthEffect {
     return this.api.refreshSession().pipe(
       switchMap(() => this.api.getCurrentUser()),
       tap((response) => {
-        this.reducer.setCurrentUser(response.data.user);
+        this.reducer.setCurrentUser(response.data);
       }),
       catchError((error) => {
         this.reducer.setError(null);
@@ -156,12 +156,12 @@ export class AuthEffect {
     return this.api.getCurrentUser().pipe(
       tap((response) => {
         this.reducer.setError(null);
-        this.reducer.setCurrentUser(response.data.user);
+        this.reducer.setCurrentUser(response.data);
       }),
       catchError((error: HttpErrorResponse) => {
         const message = error.error?.message || 'Get profile failed. Please try again.';
         this.reducer.setError(message);
-        this.notification.error(message);
+        //this.notification.error(message);
         this.reducer.setCurrentUser(null);
         return EMPTY;
       }),
