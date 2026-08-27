@@ -5,6 +5,10 @@ from app.core.database import get_db_connection
 from app.modules.auth.repository import AuthRepository
 from app.modules.auth import schemas
 
+from pydantic import BaseModel
+class UpdateStorageRequest(BaseModel):
+    storage_used: int
+
 router = APIRouter(prefix="/internal/users", tags=["Internal"])
 
 @router.get("/by-email")
@@ -32,9 +36,7 @@ async def get_user_storage(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return {"storage_used": user["storage_used"], "storage_quota": user["storage_quota"]}
 
-from pydantic import BaseModel
-class UpdateStorageRequest(BaseModel):
-    storage_used: int
+
 
 @router.put("/{user_id}/storage")
 async def update_user_storage(

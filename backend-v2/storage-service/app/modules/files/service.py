@@ -9,7 +9,8 @@ import hashlib
 import uuid
 from datetime import datetime, timezone
 from typing import Any, Literal
-
+import httpx
+from app.core.config import settings
 import asyncpg
 import boto3
 from botocore.exceptions import ClientError
