@@ -3,6 +3,7 @@ from uuid import UUID
 from fastapi import HTTPException, Request, Response, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from shared.config import settings
+from shared.logger import get_logger
 from shared.security import (
     create_access_token,
     create_refresh_token,
@@ -18,6 +19,8 @@ from modules.auth.schemas import (
     LoginRequest,
     RegisterRequest,
 )
+
+logger = get_logger(__name__)
 
 
 class AuthService:
@@ -123,6 +126,9 @@ class AuthService:
         """
         # 1. Check if email exists
         if await self.auth_repo.check_email_exists(request.email):
+            logger.warning(
+                f"Registration failed: Email already exists - {request.email}"
+            )
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="A user with this email address already exists.",
@@ -150,6 +156,7 @@ class AuthService:
             email=user.email,
         )
 
+        logger.info(f"Business Event: New user registered successfully - ID: {user.id}")
         return user
 
     # ============ Login ============
@@ -177,6 +184,9 @@ class AuthService:
                 user_agent=user_agent,
                 user_id=user.id if user else None,
             )
+            logger.warning(
+                f"Security Warning: Failed login attempt for email - {request.email}"
+            )
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid email or password.",
@@ -184,6 +194,9 @@ class AuthService:
 
         # 3. Check if user is active
         if not user.is_active:
+            logger.warning(
+                f"Security Warning: Login attempt on disabled account - {request.email}"
+            )
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="User account is disabled. Please contact support.",
@@ -206,6 +219,7 @@ class AuthService:
         )
 
         # 6. Return response
+        logger.info(f"Business Event: User login successful - ID: {user.id}")
         return user
 
     # ============ Session Restoration ============
@@ -219,6 +233,7 @@ class AuthService:
         refresh_token = request.cookies.get("refresh_token")
 
         if not refresh_token:
+            logger.warning("Refresh session failed: Missing refresh token cookie")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Refresh token cookie missing.",
@@ -226,6 +241,7 @@ class AuthService:
 
         user_id = verify_token(refresh_token, token_type="refresh")
         if not user_id:
+            logger.warning("Refresh session failed: Invalid or expired refresh token")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid or expired refresh token.",
@@ -233,6 +249,7 @@ class AuthService:
 
         user = await self.auth_repo.get_by_id(user_id)
         if not user or not user.is_active:
+            logger.warning("Refresh session failed: User not found or inactive!")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="User not found or inactive.",
@@ -243,6 +260,9 @@ class AuthService:
             user_id=user.id,
             email=user.email,
         )
+        logger.info(
+            f"Business Event: Session refreshed successfully for user: {user_id}"
+        )
 
     # ============ Logout ============
 
@@ -251,6 +271,7 @@ class AuthService:
         access_token = request.cookies.get("access_token")
 
         if not access_token:
+            logger.warning("Logout failed: Missing access token cookie")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Access token cookie missing.",
@@ -258,40 +279,45 @@ class AuthService:
 
         user_id = verify_token(access_token, token_type="access")
         if not user_id:
+            logger.warning("Logout failed: Invalid or expired access token cookie")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid or expired access token.",
             )
 
         self._clear_authentication_cookies(response)
+        logger.info(f"Business Event: Logout successfully for user: {user_id}")
 
     # ============ Current User ============
 
-    async def get_current_user(
-        self,
-        request: Request,
-    ) -> dict:
-        """Get current authenticated user from access token cookie."""
-        access_token = request.cookies.get("access_token")
+    # async def get_current_user(
+    #     self,
+    #     request: Request,
+    # ) -> dict:
+    #     """Get current authenticated user from access token cookie."""
+    #     access_token = request.cookies.get("access_token")
 
-        if not access_token:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Access token cookie missing.",
-            )
+    #     if not access_token:
+    #         logger.warning("Get current user failed: Missing access token cookie")
+    #         raise HTTPException(
+    #             status_code=status.HTTP_401_UNAUTHORIZED,
+    #             detail="Access token cookie missing.",
+    #         )
 
-        user_id = verify_token(access_token, token_type="access")
-        if not user_id:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid or expired access token.",
-            )
+    #     user_id = verify_token(access_token, token_type="access")
+    #     if not user_id:
+    #         logger.warning("Get current user failed: Invalid or expired access token cookie")
+    #         raise HTTPException(
+    #             status_code=status.HTTP_401_UNAUTHORIZED,
+    #             detail="Invalid or expired access token.",
+    #         )
 
-        user = await self.auth_repo.get_by_id(user_id)
-        if not user or not user.is_active:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="User not found or inactive.",
-            )
-
-        return user
+    #     user = await self.auth_repo.get_by_id(user_id)
+    #     if not user or not user.is_active:
+    #         logger.warning("Get current user failed: User not found or inactive!")
+    #         raise HTTPException(
+    #             status_code=status.HTTP_401_UNAUTHORIZED,
+    #             detail="User not found or inactive.",
+    #         )
+    #     logger.info(f"Business Event: Get auth state successfully for user: {user_id}")
+    #     return user

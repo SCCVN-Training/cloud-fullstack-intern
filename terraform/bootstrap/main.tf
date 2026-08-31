@@ -76,16 +76,16 @@ resource "aws_s3_bucket_versioning" "terraform_state" {
 # =======================================================
 # 4. DYNAMODB TABLE ĐỂ KHÓA STATE (STATE LOCKING)
 # =======================================================
-resource "aws_dynamodb_table" "terraform_locks" {
-  name         = "du-microservices-terraform-locks"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
+# resource "aws_dynamodb_table" "terraform_locks" {
+#   name         = "du-microservices-terraform-locks"
+#   billing_mode = "PAY_PER_REQUEST"
+#   hash_key     = "LockID"
 
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-}
+#   attribute {
+#     name = "LockID"
+#     type = "S"
+#   }
+# }
 
 # =======================================================
 # 5. CREATE IAM ROLE FOR GITHUB ACTIONS (FRONTEND)
