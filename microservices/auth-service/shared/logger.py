@@ -70,7 +70,7 @@ def get_logger(name: str | None = None) -> logging.Logger:
                         LoggingInstrumentor,
                     )
 
-                    LoggingInstrumentor().instrument(set_logging_format=False)
+                    LoggingInstrumentor().instrument(set_logging_format=True)
                     _IS_LOGGING_INSTRUMENTED = True
                 except ImportError:
                     # Fallback just in case dependencies are missing
