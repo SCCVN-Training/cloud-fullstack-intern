@@ -57,9 +57,7 @@ class ProfileService:
                 display_name=request.display_name,
             )
         except ValueError as e:
-            logger.warning(
-                f"Profile creation failed for user {request.user_id}: {e!s}"
-            )
+            logger.warning(f"Profile creation failed for user {request.user_id}: {e!s}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=str(e),
