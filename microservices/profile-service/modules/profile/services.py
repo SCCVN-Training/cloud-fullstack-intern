@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from fastapi import HTTPException, status
+from shared.logger import get_logger
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from modules.profile.repositories import ProfileRepository
@@ -9,6 +10,8 @@ from modules.profile.schemas import (
     ProfileResponse,
     UpdateProfileRequest,
 )
+
+logger = get_logger(__name__)
 
 
 class ProfileService:
@@ -54,11 +57,14 @@ class ProfileService:
                 display_name=request.display_name,
             )
         except ValueError as e:
+            logger.warning(f"Profile creation failed for user {request.user_id}: {e!s}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=str(e),
             )
-
+        logger.info(
+            f"Business Event: Profile created successfully for user_id: {request.user_id}"
+        )
         return profile
 
     # ============ Read ============
@@ -82,6 +88,7 @@ class ProfileService:
         profile = await self.repo.get_by_user_id(user_id)
 
         if not profile:
+            logger.warning(f"Profile lookup failed: Not found for user_id {user_id}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Profile not found for this user.",
@@ -114,6 +121,7 @@ class ProfileService:
         # Get current profile
         profile = await self.repo.get_by_user_id(user_id)
         if not profile:
+            logger.warning(f"Profile update failed: Not found for user_id {user_id}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Profile not found for this user.",
@@ -130,6 +138,9 @@ class ProfileService:
         updated_profile = await self.repo.patch_profile_by_user_id(
             user_id,
             changes,
+        )
+        logger.info(
+            f"Business Event: Profile updated successfully for user_id: {user_id}"
         )
         return updated_profile
 
@@ -154,6 +165,7 @@ class ProfileService:
         deleted = await self.repo.delete_profile_by_user_id(user_id)
 
         if not deleted:
+            logger.warning(f"Profile deletion failed: Not found for user_id {user_id}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Profile not found for this user.",

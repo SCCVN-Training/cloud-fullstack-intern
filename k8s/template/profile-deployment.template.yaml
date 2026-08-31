@@ -30,6 +30,15 @@ spec:
             - name: ENVIRONMENT
               value: "production"
             # Add other required environment variables here
+            - name: DEBUG
+              value: "False"
+            # MUST define the OpenTelemetry collector endpoint for traces and metrics
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://adot-collector-opentelemetry-collector.amazon-cloudwatch.svc.cluster.local:4317"
+
+            # MUST define a unique service name to easily identify nodes in AWS X-Ray Service Map
+            - name: OTEL_SERVICE_NAME
+              value: "profile-service"
 ---
 apiVersion: v1
 kind: Service

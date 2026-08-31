@@ -233,3 +233,26 @@ resource "aws_eks_access_policy_association" "github_actions_admin" {
     type = "cluster"
   }
 }
+
+# ==========================================
+# ADOT Collector (OpenTelemetry) Module
+# ==========================================
+module "adot_collector" {
+  source = "./modules/adot-collector"
+
+  # Pass cluster identifiers
+  cluster_name         = aws_eks_cluster.main.name
+
+  # Pass OIDC details for IRSA (IAM Roles for Service Accounts)
+  oidc_provider_arn    = aws_iam_openid_connect_provider.eks.arn
+  oidc_provider_url    = aws_iam_openid_connect_provider.eks.url
+
+  # Define deployment namespace
+  namespace            = "amazon-cloudwatch"
+  service_account_name = "adot-collector-sa"
+
+  # MUST wait for worker nodes to be ready before deploying the Helm chart
+  depends_on = [
+    aws_eks_node_group.nodes
+  ]
+}

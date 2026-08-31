@@ -1,0 +1,40 @@
+mode: daemonset
+
+image:
+  repository: public.ecr.aws/aws-observability/aws-otel-collector
+  tag: latest
+
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
+
+  exporters:
+    # Export Traces to AWS X-Ray
+    awsxray:
+      region: ap-southeast-1
+    # Export Metrics to AWS CloudWatch
+    awsemf:
+      region: ap-southeast-1
+      log_group_name: "/otakutory/eks/metrics"
+    # Export Logs to AWS CloudWatch
+    awscloudwatchlogs:
+      region: ap-southeast-1
+      log_group_name: "/otakutory/eks/application-logs"
+      log_stream_name: "adot-eks-stream"
+
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        exporters: [awsxray]
+      metrics:
+        receivers: [otlp]
+        exporters: [awsemf]
+      logs:
+        receivers: [otlp]
+        exporters: [awscloudwatchlogs]

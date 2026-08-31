@@ -75,6 +75,22 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+if not settings.is_development:
+    try:
+        from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+        # Attach X-Ray tracking to all FastAPI endpoints automatically
+        FastAPIInstrumentor.instrument_app(app)
+        logger.info(
+            "✅ OpenTelemetry instrumentation is ENABLED for cloud environment."
+        )
+    except ImportError:
+        logger.error(
+            "❌ OpenTelemetry packages are not installed. Tracing is DISABLED."
+        )
+else:
+    logger.info("⚠️ Running in DEVELOPMENT mode. OpenTelemetry tracing is DISABLED.")
+
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 
