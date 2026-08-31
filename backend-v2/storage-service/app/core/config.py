@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     R2_SECRET_ACCESS_KEY: str 
     R2_BUCKET_NAME: str = "nephos"
     
-    AUTH_SERVICE_URL: str = "http:///127.0.0.1:8001/api/v2"
+    AUTH_SERVICE_URL: str = "http://localhost:8001/api/v2"
 
     # Load from .env file
     model_config = SettingsConfigDict(

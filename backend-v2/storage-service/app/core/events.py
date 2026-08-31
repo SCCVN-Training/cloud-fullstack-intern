@@ -2,10 +2,10 @@ import asyncio
 import json
 import logging
 import uuid
-from app.core.redis import redis_client
-from app.core.database import pool
-from app.modules.files.repository import FileOperationsRepository
-from app.modules.files.service import R2StorageGateway
+from app.core.redis import get_redis_client
+from app.core.database import get_pool
+from app.modules.files.repositories import FileQueryRepository, TrashRepository
+from app.core.object_bucket import R2StorageGateway
 
 logger = logging.getLogger(__name__)
 
@@ -16,14 +16,15 @@ async def handle_user_deleted(user_id: str):
     except ValueError:
         return
 
-    repo = FileOperationsRepository()
     storage = R2StorageGateway()
-
+    pool = get_pool()
     if pool:
         async with pool.acquire() as conn:
+            query_repo = FileQueryRepository(conn)
+            trash_repo = TrashRepository(conn)
             # 1. Delete actual files from R2
             try:
-                files = await repo.list_files_by_owner(conn, uid)
+                files = await query_repo.list_files_by_owner(uid)
                 for f in files:
                     sk = f.get("storage_key")
                     if sk:
@@ -37,11 +38,12 @@ async def handle_user_deleted(user_id: str):
 
             # 2. Delete all user data from storage DB
             try:
-                await repo.delete_all_user_data(conn, uid)
+                await trash_repo.delete_all_user_data(uid)
             except Exception as e:
                 logger.exception(f"Error deleting user data for {uid}: {e}")
 
 async def listen_for_events():
+    redis_client = get_redis_client()
     if not redis_client:
         return
     pubsub = redis_client.pubsub()
