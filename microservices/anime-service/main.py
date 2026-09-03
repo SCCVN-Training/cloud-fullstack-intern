@@ -52,10 +52,32 @@ app = FastAPI(
 # else:
 #     logger.info("⚠️ Running in DEVELOPMENT mode. OpenTelemetry tracing is DISABLED.")
 
+import os
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
 if not settings.is_development:
-    # Do we are already using opentelemetry-instrument command wrapper,
-    # we just log the status here to avoid double-instrumentation conflicts.
-    logger.info("✅ OpenTelemetry instrumentation is ENABLED via command wrapper.")
+    try:
+        resource = Resource.create(attributes={
+            "service.name": os.getenv("OTEL_SERVICE_NAME", settings.project_name)
+        })
+
+        provider = TracerProvider(resource=resource)
+
+        otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://adot-collector-opentelemetry-collector.amazon-cloudwatch.svc.cluster.local:4317")
+        exporter = OTLPSpanExporter(endpoint=otlp_endpoint, insecure=True)
+
+        provider.add_span_processor(BatchSpanProcessor(exporter))
+        trace.set_tracer_provider(provider)
+
+        FastAPIInstrumentor.instrument_app(app)
+        logger.info("✅ OpenTelemetry is ENABLED via MANUAL SDK setup (CLI bypassed).")
+    except Exception as e:
+        logger.error(f"❌ Failed to initialize OpenTelemetry manually: {e}")
 else:
     logger.info("⚠️ Running in DEVELOPMENT mode. OpenTelemetry tracing is DISABLED.")
 

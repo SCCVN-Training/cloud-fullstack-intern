@@ -34,4 +34,4 @@ EXPOSE 8000
 
 # Start the application locally from within the service directory
 # Now it can find main.py directly without complex module paths
-CMD ["uv", "run", "opentelemetry-instrument", "--traces_exporter", "otlp", "--metrics_exporter", "none", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
