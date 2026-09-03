@@ -12,6 +12,26 @@ async def test_register_user_success(client):
     assert "password_hash" not in body
 
 
+async def test_register_grants_welcome_bonus_wallet(client):
+    res = await client.post("/auth/register", json={
+        "user_name": "bonususer",
+        "email": "bonususer@example.com",
+        "password": "supersecret123",
+    })
+    assert res.status_code == 201
+    user_id = res.json()["id"]
+
+    login = await client.post("/auth/login", json={
+        "email": "bonususer@example.com",
+        "password": "supersecret123",
+    })
+    headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
+
+    wallet = await client.get(f"/users/{user_id}/wallet", headers=headers)
+    assert wallet.status_code == 200, wallet.text
+    assert wallet.json()["balance"] == 100
+
+
 async def test_register_duplicate_email_fails(client, seeded_user):
     res = await client.post("/auth/register", json={
         "user_name": "anotherguy",

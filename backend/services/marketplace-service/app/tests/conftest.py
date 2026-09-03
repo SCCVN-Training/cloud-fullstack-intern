@@ -81,8 +81,19 @@ def stub_identity_client(monkeypatch):
     async def fake_user_exists(user_id):
         return True
 
+    # Default: both succeed and do nothing observable — individual tests
+    # that need to exercise a charge/credit failure override these with
+    # monkeypatch.setattr in the test itself (see test_bookings.py).
+    async def fake_charge_booking(learner_id, amount, booking_id):
+        return None
+
+    async def fake_credit_booking(mentor_id, amount, booking_id):
+        return None
+
     monkeypatch.setattr(IdentityClient, "get_public_profile", staticmethod(fake_get_public_profile))
     monkeypatch.setattr(IdentityClient, "user_exists", staticmethod(fake_user_exists))
+    monkeypatch.setattr(IdentityClient, "charge_booking", staticmethod(fake_charge_booking))
+    monkeypatch.setattr(IdentityClient, "credit_booking", staticmethod(fake_credit_booking))
     return _display_names
 
 
@@ -148,7 +159,7 @@ async def seeded_skill(db_session, seeded_user):
         category="Music",
         description="Learn the basics of guitar.",
         image="https://example.com/guitar.jpg",
-        duration="4 weeks",
+        duration=30,
         level="Beginner",
         requirements="An acoustic guitar",
         instructor_id=seeded_user.id,

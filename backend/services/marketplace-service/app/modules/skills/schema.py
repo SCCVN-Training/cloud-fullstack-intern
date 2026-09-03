@@ -10,8 +10,11 @@ class SkillBase(BaseModel):
     description: str
     image: str = Field(..., max_length=255)
     
+    # price defaults to 0 here but is treated as "not provided" by the
+    # service layer (via model_fields_set) when omitted on create/update —
+    # 0 is just pydantic's fallback for an int field, not a real price.
     price: int = Field(default=0)
-    duration: str = Field(..., max_length=50)
+    duration: int = Field(..., gt=0, description="Session length in minutes")
     level: str = Field(..., max_length=50)
     requirements: str
     
@@ -28,13 +31,18 @@ class SkillBase(BaseModel):
 class SkillCreate(SkillBase):
     instructor_id: uuid.UUID
 
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True
+    )
+
 class SkillUpdate(BaseModel):
     title: Optional[str] = Field(None, max_length=255)
     category: Optional[str] = Field(None, max_length=100)
     description: Optional[str] = None
     image: Optional[str] = Field(None, max_length=255)
     price: Optional[int] = None
-    duration: Optional[str] = Field(None, max_length=50)
+    duration: Optional[int] = Field(None, gt=0)
     level: Optional[str] = Field(None, max_length=50)
     requirements: Optional[str] = None
     available_slots: Optional[int] = None
@@ -44,6 +52,11 @@ class SkillUpdate(BaseModel):
     about_text: Optional[str] = None
     learning_outcomes: Optional[List[str]] = None
     prerequisites: Optional[List[str]] = None
+
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True
+    )
 
 class SkillResponse(SkillBase):
     id: str # Ensure uuid is converted to string for frontend

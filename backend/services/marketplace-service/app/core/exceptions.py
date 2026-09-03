@@ -30,6 +30,12 @@ class ProfileNotFoundException(AppException):
 class BookingNotFoundException(AppException):
     pass
 
+
+# Raised when a mentor already has a non-cancelled booking at the exact
+# same session_date — see BookingService.create_booking's overlap check.
+class BookingOverlapException(AppException):
+    pass
+
 # Review Exceptions
 class ReviewAlreadyExistsException(AppException):
     pass
@@ -116,6 +122,19 @@ def register_exception_handlers(app: FastAPI) -> None:
     ):
         return JSONResponse(
             status_code=404,
+            content={
+                "detail": exc.message
+            }
+        )
+
+    # Mentor already booked at this exact time
+    @app.exception_handler(BookingOverlapException)
+    async def booking_overlap_handler(
+        request: Request,
+        exc: BookingOverlapException
+    ):
+        return JSONResponse(
+            status_code=409,
             content={
                 "detail": exc.message
             }

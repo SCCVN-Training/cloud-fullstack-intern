@@ -21,9 +21,9 @@ every work session, not just before big moments.
 
 ```
 cd services/identity-service
-pytest app/tests/ -q        # expect 44 passed
+pytest app/tests/ -q        # expect 58 passed
 cd ../marketplace-service
-pytest app/tests/ -q        # expect 33 passed
+pytest app/tests/ -q        # expect 62 passed
 cd ../../lambda/avatar-validator
 PYTHONPATH=. pytest tests/ -q   # expect 5 passed (only if you've reached Week 6's Lambda work)
 ```

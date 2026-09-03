@@ -21,7 +21,7 @@ from app.core.exceptions import register_exception_handlers
 from app.modules.auth.router import router as auth_router
 from app.modules.users.router import router as users_router, admin_router as users_admin_router
 from app.modules.profiles.router import router as profiles_router, internal_router as profiles_internal_router
-from app.modules.wallets.router import router as wallets_router
+from app.modules.wallets.router import router as wallets_router, internal_router as wallets_internal_router
 from app.modules.transactions.router import router as transactions_router
 
 
@@ -85,6 +85,7 @@ app.include_router(users_admin_router)
 app.include_router(profiles_router)
 app.include_router(profiles_internal_router)
 app.include_router(wallets_router)
+app.include_router(wallets_internal_router)
 app.include_router(transactions_router)
 
 

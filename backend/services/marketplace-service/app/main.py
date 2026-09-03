@@ -15,7 +15,7 @@ from app.core.exceptions import register_exception_handlers
 
 from app.modules.skills.router import router as skills_router
 from app.modules.bookings.router import router as bookings_router
-from app.modules.reviews.router import user_reviews_router, booking_reviews_router
+from app.modules.reviews.router import user_reviews_router, skill_reviews_router, booking_reviews_router
 from app.modules.training.router import router as training_router
 
 
@@ -69,6 +69,7 @@ app.add_middleware(
 app.include_router(skills_router)
 app.include_router(bookings_router)
 app.include_router(user_reviews_router)
+app.include_router(skill_reviews_router)
 app.include_router(booking_reviews_router)
 app.include_router(training_router)
 

@@ -11,6 +11,10 @@ from app.modules.reviews.schema import ReviewCreate, ReviewItem, ReviewSummary
 # Read: reviews received by a user, shown on their profile
 user_reviews_router = APIRouter(prefix="/users/{reviewee_id}/reviews", tags=["Reviews"])
 
+# Read: reviews left on bookings for a specific skill, shown on that
+# skill's detail page.
+skill_reviews_router = APIRouter(prefix="/skills/{skill_id}/reviews", tags=["Reviews"])
+
 # Write: leaving a review is scoped to a specific completed booking, not
 # an open "review anyone's profile" action — see ReviewService for the
 # authorization rules this enforces.
@@ -26,6 +30,18 @@ async def get_reviews(
     current_user: CurrentUser = Depends(get_current_user),
 ):
     return await ReviewService.get_reviews_for_user(db, reviewee_id, limit, offset)
+
+
+# GET REVIEWS FOR A SKILL (public to any authenticated user, same as above)
+@skill_reviews_router.get("", response_model=ReviewSummary, status_code=status.HTTP_200_OK)
+async def get_reviews_for_skill(
+    skill_id: uuid.UUID,
+    limit: int | None = Query(default=10, ge=1, le=50),
+    offset: int = Query(default=0, ge=0),
+    db: AsyncSession = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user),
+):
+    return await ReviewService.get_reviews_for_skill(db, skill_id, limit, offset)
 
 
 # CREATE A REVIEW (only the learner on a completed booking, once)

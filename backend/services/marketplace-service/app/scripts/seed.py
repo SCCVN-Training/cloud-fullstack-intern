@@ -23,6 +23,7 @@ from sqlalchemy import select
 
 from app.core.database import Base, engine, AsyncSessionLocal
 from app.modules.skills.models import Skill
+from app.modules.skills.service import SkillService
 from app.modules.reviews.models import Review
 from app.modules.bookings.models import Booking, BookingStatus
 from app.scripts.seed_constants import ALICE_DEV_ID, BOB_LEARNER_ID
@@ -33,14 +34,17 @@ if sys.platform == "win32":
 ALICE_ID = uuid.UUID(ALICE_DEV_ID)
 BOB_ID = uuid.UUID(BOB_LEARNER_ID)
 
-# (title, category, description, price, duration, level, requirements, tags)
-# instructor is always alice_dev for this seed set.
+# (title, category, description, duration_minutes, level, requirements, tags)
+# instructor is always alice_dev for this seed set. Duration is capped at
+# 45 minutes (SkillService.MAX_DURATION_MINUTES) and price is derived
+# from it via the same formula the service enforces on create/update, so
+# this seed data can't violate the rule it's demonstrating.
 SEED_SKILLS = [
     (
         "Angular Fundamentals", "Web Development",
         "Learn Angular components, services, routing, forms, dependency "
         "injection, and the structure of a modern Angular application.",
-        35, "60 min", "Intermediate",
+        45, "Intermediate",
         "Basic HTML, CSS, and TypeScript knowledge.",
         ["angular", "typescript", "frontend"],
     ),
@@ -48,7 +52,7 @@ SEED_SKILLS = [
         "Docker & Container Fundamentals", "DevOps",
         "Learn containers, Dockerfiles, images, volumes, networks, and "
         "Docker Compose for running multi-service applications locally.",
-        40, "75 min", "Intermediate",
+        40, "Intermediate",
         "Basic command-line and application development knowledge.",
         ["docker", "containers", "devops"],
     ),
@@ -56,7 +60,7 @@ SEED_SKILLS = [
         "REST API Design", "Web Development",
         "Learn how to design clean REST APIs using resources, HTTP methods, "
         "status codes, DTOs, validation, pagination, and error responses.",
-        40, "60 min", "Intermediate",
+        30, "Intermediate",
         "Basic understanding of HTTP and backend development.",
         ["rest", "api", "backend", "web-development"],
     ),
@@ -64,7 +68,7 @@ SEED_SKILLS = [
         "FastAPI Backend Development", "Programming",
         "Build modern REST APIs with Python and FastAPI, including routing, "
         "request validation, dependency injection, and API documentation.",
-        35, "60 min", "Intermediate",
+        35, "Intermediate",
         "Basic Python knowledge and familiarity with HTTP APIs.",
         ["python", "fastapi", "backend", "api"],
     ),
@@ -72,7 +76,7 @@ SEED_SKILLS = [
         "SQL & Database Design Basics", "Programming",
         "Learn relational schema design, joins, indexes, and how to write "
         "efficient, correct SQL queries.",
-        30, "60 min", "Beginner",
+        25, "Beginner",
         "None — this is an introductory session.",
         ["sql", "databases", "backend"],
     ),
@@ -93,7 +97,7 @@ async def seed() -> None:
     async with AsyncSessionLocal() as db:
         # ---- Skills ----
         skill_ids_by_title: dict[str, uuid.UUID] = {}
-        for title, category, description, price, duration, level, requirements, tags in SEED_SKILLS:
+        for title, category, description, duration, level, requirements, tags in SEED_SKILLS:
             result = await db.execute(select(Skill).where(Skill.title == title))
             existing = result.scalar_one_or_none()
             if existing is not None:
@@ -106,7 +110,7 @@ async def seed() -> None:
                 category=category,
                 description=description,
                 image="https://ui-avatars.com/api/?name=" + title.replace(" ", "+"),
-                price=price,
+                price=SkillService.max_price_for_duration(duration),
                 duration=duration,
                 level=level,
                 requirements=requirements,

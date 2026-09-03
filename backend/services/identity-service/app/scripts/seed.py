@@ -31,9 +31,9 @@ if sys.platform == "win32":
 
 # (fixed id, user_name, email, password, role)
 SEED_USERS = [
-    (ADMIN_USER_ID, "admin_user", "admin@skillverse.dev", "AdminPass123", UserRole.ADMIN),
-    (ALICE_DEV_ID, "alice_dev", "alice@skillverse.dev", "AlicePass123", UserRole.USER),
-    (BOB_LEARNER_ID, "bob_learner", "bob@skillverse.dev", "BobPass123", UserRole.USER),
+    (ADMIN_USER_ID, "admin_user", "admin@skillverse.dev", "admin123456", UserRole.ADMIN),
+    (ALICE_DEV_ID, "alice_dev", "alice@skillverse.dev", "123456789", UserRole.USER),
+    (BOB_LEARNER_ID, "bob_learner", "bob@skillverse.dev", "123456789", UserRole.USER),
 ]
 
 SEED_PROFILES = {

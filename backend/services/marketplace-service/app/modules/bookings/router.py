@@ -5,10 +5,28 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user, CurrentUser
+from app.modules.bookings.models import BookingStatus
 from app.modules.bookings.schema import BookingCreate, BookingResponse, BookingListResponse, BookingStatusUpdate
 from app.modules.bookings.service import BookingService
 
 router = APIRouter(prefix="/bookings", tags=["Bookings"])
+
+@router.get("", response_model=BookingListResponse, status_code=status.HTTP_200_OK)
+async def list_all_bookings(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
+    status_filter: Optional[BookingStatus] = Query(None, alias="status"),
+    db: AsyncSession = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user),
+) -> BookingListResponse:
+    """Admin-only: every booking in the system, for the admin dashboard."""
+    return await BookingService.get_all_bookings(
+        db=db,
+        current_user=current_user,
+        skip=skip,
+        limit=limit,
+        status=status_filter,
+    )
 
 @router.get("/me", response_model=BookingListResponse, status_code=status.HTTP_200_OK)
 async def list_my_bookings(

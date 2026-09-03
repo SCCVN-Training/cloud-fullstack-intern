@@ -38,12 +38,17 @@ class SkillRepository:
         min_price: Optional[int] = None,
         max_price: Optional[int] = None,
         sort: Optional[str] = None,
+        instructor_id: Optional[uuid.UUID] = None,
     ) -> Tuple[int, List[Skill]]:
-        
+
         # Base query
         stmt = select(Skill)
         count_stmt = select(func.count()).select_from(Skill)
-        
+
+        if instructor_id is not None:
+            stmt = stmt.where(Skill.instructor_id == instructor_id)
+            count_stmt = count_stmt.where(Skill.instructor_id == instructor_id)
+
         # Apply filters
         if search:
             search_filter = or_(

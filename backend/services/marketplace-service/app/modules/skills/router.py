@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.core.dependencies import get_current_user, CurrentUser
 from app.core.rate_limit import limiter
-from app.modules.skills.schema import SkillCreate, SkillResponse, SkillListResponse
+from app.modules.skills.schema import SkillCreate, SkillUpdate, SkillResponse, SkillListResponse
 from app.modules.skills.service import SkillService
 
 router = APIRouter(prefix="/skills", tags=["Skills"])
@@ -30,6 +30,7 @@ async def list_skills(
     min_price: Optional[int] = Query(None, ge=0, description="Minimum price (inclusive)"),
     max_price: Optional[int] = Query(None, ge=0, description="Maximum price (inclusive)"),
     sort: Optional[SortOption] = Query("newest", description="Sort order"),
+    instructor_id: Optional[uuid.UUID] = Query(None, description="Filter to one instructor's skills"),
     db: AsyncSession = Depends(get_db),
 ) -> SkillListResponse:
     """Get a paginated, filterable, sortable list of available skills."""
@@ -39,15 +40,16 @@ async def list_skills(
             detail="min_price cannot be greater than max_price",
         )
     return await SkillService.get_all_skills(
-        db=db, 
-        skip=skip, 
-        limit=limit, 
-        search=search, 
+        db=db,
+        skip=skip,
+        limit=limit,
+        search=search,
         category=category,
         min_rating=min_rating,
         min_price=min_price,
         max_price=max_price,
         sort=sort,
+        instructor_id=instructor_id,
     )
 
 @router.get("/categories", response_model=List[str], status_code=status.HTTP_200_OK)
@@ -77,6 +79,16 @@ async def create_skill(
 ) -> SkillResponse:
     """Create a new skill offering."""
     return await SkillService.create_skill(db, skill, current_user)
+
+@router.patch("/{skill_id}", response_model=SkillResponse, status_code=status.HTTP_200_OK)
+async def update_skill(
+    skill_id: uuid.UUID,
+    skill: SkillUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: CurrentUser = Depends(get_current_user),
+) -> SkillResponse:
+    """Update an existing skill (owner or admin only)."""
+    return await SkillService.update_skill(db, skill_id, skill, current_user)
 
 @router.delete("/{skill_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_skill(

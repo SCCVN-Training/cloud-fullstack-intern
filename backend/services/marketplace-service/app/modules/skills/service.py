@@ -10,7 +10,43 @@ from app.core.dependencies import CurrentUser
 from app.clients.identity_client import IdentityClient
 
 class SkillService:
-    
+    # Pricing rule: a session tops out at 45 minutes / 100 coins, and
+    # price scales linearly with duration below that — a 30-min session
+    # can't be priced above ~67 coins, etc. Kept as one shared formula so
+    # create and update enforce (and the frontend mirrors) the same cap.
+    MAX_DURATION_MINUTES = 45
+    MAX_PRICE = 100
+
+    @classmethod
+    def max_price_for_duration(cls, duration_minutes: int) -> int:
+        return round(cls.MAX_PRICE * duration_minutes / cls.MAX_DURATION_MINUTES)
+
+    @classmethod
+    def _validate_duration(cls, duration_minutes: int) -> None:
+        if duration_minutes <= 0 or duration_minutes > cls.MAX_DURATION_MINUTES:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Session duration must be between 1 and {cls.MAX_DURATION_MINUTES} minutes",
+            )
+
+    # Resolves the price to actually store: if the client didn't supply
+    # one, it's computed from duration (the "system calculates it"
+    # requirement — price is derived, not client-authoritative); if they
+    # did, it's checked against the duration's cap rather than trusted
+    # outright.
+    @classmethod
+    def _resolve_price(cls, duration_minutes: int, provided_price: Optional[int]) -> int:
+        cap = cls.max_price_for_duration(duration_minutes)
+        if provided_price is None:
+            return cap
+        if provided_price < 0 or provided_price > cap:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=f"Price must be between 0 and {cap} coins for a {duration_minutes}-minute session",
+            )
+        return provided_price
+
+
     @classmethod
     async def _format_skill_response(cls, skill: Skill) -> SkillResponse:
         # Cross-service call: skill.instructor_id is just a UUID here (no
@@ -44,9 +80,10 @@ class SkillService:
         min_price: Optional[int] = None,
         max_price: Optional[int] = None,
         sort: Optional[str] = None,
+        instructor_id: Optional[uuid.UUID] = None,
     ) -> SkillListResponse:
         total, skills = await SkillRepository.get_all(
-            db, skip, limit, search, category, min_rating, min_price, max_price, sort
+            db, skip, limit, search, category, min_rating, min_price, max_price, sort, instructor_id
         )
         
         # Format all skills. Note: this fires one identity-service call
@@ -89,11 +126,48 @@ class SkillService:
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Not enough permissions"
             )
-            
-        new_skill = Skill(**skill_in.model_dump(exclude_unset=True))
+
+        skill_data = skill_in.model_dump(exclude_unset=True)
+        cls._validate_duration(skill_data["duration"])
+        provided_price = skill_data["price"] if "price" in skill_in.model_fields_set else None
+        skill_data["price"] = cls._resolve_price(skill_data["duration"], provided_price)
+
+        new_skill = Skill(**skill_data)
         created_skill = await SkillRepository.create(db, new_skill)
         return await cls._format_skill_response(created_skill)
-        
+
+    @classmethod
+    async def update_skill(
+        cls,
+        db: AsyncSession,
+        skill_id: uuid.UUID,
+        skill_in: SkillUpdate,
+        current_user: CurrentUser,
+    ) -> SkillResponse:
+        skill = await SkillRepository.get_by_id(db, skill_id)
+        if not skill:
+            raise HTTPException(status_code=404, detail="Skill not found")
+
+        if skill.instructor_id != current_user.id and current_user.role.value != "ADMIN":
+            raise HTTPException(status_code=403, detail="Not enough permissions")
+
+        update_data = skill_in.model_dump(exclude_unset=True)
+        new_duration = update_data.get("duration", skill.duration)
+        cls._validate_duration(new_duration)
+
+        # Recompute price whenever duration or price is part of this
+        # PATCH, so price never silently drifts out of sync with
+        # duration — but leave it untouched if this update doesn't touch
+        # either (e.g. only the title changed).
+        if "duration" in update_data or "price" in update_data:
+            update_data["price"] = cls._resolve_price(new_duration, update_data.get("price"))
+
+        for field, value in update_data.items():
+            setattr(skill, field, value)
+
+        updated_skill = await SkillRepository.update(db, skill)
+        return await cls._format_skill_response(updated_skill)
+
     @classmethod
     async def delete_skill(
         cls, 

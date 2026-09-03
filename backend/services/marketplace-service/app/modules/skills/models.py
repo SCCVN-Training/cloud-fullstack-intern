@@ -18,7 +18,7 @@ class Skill(Base):
     image: Mapped[str] = mapped_column(String(255), nullable=False)
     
     price: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    duration: Mapped[str] = mapped_column(String(50), nullable=False)
+    duration: Mapped[int] = mapped_column(Integer, nullable=False)
     level: Mapped[str] = mapped_column(String(50), nullable=False)
     requirements: Mapped[str] = mapped_column(Text, nullable=False)
     

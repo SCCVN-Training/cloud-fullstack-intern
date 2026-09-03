@@ -41,6 +41,14 @@ class BookingResponse(BaseModel):
     learner_name: Optional[str] = None
     mentor_name: Optional[str] = None
 
+    # Only set on the response to a status update that transitioned this
+    # booking to COMPLETED — "CREDITED" or "FAILED". None for every other
+    # status/transition. Booking completion itself never fails because of
+    # a wallet issue (see BookingService.update_status); this is purely
+    # visibility into whether the mentor's payout actually landed, since
+    # a FAILED credit needs manual follow-up (no automated retry here).
+    credit_status: Optional[str] = None
+
     model_config = ConfigDict(
         from_attributes=True,
         alias_generator=to_camel,
