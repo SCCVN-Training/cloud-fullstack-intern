@@ -87,6 +87,6 @@ def get_logger(name: str | None = None) -> logging.Logger:
         logger.addHandler(handler)
 
         # Prevent propagation to root logger
-        logger.propagate = False
+        logger.propagate = True
 
     return logger

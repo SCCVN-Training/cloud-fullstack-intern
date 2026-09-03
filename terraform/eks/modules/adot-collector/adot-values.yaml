@@ -14,8 +14,7 @@ config:
           endpoint: 0.0.0.0:4318
 
   exporters:
-    logging:
-      verbosity: detailed
+    debug: {}
     # Export Traces to AWS X-Ray
 
     awsxray:
@@ -34,10 +33,10 @@ config:
     pipelines:
       traces:
         receivers: [otlp]
-        exporters: [awsxray, logging]
+        exporters: [awsxray, debug]
       metrics:
         receivers: [otlp]
         exporters: [awsemf]
       logs:
         receivers: [otlp]
-        exporters: [awscloudwatchlogs, logging]
+        exporters: [awscloudwatchlogs, debug]
