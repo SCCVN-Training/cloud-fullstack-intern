@@ -3,7 +3,7 @@ import sys
 
 from shared.config import settings
 
-_IS_LOGGING_INSTRUMENTED = False
+# _IS_LOGGING_INSTRUMENTED = False
 
 
 class OTelFallbackFilter(logging.Filter):
@@ -37,7 +37,7 @@ def get_logger(name: str | None = None) -> logging.Logger:
         logger = get_logger(__name__)
         logger.info("Application started")
     """
-    global _IS_LOGGING_INSTRUMENTED
+    # global _IS_LOGGING_INSTRUMENTED
     logger = logging.getLogger(name or __name__)
 
     # Only configure if no handlers exist (prevent duplicate logs)
