@@ -91,6 +91,13 @@ if not settings.is_development:
         logger_provider.add_log_record_processor(BatchLogRecordProcessor(log_exporter))
         set_logger_provider(logger_provider)
 
+        from opentelemetry.instrumentation.logging import LoggingInstrumentor
+
+        LoggingInstrumentor().instrument(
+            set_logging_format=False,
+            logger_provider=logger_provider
+        )
+
         logger.info("✅ OTLP Log Exporter is ENABLED via MANUAL SDK setup.")
 
         FastAPIInstrumentor.instrument_app(app)

@@ -14,7 +14,10 @@ config:
           endpoint: 0.0.0.0:4318
 
   exporters:
+    logging:
+      verbosity: detailed
     # Export Traces to AWS X-Ray
+
     awsxray:
       region: ap-southeast-1
     # Export Metrics to AWS CloudWatch
@@ -31,10 +34,10 @@ config:
     pipelines:
       traces:
         receivers: [otlp]
-        exporters: [awsxray]
+        exporters: [awsxray, logging]
       metrics:
         receivers: [otlp]
         exporters: [awsemf]
       logs:
         receivers: [otlp]
-        exporters: [awscloudwatchlogs]
+        exporters: [awscloudwatchlogs, logging]
