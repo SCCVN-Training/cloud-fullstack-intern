@@ -3,7 +3,7 @@ import sys
 
 from shared.config import settings
 
-# _IS_LOGGING_INSTRUMENTED = False
+_IS_LOGGING_INSTRUMENTED = False
 
 
 class OTelFallbackFilter(logging.Filter):
@@ -37,7 +37,7 @@ def get_logger(name: str | None = None) -> logging.Logger:
         logger = get_logger(__name__)
         logger.info("Application started")
     """
-    # global _IS_LOGGING_INSTRUMENTED
+    global _IS_LOGGING_INSTRUMENTED
     logger = logging.getLogger(name or __name__)
 
     # Only configure if no handlers exist (prevent duplicate logs)
@@ -64,17 +64,17 @@ def get_logger(name: str | None = None) -> logging.Logger:
             )
 
             # Instrument the built-in logging module globally
-            # if not _IS_LOGGING_INSTRUMENTED:
-            #     try:
-            #         from opentelemetry.instrumentation.logging import (
-            #             LoggingInstrumentor,
-            #         )
+            if not _IS_LOGGING_INSTRUMENTED:
+                try:
+                    from opentelemetry.instrumentation.logging import (
+                        LoggingInstrumentor,
+                    )
 
-            #         LoggingInstrumentor().instrument(set_logging_format=True)
-            #         _IS_LOGGING_INSTRUMENTED = True
-            #     except ImportError:
-            #         # Fallback just in case dependencies are missing
-            #         pass
+                    LoggingInstrumentor().instrument(set_logging_format=False)
+                    _IS_LOGGING_INSTRUMENTED = True
+                except ImportError:
+                    # Fallback just in case dependencies are missing
+                    pass
 
         handler.setFormatter(formatter)
         logger.addHandler(handler)
