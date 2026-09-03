@@ -94,8 +94,12 @@ app = FastAPI(
 import os
 
 from opentelemetry import trace
+from opentelemetry._logs import set_logger_provider
+from opentelemetry.exporter.otlp.proto.grpc._log_exporter import OTLPLogExporter
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.sdk._logs import LoggerProvider
+from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -118,6 +122,15 @@ if not settings.is_development:
 
         provider.add_span_processor(BatchSpanProcessor(exporter))
         trace.set_tracer_provider(provider)
+
+        logger_provider = LoggerProvider(resource=resource)
+
+        log_exporter = OTLPLogExporter(endpoint=otlp_endpoint, insecure=True)
+
+        logger_provider.add_log_record_processor(BatchLogRecordProcessor(log_exporter))
+        set_logger_provider(logger_provider)
+
+        logger.info("✅ OTLP Log Exporter is ENABLED via MANUAL SDK setup.")
 
         FastAPIInstrumentor.instrument_app(app)
         logger.info("✅ OpenTelemetry is ENABLED via MANUAL SDK setup (CLI bypassed).")

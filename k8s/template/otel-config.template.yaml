@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-shared-config
+  namespace: default
+data:
+  # The endpoint now correctly points to the newly created adot-collector service
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://adot-collector.amazon-cloudwatch.svc.cluster.local:4317"
+  OTEL_TRACES_EXPORTER: "otlp"
+  OTEL_METRICS_EXPORTER: "otlp"
+  OTEL_LOGS_EXPORTER: "otlp"
+  OTEL_PYTHON_LOG_CORRELATION: "true"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
