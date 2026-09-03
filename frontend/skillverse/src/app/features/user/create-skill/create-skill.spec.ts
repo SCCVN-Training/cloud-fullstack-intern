@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
@@ -9,6 +10,14 @@ import { AuthService } from '../../../core/services/auth/auth';
 import { SkillService } from '../../../core/services/skill/skill.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { Skill } from '../../../core/models/skill.model';
+
+@Component({ template: '', standalone: true })
+class BlankComponent {}
+
+// submit() navigates here for real via router.navigate — give the router
+// something to match so the navigation promise resolves instead of
+// rejecting with an unhandled "Cannot match any routes" error.
+const testRoutes = [{ path: 'user/my-skills', component: BlankComponent }];
 
 const mockSkill: Skill = {
   id: 'skill-1',
@@ -55,7 +64,7 @@ describe('CreateSkill', () => {
     await TestBed.configureTestingModule({
       imports: [CreateSkill],
       providers: [
-        provideRouter([]),
+        provideRouter(testRoutes),
         { provide: SkillService, useValue: skillService },
         { provide: ToastService, useValue: toastService },
         { provide: AuthService, useValue: { currentUser: () => ({ id: 'user-1' }) } },
@@ -301,7 +310,7 @@ describe('CreateSkill in edit mode', () => {
     await TestBed.configureTestingModule({
       imports: [CreateSkill],
       providers: [
-        provideRouter([]),
+        provideRouter(testRoutes),
         { provide: SkillService, useValue: skillService },
         { provide: ToastService, useValue: { showSuccess: vi.fn(), showError: vi.fn() } },
         { provide: AuthService, useValue: { currentUser: () => ({ id: 'user-1' }) } },

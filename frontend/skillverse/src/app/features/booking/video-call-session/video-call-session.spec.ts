@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -7,6 +8,17 @@ import { VideoCallSession } from './video-call-session';
 import { AuthService } from '../../../core/services/auth/auth';
 import { BookingService } from '../../../core/services/booking/booking.service';
 import { Booking } from '../../../core/models/booking.model';
+
+@Component({ template: '', standalone: true })
+class BlankComponent {}
+
+// endSession()/the status poll navigate here for real via router.navigate —
+// give the router something to match so the navigation promise resolves
+// instead of rejecting with an unhandled "Cannot match any routes" error.
+const testRoutes = [
+  { path: 'user/my-bookings', component: BlankComponent },
+  { path: 'session-review/:id', component: BlankComponent },
+];
 
 const mockBooking: Booking = {
   id: 'booking-1',
@@ -38,7 +50,7 @@ describe('VideoCallSession', () => {
     await TestBed.configureTestingModule({
       imports: [VideoCallSession],
       providers: [
-        provideRouter([]),
+        provideRouter(testRoutes),
         { provide: BookingService, useValue: bookingService },
         { provide: AuthService, useValue: { currentUser: () => ({ id: currentUserId }) } },
         {

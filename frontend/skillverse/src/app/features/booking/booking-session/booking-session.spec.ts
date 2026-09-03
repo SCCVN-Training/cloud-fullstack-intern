@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -8,6 +9,14 @@ import { SkillService } from '../../../core/services/skill/skill.service';
 import { BookingService } from '../../../core/services/booking/booking.service';
 import { Skill } from '../../../core/models/skill.model';
 import { Booking } from '../../../core/models/booking.model';
+
+@Component({ template: '', standalone: true })
+class BlankComponent {}
+
+// confirmBooking() navigates here for real via router.navigate — give the
+// router something to match so the navigation promise resolves instead of
+// rejecting with an unhandled "Cannot match any routes" error.
+const testRoutes = [{ path: 'user/my-bookings', component: BlankComponent }];
 
 const mockSkill: Skill = {
   id: 'react-architecture-patterns',
@@ -61,7 +70,7 @@ describe('BookingSession', () => {
     await TestBed.configureTestingModule({
       imports: [BookingSession],
       providers: [
-        provideRouter([]),
+        provideRouter(testRoutes),
         { provide: SkillService, useValue: skillService },
         { provide: BookingService, useValue: bookingService },
         {
@@ -116,7 +125,7 @@ describe('BookingSession', () => {
     await TestBed.configureTestingModule({
       imports: [BookingSession],
       providers: [
-        provideRouter([]),
+        provideRouter(testRoutes),
         { provide: SkillService, useValue: skillService },
         { provide: BookingService, useValue: bookingService },
         {
