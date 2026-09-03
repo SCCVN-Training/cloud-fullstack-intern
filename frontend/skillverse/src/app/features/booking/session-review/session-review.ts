@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
-interface Reviewee {
-  name: string;
-  avatar: string;
-}
+import { BookingService } from '../../../core/services/booking/booking.service';
+import { ReviewService } from '../../../core/services/review/review.service';
+import { Booking } from '../../../core/models/booking.model';
 
 @Component({
   selector: 'app-session-review',
@@ -14,24 +14,63 @@ interface Reviewee {
   templateUrl: './session-review.html',
   styleUrl: './session-review.scss',
 })
-export class SessionReview {
+export class SessionReview implements OnInit {
   readonly stars = [1, 2, 3, 4, 5];
 
-  reviewee: Reviewee = {
-    name: 'Sarah',
-    avatar:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDZbkCKYP_HEY4Q5mH-uAMmIi4VEZA2uMcldK3MN5QCyvnT9NCEWU0bJAFwrHKJN3E0GDh1YSot5ESdw6Mdmy3R0ln6Iyn1hQlk2mYihj--tOhSVSu2J2K5GiZjH9SeTro7KB_cQzU1MmiLcugasJ6f5GfcTnS2NlANnvt3YEu8-KAub_FqH8WHVklLCf73vsMkMiaOaF8PpaCjIwHK6DMJthActor6VFnWxEJUsJmQlsNxeD9crQlj6Vblpat8iaNZ1JZkCBDNveks',
-  };
+  booking = signal<Booking | null>(null);
+  isLoading = signal(true);
+  loadError = signal('');
+
+  // Forwarded via router navigation state from video-call-session's
+  // endSession() — creditStatus isn't persisted on the booking, so a
+  // fresh GET /bookings/{id} here (below) can't recover it. history.state
+  // (not Router.getCurrentNavigation(), which is only populated during
+  // the navigation itself, not by the time ngOnInit runs) is how Angular
+  // exposes it to the destination component.
+  creditFailed = signal(false);
 
   overallRating = 0;
   knowledgeRating = 0;
   communicationRating = 0;
   videoAudioRating = 0;
-
   feedback = '';
 
+  isSubmitting = signal(false);
+  submitError = signal('');
+  submitted = signal(false);
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private bookingService: BookingService,
+    private reviewService: ReviewService,
+  ) {}
+
+  ngOnInit(): void {
+    this.creditFailed.set(!!history.state?.['creditFailed']);
+
+    const bookingId = this.route.snapshot.paramMap.get('bookingId');
+    if (!bookingId) {
+      this.loadError.set('No session specified to review.');
+      this.isLoading.set(false);
+      return;
+    }
+
+    this.bookingService.getBookingById(bookingId).subscribe({
+      next: (data) => {
+        this.booking.set(data);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load booking for review:', err);
+        this.loadError.set('Unable to load this session. Please try again.');
+        this.isLoading.set(false);
+      },
+    });
+  }
+
   get canSubmit(): boolean {
-    return this.overallRating > 0;
+    return this.overallRating > 0 && !this.isSubmitting();
   }
 
   setOverallRating(rating: number): void {
@@ -51,19 +90,38 @@ export class SessionReview {
   }
 
   submitReview(): void {
-    if (!this.canSubmit) {
+    const booking = this.booking();
+    if (!booking || !this.canSubmit) {
       return;
     }
 
-    const review = {
-      reviewee: this.reviewee.name,
-      overallRating: this.overallRating,
-      knowledgeRating: this.knowledgeRating,
-      communicationRating: this.communicationRating,
-      videoAudioRating: this.videoAudioRating,
-      feedback: this.feedback.trim(),
-    };
+    this.isSubmitting.set(true);
+    this.submitError.set('');
 
-    console.log('Review submitted:', review);
+    // Only the learner may review, and only once the booking is
+    // COMPLETED — enforced server-side; a violation surfaces here as a
+    // real error, not a silent no-op.
+    this.reviewService
+      .submitReview(booking.id, {
+        rating: this.overallRating,
+        knowledge_rating: this.knowledgeRating,
+        communication_rating: this.communicationRating,
+        video_audio_rating: this.videoAudioRating,
+        feedback: this.feedback.trim() || null,
+      })
+      .subscribe({
+        next: () => {
+          this.isSubmitting.set(false);
+          this.submitted.set(true);
+          setTimeout(() => this.router.navigate(['/user/my-bookings']), 1500);
+        },
+        error: (err) => {
+          console.error('Failed to submit review:', err);
+          this.isSubmitting.set(false);
+          this.submitError.set(
+            err?.error?.detail || 'Could not submit your review. Please try again.',
+          );
+        },
+      });
   }
 }

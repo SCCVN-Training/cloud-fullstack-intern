@@ -1,7 +1,5 @@
 <div class="my-skills-page flex-col min-h-screen">
-  <button type="button" class="btn-secondary" routerLink="/homepage">
-    Back
-  </button>
+  <button type="button" class="btn-secondary" routerLink="/homepage">Back</button>
   <header class="header-sticky flex justify-between items-end pb-sm">
     <div>
       <h1 class="text-headline-lg text-on-surface">My Skills</h1>
@@ -16,7 +14,18 @@
   </header>
 
   <div class="content-canvas flex-1 flex flex-col gap-lg">
-    <div class="mentors-grid">
+    <p *ngIf="isLoading()" class="text-center text-body-md text-on-surface-variant">
+      Loading your skills…
+    </p>
+
+    <p
+      *ngIf="!isLoading() && skills.length === 0"
+      class="text-center text-body-md text-on-surface-variant"
+    >
+      You haven't published any skills yet.
+    </p>
+
+    <div class="mentors-grid" *ngIf="!isLoading()">
       <article *ngFor="let skill of skills" class="glass-card skill-card group">
         <div class="decorative-blob" [ngClass]="skill.tone + '-blob'"></div>
 
@@ -27,9 +36,7 @@
           >
             <span class="material-symbols-outlined">{{ skill.icon }}</span>
           </div>
-          <span class="status-badge text-label-sm px-sm py-xs rounded-full">
-            {{ skill.status }}
-          </span>
+          <span class="status-badge text-label-sm px-sm py-xs rounded-full"> Active </span>
         </div>
 
         <div class="card-body z-10">
@@ -41,30 +48,36 @@
 
         <div class="stat-grid mt-auto z-10 gap-sm">
           <div class="stat-box p-sm flex flex-col gap-xs">
-            <span class="material-symbols-outlined text-tertiary">group</span>
+            <span class="material-symbols-outlined text-tertiary">star</span>
             <div>
-              <span class="text-label-md text-on-surface block">{{ skill.students }}</span>
-              <span class="text-label-sm text-on-surface-variant">Students</span>
+              <span class="text-label-md text-on-surface block">
+                {{ skill.rating | number: '1.1-1' }} ({{ skill.reviewCount }})
+              </span>
+              <span class="text-label-sm text-on-surface-variant"> Rating </span>
             </div>
           </div>
           <div class="stat-box p-sm flex flex-col gap-xs">
             <span class="material-symbols-outlined text-secondary">toll</span>
             <div>
-              <span class="text-label-md text-on-surface block">{{ skill.coins | number }}</span>
-              <span class="text-label-sm text-on-surface-variant">Coins Earned</span>
+              <span class="text-label-md text-on-surface block">{{ skill.price }}</span>
+              <span class="text-label-sm text-on-surface-variant"> Coins / Session </span>
             </div>
           </div>
         </div>
 
         <div class="actions flex gap-sm mt-md z-10">
-          <button
-            type="button"
+          <a
+            [routerLink]="['/user/my-skills', skill.id, 'edit']"
             class="btn-edit text-on-surface text-label-md py-sm flex-1 flex justify-center items-center gap-xs rounded-lg"
           >
             <span class="material-symbols-outlined" style="font-size: 18px">edit</span>
             Edit
-          </button>
-          <button type="button" class="btn-delete text-error p-sm flex-none rounded-lg">
+          </a>
+          <button
+            type="button"
+            class="btn-delete text-error p-sm flex-none rounded-lg"
+            (click)="deleteSkill(skill)"
+          >
             <span class="material-symbols-outlined" style="font-size: 20px">delete</span>
           </button>
         </div>

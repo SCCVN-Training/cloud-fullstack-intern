@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { BookingCard } from './booking-card';
 import { Skill } from '../../../../../core/models/skill.model';
@@ -10,7 +11,7 @@ const mockSkill: Skill = {
   description: 'Learn modern frontend architecture.',
   image: '/assets/images/skill-react.png',
   price: 120,
-  duration: '2h',
+  duration: 45,
   level: 'Intermediate',
   requirements: 'Basic React knowledge',
   rating: 4.8,
@@ -33,6 +34,7 @@ describe('BookingCard', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [BookingCard],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BookingCard);
@@ -54,8 +56,15 @@ describe('BookingCard', () => {
     expect(compiled.querySelector('.price-value')?.textContent).toContain(
       mockSkill.price.toString(),
     );
-    expect(detailVals[0]).toContain(mockSkill.duration);
+    expect(detailVals[0]).toContain(String(mockSkill.duration));
     expect(detailVals[1]).toContain(mockSkill.level);
     expect(detailVals[2]).toContain(mockSkill.requirements);
+  });
+
+  it("should link the Book Session button to this skill's booking page", () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const bookButton = compiled.querySelector('.btn-book') as HTMLElement;
+
+    expect(bookButton.getAttribute('href')).toBe(`/booking/${mockSkill.id}`);
   });
 });

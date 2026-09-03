@@ -21,7 +21,7 @@
         <p class="detail-name">Duration</p>
 
         <p class="detail-val">
-          {{ skill.duration }}
+          {{ skill.duration }} min
         </p>
       </div>
     </div>
@@ -55,9 +55,8 @@
     </div>
   </div>
 
-  <button class="btn-book">
+  <a class="btn-book" [routerLink]="['/booking', skill.id]">
     Book Session
-
     <span class="material-symbols-outlined"> calendar_month </span>
-  </button>
+  </a>
 </div>

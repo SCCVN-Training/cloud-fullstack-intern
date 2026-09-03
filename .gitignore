@@ -12,9 +12,6 @@
 /package-lock.json
 /yarn.lock
 
-# Environment files
-/.env
-
 # Angular CLI and build artefacts
 /.angular-cli.json
 /.ng/
@@ -26,3 +23,48 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# --- Python / FastAPI backend ---
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# --- Environment files (root AND every service's own .env) ---
+.env
+**/.env
+!.env.example
+!**/.env.example
+
+# --- Terraform ---
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# --- Secrets: SSH keys and kubeconfig — never commit these ---
+*.pem
+*.key
+kubeconfig
+*kubeconfig*
+skillverse-config
+
+# --- AWS local config (should never live in the repo anyway) ---
+.aws/
+
+# --- OS / editor noise ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

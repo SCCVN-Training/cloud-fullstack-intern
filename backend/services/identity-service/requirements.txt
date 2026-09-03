@@ -1,0 +1,26 @@
+fastapi
+uvicorn[standard]
+sqlalchemy>=2.0
+# Your Neon DATABASE_URL uses the "postgresql+psycopg_async" dialect
+# (psycopg v3's async driver) — NOT asyncpg. SQLAlchemy picks the
+# driver from the URL prefix, so this must match exactly what's in
+# .env or you'll get a ModuleNotFoundError at startup.
+psycopg[binary,pool]
+aiosqlite
+pydantic
+pydantic[email]
+pydantic-settings
+python-jose[cryptography]
+passlib[bcrypt]
+# Pinned: newer bcrypt (4.1+) breaks passlib's version probe (harmless
+# warning becomes a hard error in some environments) — verified while
+# testing this split. Revisit this pin next time passlib is updated.
+bcrypt==4.0.1
+python-multipart
+python-dotenv
+slowapi
+pytest
+pytest-asyncio
+httpx
+boto3
+moto[s3,secretsmanager]

@@ -70,6 +70,7 @@ export interface UserUpdateRequest {
 }
 
 export interface ProfileUpdateRequest {
+  user_name?: string;
   bio?: string;
   avatar_url?: string;
   age?: number;

@@ -12,19 +12,25 @@
   z-index: 30;
 }
 
+/* Smaller Create New Skill button */
 .btn-create {
   background-color: var(--color-primary);
   color: var(--color-on-primary);
   font-weight: 600;
-  font-size: 14px;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-full);
+  font-size: 13px;
+  padding: 8px 14px;
+  border-radius: 12px;
   transition:
     transform 0.2s,
     background-color 0.2s;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  gap: 6px;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
 
   &:hover {
     transform: translateY(-1px);
@@ -34,20 +40,22 @@
 
 .content-canvas {
   padding: var(--spacing-xl);
-  max-width: var(--container-max);
+  max-width: 1500px;
   margin: 0 auto;
   width: 100%;
 }
 
+/* Wider cards */
 .mentors-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-lg);
 
-  @media (min-width: 1024px) {
+  @media (min-width: 900px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  @media (min-width: 1280px) {
+
+  @media (min-width: 1300px) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
@@ -92,6 +100,7 @@
 .primary-blob {
   background-color: var(--color-primary-container);
 }
+
 .tertiary-blob {
   background-color: var(--color-tertiary-container);
 }
@@ -112,6 +121,7 @@
 .primary-icon {
   color: var(--color-primary);
 }
+
 .tertiary-icon {
   color: var(--color-tertiary);
 }
@@ -127,45 +137,61 @@
   margin-top: var(--spacing-md);
 }
 
+/* Wider Students / Coins boxes */
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-md);
+  gap: 10px;
   margin-top: var(--spacing-lg);
+  width: 100%;
 }
 
 .stat-box {
   background-color: var(--color-surface-container-high);
-  border-radius: var(--radius-lg);
+  border-radius: 16px;
   border: 1px solid rgba(218, 192, 201, 0.3);
-  min-height: 100px;
+  min-height: 90px;
+  padding: 14px 16px;
+  width: 100%;
 }
 
+/* Actions */
 .actions {
   margin-top: auto;
   z-index: 10;
+  display: flex;
+  gap: 10px;
 }
 
+/* Rounded Edit button */
 .btn-edit {
   background-color: rgba(248, 249, 255, 0.9);
   border: 1px solid rgba(218, 192, 201, 0.4);
   color: var(--color-on-surface);
+  border-radius: 12px;
   transition:
     background-color 0.2s ease,
     transform 0.2s ease;
 
   &:hover {
     background-color: var(--color-surface-variant);
+    transform: translateY(-1px);
   }
 }
 
+/* Rounded Delete button */
 .btn-delete {
   background-color: rgba(255, 235, 238, 0.95);
   border: 1px solid rgba(255, 118, 117, 0.2);
   color: var(--color-error);
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 40px;
+  min-width: 40px;
+  height: 35px;
+  padding: 0;
 
   &:hover {
     background-color: rgba(255, 218, 218, 0.9);

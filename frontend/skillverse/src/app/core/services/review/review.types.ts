@@ -19,3 +19,11 @@ export interface ReviewItemResponse {
   feedback: string | null;
   created_at: string;
 }
+
+// GET /skills/{skillId}/reviews — same ReviewSummary shape the backend
+// uses for GET /users/{id}/reviews (no camelCase alias on this schema,
+// unlike SkillResponse/BookingResponse, so these keys stay snake_case).
+export interface ReviewSummaryResponse {
+  total: number;
+  items: ReviewItemResponse[];
+}

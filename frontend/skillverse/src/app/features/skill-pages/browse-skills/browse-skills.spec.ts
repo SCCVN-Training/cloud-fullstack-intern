@@ -15,7 +15,7 @@ const mockSkills: Skill[] = [
     description: 'Learn modern frontend architecture.',
     image: '/assets/images/skill-react.png',
     price: 120,
-    duration: '2h',
+    duration: 45,
     level: 'Intermediate',
     requirements: 'Basic React knowledge',
     rating: 4.8,

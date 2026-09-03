@@ -1,29 +1,90 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { describe, beforeEach, it, expect } from 'vitest';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideRouter } from '@angular/router';
+import { of, throwError } from 'rxjs';
+import { vi, describe, beforeEach, it, expect } from 'vitest';
 
 import { MySkills } from './my-skills';
+import { AuthService } from '../../../core/services/auth/auth';
+import { SkillService } from '../../../core/services/skill/skill.service';
+import { ToastService } from '../../../shared/services/toast.service';
+import { Skill } from '../../../core/models/skill.model';
+
+function makeSkill(overrides: Partial<Skill>): Skill {
+  return {
+    id: 'skill-1',
+    title: 'Advanced Watercolor Techniques',
+    category: 'design',
+    description: 'Master fluid dynamics and color blending for stunning landscapes.',
+    image: 'http://x.com/i.jpg',
+    price: 89,
+    duration: 40,
+    level: 'intermediate',
+    requirements: 'None',
+    rating: 4.7,
+    reviewCount: 42,
+    instructorName: 'Alex',
+    instructorTitle: 'Mentor',
+    instructorBio: 'Bio',
+    instructorAvatar: 'http://x.com/avatar.jpg',
+    availableSlots: 5,
+    language: 'English',
+    tags: [],
+    featured: false,
+    createdAt: '2026-01-01',
+    ...overrides,
+  };
+}
+
+const mockSkills: Skill[] = [
+  makeSkill({ id: 'skill-1', title: 'Advanced Watercolor Techniques' }),
+  makeSkill({
+    id: 'skill-2',
+    title: 'Intro to Python for Data Science',
+    description: 'Learn the basics of Pandas, NumPy, and data visualization.',
+  }),
+];
 
 describe('MySkills', () => {
   let component: MySkills;
   let fixture: ComponentFixture<MySkills>;
+  let skillService: { getSkills: ReturnType<typeof vi.fn>; deleteSkill: ReturnType<typeof vi.fn> };
+  let toastService: { showSuccess: ReturnType<typeof vi.fn>; showError: ReturnType<typeof vi.fn> };
 
-  beforeEach(async () => {
+  async function setup() {
+    skillService = {
+      getSkills: vi.fn().mockReturnValue(of({ total: mockSkills.length, skills: mockSkills })),
+      deleteSkill: vi.fn().mockReturnValue(of(undefined)),
+    };
+    toastService = { showSuccess: vi.fn(), showError: vi.fn() };
+
     await TestBed.configureTestingModule({
-      imports: [
-        MySkills, // Standalone component
-        RouterTestingModule, // For routerLink
+      imports: [MySkills],
+      providers: [
+        provideRouter([]),
+        { provide: SkillService, useValue: skillService },
+        { provide: ToastService, useValue: toastService },
+        { provide: AuthService, useValue: { currentUser: () => ({ id: 'user-1' }) } },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MySkills);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  }
+
+  beforeEach(async () => {
+    await setup();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('fetches skills scoped to the current instructor', () => {
+    expect(skillService.getSkills).toHaveBeenCalledWith(
+      expect.objectContaining({ instructorId: 'user-1' }),
+    );
   });
 
   it('should render page title', () => {
@@ -36,7 +97,7 @@ describe('MySkills', () => {
     const subtitleElement = fixture.debugElement.query(By.css('.header-sticky p'));
     expect(subtitleElement).toBeTruthy();
     expect(subtitleElement.nativeElement.textContent).toContain(
-      'Manage the skills you teach and track your impact.'
+      'Manage the skills you teach and track your impact.',
     );
   });
 
@@ -46,173 +107,107 @@ describe('MySkills', () => {
     expect(buttonElement.nativeElement.textContent).toContain('Create New Skill');
   });
 
-  it('should render Create New Skill button with icon', () => {
-    const iconElement = fixture.debugElement.query(By.css('.btn-create .material-symbols-outlined'));
-    expect(iconElement).toBeTruthy();
-    expect(iconElement.nativeElement.textContent).toContain('add_circle');
-  });
-
-  it('should initialize with 2 skills', () => {
-    expect(component.skills.length).toBe(2);
-  });
-
-  it('should render one card for each skill', () => {
-    const cards = fixture.debugElement.queryAll(By.css('.skill-card'));
-    expect(cards.length).toBe(component.skills.length);
-  });
-
-  it('should display first skill title', () => {
-    const titles = fixture.debugElement.queryAll(By.css('.skill-card h3'));
-    expect(titles.length).toBe(2);
-    expect(titles[0].nativeElement.textContent).toContain('Advanced Watercolor Techniques');
-  });
-
-  it('should display second skill title', () => {
-    const titles = fixture.debugElement.queryAll(By.css('.skill-card h3'));
-    expect(titles[1].nativeElement.textContent).toContain('Intro to Python for Data Science');
-  });
-
-  it('should display first skill description', () => {
-    const descriptions = fixture.debugElement.queryAll(By.css('.skill-card p'));
-    expect(descriptions.length).toBe(2);
-    expect(descriptions[0].nativeElement.textContent).toContain(
-      'Master fluid dynamics and color blending for stunning landscapes.'
-    );
-  });
-
-  it('should display second skill description', () => {
-    const descriptions = fixture.debugElement.queryAll(By.css('.skill-card p'));
-    expect(descriptions[1].nativeElement.textContent).toContain(
-      'Learn the basics of Pandas, NumPy, and data visualization.'
-    );
-  });
-
-  it('should display students count for each skill', () => {
-    const textContent = fixture.nativeElement.textContent;
-    expect(textContent).toContain('42');
-    expect(textContent).toContain('Students');
-    expect(textContent).toContain('18');
-  });
-
-  it('should display coins earned for each skill', () => {
-    const textContent = fixture.nativeElement.textContent;
-    expect(textContent).toContain('1,250');
-    expect(textContent).toContain('Coins Earned');
-    expect(textContent).toContain('890');
-  });
-
-  it('should display status badges for each skill', () => {
-    const badges = fixture.debugElement.queryAll(By.css('.status-badge'));
-    expect(badges.length).toBe(component.skills.length);
-    badges.forEach(badge => {
-      expect(badge.nativeElement.textContent).toContain('Active');
-    });
-  });
-
-  it('should display skill icons', () => {
-    const icons = fixture.debugElement.queryAll(By.css('.icon-container .material-symbols-outlined'));
-    expect(icons.length).toBe(component.skills.length);
-    expect(icons[0].nativeElement.textContent).toContain('brush');
-    expect(icons[1].nativeElement.textContent).toContain('code');
-  });
-
-  it('should apply correct tone class to icon container', () => {
-    const iconContainers = fixture.debugElement.queryAll(By.css('.icon-container'));
-    expect(iconContainers.length).toBe(2);
-    expect(iconContainers[0].classes['primary-icon']).toBeTruthy();
-    expect(iconContainers[1].classes['tertiary-icon']).toBeTruthy();
-  });
-
-  it('should apply correct blob class to decorative blob', () => {
-    const blobs = fixture.debugElement.queryAll(By.css('.decorative-blob'));
-    expect(blobs.length).toBe(2);
-    expect(blobs[0].classes['primary-blob']).toBeTruthy();
-    expect(blobs[1].classes['tertiary-blob']).toBeTruthy();
-  });
-
-  it('should render Edit button for each skill', () => {
-    const editButtons = fixture.debugElement.queryAll(By.css('.btn-edit'));
-    expect(editButtons.length).toBe(component.skills.length);
-    editButtons.forEach(button => {
-      expect(button.nativeElement.textContent).toContain('Edit');
-    });
-  });
-
-  it('should render Edit button with edit icon', () => {
-    const editIcons = fixture.debugElement.queryAll(By.css('.btn-edit .material-symbols-outlined'));
-    expect(editIcons.length).toBe(component.skills.length);
-    editIcons.forEach(icon => {
-      expect(icon.nativeElement.textContent).toContain('edit');
-    });
-  });
-
-  it('should render Delete button for each skill', () => {
-    const deleteButtons = fixture.debugElement.queryAll(By.css('.btn-delete'));
-    expect(deleteButtons.length).toBe(component.skills.length);
-  });
-
-  it('should render Delete button with delete icon', () => {
-    const deleteIcons = fixture.debugElement.queryAll(By.css('.btn-delete .material-symbols-outlined'));
-    expect(deleteIcons.length).toBe(component.skills.length);
-    deleteIcons.forEach(icon => {
-      expect(icon.nativeElement.textContent).toContain('delete');
-    });
-  });
-
-  it('should display stat boxes with correct structure', () => {
-    const statBoxes = fixture.debugElement.queryAll(By.css('.stat-box'));
-    expect(statBoxes.length).toBe(4); // 2 skills * 2 stats each
-  });
-
-  it('should display stat box icons correctly', () => {
-    const statIcons = fixture.debugElement.queryAll(By.css('.stat-box .material-symbols-outlined'));
-    expect(statIcons.length).toBe(4);
-    expect(statIcons[0].nativeElement.textContent).toContain('group');
-    expect(statIcons[1].nativeElement.textContent).toContain('toll');
-    expect(statIcons[2].nativeElement.textContent).toContain('group');
-    expect(statIcons[3].nativeElement.textContent).toContain('toll');
-  });
-
-  it('should format coins with number pipe', () => {
-    const textContent = fixture.nativeElement.textContent;
-    expect(textContent).toContain('1,250');
-    expect(textContent).toContain('890');
-  });
-
   it('should have routerLink on create button', () => {
     const createLink = fixture.debugElement.query(By.css('.btn-create'));
     expect(createLink.attributes['routerLink']).toBe('/user/my-skills/create');
   });
 
+  it('should load 2 skills from the real fetch', () => {
+    expect(component.skills.length).toBe(2);
+  });
+
+  it('should render one card for each fetched skill', () => {
+    const cards = fixture.debugElement.queryAll(By.css('.skill-card'));
+    expect(cards.length).toBe(2);
+  });
+
+  it('should display each skill title', () => {
+    const titles = fixture.debugElement.queryAll(By.css('.skill-card h3'));
+    expect(titles[0].nativeElement.textContent).toContain('Advanced Watercolor Techniques');
+    expect(titles[1].nativeElement.textContent).toContain('Intro to Python for Data Science');
+  });
+
+  it('should display each skill description', () => {
+    const descriptions = fixture.debugElement.queryAll(By.css('.skill-card p'));
+    expect(descriptions[0].nativeElement.textContent).toContain(
+      'Master fluid dynamics and color blending for stunning landscapes.',
+    );
+  });
+
+  it('should display price per session', () => {
+    const textContent = fixture.nativeElement.textContent;
+    expect(textContent).toContain('89');
+    expect(textContent).toContain('Coins / Session');
+  });
+
+  it('should render an Edit link for each skill', () => {
+    const editLinks = fixture.debugElement.queryAll(By.css('.btn-edit'));
+    expect(editLinks.length).toBe(2);
+    editLinks.forEach((link) => expect(link.nativeElement.textContent).toContain('Edit'));
+  });
+
+  it('should render Delete button for each skill', () => {
+    const deleteButtons = fixture.debugElement.queryAll(By.css('.btn-delete'));
+    expect(deleteButtons.length).toBe(2);
+  });
+
+  it('deletes a skill after confirmation and removes it from the list', () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    component.deleteSkill(component.skills[0]);
+
+    expect(skillService.deleteSkill).toHaveBeenCalledWith('skill-1');
+    expect(component.skills.length).toBe(1);
+    expect(toastService.showSuccess).toHaveBeenCalledWith('Skill deleted.');
+  });
+
+  it('does not delete when the user cancels the confirmation', () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+    component.deleteSkill(component.skills[0]);
+
+    expect(skillService.deleteSkill).not.toHaveBeenCalled();
+    expect(component.skills.length).toBe(2);
+  });
+
+  it('shows an error toast if deletion fails', () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    skillService.deleteSkill.mockReturnValue(throwError(() => ({ error: { detail: 'Nope' } })));
+
+    component.deleteSkill(component.skills[0]);
+
+    expect(toastService.showError).toHaveBeenCalledWith('Nope');
+    expect(component.skills.length).toBe(2);
+  });
+
   it('should display glass-card class on skill cards', () => {
     const cards = fixture.debugElement.queryAll(By.css('.skill-card'));
-    cards.forEach(card => {
+    cards.forEach((card) => {
       expect(card.classes['glass-card']).toBeTruthy();
     });
   });
+});
 
-  it('should have correct card structure', () => {
-    const firstCard = fixture.debugElement.queryAll(By.css('.skill-card'))[0];
-    expect(firstCard).toBeTruthy();
-    
-    // Kiểm tra decorative blob
-    const blob = firstCard.query(By.css('.decorative-blob'));
-    expect(blob).toBeTruthy();
-    
-    // Kiểm tra card top section
-    const cardTop = firstCard.query(By.css('.card-top'));
-    expect(cardTop).toBeTruthy();
-    
-    // Kiểm tra card body
-    const cardBody = firstCard.query(By.css('.card-body'));
-    expect(cardBody).toBeTruthy();
-    
-    // Kiểm tra stat grid
-    const statGrid = firstCard.query(By.css('.stat-grid'));
-    expect(statGrid).toBeTruthy();
-    
-    // Kiểm tra actions
-    const actions = firstCard.query(By.css('.actions'));
-    expect(actions).toBeTruthy();
+describe('MySkills with no skills', () => {
+  it('shows an empty-state message', async () => {
+    const skillService = {
+      getSkills: vi.fn().mockReturnValue(of({ total: 0, skills: [] })),
+      deleteSkill: vi.fn(),
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [MySkills],
+      providers: [
+        provideRouter([]),
+        { provide: SkillService, useValue: skillService },
+        { provide: ToastService, useValue: { showSuccess: vi.fn(), showError: vi.fn() } },
+        { provide: AuthService, useValue: { currentUser: () => ({ id: 'user-1' }) } },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(MySkills);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain("You haven't published any skills yet.");
   });
 });

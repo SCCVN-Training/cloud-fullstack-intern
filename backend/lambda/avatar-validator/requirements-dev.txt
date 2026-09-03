@@ -1,0 +1,6 @@
+# boto3 is NOT deployed with the function — every AWS Lambda Python
+# runtime ships boto3 built in. This file is only for running the
+# tests locally.
+boto3
+moto[s3]
+pytest

@@ -1,186 +1,130 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { of, throwError } from 'rxjs';
+import { vi } from 'vitest';
 
 import { BookingManagementComponent } from './booking-management';
+import { BookingService } from '../../../core/services/booking/booking.service';
+import { ToastService } from '../../../shared/services/toast.service';
+import { Booking } from '../../../core/models/booking.model';
+
+function makeBooking(overrides: Partial<Booking>): Booking {
+  return {
+    id: 'booking-1',
+    skillId: 'skill-1',
+    learnerId: 'learner-1',
+    mentorId: 'mentor-1',
+    sessionDate: '2026-08-10T10:00:00Z',
+    status: 'PENDING',
+    pricePaid: 250,
+    createdAt: '2026-08-01T00:00:00Z',
+    updatedAt: '2026-08-01T00:00:00Z',
+    skillTitle: 'Advanced Watercolor Techniques',
+    learnerName: 'Emma Johnson',
+    mentorName: 'Olivia Smith',
+    ...overrides,
+  };
+}
 
 describe('BookingManagementComponent', () => {
   let component: BookingManagementComponent;
   let fixture: ComponentFixture<BookingManagementComponent>;
+  let bookingService: {
+    getAllBookings: ReturnType<typeof vi.fn>;
+    updateBookingStatus: ReturnType<typeof vi.fn>;
+  };
+  let toastService: { showSuccess: ReturnType<typeof vi.fn>; showError: ReturnType<typeof vi.fn> };
 
-  beforeEach(async () => {
+  async function setup(bookings: Booking[]) {
+    bookingService = {
+      getAllBookings: vi.fn().mockReturnValue(of({ total: bookings.length, bookings })),
+      updateBookingStatus: vi.fn().mockReturnValue(of(makeBooking({ status: 'CANCELLED' }))),
+    };
+    toastService = { showSuccess: vi.fn(), showError: vi.fn() };
+
     await TestBed.configureTestingModule({
       imports: [BookingManagementComponent],
+      providers: [
+        provideRouter([]),
+        { provide: BookingService, useValue: bookingService },
+        { provide: ToastService, useValue: toastService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BookingManagementComponent);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
-  });
+  }
 
-  afterEach(() => {
-    fixture.destroy();
-  });
-
-  it('should create', () => {
+  it('should create and fetch all bookings (admin-scoped)', async () => {
+    await setup([makeBooking({})]);
     expect(component).toBeTruthy();
+    expect(bookingService.getAllBookings).toHaveBeenCalledWith(0, 100);
+    expect(component.bookings.length).toBe(1);
   });
 
-  it('should contain twelve bookings', () => {
-    expect(component.bookings.length).toBe(12);
+  it('maps status to lowercase and skillTitle to topic for the view model', async () => {
+    await setup([makeBooking({ status: 'CONFIRMED' })]);
+    expect(component.bookings[0].status).toBe('confirmed');
+    expect(component.bookings[0].topic).toBe('Advanced Watercolor Techniques');
   });
 
-  it('should initialize with all booking statuses selected', () => {
-    expect(component.selectedStatus).toBe('');
-    expect(component.filteredBookings.length).toBe(12);
+  it('filters by status', async () => {
+    await setup([
+      makeBooking({ id: 'b1', status: 'PENDING' }),
+      makeBooking({ id: 'b2', status: 'CANCELLED' }),
+    ]);
+    component.selectedStatus = 'cancelled';
+    expect(component.filteredBookings.map((b) => b.id)).toEqual(['b2']);
   });
 
-  it('should initialize on the first page', () => {
-    expect(component.currentPage).toBe(1);
-  });
-
-  it('should use a page size of ten', () => {
-    expect(component.pageSize).toBe(10);
-  });
-
-  it('should return the first ten bookings on the first page', () => {
-    expect(component.paginatedBookings.length).toBe(10);
-  });
-
-  it('should calculate the correct total pages', () => {
-    expect(component.totalPages).toBe(2);
-  });
-
-  it('should calculate the correct showing range', () => {
-    expect(component.showingFrom).toBe(1);
-    expect(component.showingTo).toBe(10);
-  });
-
-  it('should filter bookings by status', () => {
-    component.selectedStatus = 'completed';
-
-    expect(component.filteredBookings.length).toBe(4);
-    expect(component.filteredBookings.every((booking) => booking.status === 'completed')).toBe(
-      true,
-    );
-  });
-
-  it('should reset pagination when the status filter changes', () => {
-    component.currentPage = 2;
-
-    component.onStatusChange();
-
-    expect(component.currentPage).toBe(1);
-  });
-
-  it('should return the correct status labels', () => {
-    expect(component.getStatusLabel('completed')).toBe('Completed');
-    expect(component.getStatusLabel('confirmed')).toBe('Confirmed');
-    expect(component.getStatusLabel('pending')).toBe('Pending');
-    expect(component.getStatusLabel('cancelled')).toBe('Cancelled');
-  });
-
-  it('should open the booking modal', () => {
-    const booking = component.bookings[0];
-
-    component.openModal(booking);
-
-    expect(component.isModalOpen).toBe(true);
-    expect(component.selectedBooking).toBe(booking);
-  });
-
-  it('should close the booking modal', () => {
+  it('forceCancel calls the real status-update endpoint and updates the row', async () => {
+    await setup([makeBooking({ id: 'b1', status: 'CONFIRMED' })]);
     component.openModal(component.bookings[0]);
 
-    component.closeModal();
-
-    expect(component.isModalOpen).toBe(false);
-    expect(component.selectedBooking).toBeNull();
-  });
-
-  it('should force cancel the selected booking', () => {
-    const booking = component.bookings[1];
-
-    component.openModal(booking);
     component.forceCancel();
 
-    expect(booking.status).toBe('cancelled');
+    expect(bookingService.updateBookingStatus).toHaveBeenCalledWith('b1', 'CANCELLED');
+    expect(component.bookings[0].status).toBe('cancelled');
+    expect(toastService.showSuccess).toHaveBeenCalledWith('Booking cancelled.');
     expect(component.isModalOpen).toBe(false);
-    expect(component.selectedBooking).toBeNull();
   });
 
-  it('should not force cancel when no booking is selected', () => {
-    component.selectedBooking = null;
-    component.isModalOpen = false;
+  it('forceCancel shows an error toast and keeps the modal open on failure', async () => {
+    await setup([makeBooking({ id: 'b1', status: 'CONFIRMED' })]);
+    bookingService.updateBookingStatus.mockReturnValue(
+      throwError(() => ({ error: { detail: 'Nope' } })),
+    );
+    component.openModal(component.bookings[0]);
 
     component.forceCancel();
 
-    expect(component.isModalOpen).toBe(false);
-    expect(component.selectedBooking).toBeNull();
+    expect(toastService.showError).toHaveBeenCalledWith('Nope');
+    expect(component.bookings[0].status).toBe('confirmed');
+    expect(component.isModalOpen).toBe(true);
   });
 
-  it('should move to the next page', () => {
-    component.nextPage();
+  it('shows an error toast when the fetch fails', async () => {
+    bookingService = {
+      getAllBookings: vi.fn().mockReturnValue(throwError(() => new Error('network error'))),
+      updateBookingStatus: vi.fn(),
+    };
+    toastService = { showSuccess: vi.fn(), showError: vi.fn() };
 
-    expect(component.currentPage).toBe(2);
-  });
+    await TestBed.configureTestingModule({
+      imports: [BookingManagementComponent],
+      providers: [
+        provideRouter([]),
+        { provide: BookingService, useValue: bookingService },
+        { provide: ToastService, useValue: toastService },
+      ],
+    }).compileComponents();
 
-  it('should not move beyond the last page', () => {
-    component.currentPage = component.totalPages;
+    fixture = TestBed.createComponent(BookingManagementComponent);
+    fixture.detectChanges();
 
-    component.nextPage();
-
-    expect(component.currentPage).toBe(component.totalPages);
-  });
-
-  it('should move to the previous page', () => {
-    component.currentPage = 2;
-
-    component.previousPage();
-
-    expect(component.currentPage).toBe(1);
-  });
-
-  it('should not move before the first page', () => {
-    component.currentPage = 1;
-
-    component.previousPage();
-
-    expect(component.currentPage).toBe(1);
-  });
-
-  it('should navigate to a valid page', () => {
-    component.goToPage(2);
-
-    expect(component.currentPage).toBe(2);
-  });
-
-  it('should ignore an invalid page number', () => {
-    component.goToPage(0);
-
-    expect(component.currentPage).toBe(1);
-
-    component.goToPage(99);
-
-    expect(component.currentPage).toBe(1);
-  });
-
-  it('should render the page title', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('Bookings & Transactions');
-  });
-
-  it('should render the booking table', () => {
-    const rows = fixture.nativeElement.querySelectorAll('tbody tr');
-
-    expect(rows.length).toBe(12);
-  });
-
-  it('should render booking IDs', () => {
-    const element = fixture.nativeElement as HTMLElement;
-
-    expect(element.textContent).toContain('BK-1001');
-    expect(element.textContent).toContain('BK-1002');
-    expect(element.textContent).toContain('BK-1010');
+    expect(toastService.showError).toHaveBeenCalledWith(
+      'Could not load bookings. Please try again.',
+    );
   });
 });

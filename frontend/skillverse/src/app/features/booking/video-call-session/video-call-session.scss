@@ -1,0 +1,115 @@
+.video-call-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.video-call-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.video-call-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-primary, #a43073);
+  margin-bottom: 0.25rem;
+}
+
+.video-call-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.video-call-subtitle {
+  color: var(--color-on-surface-variant, #6b6b6b);
+  margin-top: 0.25rem;
+}
+
+.video-call-timer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.25rem;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--color-surface-container, #f4f4f4);
+}
+
+.video-call-timer--low {
+  color: #b3261e;
+  background: rgba(179, 38, 30, 0.1);
+}
+
+.video-call-stage {
+  aspect-ratio: 16 / 9;
+  border-radius: 1.5rem;
+  background: #1a1a2e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-call-jitsi-container {
+  width: 100%;
+  height: 100%;
+}
+
+.video-call-stage-inner {
+  text-align: center;
+  color: #fff;
+}
+
+.video-call-stage-icon {
+  font-size: 3rem;
+  opacity: 0.7;
+}
+
+.video-call-stage-note {
+  opacity: 0.6;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.video-call-controls {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-end-session {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  border-radius: 999px;
+  border: none;
+  background: #b3261e;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-end-session:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.video-call-host-note {
+  color: var(--color-on-surface-variant, #6b6b6b);
+  font-size: 0.9rem;
+}
+
+.video-call-error {
+  text-align: center;
+  color: #b3261e;
+}

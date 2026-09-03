@@ -1,224 +1,316 @@
 <main class="booking-session-page">
-  <!-- Page Header -->
-  <header class="booking-session-header">
-    <div>
-      <p class="booking-session-eyebrow">BOOK A SESSION</p>
+  @if (isLoading()) {
+    <div class="glass-card p-lg rounded-lg text-center">
+      <p>Loading session details…</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="glass-card p-lg rounded-lg text-center">
+      <p>{{ errorMessage() }}</p>
+    </div>
+  } @else if (skill(); as s) {
+    <a class="booking-back-link" [routerLink]="['/skill-details', s.id]">
+      <span class="material-symbols-outlined">arrow_back_ios_new</span>
+      Back
+    </a>
 
-      <h1 class="booking-session-title">Confirm Your Skill Session</h1>
+    <!-- ======================================== -->
+    <!-- Page Header -->
+    <!-- ======================================== -->
 
-      <p class="booking-session-subtitle">
-        Review your session details, add any notes, and confirm your booking.
+    <header class="booking-session-header">
+      <p class="booking-session-eyebrow">
+        <span class="material-symbols-outlined">school</span>
+        Skill Booking
       </p>
-    </div>
 
-    <div class="booking-session-step">
-      <span class="material-symbols-outlined">event_available</span>
+      <h1 class="booking-session-title">{{ s.title }}</h1>
 
-      <span>Booking</span>
-    </div>
-  </header>
+      <div class="booking-mentor-row">
+        <img class="booking-mentor-avatar" [src]="s.instructorAvatar" [alt]="s.instructorName" />
 
-  <!-- Main Content -->
-  <div class="booking-session-grid">
-    <!-- ======================================== -->
-    <!-- Left: Session Details -->
-    <!-- ======================================== -->
-
-    <div class="booking-session-main">
-      <!-- Session Notes -->
-      <section class="glass-card p-md md:p-lg rounded-lg">
-        <h2 class="font-title-lg text-title-lg mb-md flex items-center gap-base">
-          <span class="material-symbols-outlined text-primary">notes</span>
-          Session Notes
-        </h2>
-
-        <div class="space-y-sm">
-          <label for="session-notes" class="text-label-sm text-on-surface-variant">
-            What would you like to focus on during this session?
-          </label>
-
-          <textarea
-            id="session-notes"
-            class="w-full bg-surface-container/50 border-outline-variant rounded-lg p-md focus:ring-primary focus:border-primary transition-all text-body-md booking-session-notes"
-            placeholder="Example: I'd like to dive deep into decorators and context managers in Python 3.12..."
-            rows="4"
-          ></textarea>
-
-          <div class="flex gap-base flex-wrap">
-            <button type="button" class="booking-tag">#Decorators</button>
-
-            <button type="button" class="booking-tag">#AsyncIO</button>
-
-            <button type="button" class="booking-tag">#MetaClasses</button>
-          </div>
+        <div>
+          <p class="booking-mentor-name">{{ s.instructorName }}</p>
+          <p class="booking-mentor-title">{{ s.instructorTitle }}</p>
         </div>
-      </section>
-
-      <!-- What to Expect -->
-      <section class="glass-card p-md md:p-lg rounded-lg">
-        <h2 class="font-title-lg text-title-lg mb-md flex items-center gap-base">
-          <span class="material-symbols-outlined text-primary"> checklist </span>
-
-          What to Expect
-        </h2>
-
-        <div class="booking-expect-list">
-          <div class="booking-expect-item">
-            <div class="booking-expect-icon">
-              <span class="material-symbols-outlined">videocam</span>
-            </div>
-
-            <div>
-              <p class="booking-expect-title">Online video session</p>
-
-              <p class="booking-expect-description">
-                Meet your mentor through SkillVerse Video Rooms.
-              </p>
-            </div>
-          </div>
-
-          <div class="booking-expect-item">
-            <div class="booking-expect-icon">
-              <span class="material-symbols-outlined">schedule</span>
-            </div>
-
-            <div>
-              <p class="booking-expect-title">60-minute session</p>
-
-              <p class="booking-expect-description">
-                Your selected time slot is reserved for one hour.
-              </p>
-            </div>
-          </div>
-
-          <div class="booking-expect-item">
-            <div class="booking-expect-icon">
-              <span class="material-symbols-outlined">verified</span>
-            </div>
-
-            <div>
-              <p class="booking-expect-title">Protected payment</p>
-
-              <p class="booking-expect-description">
-                Coins are released after the session is completed and verified.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+      </div>
+    </header>
 
     <!-- ======================================== -->
-    <!-- Right: Summary & Confirmation -->
+    <!-- Main Grid -->
     <!-- ======================================== -->
 
-    <aside class="booking-session-sidebar">
-      <div class="sticky top-28 space-y-md">
-        <!-- Booking Summary -->
-        <section
-          class="glass-card p-md md:p-lg rounded-lg border-2 border-primary/10 overflow-hidden relative"
-        >
-          <div
-            class="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 rounded-full blur-3xl"
-          ></div>
+    <div class="booking-session-grid">
+      <!-- ======================================== -->
+      <!-- Left: Session Details -->
+      <!-- ======================================== -->
 
-          <h2 class="font-title-lg text-title-lg mb-lg">Booking Summary</h2>
+      <div class="booking-session-main">
+        <!-- ======================================== -->
+        <!-- Select Date & Time -->
+        <!-- ======================================== -->
 
-          <div class="space-y-md relative z-10">
-            <!-- Date -->
-            <div class="flex items-start gap-sm">
-              <span
-                class="material-symbols-outlined text-primary-container p-2 bg-primary/5 rounded-lg"
-              >
-                calendar_month
-              </span>
+        <section class="glass-card p-md md:p-lg rounded-lg booking-datetime-card">
+          <h2 class="booking-datetime-title">
+            <span class="material-symbols-outlined"> event </span>
 
-              <div>
-                <p class="text-label-sm text-on-surface-variant">Date</p>
+            <span>Select Date &amp; Time</span>
+          </h2>
 
-                <p class="font-label-md text-on-surface">Tuesday, Oct 8, 2024</p>
+          <div class="booking-datetime-grid">
+            <!-- ======================================== -->
+            <!-- Calendar -->
+            <!-- ======================================== -->
+
+            <div class="booking-calendar">
+              <div class="booking-calendar-header">
+                <div class="booking-calendar-month">
+                  {{ monthLabel() }}
+                </div>
+
+                <div class="booking-calendar-navigation">
+                  <button
+                    type="button"
+                    class="booking-calendar-nav"
+                    aria-label="Previous month"
+                    (click)="changeMonth(-1)"
+                  >
+                    <span class="material-symbols-outlined"> chevron_left </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="booking-calendar-nav"
+                    aria-label="Next month"
+                    (click)="changeMonth(1)"
+                  >
+                    <span class="material-symbols-outlined"> chevron_right </span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="booking-calendar-weekdays">
+                @for (label of weekdayLabels; track label) {
+                  <span>{{ label }}</span>
+                }
+              </div>
+
+              <div class="booking-calendar-days">
+                @for (cell of calendarCells(); track cell.date.getTime()) {
+                  <button
+                    type="button"
+                    class="booking-calendar-day"
+                    [class.is-outside]="!cell.inMonth"
+                    [class.is-past]="cell.isPast"
+                    [class.is-selected]="cell.isSelected"
+                    [disabled]="cell.isPast"
+                    (click)="selectDay(cell)"
+                  >
+                    {{ cell.day }}
+                  </button>
+                }
               </div>
             </div>
 
+            <!-- ======================================== -->
             <!-- Time -->
-            <div class="flex items-start gap-sm">
-              <span
-                class="material-symbols-outlined text-primary-container p-2 bg-primary/5 rounded-lg"
-              >
-                schedule
-              </span>
+            <!-- ======================================== -->
 
-              <div>
-                <p class="text-label-sm text-on-surface-variant">Time</p>
-
-                <p class="font-label-md text-on-surface">11:30 AM — 12:30 PM (60 min)</p>
+            <div class="booking-time-panel">
+              <div class="booking-time-range">
+                {{ rangeLabel() }}
               </div>
-            </div>
 
-            <!-- Platform -->
-            <div class="flex items-start gap-sm">
-              <span
-                class="material-symbols-outlined text-primary-container p-2 bg-primary/5 rounded-lg"
-              >
-                location_on
-              </span>
+              <div class="booking-time-fields">
+                <!-- Start -->
+                <div class="booking-time-field">
+                  <label for="start-time"> Start Time </label>
 
-              <div>
-                <p class="text-label-sm text-on-surface-variant">Platform</p>
+                  <div class="booking-time-input-wrap">
+                    <input
+                      id="start-time"
+                      type="time"
+                      step="900"
+                      [ngModel]="startTime()"
+                      (ngModelChange)="setStartTime($event)"
+                    />
 
-                <p class="font-label-md text-on-surface">SkillVerse Video Rooms</p>
+                    <span class="material-symbols-outlined"> schedule </span>
+                  </div>
+                </div>
+
+                <!-- End -->
+                <div class="booking-time-field">
+                  <label> End Time (Auto +{{ sessionDurationMinutes }}m) </label>
+
+                  <div class="booking-time-input-wrap is-readonly">
+                    <span>{{ endTimeLabel() }}</span>
+                  </div>
+                </div>
               </div>
+
+              <p class="booking-duration-note">
+                * A session is fixed at {{ sessionDurationMinutes }} mins to ensure quality
+              </p>
+
+              <p class="booking-timezone-note">
+                <span class="material-symbols-outlined"> info </span>
+
+                <span> Times are shown in your local timezone (GMT+7) </span>
+              </p>
             </div>
-
-            <hr class="border-outline-variant/30 my-md" />
-
-            <!-- Cost -->
-            <div class="flex justify-between items-center bg-primary-container/20 p-md rounded-lg">
-              <span class="font-label-md text-on-surface"> Total Cost </span>
-
-              <div class="text-right">
-                <p class="font-headline-lg-mobile text-primary">450 LC</p>
-
-                <p class="text-[10px] text-on-surface-variant uppercase tracking-widest">
-                  Luminous Coins
-                </p>
-              </div>
-            </div>
-
-            <!-- Confirm -->
-            <button
-              type="button"
-              class="w-full btn-primary-gradient text-white py-md rounded-full font-title-lg text-body-lg shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-base"
-            >
-              <span class="material-symbols-outlined">verified</span>
-
-              Confirm Booking
-            </button>
           </div>
         </section>
 
-        <!-- Trust Badge -->
-        <section
-          class="bg-surface-container-low p-md rounded-lg border border-outline-variant/30 flex items-center gap-md"
-        >
-          <div class="bg-secondary/10 p-2 rounded-full">
-            <span
-              class="material-symbols-outlined text-secondary"
-              style="font-variation-settings: 'FILL' 1"
-            >
-              security
-            </span>
-          </div>
+        <!-- ======================================== -->
+        <!-- Session Notes -->
+        <!-- ======================================== -->
 
-          <div>
-            <p class="text-label-md text-on-surface">SkillVerse Guarantee</p>
+        <section class="glass-card p-md md:p-lg rounded-lg booking-session-notes-card">
+          <h2 class="font-title-lg text-title-lg mb-md flex items-center gap-base">
+            <span class="material-symbols-outlined text-primary"> notes </span>
 
-            <p class="text-label-sm text-on-surface-variant">
-              Coins are only released after the session is completed and verified.
-            </p>
+            <span>Session Notes</span>
+          </h2>
+
+          <div class="space-y-sm">
+            <label for="session-notes" class="text-label-sm text-on-surface-variant">
+              What would you like to focus on during this session?
+            </label>
+
+            <textarea
+              id="session-notes"
+              class="w-full bg-surface-container/50 border-outline-variant rounded-lg p-md focus:ring-primary focus:border-primary transition-all text-body-md booking-session-notes"
+              placeholder="Example: I'd like to dive deep into decorators and context managers in Python 3.12..."
+              rows="4"
+              cols="80"
+              [ngModel]="sessionNotes()"
+              (ngModelChange)="sessionNotes.set($event)"
+            ></textarea>
           </div>
         </section>
       </div>
-    </aside>
-  </div>
+
+      <!-- ======================================== -->
+      <!-- Right: Summary & Confirmation -->
+      <!-- ======================================== -->
+
+      <aside class="booking-session-sidebar">
+        <div class="sticky top-28 booking-sidebar-stack">
+          <!-- ======================================== -->
+          <!-- Booking Summary -->
+          <!-- ======================================== -->
+
+          <section class="booking-summary-card">
+            <h2 class="booking-summary-title">Booking Summary</h2>
+
+            <div class="booking-summary-content">
+              <!-- Date -->
+              <div class="booking-summary-row">
+                <div class="booking-summary-icon">
+                  <span class="material-symbols-outlined"> calendar_month </span>
+                </div>
+
+                <div class="booking-summary-info">
+                  <p class="booking-summary-label">Date</p>
+
+                  <p class="booking-summary-value">
+                    {{ summaryDateLabel() }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Time -->
+              <div class="booking-summary-row">
+                <div class="booking-summary-icon">
+                  <span class="material-symbols-outlined"> schedule </span>
+                </div>
+
+                <div class="booking-summary-info">
+                  <p class="booking-summary-label">Time</p>
+
+                  <p class="booking-summary-value">
+                    {{ rangeLabel() }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Platform -->
+              <div class="booking-summary-row">
+                <div class="booking-summary-icon">
+                  <span class="material-symbols-outlined"> location_on </span>
+                </div>
+
+                <div class="booking-summary-info">
+                  <p class="booking-summary-label">Platform</p>
+
+                  <p class="booking-summary-value">SkillVerse Video Rooms</p>
+                </div>
+              </div>
+
+              <!-- Divider -->
+              <div class="booking-summary-divider"></div>
+
+              <!-- Cost -->
+              <div class="booking-summary-cost">
+                <span class="booking-summary-cost-label"> Total Cost </span>
+
+                <div class="booking-summary-cost-value">
+                  <span class="booking-summary-price"> {{ s.price }} LC </span>
+
+                  <span class="booking-summary-currency"> LUMINOUS COINS </span>
+                </div>
+              </div>
+
+              <!-- Error -->
+              @if (submitError()) {
+                <p class="booking-summary-error">
+                  {{ submitError() }}
+                </p>
+              }
+
+              <!-- Confirm -->
+              <button
+                type="button"
+                class="booking-confirm-button"
+                [disabled]="isSubmitting()"
+                (click)="confirmBooking()"
+              >
+                <span class="material-symbols-outlined"> verified </span>
+
+                <span>
+                  {{ isSubmitting() ? 'Confirming…' : 'Confirm Booking' }}
+                </span>
+              </button>
+
+              <!-- Policy -->
+              <p class="booking-policy-note">
+                By confirming, you agree to our
+                <span class="booking-policy-link"> Cancellation Policy </span>.
+              </p>
+            </div>
+          </section>
+
+          <!-- ======================================== -->
+          <!-- Trust Badge -->
+          <!-- ======================================== -->
+
+          <section class="booking-guarantee-card">
+            <div class="booking-guarantee-icon">
+              <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">
+                security
+              </span>
+            </div>
+
+            <div class="booking-guarantee-content">
+              <p class="booking-guarantee-title">SkillVerse Guarantee</p>
+
+              <p class="booking-guarantee-text">
+                Coins are only released after the session is completed and verified.
+              </p>
+            </div>
+          </section>
+        </div>
+      </aside>
+    </div>
+  }
 </main>

@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 import { SkillHero } from './components/skill-hero/skill-hero';
 import { InstructorCard } from './components/instructor-card/instructor-card';
@@ -9,6 +10,32 @@ import { ReviewCarousel } from './components/review-carousel/review-carousel';
 import { SkillAbout } from './components/skill-about/skill-about';
 import { SkillService } from '../../../core/services/skill/skill.service';
 import { Skill } from '../../../core/models/skill.model';
+import { ReviewItemResponse } from '../../../core/services/review/review.types';
+
+const INITIALS_CLASSES = ['initials-primary', 'initials-secondary', 'initials-tertiary'];
+
+// review-carousel.ts reads skill.reviews expecting {name, initials,
+// initialsClass, stars, text} — the shape a static mock used to provide
+// directly. The backend's ReviewItem has different field names (and no
+// initials/color), so this maps one to the other rather than changing
+// the carousel, which already renders this shape correctly.
+function toCarouselReview(item: ReviewItemResponse, index: number) {
+  const name = item.reviewer_name || 'Anonymous';
+  const initials = name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join('');
+
+  return {
+    name,
+    initials,
+    initialsClass: INITIALS_CLASSES[index % INITIALS_CLASSES.length],
+    stars: item.rating,
+    text: item.feedback || '',
+  };
+}
 
 @Component({
   selector: 'app-skill-details',
@@ -57,12 +84,18 @@ export class SkillDetailsPage implements OnInit {
 
     console.log('Calling service to load skill:', id);
 
-    this.skillService.getSkillById(id).subscribe({
-      next: (data) => {
-        console.log('API Response received:', data);
+    // Fetched together and only assigned to `skill` once both resolve —
+    // otherwise the carousel would render with `skill` set but reviews
+    // still missing, then flash in the actual reviews a moment later.
+    forkJoin({
+      skill: this.skillService.getSkillById(id),
+      reviews: this.skillService.getSkillReviews(id),
+    }).subscribe({
+      next: ({ skill, reviews }) => {
+        console.log('API Response received:', skill);
 
-        if (data) {
-          this.skill = data;
+        if (skill) {
+          this.skill = { ...skill, reviews: reviews.items.map(toCarouselReview) };
           console.log('Skill set successfully:', this.skill.title);
         } else {
           this.errorMessage = 'Skill not found';

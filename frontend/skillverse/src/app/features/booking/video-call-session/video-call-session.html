@@ -1,0 +1,53 @@
+<main class="video-call-page">
+  @if (isLoading()) {
+    <div class="glass-card p-lg rounded-lg text-center">
+      <p>Loading session…</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="glass-card p-lg rounded-lg text-center">
+      <p>{{ loadError() }}</p>
+    </div>
+  } @else if (booking(); as b) {
+    <header class="video-call-header">
+      <div>
+        <p class="video-call-eyebrow">LIVE SESSION</p>
+        <h1 class="video-call-title">{{ b.skillTitle || 'Skill Session' }}</h1>
+        <p class="video-call-subtitle">
+          {{ isHost() ? 'You are hosting this session.' : 'Waiting for your mentor to join.' }}
+        </p>
+      </div>
+
+      <div class="video-call-timer" [class.video-call-timer--low]="remainingSeconds() < 300">
+        <span class="material-symbols-outlined">schedule</span>
+        <span>{{ remainingLabel() }}</span>
+      </div>
+    </header>
+
+    <!-- Real Jitsi Meet embed — see initJitsi() in the component. The
+         container itself stays empty; Jitsi's own iframe API renders the
+         video UI into it once the script loads. -->
+    <div class="video-call-stage">
+      <div id="jitsi-container" class="video-call-jitsi-container"></div>
+    </div>
+
+    @if (endError()) {
+      <p class="video-call-error">{{ endError() }}</p>
+    }
+
+    <div class="video-call-controls">
+      @if (isHost()) {
+        <button
+          type="button"
+          class="btn-end-session"
+          [disabled]="isEnding()"
+          (click)="endSession()"
+        >
+          <span class="material-symbols-outlined">call_end</span>
+          {{ isEnding() ? 'Ending…' : 'End Session' }}
+        </button>
+      } @else {
+        <p class="video-call-host-note">Only the mentor can end this session.</p>
+      }
+    </div>
+  }
+</main>
