@@ -35,6 +35,10 @@ export const userRoutes: Routes = [
         component: CreateSkill,
       },
       {
+        path: "my-skills/:skillId/edit",
+        component: CreateSkill,
+      },
+      {
         path: "my-bookings",
         component: MyBookings,
       },

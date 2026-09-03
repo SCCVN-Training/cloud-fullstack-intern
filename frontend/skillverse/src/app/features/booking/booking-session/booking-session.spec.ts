@@ -16,7 +16,7 @@ const mockSkill: Skill = {
   description: 'Learn modern frontend architecture.',
   image: '/assets/images/skill-react.png',
   price: 120,
-  duration: '2h',
+  duration: 45,
   level: 'Intermediate',
   requirements: 'Basic React knowledge',
   rating: 4.8,
@@ -47,12 +47,15 @@ const mockBooking: Booking = {
 describe('BookingSession', () => {
   let component: BookingSession;
   let fixture: ComponentFixture<BookingSession>;
-  let skillService: { getSkillById: ReturnType<typeof vi.fn> };
+  let skillService: { getSkillById: ReturnType<typeof vi.fn>; getSkills: ReturnType<typeof vi.fn> };
   let bookingService: { createBooking: ReturnType<typeof vi.fn> };
   let router: Router;
 
   async function setup(skillId: string | null = mockSkill.id) {
-    skillService = { getSkillById: vi.fn().mockReturnValue(of(mockSkill)) };
+    skillService = {
+      getSkillById: vi.fn().mockReturnValue(of(mockSkill)),
+      getSkills: vi.fn().mockReturnValue(of({ total: 0, skills: [] })),
+    };
     bookingService = { createBooking: vi.fn().mockReturnValue(of(mockBooking)) };
 
     await TestBed.configureTestingModule({
@@ -104,7 +107,10 @@ describe('BookingSession', () => {
   });
 
   it('should show an error state when the skill fails to load', async () => {
-    skillService = { getSkillById: vi.fn().mockReturnValue(throwError(() => new Error('boom'))) };
+    skillService = {
+      getSkillById: vi.fn().mockReturnValue(throwError(() => new Error('boom'))),
+      getSkills: vi.fn().mockReturnValue(of({ total: 0, skills: [] })),
+    };
     bookingService = { createBooking: vi.fn() };
 
     await TestBed.configureTestingModule({

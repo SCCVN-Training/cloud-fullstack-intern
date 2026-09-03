@@ -1,6 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+import { BookingService } from '../../../core/services/booking/booking.service';
+import { ToastService } from '../../../shared/services/toast.service';
+import { Booking as ApiBooking } from '../../../core/models/booking.model';
 
 interface Booking {
   id: string;
@@ -16,6 +20,29 @@ interface Booking {
 
 type BookingStatus = 'completed' | 'confirmed' | 'pending' | 'cancelled';
 
+function avatarUrl(name: string): string {
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}`;
+}
+
+function toViewModel(booking: ApiBooking): Booking {
+  const learner = booking.learnerName || 'Unknown';
+  const mentor = booking.mentorName || 'Unknown';
+  return {
+    id: booking.id,
+    learner,
+    learnerAvatar: avatarUrl(learner),
+    mentor,
+    mentorAvatar: avatarUrl(mentor),
+    scheduledDate: new Date(booking.sessionDate).toLocaleString(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }),
+    amount: booking.pricePaid,
+    status: booking.status.toLowerCase() as BookingStatus,
+    topic: booking.skillTitle || 'Skill Session',
+  };
+}
+
 @Component({
   selector: 'app-booking-management',
   standalone: true,
@@ -23,7 +50,7 @@ type BookingStatus = 'completed' | 'confirmed' | 'pending' | 'cancelled';
   templateUrl: './booking-management.html',
   styleUrls: ['./booking-management.scss'],
 })
-export class BookingManagementComponent {
+export class BookingManagementComponent implements OnInit {
   // ========================================
   // Modal
   // ========================================
@@ -50,148 +77,27 @@ export class BookingManagementComponent {
   // Booking Data
   // ========================================
 
-  readonly bookings: Booking[] = [
-    {
-      id: 'BK-1001',
-      learner: 'Emma Johnson',
-      learnerAvatar: 'https://ui-avatars.com/api/?name=Emma+Johnson&background=fce7f3&color=a43073',
-      mentor: 'Olivia Smith',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Olivia+Smith&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 10, 2026 · 10:00 AM',
-      amount: 250,
-      status: 'completed',
-      topic: 'Advanced Watercolor Techniques',
-    },
-    {
-      id: 'BK-1002',
-      learner: 'James Wilson',
-      learnerAvatar: 'https://ui-avatars.com/api/?name=James+Wilson&background=fce7f3&color=a43073',
-      mentor: 'Sophia Brown',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Sophia+Brown&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 10, 2026 · 2:00 PM',
-      amount: 180,
-      status: 'confirmed',
-      topic: 'Digital Photography',
-    },
-    {
-      id: 'BK-1003',
-      learner: 'Michael Davis',
-      learnerAvatar:
-        'https://ui-avatars.com/api/?name=Michael+Davis&background=fce7f3&color=a43073',
-      mentor: 'Ava Taylor',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Ava+Taylor&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 11, 2026 · 9:30 AM',
-      amount: 320,
-      status: 'pending',
-      topic: 'Creative Writing',
-    },
-    {
-      id: 'BK-1004',
-      learner: 'William Miller',
-      learnerAvatar:
-        'https://ui-avatars.com/api/?name=William+Miller&background=fce7f3&color=a43073',
-      mentor: 'Isabella Anderson',
-      mentorAvatar:
-        'https://ui-avatars.com/api/?name=Isabella+Anderson&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 11, 2026 · 3:00 PM',
-      amount: 150,
-      status: 'confirmed',
-      topic: 'Guitar Fundamentals',
-    },
-    {
-      id: 'BK-1005',
-      learner: 'Charlotte Moore',
-      learnerAvatar:
-        'https://ui-avatars.com/api/?name=Charlotte+Moore&background=fce7f3&color=a43073',
-      mentor: 'Mia Thomas',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Mia+Thomas&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 12, 2026 · 11:00 AM',
-      amount: 275,
-      status: 'pending',
-      topic: 'UI/UX Design',
-    },
-    {
-      id: 'BK-1006',
-      learner: 'Daniel Jackson',
-      learnerAvatar:
-        'https://ui-avatars.com/api/?name=Daniel+Jackson&background=fce7f3&color=a43073',
-      mentor: 'Amelia White',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Amelia+White&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 12, 2026 · 4:30 PM',
-      amount: 200,
-      status: 'completed',
-      topic: 'Python Programming',
-    },
-    {
-      id: 'BK-1007',
-      learner: 'Benjamin Harris',
-      learnerAvatar:
-        'https://ui-avatars.com/api/?name=Benjamin+Harris&background=fce7f3&color=a43073',
-      mentor: 'Harper Martin',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Harper+Martin&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 13, 2026 · 10:00 AM',
-      amount: 220,
-      status: 'cancelled',
-      topic: 'Public Speaking',
-    },
-    {
-      id: 'BK-1008',
-      learner: 'Evelyn Thompson',
-      learnerAvatar:
-        'https://ui-avatars.com/api/?name=Evelyn+Thompson&background=fce7f3&color=a43073',
-      mentor: 'Evelyn Garcia',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Evelyn+Garcia&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 13, 2026 · 1:30 PM',
-      amount: 190,
-      status: 'confirmed',
-      topic: 'Spanish Conversation',
-    },
-    {
-      id: 'BK-1009',
-      learner: 'Alexander Martinez',
-      learnerAvatar:
-        'https://ui-avatars.com/api/?name=Alexander+Martinez&background=fce7f3&color=a43073',
-      mentor: 'Ella Robinson',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Ella+Robinson&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 14, 2026 · 9:00 AM',
-      amount: 300,
-      status: 'completed',
-      topic: 'Financial Planning',
-    },
-    {
-      id: 'BK-1010',
-      learner: 'Sofia Clark',
-      learnerAvatar: 'https://ui-avatars.com/api/?name=Sofia+Clark&background=fce7f3&color=a43073',
-      mentor: 'Liam Lewis',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Liam+Lewis&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 14, 2026 · 5:00 PM',
-      amount: 175,
-      status: 'pending',
-      topic: 'Excel & Data Analysis',
-    },
-    {
-      id: 'BK-1011',
-      learner: 'Lucas Lee',
-      learnerAvatar: 'https://ui-avatars.com/api/?name=Lucas+Lee&background=fce7f3&color=a43073',
-      mentor: 'Grace Walker',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Grace+Walker&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 15, 2026 · 10:30 AM',
-      amount: 240,
-      status: 'confirmed',
-      topic: 'Content Creation',
-    },
-    {
-      id: 'BK-1012',
-      learner: 'Henry Hall',
-      learnerAvatar: 'https://ui-avatars.com/api/?name=Henry+Hall&background=fce7f3&color=a43073',
-      mentor: 'Lily Allen',
-      mentorAvatar: 'https://ui-avatars.com/api/?name=Lily+Allen&background=eaddff&color=6750a4',
-      scheduledDate: 'Aug 15, 2026 · 2:30 PM',
-      amount: 210,
-      status: 'completed',
-      topic: 'Marketing Strategy',
-    },
-  ];
+  bookings: Booking[] = [];
+  isLoading = signal(true);
+
+  constructor(
+    private bookingService: BookingService,
+    private toastService: ToastService,
+  ) {}
+
+  ngOnInit(): void {
+    this.bookingService.getAllBookings(0, 100).subscribe({
+      next: (res) => {
+        this.bookings = res.bookings.map(toViewModel);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load bookings:', err);
+        this.toastService.showError('Could not load bookings. Please try again.');
+        this.isLoading.set(false);
+      },
+    });
+  }
 
   // ========================================
   // Computed Data
@@ -285,13 +191,24 @@ export class BookingManagementComponent {
   // ========================================
 
   forceCancel(): void {
-    if (!this.selectedBooking) {
+    const booking = this.selectedBooking;
+    if (!booking) {
       return;
     }
 
-    this.selectedBooking.status = 'cancelled';
-
-    this.closeModal();
+    this.bookingService.updateBookingStatus(booking.id, 'CANCELLED').subscribe({
+      next: () => {
+        booking.status = 'cancelled';
+        this.toastService.showSuccess('Booking cancelled.');
+        this.closeModal();
+      },
+      error: (err) => {
+        console.error('Failed to cancel booking:', err);
+        this.toastService.showError(
+          err?.error?.detail || 'Could not cancel this booking. Please try again.',
+        );
+      },
+    });
   }
 
   // ========================================

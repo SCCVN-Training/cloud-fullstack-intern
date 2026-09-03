@@ -23,17 +23,11 @@
       </div>
     </header>
 
-    <!-- Placeholder video area — real WebRTC/video SDK integration is a
-         separate, later piece of work; this establishes the full page
-         flow (join -> timer -> end -> review) around it. -->
+    <!-- Real Jitsi Meet embed — see initJitsi() in the component. The
+         container itself stays empty; Jitsi's own iframe API renders the
+         video UI into it once the script loads. -->
     <div class="video-call-stage">
-      <div class="video-call-stage-inner">
-        <span class="material-symbols-outlined video-call-stage-icon">videocam</span>
-        <p>Video call in progress</p>
-        <p class="video-call-stage-note">
-          {{ b.learnerName || 'Learner' }} &amp; {{ b.mentorName || 'Mentor' }}
-        </p>
-      </div>
+      <div id="jitsi-container" class="video-call-jitsi-container"></div>
     </div>
 
     @if (endError()) {

@@ -107,8 +107,13 @@
         </thead>
 
         <tbody>
+          <tr *ngIf="isLoading()">
+            <td colspan="7" class="empty-state">Loading bookings…</td>
+          </tr>
+
           <!-- Booking rows -->
 
+          <ng-container *ngIf="!isLoading()">
           <tr *ngFor="let booking of filteredBookings">
             <!-- Booking ID -->
 
@@ -194,6 +199,7 @@
               <p>Try changing the selected status filter.</p>
             </td>
           </tr>
+          </ng-container>
         </tbody>
       </table>
     </div>

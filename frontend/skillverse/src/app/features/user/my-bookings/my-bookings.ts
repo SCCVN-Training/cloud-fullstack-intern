@@ -65,12 +65,22 @@ export class MyBookings implements OnInit {
   bookings: BookingViewModel[] = [];
   isLoading = true;
 
+  // Forwarded via router navigation state from video-call-session's
+  // endSession() — creditStatus only ever appears on the PATCH response
+  // that completed the booking, so it can't be recovered from a normal
+  // GET here; history.state is how Angular exposes it to this landing
+  // page (Router.getCurrentNavigation() is only populated during the
+  // navigation itself, not by the time ngOnInit runs).
+  creditFailed = false;
+
   constructor(
     private auth: AuthService,
     private bookingService: BookingService,
   ) {}
 
   ngOnInit(): void {
+    this.creditFailed = !!history.state?.['creditFailed'];
+
     // A user can be the learner on some bookings and the mentor
     // (hosting) on others — fetch both sides and merge, so this page
     // shows every session they're actually part of, not just half.

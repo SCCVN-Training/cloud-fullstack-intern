@@ -14,7 +14,7 @@ const mockSkill: Skill = {
   description: 'Learn modern frontend architecture.',
   image: '/assets/images/skill-react.png',
   price: 120,
-  duration: '2h',
+  duration: 45,
   level: 'Intermediate',
   requirements: 'Basic React knowledge',
   rating: 4.8,
@@ -30,16 +30,39 @@ const mockSkill: Skill = {
   createdAt: '2026-07-01',
   aboutText: 'Deep dive into React architecture patterns.',
   learningOutcomes: ['Design reusable UI architecture', 'Build scalable React applications'],
-  reviews: [
+};
+
+// What GET /skills/{id}/reviews returns — mapped by the component into
+// the {name, initials, initialsClass, stars, text} shape ReviewCarousel
+// expects (see toCarouselReview in skill-details.ts).
+const mockReviewsResponse = {
+  total: 1,
+  items: [
     {
-      name: 'Alex',
-      initials: 'AD',
-      initialsClass: 'initials-primary',
-      stars: 5,
-      text: 'Excellent skill details and instructor support.',
+      id: 'review-1',
+      booking_id: 'booking-1',
+      reviewer_id: 'reviewer-1',
+      reviewer_name: 'Alex D',
+      reviewer_avatar_url: null,
+      rating: 5,
+      knowledge_rating: 5,
+      communication_rating: 5,
+      video_audio_rating: 5,
+      feedback: 'Excellent skill details and instructor support.',
+      created_at: '2026-07-05T00:00:00Z',
     },
   ],
 };
+
+const expectedMappedReviews = [
+  {
+    name: 'Alex D',
+    initials: 'AD',
+    initialsClass: 'initials-primary',
+    stars: 5,
+    text: 'Excellent skill details and instructor support.',
+  },
+];
 
 describe('SkillDetailsPage', () => {
   let component: SkillDetailsPage;
@@ -63,6 +86,7 @@ describe('SkillDetailsPage', () => {
           provide: SkillService,
           useValue: {
             getSkillById: vi.fn().mockReturnValue(of(mockSkill)),
+            getSkillReviews: vi.fn().mockReturnValue(of(mockReviewsResponse)),
           },
         },
       ],
@@ -75,9 +99,13 @@ describe('SkillDetailsPage', () => {
 
   it('should create and load skill data', () => {
     expect(component).toBeTruthy();
-    expect(component.skill).toEqual(mockSkill);
+    expect(component.skill).toEqual({ ...mockSkill, reviews: expectedMappedReviews });
     expect(component.isLoading).toBe(false);
     expect(component.errorMessage).toBe('');
+  });
+
+  it('maps the fetched reviews onto the skill for the carousel to render', () => {
+    expect(component.skill?.reviews).toEqual(expectedMappedReviews);
   });
 
   it('should render Skill Hero', () => {
@@ -98,5 +126,24 @@ describe('SkillDetailsPage', () => {
   it('should render Review Carousel', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('app-review-carousel')).toBeTruthy();
+  });
+
+  // Regression test: the carousel component itself has always correctly
+  // rendered whatever `skill.reviews` it's given (see
+  // review-carousel.spec.ts) — the actual bug was that skill-details
+  // never fetched or attached any reviews in the first place, so the
+  // carousel silently rendered zero cards. This asserts the real DOM
+  // output end-to-end, not just that getSkillReviews was called.
+  it('renders actual review content fetched from GET /skills/{id}/reviews, not an empty carousel', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const reviewCards = compiled.querySelectorAll('app-review-carousel .review-card');
+
+    expect(reviewCards.length).toBe(1);
+    expect(compiled.querySelector('app-review-carousel .reviewer-name')?.textContent).toContain(
+      'Alex D',
+    );
+    expect(compiled.querySelector('app-review-carousel .review-text')?.textContent).toContain(
+      'Excellent skill details and instructor support.',
+    );
   });
 });

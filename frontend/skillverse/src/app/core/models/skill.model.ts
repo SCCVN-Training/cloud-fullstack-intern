@@ -6,7 +6,7 @@ export interface Skill {
   image: string;
 
   price: number;
-  duration: string;
+  duration: number; // minutes — capped at 45, see SkillService.MAX_DURATION_MINUTES
   level: string;
   requirements: string;
 

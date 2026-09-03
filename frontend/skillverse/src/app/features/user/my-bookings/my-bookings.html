@@ -20,6 +20,15 @@
     </div>
   </header>
 
+  <p
+    *ngIf="creditFailed"
+    class="text-center text-body-sm rounded-lg p-sm mb-md"
+    style="background: rgba(179, 38, 30, 0.08); color: #b3261e"
+  >
+    Session completed. There was an issue crediting your payout — this has been logged and will be
+    resolved manually.
+  </p>
+
   <div class="flex-col lg:flex-row flex gap-lg">
     <!-- Bookings List -->
     <div class="flex-1 flex flex-col gap-md">

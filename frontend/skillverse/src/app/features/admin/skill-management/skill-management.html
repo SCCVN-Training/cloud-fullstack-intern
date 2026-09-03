@@ -119,7 +119,7 @@
 
             <th>Mentor</th>
 
-            <th>Students</th>
+            <th>Reviews</th>
 
             <th class="created-column">Created Date</th>
 
@@ -132,6 +132,11 @@
         <!-- Table Body -->
 
         <tbody>
+          <tr *ngIf="isLoading()">
+            <td colspan="7" class="empty-state">Loading skills…</td>
+          </tr>
+
+          <ng-container *ngIf="!isLoading()">
           <tr
             *ngFor="let skill of paginatedSkills"
             [class.skill-suspended]="skill.status === 'suspended'"
@@ -172,13 +177,13 @@
               </div>
             </td>
 
-            <!-- Students -->
+            <!-- Reviews -->
 
             <td>
               <div class="students-count">
-                <span class="material-symbols-outlined"> group </span>
+                <span class="material-symbols-outlined"> star </span>
 
-                {{ skill.students }}
+                {{ skill.reviewCount }}
               </div>
             </td>
 
@@ -261,6 +266,7 @@
               </button>
             </td>
           </tr>
+          </ng-container>
         </tbody>
       </table>
     </div>

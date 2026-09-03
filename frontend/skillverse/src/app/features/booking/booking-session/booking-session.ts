@@ -1,31 +1,101 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SkillService } from '../../../core/services/skill/skill.service';
 import { BookingService } from '../../../core/services/booking/booking.service';
 import { Skill } from '../../../core/models/skill.model';
 
+interface CalendarCell {
+  date: Date;
+  day: number;
+  inMonth: boolean;
+  isPast: boolean;
+  isSelected: boolean;
+}
+
 @Component({
   selector: 'app-booking-session',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './booking-session.html',
   styleUrls: ['./booking-session.scss'],
 })
 export class BookingSession implements OnInit {
+  readonly weekdayLabels = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+
+  // Every session is a fixed length — keeps mentor scheduling simple and
+  // guarantees a transition gap before their next booking. Not derived
+  // from the skill's advertised "duration" text.
+  readonly sessionDurationMinutes = 45;
+
   skill = signal<Skill | null>(null);
   isLoading = signal(true);
   errorMessage = signal('');
 
-  // Bound to the date/time <input>. Defaults to one hour from now so the
-  // field is never empty — the backend requires session_date.
-  sessionDateTime = signal<string>(this.defaultDateTime());
+  selectedDate = signal<Date>(this.defaultSelectedDate());
+  // 24-hour "HH:mm" — matches <input type="time">'s native value format.
+  startTime = signal<string>('11:30');
+  viewMonth = signal<Date>(this.startOfMonth(this.selectedDate()));
+
+  // The value actually submitted with the booking — kept as a plain
+  // "YYYY-MM-DDTHH:mm" string (same shape a <input type="datetime-local">
+  // produces) so confirmBooking() doesn't need to know it's now driven by
+  // the calendar/time picker instead of a raw input.
+  sessionDateTime = signal<string>(
+    this.toDateTimeLocalString(this.selectedDate(), this.startTime()),
+  );
   sessionNotes = signal('');
 
   isSubmitting = signal(false);
   submitError = signal('');
+
+  monthLabel = computed(() =>
+    this.viewMonth().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+  );
+
+  calendarCells = computed<CalendarCell[]>(() => {
+    const month = this.viewMonth();
+    const firstOfMonth = new Date(month.getFullYear(), month.getMonth(), 1);
+    // getDay(): 0=Sun..6=Sat — shift so the grid starts on Monday.
+    const leadingDays = (firstOfMonth.getDay() + 6) % 7;
+    const gridStart = new Date(firstOfMonth);
+    gridStart.setDate(gridStart.getDate() - leadingDays);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selected = this.selectedDate();
+
+    return Array.from({ length: 42 }, (_, i) => {
+      const date = new Date(gridStart);
+      date.setDate(gridStart.getDate() + i);
+      return {
+        date,
+        day: date.getDate(),
+        inMonth: date.getMonth() === month.getMonth(),
+        isPast: date < today,
+        isSelected: this.isSameDay(date, selected),
+      };
+    });
+  });
+
+  summaryDateLabel = computed(() =>
+    this.selectedDate().toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }),
+  );
+
+  startTimeLabel = computed(() => this.formatTimeLabel(this.startTime()));
+  endTime = computed(() => this.addMinutes(this.startTime(), this.sessionDurationMinutes));
+  endTimeLabel = computed(() => this.formatTimeLabel(this.endTime()));
+
+  rangeLabel = computed(
+    () => `${this.startTimeLabel()} — ${this.endTimeLabel()} (${this.sessionDurationMinutes} min)`,
+  );
 
   constructor(
     private route: ActivatedRoute,
@@ -55,11 +125,65 @@ export class BookingSession implements OnInit {
     });
   }
 
-  private defaultDateTime(): string {
-    const oneHourFromNow = new Date(Date.now() + 60 * 60 * 1000);
-    // datetime-local input needs "YYYY-MM-DDTHH:mm", local time, no timezone
+  changeMonth(delta: number): void {
+    const m = this.viewMonth();
+    this.viewMonth.set(new Date(m.getFullYear(), m.getMonth() + delta, 1));
+  }
+
+  selectDay(cell: CalendarCell): void {
+    if (cell.isPast) return;
+    this.selectedDate.set(cell.date);
+    this.syncSessionDateTime();
+  }
+
+  setStartTime(value: string): void {
+    if (!value) return;
+    this.startTime.set(value);
+    this.syncSessionDateTime();
+  }
+
+  private syncSessionDateTime(): void {
+    this.sessionDateTime.set(this.toDateTimeLocalString(this.selectedDate(), this.startTime()));
+  }
+
+  private defaultSelectedDate(): Date {
+    const d = new Date();
+    d.setDate(d.getDate() + 1); // tomorrow, so there's always a full day's notice
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  private startOfMonth(d: Date): Date {
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  }
+
+  private isSameDay(a: Date, b: Date): boolean {
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate()
+    );
+  }
+
+  private toDateTimeLocalString(date: Date, hhmm: string): string {
     const pad = (n: number) => String(n).padStart(2, '0');
-    return `${oneHourFromNow.getFullYear()}-${pad(oneHourFromNow.getMonth() + 1)}-${pad(oneHourFromNow.getDate())}T${pad(oneHourFromNow.getHours())}:${pad(oneHourFromNow.getMinutes())}`;
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${hhmm}`;
+  }
+
+  private formatTimeLabel(hhmm: string): string {
+    const [hour, minute] = hhmm.split(':').map(Number);
+    return new Date(2000, 0, 1, hour, minute).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  }
+
+  private addMinutes(hhmm: string, minutesToAdd: number): string {
+    const [hour, minute] = hhmm.split(':').map(Number);
+    const d = new Date(2000, 0, 1, hour, minute);
+    d.setMinutes(d.getMinutes() + minutesToAdd);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
 
   confirmBooking(): void {
@@ -83,8 +207,13 @@ export class BookingSession implements OnInit {
         error: (err) => {
           console.error('Failed to create booking:', err);
           this.isSubmitting.set(false);
+          // 422 is specifically what the backend returns for
+          // insufficient balance (see WalletService.charge_for_booking) —
+          // a clearer message than the raw backend detail string.
           this.submitError.set(
-            err?.error?.detail || 'Could not confirm this booking. Please try again.',
+            err?.status === 422
+              ? "You don't have enough Skill Coins for this session. Top up your wallet and try again."
+              : err?.error?.detail || 'Could not confirm this booking. Please try again.',
           );
         },
       });

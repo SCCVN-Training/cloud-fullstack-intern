@@ -22,6 +22,46 @@
 <div class="dashboard-grid">
   <!-- Left Column (Wider) -->
   <div class="main-col">
+    <!-- Pending Booking Requests -->
+    <div class="glass-card activity-card" *ngIf="!isLoadingPending() && pendingBookings().length > 0">
+      <div class="activity-header">
+        <h3 class="activity-title text-on-surface">Pending Booking Requests</h3>
+      </div>
+      <div class="activity-list hide-scrollbar">
+        <div class="activity-item" *ngFor="let booking of pendingBookings()">
+          <div class="activity-info-wrapper">
+            <div class="activity-icon-bg bg-primary-container text-on-primary-container">
+              <span class="material-symbols-outlined">event_upcoming</span>
+            </div>
+            <div class="activity-text">
+              <p class="activity-name text-on-surface">{{ booking.skillTitle || 'Skill Session' }}</p>
+              <p class="activity-desc text-on-surface-variant">
+                {{ booking.learnerName || 'A learner' }} · {{ booking.sessionDate | date: 'medium' }}
+              </p>
+            </div>
+          </div>
+          <div class="session-actions">
+            <button
+              class="btn-outline-primary"
+              type="button"
+              [disabled]="processingBookingId() === booking.id"
+              (click)="cancelBooking(booking)"
+            >
+              Cancel
+            </button>
+            <button
+              class="btn-primary"
+              type="button"
+              [disabled]="processingBookingId() === booking.id"
+              (click)="acceptBooking(booking)"
+            >
+              Accept
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Stats Bento -->
     <div class="stats-grid">
       <!-- Stat 1 -->

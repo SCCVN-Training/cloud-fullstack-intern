@@ -38,4 +38,17 @@ export class BookingService {
   updateBookingStatus(id: string, status: BookingStatus): Observable<Booking> {
     return this.http.patch<Booking>(`${this.apiUrl}/${id}/status`, { status });
   }
+
+  // GET /bookings — admin-only, every booking in the system (unlike
+  // /bookings/me, which is scoped to the caller). A non-admin caller
+  // gets a 403; the admin booking-management page is the only consumer.
+  getAllBookings(
+    skip = 0,
+    limit = 100,
+    status?: BookingStatus,
+  ): Observable<BookingListResponse> {
+    const params: Record<string, string> = { skip: String(skip), limit: String(limit) };
+    if (status) params['status'] = status;
+    return this.http.get<BookingListResponse>(this.apiUrl, { params });
+  }
 }

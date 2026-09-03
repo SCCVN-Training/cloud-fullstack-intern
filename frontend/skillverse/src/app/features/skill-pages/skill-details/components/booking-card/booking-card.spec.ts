@@ -11,7 +11,7 @@ const mockSkill: Skill = {
   description: 'Learn modern frontend architecture.',
   image: '/assets/images/skill-react.png',
   price: 120,
-  duration: '2h',
+  duration: 45,
   level: 'Intermediate',
   requirements: 'Basic React knowledge',
   rating: 4.8,
@@ -56,7 +56,7 @@ describe('BookingCard', () => {
     expect(compiled.querySelector('.price-value')?.textContent).toContain(
       mockSkill.price.toString(),
     );
-    expect(detailVals[0]).toContain(mockSkill.duration);
+    expect(detailVals[0]).toContain(String(mockSkill.duration));
     expect(detailVals[1]).toContain(mockSkill.level);
     expect(detailVals[2]).toContain(mockSkill.requirements);
   });

@@ -23,6 +23,11 @@ export interface Booking {
   skillTitle?: string;
   learnerName?: string;
   mentorName?: string;
+  // Only set on the response to a status update that transitioned this
+  // booking to COMPLETED — 'CREDITED' or 'FAILED'. Absent otherwise.
+  // Booking completion itself never fails because of a wallet issue; this
+  // is purely visibility into whether the mentor's payout landed.
+  creditStatus?: 'CREDITED' | 'FAILED';
 }
 
 // Matches marketplace-service's BookingListResponse.

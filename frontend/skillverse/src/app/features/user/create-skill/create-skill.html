@@ -1,109 +1,234 @@
-<main class="page-container flex-1 py-xl pb-32 flex justify-center">
-  <div class="form-wrapper w-full max-w-3xl">
-    <!-- Header -->
-    <div class="mb-lg text-center md:text-left">
-      <h1 class="text-headline-lg-mobile md:text-headline-lg text-on-surface mb-xs">Create New Skill</h1>
-      <p class="text-body-md text-on-surface-variant">Share your expertise with the SkillVerse community.</p>
+<main class="page-container flex-1 py-xl pb-32 flex justify-center bg-surface-container-lowest">
+  <div class="form-wrapper w-full max-w-4xl">
+    <!-- Header (Nằm ngoài form card) -->
+    <div class="mb-lg text-left pl-sm">
+      <h1 class="text-headline-md text-on-surface mb-xs font-bold">
+        {{ isEditMode ? 'Edit Skill' : 'Create New Skill' }}
+      </h1>
+      <p class="text-body-md text-on-surface-variant">
+        Share your expertise with the SkillVerse community.
+      </p>
     </div>
 
-    <!-- Form Container -->
-    <form class="glass-panel p-lg flex flex-col gap-lg">
-      
+    @if (loadError()) {
+      <p class="text-center text-body-sm mb-md" style="color: #b3261e">{{ loadError() }}</p>
+    }
+
+    <!-- Form Container (Khối nền trắng) -->
+    <form
+      class="form-card bg-white p-xl flex flex-col gap-lg shadow-sm rounded-3xl"
+      (ngSubmit)="submit()"
+    >
       <!-- Image Upload -->
-      <div class="flex flex-col gap-base">
-        <label class="text-title-lg text-on-surface">Skill Cover Image</label>
-        <div class="upload-area border-dashed bg-surface-container-lowest p-lg flex flex-col items-center justify-center text-center relative overflow-hidden group">
-          <div class="upload-bg absolute inset-0 opacity-10 bg-cover bg-center"></div>
-          <span class="material-symbols-outlined upload-icon z-10 mb-sm">cloud_upload</span>
-          <p class="text-body-md text-on-surface-variant z-10">
+      <div class="flex flex-col gap-sm">
+        <label class="text-title-md font-semibold text-on-surface">Skill Cover Image</label>
+        <div
+          class="upload-area border-dashed p-lg flex flex-col items-center justify-center text-center relative overflow-hidden group rounded-2xl"
+        >
+          <div class="upload-bg absolute inset-0 opacity-5 bg-cover bg-center"></div>
+          <span class="material-symbols-outlined upload-icon z-10 mb-xs text-primary"
+            >cloud_upload</span
+          >
+          <p class="text-body-sm text-on-surface-variant z-10">
             <span class="font-bold text-primary">Click to upload</span> or drag and drop
           </p>
-          <p class="text-label-sm text-outline mt-xs z-10">SVG, PNG, JPG or GIF (max. 5MB)</p>
-          <input class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" type="file">
+          <p class="text-label-xs text-outline mt-xs z-10">SVG, PNG, JPG or GIF (max. 5MB)</p>
+          <input class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" type="file" />
         </div>
       </div>
 
-      <!-- Basic Info Grid -->
-      <div class="grid-4 gap-md">
-        <div class="flex flex-col gap-xs col-4">
-          <label class="text-label-md text-on-surface" for="skillTitle">Skill Title</label>
-          <input class="custom-input p-sm text-body-md text-on-surface w-full" id="skillTitle" placeholder="e.g. Advanced UI Design with Figma" required type="text">
-        </div>
-        
-        <div class="flex flex-col gap-xs" style="grid-column: span 2">
-          <label class="text-label-md text-on-surface" for="category">Category</label>
-          <div class="relative">
-            <select class="custom-input p-sm pr-lg text-body-md text-on-surface w-full appearance-none" id="category">
-              <option disabled selected value="">Select a category</option>
+      <!-- Skill Title -->
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm font-semibold text-on-surface" for="skillTitle"
+          >Skill Title</label
+        >
+        <input
+          class="input-bordered p-sm px-md text-body-sm text-on-surface w-full"
+          id="skillTitle"
+          placeholder="e.g. Advanced UI Design with Figma"
+          required
+          type="text"
+          [(ngModel)]="title"
+          name="title"
+        />
+      </div>
+
+      <!-- Category & Price Grid -->
+      <div class="form-grid gap-md">
+        <div class="flex flex-col gap-xs">
+          <label class="text-label-sm font-semibold text-on-surface" for="category">Category</label>
+          <div class="relative flex">
+            <select
+              class="input-filled p-sm px-md pr-lg text-body-sm text-on-surface w-full appearance-none"
+              id="category"
+              required
+              [(ngModel)]="category"
+              name="category"
+            >
+              <option disabled value="">Select a category</option>
               <option value="design">Design & Arts</option>
               <option value="tech">Programming & Tech</option>
               <option value="business">Business & Marketing</option>
               <option value="music">Music & Audio</option>
             </select>
-            <span class="material-symbols-outlined absolute select-icon text-on-surface-variant">expand_more</span>
+            <span
+              class="material-symbols-outlined absolute select-icon text-on-surface-variant text-sm"
+              >expand_more</span
+            >
           </div>
         </div>
 
-        <div class="flex flex-col gap-xs" style="grid-column: span 2">
-          <label class="text-label-md text-on-surface" for="price">Price (Skill Coins)</label>
+        <div class="flex flex-col gap-xs">
+          <label class="text-label-sm font-semibold text-on-surface" for="price"
+            >Price (Skill Coins)</label
+          >
           <div class="relative flex items-center">
-            <span class="material-symbols-outlined absolute input-icon text-tertiary">monetization_on</span>
-            <input class="custom-input p-sm pl-lg text-body-md text-on-surface w-full" id="price" min="0" placeholder="0" type="number">
+            <span class="material-symbols-outlined absolute input-icon text-outline text-sm"
+              >monetization_on</span
+            >
+            <input
+              class="input-bordered p-sm pl-xl text-body-sm text-on-surface w-full"
+              id="price"
+              type="text"
+              disabled
+              [value]="computedPrice"
+            />
           </div>
+          <p class="text-label-xs text-outline">
+            Calculated automatically from session duration (max 100 coins at 45 minutes).
+          </p>
         </div>
       </div>
 
       <!-- Description -->
       <div class="flex flex-col gap-xs">
-        <label class="text-label-md text-on-surface" for="description">Description</label>
-        <textarea class="custom-input p-sm text-body-md text-on-surface w-full resize-none" id="description" placeholder="Describe what learners will achieve and what they need to know before starting..." rows="4"></textarea>
+        <label class="text-label-sm font-semibold text-on-surface" for="description"
+          >Description</label
+        >
+        <textarea
+          class="input-filled p-md text-body-sm text-on-surface w-full resize-none"
+          id="description"
+          placeholder="Describe what learners will achieve and what they need to know before starting..."
+          rows="4"
+          required
+          [(ngModel)]="description"
+          name="description"
+        ></textarea>
       </div>
 
-      <!-- Level & Duration -->
-      <div class="grid-4 gap-md">
-        <div class="flex flex-col gap-sm" style="grid-column: span 2">
-          <label class="text-label-md text-on-surface">Skill Level</label>
-          <div class="flex gap-sm">
-            <label class="flex-1 cursor-pointer">
-              <input class="sr-only" name="level" type="radio" value="beginner" (change)="selectLevel('beginner')" [checked]="selectedLevel === 'beginner'">
-              <div class="level-box p-sm text-center bg-surface-container-lowest" [class.active]="selectedLevel === 'beginner'">
-                <span class="text-label-md" [class.text-primary]="selectedLevel === 'beginner'">Beginner</span>
+      <!-- Requirements -->
+      <div class="flex flex-col gap-xs">
+        <label class="text-label-sm font-semibold text-on-surface" for="requirements"
+          >Requirements</label
+        >
+        <textarea
+          class="input-filled p-md text-body-sm text-on-surface w-full resize-none"
+          id="requirements"
+          placeholder="What should learners already know or have before booking this session?"
+          rows="2"
+          required
+          [(ngModel)]="requirements"
+          name="requirements"
+        ></textarea>
+      </div>
+
+      <!-- Level & Duration Grid -->
+      <div class="form-grid gap-md">
+        <div class="flex flex-col gap-xs">
+          <label class="text-label-sm font-semibold text-on-surface">Skill Level</label>
+          <div class="flex gap-sm h-full items-center">
+            <label class="cursor-pointer">
+              <input
+                class="sr-only"
+                name="level"
+                type="radio"
+                value="beginner"
+                (change)="selectLevel('beginner')"
+                [checked]="selectedLevel === 'beginner'"
+              />
+              <div
+                class="level-box px-md py-xs text-center"
+                [class.active]="selectedLevel === 'beginner'"
+              >
+                <span class="text-label-sm font-medium">Beginner</span>
               </div>
             </label>
-            <label class="flex-1 cursor-pointer">
-              <input class="sr-only" name="level" type="radio" value="intermediate" (change)="selectLevel('intermediate')" [checked]="selectedLevel === 'intermediate'">
-              <div class="level-box p-sm text-center bg-surface-container-lowest" [class.active]="selectedLevel === 'intermediate'">
-                <span class="text-label-md" [class.text-primary]="selectedLevel === 'intermediate'">Intermediate</span>
+            <label class="cursor-pointer">
+              <input
+                class="sr-only"
+                name="level"
+                type="radio"
+                value="intermediate"
+                (change)="selectLevel('intermediate')"
+                [checked]="selectedLevel === 'intermediate'"
+              />
+              <div
+                class="level-box px-md py-xs text-center"
+                [class.active]="selectedLevel === 'intermediate'"
+              >
+                <span class="text-label-sm font-medium">Intermediate</span>
               </div>
             </label>
-            <label class="flex-1 cursor-pointer">
-              <input class="sr-only" name="level" type="radio" value="advanced" (change)="selectLevel('advanced')" [checked]="selectedLevel === 'advanced'">
-              <div class="level-box p-sm text-center bg-surface-container-lowest" [class.active]="selectedLevel === 'advanced'">
-                <span class="text-label-md" [class.text-primary]="selectedLevel === 'advanced'">Advanced</span>
+            <label class="cursor-pointer">
+              <input
+                class="sr-only"
+                name="level"
+                type="radio"
+                value="advanced"
+                (change)="selectLevel('advanced')"
+                [checked]="selectedLevel === 'advanced'"
+              />
+              <div
+                class="level-box px-md py-xs text-center"
+                [class.active]="selectedLevel === 'advanced'"
+              >
+                <span class="text-label-sm font-medium">Advanced</span>
               </div>
             </label>
           </div>
         </div>
 
-        <div class="flex flex-col gap-xs" style="grid-column: span 2">
-          <label class="text-label-md text-on-surface" for="duration">Session Duration (Minutes)</label>
-          <div class="relative flex items-center">
-            <span class="material-symbols-outlined absolute input-icon text-tertiary">schedule</span>
-            <input class="custom-input p-sm pl-lg text-body-md text-on-surface w-full" id="duration" min="15" placeholder="60" step="15" type="number">
+        <div class="flex flex-col gap-xs">
+          <label class="text-label-sm font-semibold text-on-surface" for="duration"
+            >Session Duration (Minutes, max 45)</label
+          >
+          <div class="relative flex items-center h-full">
+            <span class="material-symbols-outlined absolute input-icon text-outline text-sm"
+              >schedule</span
+            >
+            <input
+              class="input-bordered p-sm pl-xl text-body-sm text-on-surface w-full h-full"
+              id="duration"
+              min="1"
+              max="45"
+              placeholder="45"
+              step="5"
+              type="number"
+              required
+              [(ngModel)]="duration"
+              name="duration"
+            />
           </div>
         </div>
       </div>
 
       <!-- Actions -->
-      <div class="form-actions flex justify-end gap-sm mt-md pt-lg">
-        <button class="btn-cancel text-label-md text-primary py-sm px-lg" type="button">
+      <div class="form-actions flex gap-md mt-md pt-md justify-end items-center">
+        <button
+          class="btn-cancel text-label-sm font-semibold py-sm px-md"
+          type="button"
+          (click)="cancel()"
+        >
           Cancel
         </button>
-        <button class="btn-submit text-on-primary py-sm px-lg shadow-md" type="submit">
-          Publish Skill
+        <button
+          class="btn-submit text-white text-label-sm font-semibold py-sm px-xl"
+          type="submit"
+          [disabled]="!canSubmit"
+        >
+          {{ isSaving() ? 'Saving…' : isEditMode ? 'Save Changes' : 'Publish Skill' }}
         </button>
       </div>
-
     </form>
   </div>
 </main>

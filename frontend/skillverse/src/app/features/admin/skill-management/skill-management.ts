@@ -1,16 +1,44 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
+import { SkillService } from '../../../core/services/skill/skill.service';
+import { ToastService } from '../../../shared/services/toast.service';
+import { Skill as ApiSkill } from '../../../core/models/skill.model';
+
+// Skill.rating/reviewCount stand in for "how much traction this skill
+// has" in this view — the backend has no per-skill approval/suspension
+// workflow, so `status` isn't a real field: every fetched skill is
+// 'active'. Kept as a real (if currently-inert) filter dimension rather
+// than removed, since a moderation status is a plausible near-future
+// addition and the UI already has the plumbing for it.
 interface Skill {
-  id: number;
+  id: string;
   title: string;
   description: string;
   category: string;
   mentor: string;
-  students: number;
+  reviewCount: number;
   createdDate: string;
   status: 'active' | 'pending' | 'suspended';
+}
+
+function toViewModel(skill: ApiSkill): Skill {
+  return {
+    id: skill.id,
+    title: skill.title,
+    description: skill.description,
+    category: skill.category,
+    mentor: skill.instructorName,
+    reviewCount: skill.reviewCount,
+    createdDate: new Date(skill.createdAt).toLocaleDateString(undefined, {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    }),
+    status: 'active',
+  };
 }
 
 @Component({
@@ -20,7 +48,7 @@ interface Skill {
   templateUrl: './skill-management.html',
   styleUrls: ['./skill-management.scss'],
 })
-export class SkillManagementComponent {
+export class SkillManagementComponent implements OnInit {
   // ========================================
   // Filters
   // ========================================
@@ -43,88 +71,28 @@ export class SkillManagementComponent {
   // Skills
   // ========================================
 
-  readonly skills: Skill[] = [
-    {
-      id: 1,
-      title: 'Advanced Watercolor Techniques',
-      description: 'Master fluid dynamics, color blending, and advanced watercolor methods.',
-      category: 'Art & Design',
-      mentor: 'Sarah Johnson',
-      students: 42,
-      createdDate: 'Jan 15, 2026',
-      status: 'active',
-    },
-    {
-      id: 2,
-      title: 'Digital Photography',
-      description: 'Learn composition, lighting, camera settings, and professional editing.',
-      category: 'Photography',
-      mentor: 'Michael Chen',
-      students: 36,
-      createdDate: 'Jan 22, 2026',
-      status: 'active',
-    },
-    {
-      id: 3,
-      title: 'Python Programming',
-      description: 'Build a strong foundation in Python programming and problem solving.',
-      category: 'Programming',
-      mentor: 'David Wilson',
-      students: 58,
-      createdDate: 'Feb 03, 2026',
-      status: 'active',
-    },
-    {
-      id: 4,
-      title: 'UI/UX Design Fundamentals',
-      description: 'Understand user research, wireframing, prototyping, and design systems.',
-      category: 'Design',
-      mentor: 'Emily Davis',
-      students: 31,
-      createdDate: 'Feb 10, 2026',
-      status: 'pending',
-    },
-    {
-      id: 5,
-      title: 'Conversational Spanish',
-      description: 'Develop practical Spanish speaking and listening skills for everyday use.',
-      category: 'Languages',
-      mentor: 'Carlos Martinez',
-      students: 27,
-      createdDate: 'Feb 18, 2026',
-      status: 'active',
-    },
-    {
-      id: 6,
-      title: 'Creative Writing',
-      description: 'Learn storytelling, character development, dialogue, and narrative structure.',
-      category: 'Writing',
-      mentor: 'Jessica Brown',
-      students: 24,
-      createdDate: 'Mar 01, 2026',
-      status: 'suspended',
-    },
-    {
-      id: 7,
-      title: 'Guitar for Beginners',
-      description: 'Learn basic chords, rhythm patterns, scales, and beginner songs.',
-      category: 'Music',
-      mentor: 'Daniel Lee',
-      students: 45,
-      createdDate: 'Mar 08, 2026',
-      status: 'active',
-    },
-    {
-      id: 8,
-      title: 'Public Speaking',
-      description: 'Improve confidence, presentation structure, delivery, and communication.',
-      category: 'Communication',
-      mentor: 'Sophia Taylor',
-      students: 19,
-      createdDate: 'Mar 15, 2026',
-      status: 'pending',
-    },
-  ];
+  skills: Skill[] = [];
+  isLoading = signal(true);
+
+  constructor(
+    private skillService: SkillService,
+    private toastService: ToastService,
+    private router: Router,
+  ) {}
+
+  ngOnInit(): void {
+    this.skillService.getSkills({ limit: 100 }).subscribe({
+      next: (res) => {
+        this.skills = res.skills.map(toViewModel);
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load skills:', err);
+        this.toastService.showError('Could not load skills. Please try again.');
+        this.isLoading.set(false);
+      },
+    });
+  }
 
   // ========================================
   // Filtered Skills
@@ -225,11 +193,14 @@ export class SkillManagementComponent {
   // ========================================
 
   viewSkill(skill: Skill): void {
-    console.log('View skill:', skill);
+    this.router.navigate(['/skill-details', skill.id]);
   }
 
   editSkill(skill: Skill): void {
-    console.log('Edit skill:', skill);
+    // Reuses the same owner-or-admin edit form instructors use — the
+    // backend already authorizes admins on PATCH /skills/{id}, no
+    // separate admin-only edit UI needed.
+    this.router.navigate(['/user/my-skills', skill.id, 'edit']);
   }
 
   deleteSkill(skill: Skill): void {
@@ -239,7 +210,18 @@ export class SkillManagementComponent {
       return;
     }
 
-    console.log('Delete skill:', skill);
+    this.skillService.deleteSkill(skill.id).subscribe({
+      next: () => {
+        this.skills = this.skills.filter((s) => s.id !== skill.id);
+        this.toastService.showSuccess('Skill deleted.');
+      },
+      error: (err) => {
+        console.error('Failed to delete skill:', err);
+        this.toastService.showError(
+          err?.error?.detail || 'Could not delete this skill. Please try again.',
+        );
+      },
+    });
   }
 
   // ========================================

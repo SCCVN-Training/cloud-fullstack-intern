@@ -21,6 +21,14 @@ export class SessionReview implements OnInit {
   isLoading = signal(true);
   loadError = signal('');
 
+  // Forwarded via router navigation state from video-call-session's
+  // endSession() — creditStatus isn't persisted on the booking, so a
+  // fresh GET /bookings/{id} here (below) can't recover it. history.state
+  // (not Router.getCurrentNavigation(), which is only populated during
+  // the navigation itself, not by the time ngOnInit runs) is how Angular
+  // exposes it to the destination component.
+  creditFailed = signal(false);
+
   overallRating = 0;
   knowledgeRating = 0;
   communicationRating = 0;
@@ -39,6 +47,8 @@ export class SessionReview implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.creditFailed.set(!!history.state?.['creditFailed']);
+
     const bookingId = this.route.snapshot.paramMap.get('bookingId');
     if (!bookingId) {
       this.loadError.set('No session specified to review.');
