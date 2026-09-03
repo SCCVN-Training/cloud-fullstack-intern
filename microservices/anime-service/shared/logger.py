@@ -64,17 +64,17 @@ def get_logger(name: str | None = None) -> logging.Logger:
             )
 
             # Instrument the built-in logging module globally
-            if not _IS_LOGGING_INSTRUMENTED:
-                try:
-                    from opentelemetry.instrumentation.logging import (
-                        LoggingInstrumentor,
-                    )
+            # if not _IS_LOGGING_INSTRUMENTED:
+            #     try:
+            #         from opentelemetry.instrumentation.logging import (
+            #             LoggingInstrumentor,
+            #         )
 
-                    LoggingInstrumentor().instrument(set_logging_format=True)
-                    _IS_LOGGING_INSTRUMENTED = True
-                except ImportError:
-                    # Fallback just in case dependencies are missing
-                    pass
+            #         LoggingInstrumentor().instrument(set_logging_format=True)
+            #         _IS_LOGGING_INSTRUMENTED = True
+            #     except ImportError:
+            #         # Fallback just in case dependencies are missing
+            #         pass
 
         handler.setFormatter(formatter)
         logger.addHandler(handler)
