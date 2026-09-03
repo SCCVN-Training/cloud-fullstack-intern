@@ -62,13 +62,18 @@ from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 if not settings.is_development:
     try:
-        resource = Resource.create(attributes={
-            "service.name": os.getenv("OTEL_SERVICE_NAME", settings.project_name)
-        })
+        resource = Resource.create(
+            attributes={
+                "service.name": os.getenv("OTEL_SERVICE_NAME", settings.project_name)
+            }
+        )
 
         provider = TracerProvider(resource=resource)
 
-        otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://adot-collector-opentelemetry-collector.amazon-cloudwatch.svc.cluster.local:4317")
+        otlp_endpoint = os.getenv(
+            "OTEL_EXPORTER_OTLP_ENDPOINT",
+            "http://adot-collector-opentelemetry-collector.amazon-cloudwatch.svc.cluster.local:4317",
+        )
         exporter = OTLPSpanExporter(endpoint=otlp_endpoint, insecure=True)
 
         provider.add_span_processor(BatchSpanProcessor(exporter))
