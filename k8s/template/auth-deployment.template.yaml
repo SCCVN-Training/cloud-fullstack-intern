@@ -49,6 +49,8 @@ spec:
               value: "grpc"
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "service.name=auth-service"
+            - name: OTEL_LOGS_EXPORTER
+              value: "otlp"
 ---
 apiVersion: v1
 kind: Service

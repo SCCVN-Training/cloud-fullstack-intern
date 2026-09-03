@@ -45,7 +45,7 @@ resource "aws_cloudfront_distribution" "frontend_cdn" {
   }
 
   origin {
-    domain_name = "abba2eedeb3cc4df8992f66cb446b014-993153719.ap-southeast-1.elb.amazonaws.com"
+    domain_name = "ad29def6db30343e38b560a032cb4469-1693351966.ap-southeast-1.elb.amazonaws.com"
     origin_id   = "EKS-Backend-ALB"
 
     custom_origin_config {
