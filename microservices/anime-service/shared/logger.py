@@ -1,9 +1,11 @@
 import logging
 import sys
 
+from opentelemetry import trace
+
 from shared.config import settings
 
-_IS_LOGGING_INSTRUMENTED = False
+# _IS_LOGGING_INSTRUMENTED = False
 
 
 class OTelFallbackFilter(logging.Filter):
@@ -14,9 +16,14 @@ class OTelFallbackFilter(logging.Filter):
     """
 
     def filter(self, record: logging.LogRecord) -> bool:
-        if not hasattr(record, "otelTraceID"):
+        span = trace.get_current_span()
+        ctx = span.get_span_context()
+
+        if ctx.is_valid:
+            record.otelTraceID = trace.format_trace_id(ctx.trace_id)
+            record.otelSpanID = trace.format_span_id(ctx.span_id)
+        else:
             record.otelTraceID = "0"
-        if not hasattr(record, "otelSpanID"):
             record.otelSpanID = "0"
         return True
 
@@ -37,7 +44,7 @@ def get_logger(name: str | None = None) -> logging.Logger:
         logger = get_logger(__name__)
         logger.info("Application started")
     """
-    global _IS_LOGGING_INSTRUMENTED
+    # global _IS_LOGGING_INSTRUMENTED
     logger = logging.getLogger(name or __name__)
 
     # Only configure if no handlers exist (prevent duplicate logs)
@@ -64,17 +71,17 @@ def get_logger(name: str | None = None) -> logging.Logger:
             )
 
             # Instrument the built-in logging module globally
-            if not _IS_LOGGING_INSTRUMENTED:
-                try:
-                    from opentelemetry.instrumentation.logging import (
-                        LoggingInstrumentor,
-                    )
+            # if not _IS_LOGGING_INSTRUMENTED:
+            #     try:
+            #         from opentelemetry.instrumentation.logging import (
+            #             LoggingInstrumentor,
+            #         )
 
-                    LoggingInstrumentor().instrument(set_logging_format=False)
-                    _IS_LOGGING_INSTRUMENTED = True
-                except ImportError:
-                    # Fallback just in case dependencies are missing
-                    pass
+            #         LoggingInstrumentor().instrument(set_logging_format=False)
+            #         _IS_LOGGING_INSTRUMENTED = True
+            #     except ImportError:
+            #         # Fallback just in case dependencies are missing
+            #         pass
 
         handler.setFormatter(formatter)
         logger.addHandler(handler)
