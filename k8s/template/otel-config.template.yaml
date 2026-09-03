@@ -11,3 +11,7 @@ data:
   OTEL_LOGS_EXPORTER: "otlp"
   OTEL_PYTHON_LOG_CORRELATION: "true"
   OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+  # Set sampling strategy to ratio-based to reduce X-Ray ingestion costs
+  OTEL_TRACES_SAMPLER: "traceidratio"
+  # Only sample 10 percent of all incoming HTTP requests
+  OTEL_TRACES_SAMPLER_ARG: "0.1"

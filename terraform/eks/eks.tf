@@ -256,3 +256,5 @@ module "adot_collector" {
     aws_eks_node_group.nodes
   ]
 }
+
+

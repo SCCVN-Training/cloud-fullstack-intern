@@ -26,3 +26,13 @@ resource "helm_release" "adot_collector" {
     file("${path.module}/adot-values.yaml")
   ]
 }
+
+resource "aws_cloudwatch_log_group" "application_logs" {
+  name              = "/otakutory/eks/application-logs"
+  retention_in_days = 3
+}
+
+resource "aws_cloudwatch_log_group" "metrics_logs" {
+  name              = "/otakutory/eks/metrics"
+  retention_in_days = 3
+}
