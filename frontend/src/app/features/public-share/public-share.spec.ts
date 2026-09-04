@@ -70,13 +70,13 @@ describe('PublicShareComponent', () => {
       imports: [PublicShareComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
-        { 
-          provide: ActivatedRoute, 
-          useValue: { 
-            paramMap: of({ 
-              get: (key: string) => key === 'token' ? 'test-token' : null 
-            }) 
-          } 
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of({
+              get: (key: string) => key === 'token' ? 'test-token' : null
+            })
+          }
         },
         { provide: ShareService, useValue: mockShareService },
         { provide: FileOperationsService, useValue: mockFileOps },
