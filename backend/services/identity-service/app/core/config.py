@@ -7,6 +7,15 @@ class Settings(BaseSettings):
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
+    # CORS allowed frontend origins.
+    # Comma-separated so it can be configured easily through .env
+    # or Kubernetes Secrets.
+    #ALLOWED_ORIGINS: str = "http://localhost:4200,http://127.0.0.1:4200"
+
+    @property
+    def allowed_origins_list(self) -> list[str]:
+        return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
+
     TRAINING_API_KEY: str = "demo-key-123"
 
     # Local file storage — pre-S3 stand-in for avatar uploads (see
