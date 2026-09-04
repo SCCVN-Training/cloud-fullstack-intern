@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     # CORS allowed frontend origins.
     # Comma-separated so it can be configured easily through .env
     # or Kubernetes Secrets.
-    #ALLOWED_ORIGINS: str = "http://localhost:4200,http://127.0.0.1:4200"
+    ALLOWED_ORIGINS: str = "http://localhost:4200,http://127.0.0.1:4200"
 
     @property
     def allowed_origins_list(self) -> list[str]:

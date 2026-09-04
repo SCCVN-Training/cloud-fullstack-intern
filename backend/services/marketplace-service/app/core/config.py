@@ -10,6 +10,12 @@ class Settings(BaseSettings):
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
 
+    ALLOWED_ORIGINS: str = "http://localhost:4200,http://127.0.0.1:4200"
+
+    @property
+    def allowed_origins_list(self) -> list[str]:
+        return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
+
     TRAINING_API_KEY: str = "demo-key-123"
 
     # Base URL this service uses to reach identity-service for the one
