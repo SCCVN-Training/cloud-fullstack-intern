@@ -9,6 +9,7 @@ from slowapi.errors import RateLimitExceeded
 from app.core.aws_secrets import load_secrets_into_environment
 load_secrets_into_environment()
 
+from app.core.config import settings
 from app.core.database import Base, engine
 from app.core.rate_limit import limiter
 from app.core.exceptions import register_exception_handlers
@@ -57,10 +58,7 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:4200",
-        "http://127.0.0.1:4200",
-    ],
+    allow_origins=settings.allowed_origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
