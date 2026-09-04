@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: marketplace-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: marketplace-service }
+  template:
+    metadata:
+      labels: { app: marketplace-service }
+    spec:
+      imagePullSecrets:
+        - name: ecr-secret
+      containers:
+        - name: marketplace-service
+          image: 455880746025.dkr.ecr.ap-southeast-1.amazonaws.com/skillverse-marketplace:latest
+          ports:
+            - containerPort: 8002
+          envFrom:
+            - secretRef:
+                name: marketplace-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: marketplace-service
+spec:
+  selector: { app: marketplace-service }
+  ports:
+    - port: 80
+      targetPort: 8002

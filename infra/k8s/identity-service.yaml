@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: identity-service }
+  template:
+    metadata:
+      labels: { app: identity-service }
+    spec:
+      imagePullSecrets:
+        - name: ecr-secret
+      containers:
+        - name: identity-service
+          image: 455880746025.dkr.ecr.ap-southeast-1.amazonaws.com/skillverse-identity:latest
+          ports:
+            - containerPort: 8001
+          envFrom:
+            - secretRef:
+                name: identity-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-service
+spec:
+  selector: { app: identity-service }
+  ports:
+    - port: 80
+      targetPort: 8001
