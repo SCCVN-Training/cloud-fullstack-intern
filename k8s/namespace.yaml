@@ -1,0 +1,10 @@
+apiVersion: v2
+kind: Namespace
+metadata:
+  name: nephos
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nephos-sa
+  namespace: nephos
