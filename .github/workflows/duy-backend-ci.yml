@@ -3,12 +3,12 @@ name: Duy's Backend CI (Build & Test)
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main, dev, dev-duy, aws-deploy, duy-aws-deploy]
+    branches: [dev-duy, aws-deploy, duy-aws-deploy]
     paths:
       - "backend-v2/**"
-      - ".github/workflows/backend-ci.yml"
+      - ".github/workflows/duy-backend-ci.yml"
   push:
-    branches: [main, dev, dev-duy, aws-deploy, duy-aws-deploy]
+    branches: [dev-duy, aws-deploy, duy-aws-deploy]
     paths:
       - "backend-v2/**"
       - ".github/workflows/backend-ci.yml"

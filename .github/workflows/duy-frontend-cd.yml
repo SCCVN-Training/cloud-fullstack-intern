@@ -3,10 +3,10 @@ name: Duy's Frontend CD (Deploy to AWS)
 on:
   workflow_dispatch:
   push:
-    branches: [main, dev, dev-duy, aws-deploy, duy-aws-deploy]
+    branches: [dev-duy, aws-deploy, duy-aws-deploy]
     paths:
       - "frontend/**"
-      - ".github/workflows/frontend-cd.yml"
+      - ".github/workflows/duy-frontend-cd.yml"
 
 permissions:
   id-token: write # Required for OIDC

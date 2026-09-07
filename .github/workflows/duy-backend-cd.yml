@@ -3,11 +3,11 @@ name: Duy's Backend CD (Deploy to AWS)
 on:
   workflow_dispatch:
   push:
-    branches: [main, dev, dev-duy, aws-deploy, duy-aws-deploy]
+    branches: [dev-duy, aws-deploy, duy-aws-deploy]
     paths:
       - "backend-v2/**"
       - "k8s/**"
-      - ".github/workflows/backend-cd.yml"
+      - ".github/workflows/duy-backend-cd.yml"
 
 permissions:
   id-token: write # Required for OIDC
