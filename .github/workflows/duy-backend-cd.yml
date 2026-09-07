@@ -27,7 +27,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Inspect OIDC Token and STS Error
         env:
@@ -49,14 +49,14 @@ jobs:
           aws sts assume-role-with-web-identity --role-arn "$ROLE_ARN" --role-session-name "DebugSession" --web-identity-token "$RAW_TOKEN" --region ${{ env.AWS_REGION }}
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6.2.4
         with:
           role-to-assume: ${{ secrets.DUY_AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2.1.7
 
       - name: Build, tag, and push Docker image for Auth Service
         env:
