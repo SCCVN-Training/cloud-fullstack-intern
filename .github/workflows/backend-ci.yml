@@ -1,4 +1,4 @@
-name: Backend CI (Build & Test)
+name: Duy's Backend CI (Build & Test)
 
 on:
   workflow_dispatch:

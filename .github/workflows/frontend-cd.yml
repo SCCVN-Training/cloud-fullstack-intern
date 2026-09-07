@@ -1,4 +1,4 @@
-name: Frontend CD (Deploy to AWS)
+name: Duy's Frontend CD (Deploy to AWS)
 
 on:
   workflow_dispatch:
@@ -19,6 +19,9 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for OIDC
+      contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3

@@ -1,4 +1,4 @@
-name: Frontend CI (Build & Test)
+name: Duy's Frontend CI (Build & Test)
 
 on:
   workflow_dispatch:
