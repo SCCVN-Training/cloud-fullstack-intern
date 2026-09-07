@@ -181,15 +181,20 @@ export class FileOperationsService {
   getSharedWithMe(): Observable<StorageContentResponse> {
     return this.http.get<StorageContentResponse>(
       FILE_OPERATION_ENDPOINTS.getSharedWithMe,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
-  getBreadcrumbs(targetId: string, isFile: boolean = false): Observable<BreadcrumbsResponse> {
-    const params = new HttpParams().set('target_id', targetId).set('is_file', isFile.toString());
+  getBreadcrumbs(
+    targetId: string,
+    isFile: boolean = false,
+  ): Observable<BreadcrumbsResponse> {
+    const params = new HttpParams()
+      .set('target_id', targetId)
+      .set('is_file', isFile.toString());
     return this.http.get<BreadcrumbsResponse>(
       FILE_OPERATION_ENDPOINTS.getBreadcrumbs,
-      { params, withCredentials: true }
+      { params, withCredentials: true },
     );
   }
 
@@ -399,6 +404,40 @@ export class FileOperationsService {
         {
           folder_name: folderName,
           parent_folder_id: parentFolderId ?? null,
+        },
+        { withCredentials: true },
+      )
+      .pipe(map((result) => this.toDriveFolder(result)));
+  }
+
+  moveFile(
+    fileId: string,
+    parentFolderId: string | null,
+    onCollision: 'replace' | 'keep_duplicate' = 'keep_duplicate',
+  ): Observable<DriveFileItem> {
+    return this.http
+      .patch<BackendFileResponse>(
+        FILE_OPERATION_ENDPOINTS.moveFile(fileId),
+        {
+          parent_folder_id: parentFolderId,
+          on_collision: onCollision,
+        },
+        { withCredentials: true },
+      )
+      .pipe(map((result) => this.toDriveFile(result)));
+  }
+
+  moveFolder(
+    folderId: string,
+    parentFolderId: string | null,
+    onCollision: 'merge' | 'keep_duplicate' = 'keep_duplicate',
+  ): Observable<DriveFolderItem> {
+    return this.http
+      .patch<BackendFolderResponse>(
+        FILE_OPERATION_ENDPOINTS.moveFolder(folderId),
+        {
+          parent_folder_id: parentFolderId,
+          on_collision: onCollision,
         },
         { withCredentials: true },
       )

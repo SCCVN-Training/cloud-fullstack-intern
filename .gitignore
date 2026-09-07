@@ -27,11 +27,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/__pycache__/
+__pycache__
 /.pytest_cache
 .env
 venv
 *.txt
+!*design_tables*.txt
+!requirements.txt
 .vscode
 postman
 .postman

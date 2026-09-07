@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -15,12 +15,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DriveItem } from '../../shared/components/drive-item-card/drive-item.model';
-import { ShareService, ShareState, SharedUser } from '../../core/share/services/share.service';
+import {
+  ShareService,
+  ShareState,
+  SharedUser,
+} from '../../core/share/services/share.service';
 
 @Component({
   selector: 'app-share-dialog',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatDialogModule,
     MatButtonModule,
@@ -29,10 +32,10 @@ import { ShareService, ShareState, SharedUser } from '../../core/share/services/
     MatInputModule,
     MatSelectModule,
     MatSlideToggleModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   templateUrl: './share-dialog.html',
-  styleUrls: ['./share-dialog.scss'],
+  styleUrl: './share-dialog.scss',
 })
 export class ShareDialog implements OnInit {
   private shareService = inject(ShareService);
@@ -48,13 +51,13 @@ export class ShareDialog implements OnInit {
   shareUserForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     permission: ['view'],
-    password: ['']
+    password: [''],
   });
 
   publicLinkForm = this.fb.group({
     enabled: [false],
     permission: ['view'],
-    password: ['']
+    password: [''],
   });
 
   public dialogRef = inject<MatDialogRef<ShareDialog>>(MatDialogRef);
@@ -68,9 +71,10 @@ export class ShareDialog implements OnInit {
   ngOnInit(): void {
     this.loadShareState();
 
-    this.publicLinkForm.get('enabled')?.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(enabled => {
+    this.publicLinkForm
+      .get('enabled')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((enabled) => {
         if (!enabled) {
           this.updatePublicLink();
         }
@@ -79,21 +83,26 @@ export class ShareDialog implements OnInit {
 
   loadShareState(): void {
     this.isLoading.set(true);
-    this.shareService.getShareState(this.item.id, this.isFile)
+    this.shareService
+      .getShareState(this.item.id, this.isFile)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (state) => {
           this.shareState.set(state);
-          this.publicLinkForm.patchValue({
-            enabled: state.public_link.enabled,
-            permission: state.public_link.permission
-          }, { emitEvent: false });
+          this.publicLinkForm.patchValue(
+            {
+              enabled: state.public_link.enabled,
+              permission: state.public_link.permission,
+            },
+            { emitEvent: false },
+          );
           this.isLoading.set(false);
         },
-        error: (err: unknown) => { // TODO: Replaced implicit any with unknown
+        error: (err: unknown) => {
+          // TODO: Replaced implicit any with unknown
           console.error('Failed to load share state', err);
           this.isLoading.set(false);
-        }
+        },
       });
   }
 
@@ -102,9 +111,17 @@ export class ShareDialog implements OnInit {
 
     const { email, permission, password } = this.shareUserForm.getRawValue();
     if (!email) return;
-    const validPermission = (permission === 'edit' ? 'edit' : 'view') as 'view' | 'edit';
+    const validPermission = (permission === 'edit' ? 'edit' : 'view') as
+      'view' | 'edit';
 
-    this.shareService.shareWithUser(this.item.id, this.isFile, email, validPermission, password ?? undefined)
+    this.shareService
+      .shareWithUser(
+        this.item.id,
+        this.isFile,
+        email,
+        validPermission,
+        password ?? undefined,
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -113,12 +130,13 @@ export class ShareDialog implements OnInit {
         },
         error: (err: unknown) => {
           console.error('Failed to add user share', err);
-        }
+        },
       });
   }
 
   updateUserPermission(user: SharedUser, permission: 'view' | 'edit'): void {
-    this.shareService.shareWithUser(this.item.id, this.isFile, user.email, permission)
+    this.shareService
+      .shareWithUser(this.item.id, this.isFile, user.email, permission)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -126,12 +144,13 @@ export class ShareDialog implements OnInit {
         },
         error: (err: unknown) => {
           console.error('Failed to update user permission', err);
-        }
+        },
       });
   }
 
   removeUserShare(user: SharedUser): void {
-    this.shareService.revokeUserShare(this.item.id, this.isFile, user.email)
+    this.shareService
+      .revokeUserShare(this.item.id, this.isFile, user.email)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -139,14 +158,22 @@ export class ShareDialog implements OnInit {
         },
         error: (err: unknown) => {
           console.error('Failed to remove user share', err);
-        }
+        },
       });
   }
 
   updatePublicLink(): void {
     const { enabled, permission, password } = this.publicLinkForm.getRawValue();
-    const validPermission = (permission === 'edit' ? 'edit' : 'view') as 'view' | 'edit';
-    this.shareService.setPublicLink(this.item.id, this.isFile, enabled ?? false, validPermission, password ?? undefined)
+    const validPermission = (permission === 'edit' ? 'edit' : 'view') as
+      'view' | 'edit';
+    this.shareService
+      .setPublicLink(
+        this.item.id,
+        this.isFile,
+        enabled ?? false,
+        validPermission,
+        password ?? undefined,
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -154,7 +181,7 @@ export class ShareDialog implements OnInit {
         },
         error: (err: unknown) => {
           console.error('Failed to update public link', err);
-        }
+        },
       });
   }
 

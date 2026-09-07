@@ -10,23 +10,17 @@ import {
   computed,
   OnInit,
   OnDestroy,
-  DestroyRef
+  DestroyRef,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  Subject,
-  switchMap,
-  of,
-  catchError,
-  firstValueFrom,
-} from 'rxjs';
+import { Subject, switchMap, of, catchError, firstValueFrom } from 'rxjs';
 import { DashboardHeader } from '../../shared/components/dashboard-header/dashboard-header';
 import {
   SidePanel,
@@ -85,7 +79,6 @@ type DriveSection = 'root' | 'shared-with-me';
 @Component({
   selector: 'app-drive',
   imports: [
-    CommonModule,
     RouterModule,
     MatIconModule,
     MatButtonModule,
@@ -99,7 +92,7 @@ type DriveSection = 'root' | 'shared-with-me';
     Breadcrumb,
   ],
   templateUrl: './drive.html',
-  styleUrls: ['./drive.scss'],
+  styleUrl: './drive.scss',
 })
 export class Drive implements OnInit, OnDestroy {
   readonly storageState = inject(StorageStateService);
@@ -110,7 +103,7 @@ export class Drive implements OnInit, OnDestroy {
   currentSection = signal<DriveSection>('root');
   currentFolderId = signal<string | null>(null);
   breadcrumbs = signal<BreadcrumbItem[]>([]);
-  pageTitle = signal<string>('Cloud Drive');
+  pageTitle = signal<string>('Home');
 
   // Whether the user can upload/create in the current view
   canWrite = signal<boolean>(true);
@@ -149,7 +142,7 @@ export class Drive implements OnInit, OnDestroy {
             }),
           );
         }),
-        takeUntilDestroyed(this.destroyRef)
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((data: StorageContentResponse) => {
         const folderItems: DriveItem[] = (data.folders ?? []).map(
@@ -167,22 +160,24 @@ export class Drive implements OnInit, OnDestroy {
           }),
         );
 
-        const fileItems: DriveItem[] = (data.files ?? []).map((f: FileItem) => ({
-          id: f.id,
-          ownerId: f.owner_id,
-          parentFolderId: f.parent_folder_id,
-          path: f.path,
-          name: f.file_name,
-          itemType: 'file',
-          storageKey: f.storage_key,
-          sizeBytes: f.size_bytes,
-          mimeType: f.mime_type,
-          contentHash: f.content_hash,
-          isTrashed: f.is_trashed,
-          trashedAt: f.trashed_at,
-          createdAt: f.created_at,
-          updatedAt: f.updated_at,
-        }));
+        const fileItems: DriveItem[] = (data.files ?? []).map(
+          (f: FileItem) => ({
+            id: f.id,
+            ownerId: f.owner_id,
+            parentFolderId: f.parent_folder_id,
+            path: f.path,
+            name: f.file_name,
+            itemType: 'file',
+            storageKey: f.storage_key,
+            sizeBytes: f.size_bytes,
+            mimeType: f.mime_type,
+            contentHash: f.content_hash,
+            isTrashed: f.is_trashed,
+            trashedAt: f.trashed_at,
+            createdAt: f.created_at,
+            updatedAt: f.updated_at,
+          }),
+        );
 
         this.items.set([...folderItems, ...fileItems]);
         this.isLoading.set(false);
@@ -218,41 +213,42 @@ export class Drive implements OnInit, OnDestroy {
     const folderId = folderIdx !== -1 ? (parts[folderIdx + 1] ?? null) : null;
 
     const prevFolderId = this.currentFolderId();
+    const prevNav = this.currentNav();
+    let newNav: SidePanelNavKey = 'home';
+
+    if (path.includes('shared-with-me')) {
+      newNav = 'shared';
+    } else if (path.includes('trash')) {
+      newNav = 'trash';
+    } else if (path.includes('starred')) {
+      newNav = 'home';
+    } else if (path.includes('recent')) {
+      newNav = 'recent';
+    }
 
     // Skip if nothing changed (prevents double-fetching on router events that aren't navigations)
-    if (this.initialized && prevFolderId === folderId) return;
+    if (this.initialized && prevFolderId === folderId && prevNav === newNav)
+      return;
     this.initialized = true;
 
     this.currentFolderId.set(folderId);
-
-    if (path.includes('shared-with-me')) {
-      this.currentNav.set('shared');
-    } else if (path.includes('trash')) {
-      this.currentNav.set('trash');
-    } else if (path.includes('starred')) {
-      // this.currentNav.set('starred');
-      // Placeholder until Favorites page is implemented
-      this.currentNav.set('home');
-    } else if (path.includes('recent')) {
-      this.currentNav.set('recent');
-    } else {
-      this.currentNav.set('home'); // Default fallback
-    }
+    this.currentNav.set(newNav);
 
     if (folderId) {
       this.fetchBreadcrumbs(folderId, false);
       document.title = 'Nephos - Loading...';
     } else {
       this.breadcrumbs.set([]);
-      this.pageTitle.set('Cloud Drive');
-      document.title = `Nephos - Cloud Drive`;
+      this.pageTitle.set('Home');
+      document.title = `Nephos - Home`;
     }
 
     this.routeChange$.next({ folderId });
   }
 
   private fetchBreadcrumbs(folderId: string, isFile: boolean): void {
-    this.fileService.getBreadcrumbs(folderId, isFile)
+    this.fileService
+      .getBreadcrumbs(folderId, isFile)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
@@ -348,7 +344,8 @@ export class Drive implements OnInit, OnDestroy {
   }
 
   private createFolder(folderName: string, parentFolderId?: string): void {
-    this.fileService.createFolder(folderName, parentFolderId)
+    this.fileService
+      .createFolder(folderName, parentFolderId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (folder) => {
@@ -357,8 +354,7 @@ export class Drive implements OnInit, OnDestroy {
         error: (error) => {
           console.error('Create folder failed:', error);
         },
-      }
-    );
+      });
   }
 
   onOpenItem(item: DriveItem): void {
@@ -379,7 +375,8 @@ export class Drive implements OnInit, OnDestroy {
   onDownloadItem(item: DriveItem): void {
     if (item.itemType !== 'file') return;
 
-    this.fileService.downloadFile(item.id)
+    this.fileService
+      .downloadFile(item.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (blob) => {
@@ -393,8 +390,7 @@ export class Drive implements OnInit, OnDestroy {
         error: (error) => {
           console.error('Download failed:', error);
         },
-      }
-    );
+      });
   }
 
   onShareItem(item: DriveItem): void {
@@ -406,7 +402,8 @@ export class Drive implements OnInit, OnDestroy {
 
   onTrashItem(item: DriveItem): void {
     if (item.itemType === 'file') {
-      this.fileService.trashFile(item.id)
+      this.fileService
+        .trashFile(item.id)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
@@ -420,7 +417,8 @@ export class Drive implements OnInit, OnDestroy {
           },
         });
     } else {
-      this.fileService.trashFolder(item.id)
+      this.fileService
+        .trashFolder(item.id)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
@@ -432,8 +430,80 @@ export class Drive implements OnInit, OnDestroy {
           error: (error) => {
             console.error('Trash folder failed:', error);
           },
-        }
+        });
+    }
+  }
+
+  onMoveItem(event: {
+    sourceId: string;
+    sourceType: 'file' | 'folder';
+    targetFolderId: string | null;
+  }): void {
+    const sourceItem = this.items().find((i) => i.id === event.sourceId);
+    const sourceName =
+      sourceItem?.name ?? (event.sourceType === 'file' ? 'File' : 'Folder');
+
+    let targetName = 'Home';
+    if (event.targetFolderId) {
+      const targetItem = this.items().find(
+        (i) => i.id === event.targetFolderId,
       );
+      if (targetItem) {
+        targetName = targetItem.name;
+      } else {
+        const targetCrumb = this.breadcrumbs().find(
+          (c) => c.id === event.targetFolderId,
+        );
+        if (targetCrumb) {
+          targetName = targetCrumb.name;
+        }
+      }
+    }
+
+    if (event.sourceType === 'file') {
+      this.fileService
+        .moveFile(event.sourceId, event.targetFolderId)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.items.update((items) =>
+              items.filter((i) => i.id !== event.sourceId),
+            );
+            this.snackBar.open(
+              `"${sourceName}" was moved into "${targetName}"`,
+              'Dismiss',
+              { duration: 3000 },
+            );
+          },
+          error: (err) => {
+            console.error('Failed to move file', err);
+            this.snackBar.open('Failed to move file', 'Dismiss', {
+              duration: 3000,
+            });
+          },
+        });
+    } else {
+      this.fileService
+        .moveFolder(event.sourceId, event.targetFolderId)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.items.update((items) =>
+              items.filter((i) => i.id !== event.sourceId),
+            );
+            this.snackBar.open(
+              `"${sourceName}" was moved into "${targetName}"`,
+              'Dismiss',
+              { duration: 3000 },
+            );
+          },
+          error: (err) => {
+            console.error('Failed to move folder', err);
+            this.snackBar.open('Failed to move folder', 'Dismiss', {
+              duration: 3000,
+            });
+          },
+        });
     }
   }
 }

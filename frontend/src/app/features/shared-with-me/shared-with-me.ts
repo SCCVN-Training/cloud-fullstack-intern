@@ -1,4 +1,4 @@
-﻿import {
+import {
   Component,
   inject,
   signal,
@@ -6,7 +6,7 @@
   OnInit,
   OnDestroy,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,11 +31,10 @@ import { DriveItemCard } from '../../shared/components/drive-item-card/drive-ite
 import { DriveItem } from '../../shared/components/drive-item-card/drive-item.model';
 import { ShareDialog } from '../share-dialog/share-dialog';
 import { Breadcrumb } from '../../shared/components/breadcrumb/breadcrumb';
+import { FilePreview } from '../file-preview/file-preview';
 @Component({
   selector: 'app-shared-with-me',
-  standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     MatIconModule,
     MatButtonModule,
@@ -48,7 +47,7 @@ import { Breadcrumb } from '../../shared/components/breadcrumb/breadcrumb';
     Breadcrumb,
   ],
   templateUrl: './shared-with-me.html',
-  styleUrls: ['../drive/drive.scss'], // Reusing drive layout styles
+  styleUrl: '../drive/drive.scss', // Reusing drive layout styles
 })
 export class SharedWithMe implements OnInit, OnDestroy {
   readonly storageState = inject(StorageStateService);
@@ -195,6 +194,14 @@ export class SharedWithMe implements OnInit, OnDestroy {
   onOpenItem(item: DriveItem): void {
     if (item.itemType === 'folder') {
       this.router.navigateByUrl(`/drive/shared-with-me/folder/${item.id}`);
+    } else {
+      this.dialog.open(FilePreview, {
+        width: '80vw',
+        height: '80vh',
+        maxWidth: '1200px',
+        panelClass: 'preview-dialog-panel',
+        data: { item },
+      });
     }
   }
 

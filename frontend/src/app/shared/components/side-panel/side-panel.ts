@@ -6,14 +6,15 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { Router } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router, RouterModule } from '@angular/router';
 import { DEFAULT_STORAGE_QUOTA_BYTES } from '../../../core/file-operations/services/file-operations.service';
 
 import { StorageStateService } from '../../../core/file-operations/services/storage-state.service';
+import { FileSizePipe } from '../../pipes/file-size.pipe';
 
 type SidePanelNavKey = 'home' | 'shared' | 'recent' | 'starred' | 'trash' | '';
 
@@ -28,14 +29,20 @@ export interface SidePanelNavItem {
 
 @Component({
   selector: 'app-side-panel',
-  standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatProgressBarModule],
+  imports: [
+    RouterModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatTooltipModule,
+    FileSizePipe,
+  ],
   host: {
     '[class.is-collapsed]': 'isCollapsed()',
     '[attr.aria-expanded]': '!isCollapsed()',
   },
   templateUrl: './side-panel.html',
-  styleUrls: ['./side-panel.scss'],
+  styleUrl: './side-panel.scss',
 })
 export class SidePanel {
   private router = inject(Router);

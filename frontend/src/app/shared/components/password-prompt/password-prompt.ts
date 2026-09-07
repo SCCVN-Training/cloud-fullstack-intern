@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -9,26 +8,24 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-password-prompt',
-  standalone: true,
   imports: [
-    CommonModule,
     MatDialogModule,
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './password-prompt.html',
-  styleUrl: './password-prompt.scss'
+  styleUrl: './password-prompt.scss',
 })
 export class PasswordPromptComponent {
   private dialogRef = inject(MatDialogRef<PasswordPromptComponent>);
   private fb = inject(FormBuilder);
-  
+
   hidePassword = true;
   form = this.fb.group({
-    password: ['', Validators.required]
+    password: ['', Validators.required],
   });
 
   submit() {

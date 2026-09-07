@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
-import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
@@ -16,13 +15,18 @@ describe('ShareDialog', () => {
 
   const mockShareState = {
     users: [
-      { name: 'John Doe', email: 'john@nephos.com', permission: 'view', has_password: true }
+      {
+        name: 'John Doe',
+        email: 'john@nephos.com',
+        permission: 'view',
+        has_password: true,
+      },
     ],
     public_link: {
       enabled: true,
       permission: 'view',
-      link: 'abc123xyz'
-    }
+      link: 'abc123xyz',
+    },
   };
 
   beforeEach(async () => {
@@ -40,13 +44,14 @@ describe('ShareDialog', () => {
     await TestBed.configureTestingModule({
       imports: [ShareDialog],
       providers: [
-        provideNoopAnimations(),
         { provide: ShareService, useValue: shareServiceSpy },
         { provide: MatDialogRef, useValue: dialogRefSpy },
         {
           provide: MAT_DIALOG_DATA,
-          useValue: { item: { id: 'item-1', name: 'Document.pdf', itemType: 'file' } }
-        }
+          useValue: {
+            item: { id: 'item-1', name: 'Document.pdf', itemType: 'file' },
+          },
+        },
       ],
     }).compileComponents();
 
@@ -74,7 +79,7 @@ describe('ShareDialog', () => {
     component.shareUserForm.patchValue({
       email: 'newuser@nephos.com',
       permission: 'edit',
-      password: 'securepassword'
+      password: 'securepassword',
     });
 
     component.addUserShare();
@@ -84,7 +89,7 @@ describe('ShareDialog', () => {
       true,
       'newuser@nephos.com',
       'edit',
-      'securepassword'
+      'securepassword',
     );
   });
 
@@ -92,21 +97,27 @@ describe('ShareDialog', () => {
     const testUser = mockShareState.users[0] as any;
     component.removeUserShare(testUser);
 
-    expect(shareServiceSpy.revokeUserShare).toHaveBeenCalledWith('item-1', true, 'john@nephos.com');
+    expect(shareServiceSpy.revokeUserShare).toHaveBeenCalledWith(
+      'item-1',
+      true,
+      'john@nephos.com',
+    );
   });
 
   it('should copy public link to clipboard', () => {
     const writeTextSpy = vi.fn();
     vi.stubGlobal('navigator', {
-      clipboard: { writeText: writeTextSpy }
+      clipboard: { writeText: writeTextSpy },
     });
     vi.stubGlobal('window', {
-      location: { origin: 'https://nephos.app' }
+      location: { origin: 'https://nephos.app' },
     });
 
     component.copyLink();
 
-    expect(writeTextSpy).toHaveBeenCalledWith('https://nephos.app/shared/abc123xyz');
+    expect(writeTextSpy).toHaveBeenCalledWith(
+      'https://nephos.app/shared/abc123xyz',
+    );
 
     vi.unstubAllGlobals();
   });

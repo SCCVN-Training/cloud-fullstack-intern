@@ -2,15 +2,12 @@ import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-import { environment } from '../../../../environments/environment';
 import { AUTH_ENDPOINTS } from '../endpoints/auth-endpoints';
 
 export interface User {
   id: string;
   email: string;
   full_name?: string | null;
-  storage_used: number;
-  storage_quota: number;
   created_at: string;
 }
 

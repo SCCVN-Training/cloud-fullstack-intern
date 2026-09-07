@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, DestroyRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   AbstractControl,
   FormBuilder,
@@ -19,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NgOptimizedImage } from '@angular/common';
 
 export const passwordMatchValidator: ValidatorFn = (
   control: AbstractControl,
@@ -39,7 +40,6 @@ export const passwordMatchValidator: ValidatorFn = (
 @Component({
   selector: 'app-register',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     RouterLink,
     MatFormFieldModule,
@@ -49,9 +49,10 @@ export const passwordMatchValidator: ValidatorFn = (
     MatIconModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
+    NgOptimizedImage,
   ],
   templateUrl: './register.html',
-  styleUrls: ['./register.scss'],
+  styleUrl: './register.scss',
 })
 export class Register {
   private fb = inject(FormBuilder);
@@ -94,10 +95,7 @@ export class Register {
     const termsAccepted = Boolean(terms);
 
     return (
-      allFieldsFilled &&
-      passwordsMatch &&
-      termsAccepted &&
-      status === 'VALID'
+      allFieldsFilled && passwordsMatch && termsAccepted && status === 'VALID'
     );
   });
 
@@ -127,7 +125,8 @@ export class Register {
 
     if (!username || !email || !password) return;
 
-    this.authService.register(username, email, password)
+    this.authService
+      .register(username, email, password)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (user) => {
