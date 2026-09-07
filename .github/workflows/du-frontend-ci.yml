@@ -10,7 +10,7 @@ on:
     branches: [dev-du]
     paths:
       - "frontend-angular/**"
-      - ".github/workflows/frontend-ci.yml"
+      - ".github/workflows/du-frontend-ci.yml"
 
 jobs:
   build-and-test:

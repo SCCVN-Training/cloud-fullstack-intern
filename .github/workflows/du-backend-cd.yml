@@ -15,7 +15,7 @@ on:
       - dev-du
     paths:
       - "microservices/**"
-      - ".github/workflows/backend-cd.yml"
+      - ".github/workflows/du-backend-cd.yml"
 
 # MUST HAVE TO USE OICD ROLE
 permissions:
