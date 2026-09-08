@@ -46,6 +46,10 @@ output "frontend_cloudfront_domain" {
   value = aws_cloudfront_distribution.frontend.domain_name
 }
 
+output "cloudfront_api_base_url" {
+  value = "https://${aws_cloudfront_distribution.frontend.domain_name}"
+}
+
 output "ecr_auth_repository_url" {
   value = aws_ecr_repository.auth.repository_url
 }

@@ -27,3 +27,10 @@ variable "db_username" {
   type    = string
   default = "postgres"
 }
+
+variable "api_origin_domain_name" {
+  type        = string
+  default     = null
+  nullable    = true
+  description = "ALB DNS name for the optional CloudFront /api/* origin. Set this after the Kubernetes Ingress creates the ALB."
+}

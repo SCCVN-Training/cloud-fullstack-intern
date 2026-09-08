@@ -18,7 +18,6 @@ env:
   EKS_CLUSTER_NAME: nephos-dev-cluster
   AUTH_SERVICE_ECR: nephos-dev-auth-service
   STORAGE_SERVICE_ECR: nephos-dev-storage-service
-  ACM_CERTIFICATE_ARN: ${{ secrets.ACM_CERTIFICATE_ARN }}
 
 jobs:
   deploy:
@@ -35,9 +34,6 @@ jobs:
         with:
           role-to-assume: ${{ secrets.DUY_AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -62,37 +58,85 @@ jobs:
       - name: Update kubeconfig for EKS
         run: aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
-      - name: Deploy to Kubernetes
+      - name: Deploy to Kubernetes and Update CloudFront Origin
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          test -n "$ACM_CERTIFICATE_ARN"
+          set -e
 
+          # 1. Fetch CloudFront Domain Name and Distribution ID
           CLOUDFRONT_DOMAIN=$(aws cloudfront list-distributions \
             --query "DistributionList.Items[?Origins.Items[0].DomainName=='nephos-dev-frontend-bucket.s3.ap-southeast-1.amazonaws.com'].DomainName" \
             --output text)
           test -n "$CLOUDFRONT_DOMAIN"
 
-          CLOUDFRONT_DOMAIN=${CLOUDFRONT_DOMAIN%%.*}
+          DIST_ID=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?Origins.Items[0].DomainName=='nephos-dev-frontend-bucket.s3.ap-southeast-1.amazonaws.com'].Id" \
+            --output text)
+          test -n "$DIST_ID"
 
+          # 2. Apply base Kubernetes resources
           kubectl apply -f k8s/namespace.yaml
 
-          sed -i "s#CORS_ORIGINS:.*#CORS_ORIGINS: \"https://${CLOUDFRONT_DOMAIN}.cloudfront.net\"#" k8s/configmap.yaml
-          sed -i "s#YOUR_ACM_CERTIFICATE_ARN#$ACM_CERTIFICATE_ARN#g" k8s/ingress.yaml
-
+          sed -i "s#CORS_ORIGINS:.*#CORS_ORIGINS: \"https://${CLOUDFRONT_DOMAIN}\"#" k8s/configmap.yaml
           kubectl apply -f k8s/configmap.yaml
           kubectl apply -f k8s/aws-secrets-provider.yaml
           kubectl apply -f k8s/redis.yaml
           kubectl apply -f k8s/rabbitmq.yaml
           kubectl apply -f k8s/ingress.yaml
 
-          # Replace placeholder ECR URLs with actual registry URL before applying
-          sed -i "s/YOUR_AWS_ACCOUNT_ID.dkr.ecr.ap-southeast-1.amazonaws.com/${{ steps.login-ecr.outputs.registry }}/g" k8s/auth-service.yaml
-          sed -i "s/YOUR_AWS_ACCOUNT_ID.dkr.ecr.ap-southeast-1.amazonaws.com/${{ steps.login-ecr.outputs.registry }}/g" k8s/storage-service.yaml
+          # 3. Wait for AWS Load Balancer Controller to assign the ALB hostname
+          echo "Waiting for the api-ingress ALB hostname..."
+          ALB_HOSTNAME=""
+          for attempt in $(seq 1 30); do
+            ALB_HOSTNAME=$(kubectl get ingress api-ingress -n nephos \
+              -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null || true)
+            if [ -n "$ALB_HOSTNAME" ]; then
+              echo "Discovered ALB Hostname: $ALB_HOSTNAME"
+              break
+            fi
+            echo "Waiting for api-ingress ALB hostname (attempt $attempt/30)..."
+            sleep 10
+          done
+
+          if [ -z "$ALB_HOSTNAME" ]; then
+            echo "Error: Timed out waiting for ALB hostname to be provisioned."
+            echo "--- Ingress Status ---"
+            kubectl describe ingress api-ingress -n nephos
+            exit 1
+          fi
+
+          # 4. Patch CloudFront distribution origin with the new ALB hostname
+          aws cloudfront get-distribution-config --id "$DIST_ID" > dist-config.json
+          ETAG=$(jq -r '.ETag' dist-config.json)
+
+          ALB_ORIGIN_ID="ALB-api"
+          CURRENT_ALB_DOMAIN=$(jq -r --arg id "$ALB_ORIGIN_ID" '.DistributionConfig.Origins.Items[] | select(.Id==$id) | .DomainName' dist-config.json)
+
+          if [ "$CURRENT_ALB_DOMAIN" != "$ALB_HOSTNAME" ]; then
+            echo "Updating CloudFront ALB Origin from '$CURRENT_ALB_DOMAIN' to '$ALB_HOSTNAME'..."
+
+            jq --arg alb "$ALB_HOSTNAME" --arg id "$ALB_ORIGIN_ID" \
+              '.DistributionConfig.Origins.Items |= map(if .Id == $id then .DomainName = $alb else . end) | .DistributionConfig' \
+              dist-config.json > updated-config.json
+
+            aws cloudfront update-distribution \
+              --id "$DIST_ID" \
+              --if-match "$ETAG" \
+              --distribution-config file://updated-config.json
+          else
+            echo "CloudFront ALB Origin is already set to $ALB_HOSTNAME. Skipping update."
+          fi
+
+          # 5. Apply microservice deployments with the actual ECR registry
+          sed -i "s/YOUR_AWS_ACCOUNT_ID.dkr.ecr.ap-southeast-1.amazonaws.com/${ECR_REGISTRY}/g" k8s/auth-service.yaml
+          sed -i "s/YOUR_AWS_ACCOUNT_ID.dkr.ecr.ap-southeast-1.amazonaws.com/${ECR_REGISTRY}/g" k8s/storage-service.yaml
 
           kubectl apply -f k8s/auth-service.yaml
           kubectl apply -f k8s/storage-service.yaml
 
-          # Force rollout to pull latest images
-          kubectl rollout restart deployment/auth-service -n nephos
-          kubectl rollout restart deployment/storage-service -n nephos
+          # 6. Force rollout to pull latest images and verify completion
+          kubectl rollout restart deployment auth-service -n nephos
+          kubectl rollout restart deployment storage-service -n nephos
           kubectl rollout status deployment/auth-service -n nephos --timeout=5m
           kubectl rollout status deployment/storage-service -n nephos --timeout=5m
