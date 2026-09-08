@@ -10,6 +10,24 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller          = true
   enable_secrets_store_csi_driver              = true
   enable_secrets_store_csi_driver_provider_aws = true
+
+  # ADD THIS BLOCK: Configures the base CSI driver to include tokenRequests
+  secrets_store_csi_driver = {
+    values = [yamlencode({
+      syncSecret = {
+        enabled = true
+      }
+      tokenRequests = [
+        {
+          audience = "sts.amazonaws.com"
+        },
+        {
+          audience = "pods.eks.amazonaws.com"
+        }
+      ]
+    })]
+  }
+  
   secrets_store_csi_driver_provider_aws = {
     chart_version = "3.1.3"
     values = [yamlencode({
