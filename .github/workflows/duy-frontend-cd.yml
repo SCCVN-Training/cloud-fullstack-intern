@@ -37,15 +37,27 @@ jobs:
         working-directory: ./frontend
         run: npm ci
 
-      - name: Build Angular App
-        working-directory: ./frontend
-        run: npm run build -- --configuration production
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6.2.4
         with:
           role-to-assume: ${{ secrets.DUY_AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Configure production API URL
+        working-directory: ./frontend
+        env:
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+        run: |
+          test -n "$API_BASE_URL"
+          API_BASE_URL="${API_BASE_URL%/}"
+          sed -i "s#apiUrl: '.*'#apiUrl: '${API_BASE_URL}'#" src/environments/environment.ts
+
+      - name: Build Angular App
+        working-directory: ./frontend
+        run: npm run build -- --configuration production
 
       - name: Deploy to S3
         run: |

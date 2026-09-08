@@ -18,6 +18,7 @@ env:
   EKS_CLUSTER_NAME: nephos-dev-cluster
   AUTH_SERVICE_ECR: nephos-dev-auth-service
   STORAGE_SERVICE_ECR: nephos-dev-storage-service
+  ACM_CERTIFICATE_ARN: ${{ secrets.ACM_CERTIFICATE_ARN }}
 
 jobs:
   deploy:
@@ -34,6 +35,9 @@ jobs:
         with:
           role-to-assume: ${{ secrets.DUY_AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -60,7 +64,20 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
+          test -n "$ACM_CERTIFICATE_ARN"
+
+          CLOUDFRONT_DOMAIN=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?Origins.Items[0].DomainName=='nephos-dev-frontend-bucket.s3.ap-southeast-1.amazonaws.com'].DomainName" \
+            --output text)
+          test -n "$CLOUDFRONT_DOMAIN"
+
+          CLOUDFRONT_DOMAIN=${CLOUDFRONT_DOMAIN%%.*}
+
           kubectl apply -f k8s/namespace.yaml
+
+          sed -i "s#CORS_ORIGINS:.*#CORS_ORIGINS: \"https://${CLOUDFRONT_DOMAIN}.cloudfront.net\"#" k8s/configmap.yaml
+          sed -i "s#YOUR_ACM_CERTIFICATE_ARN#$ACM_CERTIFICATE_ARN#g" k8s/ingress.yaml
+
           kubectl apply -f k8s/configmap.yaml
           kubectl apply -f k8s/aws-secrets-provider.yaml
           kubectl apply -f k8s/redis.yaml
@@ -75,5 +92,7 @@ jobs:
           kubectl apply -f k8s/storage-service.yaml
 
           # Force rollout to pull latest images
-          kubectl rollout restart deployment auth-service -n nephos --timeout=5m
-          kubectl rollout restart deployment storage-service -n nephos --timeout=5m
+          kubectl rollout restart deployment/auth-service -n nephos
+          kubectl rollout restart deployment/storage-service -n nephos
+          kubectl rollout status deployment/auth-service -n nephos --timeout=5m
+          kubectl rollout status deployment/storage-service -n nephos --timeout=5m
