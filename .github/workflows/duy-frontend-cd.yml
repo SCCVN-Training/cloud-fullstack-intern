@@ -6,6 +6,8 @@ on:
     branches: [dev-duy, aws-deploy, duy-aws-deploy]
     paths:
       - "frontend/**"
+      - "terraform/**"
+      - "terraform-v2/**"
       - ".github/workflows/duy-frontend-cd.yml"
 
 permissions:

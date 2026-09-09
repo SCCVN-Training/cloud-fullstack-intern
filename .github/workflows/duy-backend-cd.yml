@@ -7,6 +7,8 @@ on:
     paths:
       - "backend-v2/**"
       - "k8s/**"
+      - "terraform/**"
+      - "terraform-v2/**"
       - ".github/workflows/duy-backend-cd.yml"
 
 permissions:
