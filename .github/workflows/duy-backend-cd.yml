@@ -140,8 +140,8 @@ jobs:
 
           # 5. Apply microservice deployments with the actual ECR registry
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
-          sed -i "s/${AWS_ACCOUNT_ID}.dkr.ecr.ap-southeast-1.amazonaws.com/${ECR_REGISTRY}/g" k8s/auth-service.yaml
-          sed -i "s/${AWS_ACCOUNT_ID}.dkr.ecr.ap-southeast-1.amazonaws.com/${ECR_REGISTRY}/g" k8s/storage-service.yaml
+          sed -i "s/\${AWS_ACCOUNT_ID}.dkr.ecr.ap-southeast-1.amazonaws.com/${ECR_REGISTRY}/g" k8s/auth-service.yaml
+          sed -i "s/\${AWS_ACCOUNT_ID}.dkr.ecr.ap-southeast-1.amazonaws.com/${ECR_REGISTRY}/g" k8s/storage-service.yaml
 
           kubectl apply -f k8s/auth-service.yaml
           kubectl apply -f k8s/storage-service.yaml
