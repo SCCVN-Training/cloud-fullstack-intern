@@ -12,7 +12,11 @@ asyncpg
 PyJWT
 passlib
 pydantic-settings
-boto3
+boto3>=1.34.0
 python-multipart
 slowapi
 redis
+aioboto3>=12.0.0
+tenacity
+aio-pika
+botocore>=1.34.0
