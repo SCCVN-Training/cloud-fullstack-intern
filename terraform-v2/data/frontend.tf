@@ -60,6 +60,22 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
   }
 }
 
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
+data "aws_cloudfront_origin_request_policy" "all_viewer_except_host_header" {
+  name = "Managed-AllViewerExceptHostHeader"
+}
+
+data "aws_cloudfront_response_headers_policy" "cors_with_preflight" {
+  name = "Managed-CORS-With-Preflight"
+}
+
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
+}
+
 resource "aws_cloudfront_distribution" "frontend" {
   origin {
     domain_name              = aws_s3_bucket.frontend.bucket_regional_domain_name
@@ -93,18 +109,9 @@ resource "aws_cloudfront_distribution" "frontend" {
     target_origin_id           = "S3-${aws_s3_bucket.frontend.id}"
     response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
 
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
+    cache_policy_id = data.aws_cloudfront_cache_policy.caching_optimized.id
 
     viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
   }
 
   dynamic "ordered_cache_behavior" {
@@ -126,32 +133,9 @@ resource "aws_cloudfront_distribution" "frontend" {
       ]
       cached_methods = ["GET", "HEAD"]
 
-      forwarded_values {
-        query_string = true
-        headers      = [
-          "Authorization",
-          "Accept",
-          "Content-Type",
-          "Content-Length",
-          "Content-Range",
-          "Content-Disposition",
-          "Origin",
-          "Accept-Ranges",
-          "Range",          
-          "Access-Control-Allow-Origin", 
-          "Access-Control-Request-Headers",  
-          "Access-Control-Request-Methods",
-          "Access-Control-Max-Age"   
-        ]
-
-        cookies {
-          forward = "all"
-        }
-      }
-
-      min_ttl     = 0
-      default_ttl = 0
-      max_ttl     = 0
+      cache_policy_id            = data.aws_cloudfront_cache_policy.caching_disabled.id
+      origin_request_policy_id   = data.aws_cloudfront_origin_request_policy.all_viewer_except_host_header.id
+      response_headers_policy_id = data.aws_cloudfront_response_headers_policy.cors_with_preflight.id
     }
   }
 
