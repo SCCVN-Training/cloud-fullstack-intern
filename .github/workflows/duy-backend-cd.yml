@@ -108,15 +108,16 @@ jobs:
       - name: Run Database Schema Creation Script
         run: |
           # Fetch DATABASE_URL directly from Secrets Manager
-          export DATABASE_URL=$(aws secretsmanager get-secret-value \
+          SECRET_JSON=$(aws secretsmanager get-secret-value \
             --secret-id nephos-dev-app-secrets \
             --query SecretString \
-            --output text | jq -r '.DATABASE_URL')
+            --output text)
+
+          eval $(echo "$SECRET_JSON" | jq -r 'to_entries | .[] | "export \(.key)=\"\(.value)\""')
 
           export PYTHONPATH=backend-v2/auth-service
           python -m app.modules.auth.tables.apply_tables
 
-          # 3. Run Storage Service Schema Application
           export PYTHONPATH=backend-v2/storage-service
           python -m app.modules.storage.tables.apply_tables
 
