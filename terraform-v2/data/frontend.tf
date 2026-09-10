@@ -68,7 +68,7 @@ resource "aws_cloudfront_distribution" "frontend" {
   }
 
   dynamic "origin" {
-    for_each = var.api_origin_domain_name == null ? [] : [var.api_origin_domain_name]
+    for_each = (var.api_origin_domain_name != null && var.api_origin_domain_name != "") ? [var.api_origin_domain_name] : []
 
     content {
       domain_name = origin.value
@@ -108,7 +108,7 @@ resource "aws_cloudfront_distribution" "frontend" {
   }
 
   dynamic "ordered_cache_behavior" {
-    for_each = var.api_origin_domain_name != "" ? ["/api/*"] : []
+    for_each = (var.api_origin_domain_name != null && var.api_origin_domain_name != "") ? ["/api/*"] : []
 
     content {
       path_pattern           = "/api/*"
@@ -131,7 +131,6 @@ resource "aws_cloudfront_distribution" "frontend" {
         headers      = [
           "Authorization",
           "Accept",
-          "Content-Type",
           "Content-Type",
           "Content-Length",
           "Content-Range",
