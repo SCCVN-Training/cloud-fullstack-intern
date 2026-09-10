@@ -87,7 +87,7 @@ resource "aws_cloudfront_distribution" "frontend" {
     for_each = (var.api_origin_domain_name != null && var.api_origin_domain_name != "") ? [var.api_origin_domain_name] : []
 
     content {
-      domain_name = origin.value
+      domain_name = trimspace(replace(replace(replace(origin.value, "http://", ""), "https://", ""), "\n", ""))
       origin_id   = "ALB-api"
 
       custom_origin_config {
