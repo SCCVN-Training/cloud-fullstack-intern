@@ -108,7 +108,7 @@ resource "aws_cloudfront_distribution" "frontend" {
   }
 
   dynamic "ordered_cache_behavior" {
-    for_each = var.api_origin_domain_name == null ? [] : [var.api_origin_domain_name]
+    for_each = var.api_origin_domain_name != "" ? ["/api/*"] : []
 
     content {
       path_pattern           = "/api/*"
@@ -128,7 +128,22 @@ resource "aws_cloudfront_distribution" "frontend" {
 
       forwarded_values {
         query_string = true
-        headers      = ["*"]
+        headers      = [
+          "Authorization",
+          "Accept",
+          "Content-Type",
+          "Content-Type",
+          "Content-Length",
+          "Content-Range",
+          "Content-Disposition",
+          "Origin",
+          "Accept-Ranges",
+          "Range",          
+          "Access-Control-Allow-Origin", 
+          "Access-Control-Request-Headers",  
+          "Access-Control-Request-Methods",
+          "Access-Control-Max-Age"   
+        ]
 
         cookies {
           forward = "all"
