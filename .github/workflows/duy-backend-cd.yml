@@ -115,9 +115,9 @@ jobs:
           sed -i "s/\${AWS_ACCOUNT_ID}.dkr.ecr.ap-southeast-1.amazonaws.com/${ECR_REGISTRY}/g" k8s/auth-db-init-job.yaml
           sed -i "s/\${AWS_ACCOUNT_ID}.dkr.ecr.ap-southeast-1.amazonaws.com/${ECR_REGISTRY}/g" k8s/storage-db-init-job.yaml
 
-          # echo "Deleting previous migration jobs if they exist..."
-          # kubectl delete job auth-db-init -n nephos --ignore-not-found
-          # kubectl delete job storage-db-init -n nephos --ignore-not-found
+          echo "Deleting previous migration jobs if they exist..."
+          kubectl delete job auth-db-init -n nephos --ignore-not-found
+          kubectl delete job storage-db-init -n nephos --ignore-not-found
           
           echo "Applying migration jobs..."
           kubectl apply -f k8s/auth-db-init-job.yaml
