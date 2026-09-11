@@ -40,3 +40,8 @@ variable "github_actions_role_names" {
   type        = list(string)
   default     = ["ddesmond-cloud-terraform", "nephos-terraform"]
 }
+
+variable "api_version" {
+  type    = string
+  default = "/api/v2"
+}
