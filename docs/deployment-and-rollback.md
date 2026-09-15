@@ -3,11 +3,13 @@
 ## Deployment procedure
 
 ### Prerequisites (only after an instance replacement — see "Full redeploy" below for when this applies)
+
 - `infra/bootstrap/` already applied (one-time, permanent)
 - `infra/dynamic/` applied — a running k3s node
 - `infra/static/` applied — ECR repos, frontend S3 bucket, CloudFront distribution
 
 ### Normal deployment (code change, same instance still running)
+
 1. Push a change to `backend/services/identity-service/**` or `marketplace-service/**` on any `nhu/**` or `dev-nhu` branch.
 2. GitHub Actions (`.github/workflows/build-push.yml`) builds and pushes both images to ECR automatically, tagged with both `:latest` and the commit SHA (`${{ github.sha }}`).
 3. Force the running deployment to pick up the new image:
@@ -18,9 +20,11 @@
 4. Verify: `kubectl get pods` — both should cycle through a new pod and reach `Running`.
 
 ### Full redeploy (after `infra/dynamic/` has been destroyed and recreated)
+
 This is the common case, since compute is deliberately destroyed between sessions to save cost. Every instance replacement wipes the entire k3s cluster — nothing persists. Full sequence:
 
 1. **Get the new kubeconfig** — k3s's node doesn't allow reliable live SSH/SSM sessions on this network; retrieval is via the instance's boot console log instead:
+
    ```
    Powershell: $env:PYTHONUTF8="1"
    CMD: set PYTHONUTF8=1
@@ -32,6 +36,7 @@ This is the common case, since compute is deliberately destroyed between session
    $env:KUBECONFIG = "$PWD\skillverse-config"
    kubectl get nodes
    ```
+
 2. **Re-sync CloudFront's origin** (it's a one-time snapshot of the old instance's DNS, now stale):
    ```
    cd infra\static
@@ -43,11 +48,14 @@ This is the common case, since compute is deliberately destroyed between session
    kubectl create secret docker-registry ecr-secret --docker-server=455880746025.dkr.ecr.ap-southeast-1.amazonaws.com --docker-username=AWS --docker-password=$ecrPassword --docker-email=none@example.com
    ```
 4. **Recreate both application Secrets** (values in `skillverse/shared` plus the fields it's missing — see `cloud-environment-plan.md`):
-   ```
-   kubectl create secret generic identity-secrets --from-literal=SECRET_KEY=b9_fDV0yDzoZarHbAfXonwOPdtmyUCr3I76gWyQOHc0 --from-literal=ALGORITHM=HS256 --from-literal=ACCESS_TOKEN_EXPIRE_MINUTES=30 "--from-literal=DATABASE_URL=postgresql+psycopg_async://skillverse_user:npg_W5zbDsgC0AnI@ep-jolly-shadow-aztvzw9p-pooler.c-3.ap-southeast-1.aws.neon.tech/skillverse_db?sslmode=require&channel_binding=require&sslnegotiation=direct" --from-literal=ALLOWED_ORIGINS=https://d3is4tc33i20xi.cloudfront.net --from-literal=USE_AWS_SECRETS=false --from-literal=STORAGE_BACKEND=s3 --from-literal=S3_REGION=ap-southeast-1 --from-literal=S3_BUCKET_NAME=skillverse-avatars-nhu-dev
 
-   kubectl create secret generic marketplace-secrets --from-literal=SECRET_KEY=b9_fDV0yDzoZarHbAfXonwOPdtmyUCr3I76gWyQOHc0 --from-literal=ALGORITHM=HS256 --from-literal=ACCESS_TOKEN_EXPIRE_MINUTES=30 "--from-literal=DATABASE_URL=postgresql+psycopg_async://skillverse_user:npg_W5zbDsgC0AnI@ep-jolly-shadow-aztvzw9p-pooler.c-3.ap-southeast-1.aws.neon.tech/skillverse_db?sslmode=require&channel_binding=require&sslnegotiation=direct" --from-literal=ALLOWED_ORIGINS=https://d3is4tc33i20xi.cloudfront.net --from-literal=USE_AWS_SECRETS=false
    ```
+      kubectl create secret generic identity-secrets --from-literal=SECRET_KEY=<SECRET_KEY> --from-literal=ALGORITHM=HS256 --from-literal=ACCESS_TOKEN_EXPIRE_MINUTES=30 "--from-literal=DATABASE_URL=<DATABASE_URL>" --from-literal=ALLOWED_ORIGINS=https://d3is4tc33i20xi.cloudfront.net --from-literal=USE_AWS_SECRETS=false --from-literal=STORAGE_BACKEND=s3 --from-literal=S3_REGION=ap-southeast-1 --from-literal=S3_BUCKET_NAME=skillverse-avatars-nhu-dev
+
+
+      kubectl create secret generic marketplace-secrets --from-literal=SECRET_KEY=<SECRET_KEY> --from-literal=ALGORITHM=HS256 --from-literal=ACCESS_TOKEN_EXPIRE_MINUTES=30 "--from-literal=DATABASE_URL=<DATABASE_URL>" --from-literal=ALLOWED_ORIGINS=https://d3is4tc33i20xi.cloudfront.net --from-literal=USE_AWS_SECRETS=false
+   ```
+
 5. **Re-apply the k8s manifests**:
    ```
    kubectl apply -f infra\k8s\identity-service.yaml -f infra\k8s\marketplace-service.yaml -f infra\k8s\ingress.yaml
