@@ -6,10 +6,10 @@ on:
     paths:
       - "backend/services/identity-service/**"
       - "backend/services/marketplace-service/**"
-    workflow_dispatch: {} # lets you trigger a build manually from the Actions tab, useful while testing
+  workflow_dispatch: {}
 
 permissions:
-  id-token: write # required for OIDC — no AWS access key stored anywhere
+  id-token: write
   contents: read
 
 jobs:
@@ -21,7 +21,7 @@ jobs:
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.NHU_GITHUB_ACTIONS_ROLE_ARN }} # from bootstrap/'s output
+          role-to-assume: ${{ vars.NHU_GITHUB_ACTIONS_ROLE_ARN }}
           aws-region: ${{ vars.NHU_AWS_REGION }}
 
       - name: Login to ECR
@@ -56,3 +56,14 @@ jobs:
           context: backend/services/marketplace-service
           push: true
           tags: ${{ steps.ecr-login.outputs.registry }}/skillverse-marketplace:latest,${{ steps.ecr-login.outputs.registry }}/skillverse-marketplace:${{ github.sha }}
+
+  deploy:
+    needs: [build-identity, build-marketplace]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+      - name: Write kubeconfig
+        run: echo "${{ secrets.KUBE_CONFIG_B64 }}" | base64 -d > kubeconfig.yaml
+      - run: kubectl --kubeconfig kubeconfig.yaml rollout restart deployment/identity-service deployment/marketplace-service

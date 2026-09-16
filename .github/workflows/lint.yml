@@ -1,0 +1,10 @@
+backend-lint:
+  runs-on: ubuntu-latest
+  strategy:
+    matrix: { service: [identity-service, marketplace-service] }
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with: { python-version: "3.12" }
+    - run: pip install ruff --break-system-packages
+    - run: cd backend/services/${{ matrix.service }} && ruff check .
