@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 
@@ -30,8 +31,10 @@ async def save_avatar(user_id: uuid.UUID, file: UploadFile) -> str:
     os.makedirs(avatar_dir, exist_ok=True)
 
     file_path = os.path.join(avatar_dir, filename)
-    with open(file_path, "wb") as f:
-        f.write(contents)
+    def _write_file():
+        with open(file_path, "wb") as f:
+            f.write(contents)
+    await asyncio.to_thread(_write_file)
 
     # Short, well under Profile.avatar_url's 255-char limit — unlike a
     # base64 data URL, which would be tens of thousands of characters.

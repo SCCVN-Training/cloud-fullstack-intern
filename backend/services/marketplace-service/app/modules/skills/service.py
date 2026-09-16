@@ -1,13 +1,14 @@
 import uuid
-from typing import List, Tuple, Optional
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException, status
 
-from app.modules.skills.models import Skill
-from app.modules.skills.schema import SkillCreate, SkillResponse, SkillUpdate, SkillListResponse
-from app.modules.skills.repository import SkillRepository
-from app.core.dependencies import CurrentUser
+from fastapi import HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.clients.identity_client import IdentityClient
+from app.core.dependencies import CurrentUser
+from app.modules.skills.models import Skill
+from app.modules.skills.repository import SkillRepository
+from app.modules.skills.schema import SkillCreate, SkillListResponse, SkillResponse, SkillUpdate
+
 
 class SkillService:
     # Pricing rule: a session tops out at 45 minutes / 100 coins, and
@@ -35,7 +36,7 @@ class SkillService:
     # did, it's checked against the duration's cap rather than trusted
     # outright.
     @classmethod
-    def _resolve_price(cls, duration_minutes: int, provided_price: Optional[int]) -> int:
+    def _resolve_price(cls, duration_minutes: int, provided_price: int | None) -> int:
         cap = cls.max_price_for_duration(duration_minutes)
         if provided_price is None:
             return cap
@@ -74,13 +75,13 @@ class SkillService:
         db: AsyncSession, 
         skip: int = 0, 
         limit: int = 20,
-        search: Optional[str] = None,
-        category: Optional[str] = None,
-        min_rating: Optional[float] = None,
-        min_price: Optional[int] = None,
-        max_price: Optional[int] = None,
-        sort: Optional[str] = None,
-        instructor_id: Optional[uuid.UUID] = None,
+        search: str | None = None,
+        category: str | None = None,
+        min_rating: float | None = None,
+        min_price: int | None = None,
+        max_price: int | None = None,
+        sort: str | None = None,
+        instructor_id: uuid.UUID | None = None,
     ) -> SkillListResponse:
         total, skills = await SkillRepository.get_all(
             db, skip, limit, search, category, min_rating, min_price, max_price, sort, instructor_id
@@ -100,7 +101,7 @@ class SkillService:
         return SkillListResponse(total=total, skills=response_skills)
 
     @classmethod
-    async def get_categories(cls, db: AsyncSession) -> List[str]:
+    async def get_categories(cls, db: AsyncSession) -> list[str]:
         return await SkillRepository.get_distinct_categories(db)
 
     @classmethod

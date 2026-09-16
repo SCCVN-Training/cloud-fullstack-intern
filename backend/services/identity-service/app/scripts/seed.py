@@ -18,11 +18,11 @@ import uuid
 
 from sqlalchemy import select
 
-from app.core.database import Base, engine, AsyncSessionLocal
-from app.core.security import hash_password
 from app.common.enums import UserRole
-from app.modules.users.models import User
+from app.core.database import AsyncSessionLocal, Base, engine
+from app.core.security import hash_password
 from app.modules.profiles.models import Profile
+from app.modules.users.models import User
 from app.modules.wallets.models import Wallet
 from app.scripts.seed_constants import ADMIN_USER_ID, ALICE_DEV_ID, BOB_LEARNER_ID
 

@@ -1,12 +1,17 @@
 import uuid
-from typing import Optional
+
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.dependencies import get_current_user, CurrentUser
+from app.core.dependencies import CurrentUser, get_current_user
 from app.modules.bookings.models import BookingStatus
-from app.modules.bookings.schema import BookingCreate, BookingResponse, BookingListResponse, BookingStatusUpdate
+from app.modules.bookings.schema import (
+    BookingCreate,
+    BookingListResponse,
+    BookingResponse,
+    BookingStatusUpdate,
+)
 from app.modules.bookings.service import BookingService
 
 router = APIRouter(prefix="/bookings", tags=["Bookings"])
@@ -15,7 +20,7 @@ router = APIRouter(prefix="/bookings", tags=["Bookings"])
 async def list_all_bookings(
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
-    status_filter: Optional[BookingStatus] = Query(None, alias="status"),
+    status_filter: BookingStatus | None = Query(None, alias="status"),
     db: AsyncSession = Depends(get_db),
     current_user: CurrentUser = Depends(get_current_user),
 ) -> BookingListResponse:

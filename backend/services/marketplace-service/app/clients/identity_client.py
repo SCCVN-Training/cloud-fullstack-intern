@@ -1,6 +1,6 @@
 import logging
 import uuid
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 import httpx
 
@@ -15,9 +15,9 @@ class PublicProfile(TypedDict):
     # display-name override if set, otherwise their login handle. This
     # service never needs to know two underlying columns exist.
     user_name: str
-    avatar_url: Optional[str]
-    bio: Optional[str]
-    title: Optional[str]
+    avatar_url: str | None
+    bio: str | None
+    title: str | None
 
 
 # Fallback shown whenever identity-service can't be reached or the user

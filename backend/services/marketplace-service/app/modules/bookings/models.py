@@ -1,12 +1,13 @@
-import uuid
 import enum
+import uuid
 from datetime import datetime
 
-from sqlalchemy import String, UUID, Integer, ForeignKey, DateTime, Enum, Text
+from sqlalchemy import UUID, DateTime, Enum, ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 from app.core.database import Base
+
 
 class BookingStatus(str, enum.Enum):
     PENDING = "PENDING"

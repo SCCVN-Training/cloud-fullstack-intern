@@ -1,22 +1,23 @@
-import uuid
 import logging
-import pytest_asyncio
+import uuid
+
 import pytest
+import pytest_asyncio
 from dotenv import load_dotenv
-from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
 # Must load before importing app.main — Settings() reads env vars at import time
 load_dotenv(".env.test", override=True)
 
-from app.main import app
-from app.core.database import get_db, Base
-from app.modules.skills.models import Skill
-from app.modules.bookings.models import Booking, BookingStatus
-from app.common.enums import UserRole
-from app.core.security import create_access_token
 from app.clients.identity_client import IdentityClient
+from app.common.enums import UserRole
+from app.core.database import Base, get_db
+from app.core.security import create_access_token
+from app.main import app
+from app.modules.bookings.models import Booking, BookingStatus
+from app.modules.skills.models import Skill
 
 logger = logging.getLogger("tests.conftest")
 

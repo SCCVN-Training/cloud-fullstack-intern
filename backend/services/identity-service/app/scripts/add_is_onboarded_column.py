@@ -13,7 +13,9 @@ before trying to add it.
 """
 import asyncio
 import sys
+
 from sqlalchemy import text
+
 from app.core.database import engine
 
 # Windows defaults to ProactorEventLoop, which psycopg's async driver can't

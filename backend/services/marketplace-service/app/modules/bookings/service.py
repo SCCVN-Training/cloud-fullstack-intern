@@ -1,16 +1,21 @@
 import logging
 import uuid
-from typing import List, Optional
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException, status
 
-from app.modules.bookings.models import Booking, BookingStatus
-from app.modules.bookings.schema import BookingCreate, BookingResponse, BookingListResponse, BookingStatusUpdate
-from app.modules.bookings.repository import BookingRepository
-from app.modules.skills.repository import SkillRepository
+from fastapi import HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.clients.identity_client import BookingPaymentError, IdentityClient
 from app.core.dependencies import CurrentUser
 from app.core.exceptions import BookingOverlapException
-from app.clients.identity_client import IdentityClient, BookingPaymentError
+from app.modules.bookings.models import Booking, BookingStatus
+from app.modules.bookings.repository import BookingRepository
+from app.modules.bookings.schema import (
+    BookingCreate,
+    BookingListResponse,
+    BookingResponse,
+    BookingStatusUpdate,
+)
+from app.modules.skills.repository import SkillRepository
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +24,7 @@ class BookingService:
 
     @classmethod
     async def _format_booking_response(
-        cls, db: AsyncSession, booking: Booking, credit_status: Optional[str] = None
+        cls, db: AsyncSession, booking: Booking, credit_status: str | None = None
     ) -> BookingResponse:
         # skill stays a local repository lookup (same service/schema).
         # learner/mentor names are cross-service display data — same
@@ -88,7 +93,7 @@ class BookingService:
         current_user: CurrentUser,
         skip: int = 0,
         limit: int = 20,
-        status: Optional[BookingStatus] = None,
+        status: BookingStatus | None = None,
     ) -> BookingListResponse:
         if current_user.role.value != "ADMIN":
             raise HTTPException(status_code=403, detail="Not enough permissions")
@@ -154,12 +159,7 @@ class BookingService:
 
         try:
             created_booking = await BookingRepository.create(db, new_booking)
-        except Exception as exc:
-            # The learner has genuinely been charged at this point — no
-            # refund mechanism exists (out of scope), so this must be
-            # loud and traceable rather than silently losing the money.
-            # See the credit-failure handling in update_status() below
-            # for the same "visibility over automation" reasoning.
+        except Exception as exc:  # noqa: BLE001 — deliberate: learner already charged, must catch anything to avoid a silent charge-with-no-booking state
             logger.error(
                 "Charged %s %d for booking %s but booking insert failed: %s",
                 current_user.id, skill.price, booking_id, exc,
@@ -185,14 +185,12 @@ class BookingService:
             raise HTTPException(status_code=404, detail="Booking not found")
             
         # Only mentor or admin can confirm/complete
-        if status_update.status in [BookingStatus.CONFIRMED, BookingStatus.COMPLETED]:
-            if booking.mentor_id != current_user.id and current_user.role.value != "ADMIN":
-                raise HTTPException(status_code=403, detail="Only mentor can confirm or complete bookings")
+        if status_update.status in [BookingStatus.CONFIRMED, BookingStatus.COMPLETED] and booking.mentor_id != current_user.id and current_user.role.value != "ADMIN":
+            raise HTTPException(...)
                 
         # Learner or mentor can cancel
-        if status_update.status == BookingStatus.CANCELLED:
-            if booking.learner_id != current_user.id and booking.mentor_id != current_user.id and current_user.role.value != "ADMIN":
-                raise HTTPException(status_code=403, detail="Not enough permissions to cancel")
+        if status_update.status == BookingStatus.CANCELLED and booking.learner_id != current_user.id and booking.mentor_id != current_user.id and current_user.role.value != "ADMIN":
+            raise HTTPException(status_code=403, detail="Not enough permissions to cancel")
                 
         booking.status = status_update.status
         updated_booking = await BookingRepository.update(db, booking)
@@ -203,7 +201,7 @@ class BookingService:
         # credit_for_booking is idempotent on booking_id, so a retried
         # PATCH to COMPLETED (or this code running twice for any reason)
         # never double-credits.
-        credit_status: Optional[str] = None
+        credit_status: str | None = None
         if status_update.status == BookingStatus.COMPLETED:
             try:
                 await IdentityClient.credit_booking(

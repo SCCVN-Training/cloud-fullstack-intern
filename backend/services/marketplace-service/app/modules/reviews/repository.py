@@ -1,10 +1,10 @@
 import uuid
 
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.reviews.models import Review
 from app.modules.bookings.models import Booking
+from app.modules.reviews.models import Review
 
 
 class ReviewRepository:

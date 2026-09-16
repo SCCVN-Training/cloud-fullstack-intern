@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -13,7 +12,7 @@ class TransactionItem(BaseModel):
     amount: int
     transaction_type: TransactionType
     description: str
-    reference_id: Optional[str] = None
+    reference_id: str | None = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

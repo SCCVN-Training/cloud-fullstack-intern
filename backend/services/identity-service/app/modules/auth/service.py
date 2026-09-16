@@ -1,26 +1,17 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.enums import UserRole
-from app.modules.users.models import User
-from app.modules.users.repository import UserRepository
-from app.modules.profiles.service import ProfileService
-from app.modules.wallets.service import WalletService
-from app.modules.wallets.service import WalletService
-from app.core.security import (
-    hash_password,
-    verify_password,
-    create_access_token
-)
 from app.core.exceptions import (
     EmailAlreadyExistsException,
     InvalidCredentialException,
 )
-from app.modules.auth.schema import ( 
-    RegisterRequest, 
-    RegisterResponse, 
-    LoginRequest, 
-    LoginResponse
-)
+from app.core.security import create_access_token, hash_password, verify_password
+from app.modules.auth.schema import LoginRequest, LoginResponse, RegisterRequest, RegisterResponse
+from app.modules.profiles.service import ProfileService
+from app.modules.users.models import User
+from app.modules.users.repository import UserRepository
+from app.modules.wallets.service import WalletService
+
 
 class AuthService:
     # REGISTER
