@@ -1,11 +1,11 @@
 import uuid
 
-from sqlalchemy import select, func
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.modules.profiles.models import Profile
 from app.modules.reviews.models import Review
 from app.modules.users.models import User
-from app.modules.profiles.models import Profile
 
 
 class ReviewRepository:

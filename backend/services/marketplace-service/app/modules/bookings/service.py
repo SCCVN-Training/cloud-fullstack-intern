@@ -185,8 +185,9 @@ class BookingService:
             raise HTTPException(status_code=404, detail="Booking not found")
             
         # Only mentor or admin can confirm/complete
+        # Only mentor or admin can confirm/complete
         if status_update.status in [BookingStatus.CONFIRMED, BookingStatus.COMPLETED] and booking.mentor_id != current_user.id and current_user.role.value != "ADMIN":
-            raise HTTPException(...)
+            raise HTTPException(status_code=403, detail="Only mentor can confirm or complete bookings")
                 
         # Learner or mentor can cancel
         if status_update.status == BookingStatus.CANCELLED and booking.learner_id != current_user.id and booking.mentor_id != current_user.id and current_user.role.value != "ADMIN":

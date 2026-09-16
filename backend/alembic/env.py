@@ -25,15 +25,15 @@ if config.config_file_name is not None:
 
 # Import every model module so Base.metadata knows about all tables —
 # autogenerate can only see models that have actually been imported.
-from app.core.database import Base  # noqa: E402
-from app.core.config import settings  # noqa: E402
-from app.modules.users.models import User  # noqa: E402,F401
-from app.modules.profiles.models import Profile  # noqa: E402,F401
-from app.modules.skills.models import Skill  # noqa: E402,F401
-from app.modules.bookings.models import Booking  # noqa: E402,F401
-from app.modules.reviews.models import Review  # noqa: E402,F401
-from app.modules.wallets.models import Wallet  # noqa: E402,F401
-from app.modules.transactions.models import Transaction  # noqa: E402,F401
+from app.core.config import settings
+from app.core.database import Base
+from app.modules.bookings.models import Booking  # noqa: F401
+from app.modules.profiles.models import Profile  # noqa: F401
+from app.modules.reviews.models import Review  # noqa: F401
+from app.modules.skills.models import Skill  # noqa: F401
+from app.modules.transactions.models import Transaction  # noqa: F401
+from app.modules.users.models import User  # noqa: F401
+from app.modules.wallets.models import Wallet  # noqa: F401
 
 target_metadata = Base.metadata
 

@@ -1,7 +1,7 @@
 import uuid
 
-from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
+
 
 # GET /users/{id}
 # PATCH /users/{id}
@@ -21,8 +21,8 @@ class UserListResponse(BaseModel):
 
 # PATCH /users/{id}
 class UserUpdate(BaseModel):
-    user_name: Optional[str] = Field(None, min_length=5, max_length=50)
-    email: Optional[EmailStr] = None
+    user_name: str | None = Field(None, min_length=5, max_length=50)
+    email: EmailStr | None = None
 
 # PUT /users/{id}
 class UserReplace(BaseModel):
