@@ -36,6 +36,58 @@ module "eks_blueprints_addons" {
       }
     })]
   }
+
+  helm_releases = {
+    ingress-nginx = {
+      description      = "A Helm chart to deploy ingress-nginx"
+      namespace        = "ingress-nginx"
+      create_namespace = true
+      name             = "ingress-nginx"
+      chart            = "ingress-nginx"
+      repository       = "https://kubernetes.github.io/ingress-nginx"
+      version          = "4.10.0"
+      
+      values = [
+        yamlencode({
+          controller = {
+            service = {
+              type = "NodePort"
+            }
+          }
+        })
+      ]
+    }
+    aws-for-fluent-bit = {
+      description      = "A Helm chart to deploy aws-for-fluent-bit"
+      namespace        = "kube-system"
+      name             = "aws-for-fluent-bit"
+      chart            = "aws-for-fluent-bit"
+      repository       = "https://aws.github.io/eks-charts"
+      version          = "0.1.32"
+      
+      values = [
+        yamlencode({
+          cloudWatch = {
+            enabled = true
+            region  = var.aws_region
+            logGroupName = "/aws/eks/${module.eks.cluster_name}/application"
+          }
+          firehose = {
+            enabled = false
+          }
+          kinesis = {
+            enabled = false
+          }
+          elasticsearch = {
+            enabled = false
+          }
+        })
+      ]
+    }
+  }
+  depends_on = [
+    module.eks.eks_managed_node_groups
+  ]
 }
 
 provider "helm" {
