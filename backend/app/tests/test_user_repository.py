@@ -1,8 +1,9 @@
 import uuid
-from app.modules.users.repository import UserRepository
-from app.modules.users.models import User
+
 from app.common.enums import UserRole
 from app.core.security import hash_password
+from app.modules.users.models import User
+from app.modules.users.repository import UserRepository
 
 
 async def test_get_by_email_found(db_session, seeded_user):

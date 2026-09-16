@@ -2,19 +2,19 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.common.enums import UserRole
+from app.core.exceptions import (
+    EmailAlreadyExistsException,
+    ForbiddenException,
+    UserNotFoundException,
+)
 from app.modules.users.models import User
 from app.modules.users.repository import UserRepository
 from app.modules.users.schema import (
-    UserResponse,
     UserListResponse,
-    UserUpdate,
     UserReplace,
-)
-from app.common.enums import UserRole
-from app.core.exceptions import (
-    UserNotFoundException,
-    ForbiddenException,
-    EmailAlreadyExistsException,
+    UserResponse,
+    UserUpdate,
 )
 
 

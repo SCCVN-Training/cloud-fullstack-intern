@@ -1,8 +1,9 @@
 import uuid
-from typing import List, Optional
 from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
+
 
 class SkillBase(BaseModel):
     title: str = Field(..., max_length=255)
@@ -21,12 +22,12 @@ class SkillBase(BaseModel):
     available_slots: int = Field(default=0)
     language: str = Field(default="English", max_length=50)
     
-    tags: List[str] = Field(default_factory=list)
+    tags: list[str] = Field(default_factory=list)
     featured: bool = Field(default=False)
     
-    about_text: Optional[str] = None
-    learning_outcomes: Optional[List[str]] = None
-    prerequisites: Optional[List[str]] = None
+    about_text: str | None = None
+    learning_outcomes: list[str] | None = None
+    prerequisites: list[str] | None = None
 
 class SkillCreate(SkillBase):
     instructor_id: uuid.UUID
@@ -37,21 +38,21 @@ class SkillCreate(SkillBase):
     )
 
 class SkillUpdate(BaseModel):
-    title: Optional[str] = Field(None, max_length=255)
-    category: Optional[str] = Field(None, max_length=100)
-    description: Optional[str] = None
-    image: Optional[str] = Field(None, max_length=255)
-    price: Optional[int] = None
-    duration: Optional[int] = Field(None, gt=0)
-    level: Optional[str] = Field(None, max_length=50)
-    requirements: Optional[str] = None
-    available_slots: Optional[int] = None
-    language: Optional[str] = Field(None, max_length=50)
-    tags: Optional[List[str]] = None
-    featured: Optional[bool] = None
-    about_text: Optional[str] = None
-    learning_outcomes: Optional[List[str]] = None
-    prerequisites: Optional[List[str]] = None
+    title: str | None = Field(None, max_length=255)
+    category: str | None = Field(None, max_length=100)
+    description: str | None = None
+    image: str | None = Field(None, max_length=255)
+    price: int | None = None
+    duration: int | None = Field(None, gt=0)
+    level: str | None = Field(None, max_length=50)
+    requirements: str | None = None
+    available_slots: int | None = None
+    language: str | None = Field(None, max_length=50)
+    tags: list[str] | None = None
+    featured: bool | None = None
+    about_text: str | None = None
+    learning_outcomes: list[str] | None = None
+    prerequisites: list[str] | None = None
 
     model_config = ConfigDict(
         alias_generator=to_camel,
@@ -79,7 +80,7 @@ class SkillResponse(SkillBase):
 
 class SkillListResponse(BaseModel):
     total: int
-    skills: List[SkillResponse]
+    skills: list[SkillResponse]
 
     model_config = ConfigDict(
         alias_generator=to_camel,

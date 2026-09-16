@@ -2,18 +2,18 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.common.enums import UserRole
+from app.core.exceptions import (
+    ForbiddenException,
+    InsufficientBalanceException,
+    WalletNotFoundException,
+)
+from app.modules.transactions.models import Transaction, TransactionType
+from app.modules.transactions.repository import TransactionRepository
 from app.modules.users.models import User
 from app.modules.wallets.models import Wallet
 from app.modules.wallets.repository import WalletRepository
-from app.modules.wallets.schema import WalletResponse, TopUpRequest
-from app.modules.transactions.models import Transaction, TransactionType
-from app.modules.transactions.repository import TransactionRepository
-from app.common.enums import UserRole
-from app.core.exceptions import (
-    WalletNotFoundException,
-    InsufficientBalanceException,
-    ForbiddenException,
-)
+from app.modules.wallets.schema import TopUpRequest, WalletResponse
 
 
 class WalletService:

@@ -32,15 +32,16 @@ variable "dynamic_state_bucket" {
 
 # --- Container registries — explicit, not looped, since you have 2 services ---
 
-resource "aws_ecr_repository" "identity" {
-  name                 = "skillverse-identity"
-  image_tag_mutability = "MUTABLE"
-}
+  module "ecr_identity" {
+    source = "../modules/ecr-repo"
+    name   = "skillverse-identity"
+  }
 
-resource "aws_ecr_repository" "marketplace" {
-  name                 = "skillverse-marketplace"
-  image_tag_mutability = "MUTABLE"
-}
+  module "ecr_marketplace" {
+    source = "../modules/ecr-repo"
+    name   = "skillverse-marketplace"
+  }
+
 
 # --- Frontend static hosting ---
 
@@ -147,10 +148,10 @@ resource "aws_cloudfront_distribution" "frontend" {
 }
 
 output "ecr_identity_url" {
-  value = aws_ecr_repository.identity.repository_url
+  value = module.ecr_identity.repository_url
 }
 output "ecr_marketplace_url" {
-  value = aws_ecr_repository.marketplace.repository_url
+  value = module.ecr_marketplace.repository_url
 }
 output "frontend_bucket" {
   value = aws_s3_bucket.frontend.bucket

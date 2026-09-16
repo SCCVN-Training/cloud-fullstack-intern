@@ -4,19 +4,19 @@ from typing import Optional
 from fastapi import UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.users.models import User
-from app.modules.users.repository import UserRepository
+from app.common.enums import UserRole
+from app.core.exceptions import (
+    ForbiddenException,
+    InvalidAvatarException,
+    ProfileNotFoundException,
+    UserNotFoundException,
+)
+from app.core.storage import get_avatar_url, save_avatar
 from app.modules.profiles.models import Profile
 from app.modules.profiles.repository import ProfileRepository
 from app.modules.profiles.schema import ProfileResponse, ProfileUpdate, PublicProfileResponse
-from app.common.enums import UserRole
-from app.core.exceptions import (
-    ProfileNotFoundException,
-    ForbiddenException,
-    UserNotFoundException,
-    InvalidAvatarException,
-)
-from app.core.storage import save_avatar, get_avatar_url
+from app.modules.users.models import User
+from app.modules.users.repository import UserRepository
 
 
 class ProfileService:

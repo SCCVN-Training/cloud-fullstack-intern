@@ -1,7 +1,7 @@
 import uuid
+
+from sqlalchemy import asc, desc, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, or_, asc, desc
-from typing import List, Optional, Tuple
 
 from app.modules.skills.models import Skill
 
@@ -21,7 +21,7 @@ _SORT_MAP = {
 class SkillRepository:
     
     @classmethod
-    async def get_by_id(cls, db: AsyncSession, skill_id: uuid.UUID) -> Optional[Skill]:
+    async def get_by_id(cls, db: AsyncSession, skill_id: uuid.UUID) -> Skill | None:
         stmt = select(Skill).where(Skill.id == skill_id)
         result = await db.execute(stmt)
         return result.scalars().first()
@@ -32,14 +32,14 @@ class SkillRepository:
         db: AsyncSession, 
         skip: int = 0, 
         limit: int = 20, 
-        search: Optional[str] = None,
-        category: Optional[str] = None,
-        min_rating: Optional[float] = None,
-        min_price: Optional[int] = None,
-        max_price: Optional[int] = None,
-        sort: Optional[str] = None,
-        instructor_id: Optional[uuid.UUID] = None,
-    ) -> Tuple[int, List[Skill]]:
+        search: str | None = None,
+        category: str | None = None,
+        min_rating: float | None = None,
+        min_price: int | None = None,
+        max_price: int | None = None,
+        sort: str | None = None,
+        instructor_id: uuid.UUID | None = None,
+    ) -> tuple[int, list[Skill]]:
 
         # Base query
         stmt = select(Skill)
@@ -90,7 +90,7 @@ class SkillRepository:
         return total, list(skills)
 
     @classmethod
-    async def get_distinct_categories(cls, db: AsyncSession) -> List[str]:
+    async def get_distinct_categories(cls, db: AsyncSession) -> list[str]:
         stmt = select(Skill.category).distinct().order_by(Skill.category)
         result = await db.execute(stmt)
         return [row[0] for row in result.all()]

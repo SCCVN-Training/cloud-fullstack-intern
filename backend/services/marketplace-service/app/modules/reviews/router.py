@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.dependencies import get_current_user, CurrentUser
-from app.modules.reviews.service import ReviewService
+from app.core.dependencies import CurrentUser, get_current_user
 from app.modules.reviews.schema import ReviewCreate, ReviewItem, ReviewSummary
+from app.modules.reviews.service import ReviewService
 
 # Read: reviews received by a user, shown on their profile
 user_reviews_router = APIRouter(prefix="/users/{reviewee_id}/reviews", tags=["Reviews"])

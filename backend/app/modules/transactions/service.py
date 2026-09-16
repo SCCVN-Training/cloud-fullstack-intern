@@ -2,12 +2,12 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.users.models import User
-from app.modules.wallets.repository import WalletRepository
+from app.common.enums import UserRole
+from app.core.exceptions import ForbiddenException, WalletNotFoundException
 from app.modules.transactions.repository import TransactionRepository
 from app.modules.transactions.schema import TransactionItem, TransactionListResponse
-from app.common.enums import UserRole
-from app.core.exceptions import WalletNotFoundException, ForbiddenException
+from app.modules.users.models import User
+from app.modules.wallets.repository import WalletRepository
 
 DEFAULT_TRANSACTION_LIMIT = 20
 

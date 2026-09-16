@@ -1,17 +1,13 @@
 from uuid import UUID
 
 from fastapi import Depends
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from app.core.database import get_db
-from app.core.security import decode_access_token
-from app.core.exceptions import (
-    InvalidTokenException,
-    UserNotFoundException,
-    ForbiddenException  
-)
 from app.common.enums import UserRole
+from app.core.database import get_db
+from app.core.exceptions import ForbiddenException, InvalidTokenException, UserNotFoundException
+from app.core.security import decode_access_token
 from app.modules.users.models import User
 from app.modules.users.repository import UserRepository
 

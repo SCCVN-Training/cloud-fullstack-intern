@@ -20,9 +20,9 @@ async def test_cannot_book_own_skill(client, auth_headers, seeded_skill):
 
 async def test_get_booking_forbidden_for_unrelated_user(client, db_session, seeded_booking):
     """A third user who is neither learner nor mentor can't view the booking."""
-    from app.modules.users.models import User
     from app.common.enums import UserRole
     from app.core.security import hash_password
+    from app.modules.users.models import User
 
     stranger = User(
         user_name="stranger", email="stranger@example.com",

@@ -1,24 +1,26 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
-from contextlib import asynccontextmanager
+from fastapi.staticfiles import StaticFiles
 from slowapi.errors import RateLimitExceeded
 
-from app.core.database import Base, engine
 from app.core.config import settings
+from app.core.database import Base, engine
+from app.core.exceptions import register_exception_handlers
 from app.core.rate_limit import limiter
 from app.modules.auth.router import router as auth_router
-from app.modules.users.router import router as users_router, admin_router as users_admin_router
-from app.modules.profiles.router import router as profiles_router
-from app.modules.reviews.router import user_reviews_router, booking_reviews_router
-from app.modules.skills.router import router as skills_router
 from app.modules.bookings.router import router as bookings_router
-from app.modules.wallets.router import router as wallets_router
+from app.modules.profiles.router import router as profiles_router
+from app.modules.reviews.router import booking_reviews_router, user_reviews_router
+from app.modules.skills.router import router as skills_router
+from app.modules.training.router import router as training_router
 from app.modules.transactions.router import router as transactions_router
-from app.core.exceptions import register_exception_handlers
+from app.modules.users.router import admin_router as users_admin_router
+from app.modules.users.router import router as users_router
+from app.modules.wallets.router import router as wallets_router
 
-from app.modules.training.router import router as training_router 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -54,6 +56,7 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
 # so this doesn't 404/error on a completely fresh checkout with no
 # uploads yet.
 import os
+
 os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
 app.mount("/media", StaticFiles(directory=settings.MEDIA_ROOT), name="media")
 

@@ -1,22 +1,27 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from contextlib import asynccontextmanager
 from slowapi.errors import RateLimitExceeded
 
 # Must run before ANY app.core.config import, anywhere. See
 # aws_secrets.py's docstring — a no-op unless USE_AWS_SECRETS=true.
 from app.core.aws_secrets import load_secrets_into_environment
+
 load_secrets_into_environment()
 
 from app.core.config import settings
 from app.core.database import Base, engine
-from app.core.rate_limit import limiter
 from app.core.exceptions import register_exception_handlers
-
-from app.modules.skills.router import router as skills_router
+from app.core.rate_limit import limiter
 from app.modules.bookings.router import router as bookings_router
-from app.modules.reviews.router import user_reviews_router, skill_reviews_router, booking_reviews_router
+from app.modules.reviews.router import (
+    booking_reviews_router,
+    skill_reviews_router,
+    user_reviews_router,
+)
+from app.modules.skills.router import router as skills_router
 from app.modules.training.router import router as training_router
 
 

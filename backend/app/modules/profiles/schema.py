@@ -1,6 +1,5 @@
 import uuid
 
-from typing import Optional
 from pydantic import BaseModel, Field
 
 
@@ -10,10 +9,10 @@ class ProfileResponse(BaseModel):
     id: uuid.UUID
     user_id: uuid.UUID
     user_name: str
-    bio: Optional[str] = None
-    avatar_url: Optional[str] = None
-    age: Optional[int] = None
-    gender: Optional[str] = None
+    bio: str | None = None
+    avatar_url: str | None = None
+    age: int | None = None
+    gender: str | None = None
 
     interests: list[str] = []
 
@@ -51,13 +50,13 @@ class ProfileResponse(BaseModel):
 
 # PATCH /users/{id}/profile — partial update, self or admin
 class ProfileUpdate(BaseModel):
-    bio: Optional[str] = Field(None, max_length=500)
-    avatar_url: Optional[str] = Field(None, max_length=255)
-    age: Optional[int] = Field(None, ge=0, le=150)
-    gender: Optional[str] = Field(None, max_length=20)
-    interests: Optional[list[str]] = None
-    skills_learning: Optional[list[str]] = None
+    bio: str | None = Field(None, max_length=500)
+    avatar_url: str | None = Field(None, max_length=255)
+    age: int | None = Field(None, ge=0, le=150)
+    gender: str | None = Field(None, max_length=20)
+    interests: list[str] | None = None
+    skills_learning: list[str] | None = None
     # skills_taught intentionally NOT editable here — it's derived from
     # completed teaching sessions (built later), not user-entered.
-    is_onboarded: Optional[bool] = None
+    is_onboarded: bool | None = None
 

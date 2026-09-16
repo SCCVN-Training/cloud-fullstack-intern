@@ -1,7 +1,6 @@
 import uuid
-from typing import Optional
 
-from sqlalchemy import String, UUID, Integer, ForeignKey, ARRAY, JSON
+from sqlalchemy import ARRAY, JSON, UUID, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -32,13 +31,13 @@ class Profile(Base):
     gender: Mapped[str | None] = mapped_column(String(20), nullable=True)
 
     # ARRAY on Postgres, JSON on SQLite (test DB) — same Python-side behavior
-    interests: Mapped[Optional[list[str]]] = mapped_column(
+    interests: Mapped[list[str] | None] = mapped_column(
         ARRAY(String).with_variant(JSON(), "sqlite"), nullable=False, default=list
     )
-    skills_learning: Mapped[Optional[list[str]]] = mapped_column(
+    skills_learning: Mapped[list[str] | None] = mapped_column(
         ARRAY(String).with_variant(JSON(), "sqlite"), nullable=False, default=list
     )
-    skills_taught: Mapped[Optional[list[str]]] = mapped_column(
+    skills_taught: Mapped[list[str] | None] = mapped_column(
         ARRAY(String).with_variant(JSON(), "sqlite"), nullable=False, default=list
     )
 

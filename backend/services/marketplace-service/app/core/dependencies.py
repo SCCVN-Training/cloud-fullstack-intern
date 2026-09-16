@@ -1,12 +1,12 @@
 from uuid import UUID
 
 from fastapi import Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
-from app.core.security import decode_access_token
-from app.core.exceptions import InvalidTokenException, ForbiddenException
 from app.common.enums import UserRole
+from app.core.exceptions import ForbiddenException, InvalidTokenException
+from app.core.security import decode_access_token
 
 # HTTP Bearer scheme — same reasoning as identity-service: Swagger gets a
 # plain "paste your token" field instead of an OAuth2 login form.

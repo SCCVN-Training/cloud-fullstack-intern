@@ -1,15 +1,20 @@
 import uuid
-from typing import List, Optional
+
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException, status
 
 from app.modules.bookings.models import Booking, BookingStatus
-from app.modules.bookings.schema import BookingCreate, BookingResponse, BookingListResponse, BookingStatusUpdate
 from app.modules.bookings.repository import BookingRepository
+from app.modules.bookings.schema import (
+    BookingCreate,
+    BookingListResponse,
+    BookingResponse,
+    BookingStatusUpdate,
+)
+from app.modules.skills.repository import SkillRepository
 from app.modules.users.models import User
 from app.modules.users.repository import UserRepository
-from app.modules.skills.repository import SkillRepository
-from app.modules.profiles.repository import ProfileRepository
+
 
 class BookingService:
     

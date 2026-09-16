@@ -12,9 +12,9 @@ site. marketplace-service's one outbound call to identity-service
 it, so the id threads all the way through one logical request across
 both services.
 """
+import json
 import logging
 import sys
-import json
 from contextvars import ContextVar
 
 request_id_ctx: ContextVar[str] = ContextVar("request_id", default="-")

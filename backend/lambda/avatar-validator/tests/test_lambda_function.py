@@ -4,10 +4,9 @@ sends) against moto's mocked S3 — verifies the Lambda handler's logic
 end-to-end without needing a real AWS account or a real Lambda deploy.
 """
 import boto3
+import lambda_function as fn
 import pytest
 from moto import mock_aws
-
-import lambda_function as fn
 
 BUCKET = "skillverse-test-avatars"
 

@@ -94,7 +94,7 @@ async def test_create_booking_charges_the_learner(
     )
     assert res.status_code == 201, res.text
     assert len(calls) == 1
-    learner_id, amount, booking_id = calls[0]
+    _learner_id, amount, booking_id = calls[0]
     assert amount == seeded_skill.price
     assert str(booking_id) == res.json()["id"]
 
@@ -102,7 +102,7 @@ async def test_create_booking_charges_the_learner(
 async def test_create_booking_fails_when_charge_fails(
     client, second_user_auth_headers, seeded_skill, monkeypatch
 ):
-    from app.clients.identity_client import IdentityClient, BookingPaymentError
+    from app.clients.identity_client import BookingPaymentError, IdentityClient
 
     async def failing_charge(learner_id, amount, booking_id):
         raise BookingPaymentError(422, "Insufficient balance: wallet has 0, booking costs 40")
@@ -123,7 +123,7 @@ async def test_create_booking_does_not_create_a_row_when_charge_fails(
 ):
     """A failed charge must not leave a PENDING booking behind — verified
     via the learner's own booking list, not just the response status."""
-    from app.clients.identity_client import IdentityClient, BookingPaymentError
+    from app.clients.identity_client import BookingPaymentError, IdentityClient
 
     async def failing_charge(learner_id, amount, booking_id):
         raise BookingPaymentError(422, "Insufficient balance")
@@ -203,7 +203,7 @@ async def test_completing_a_booking_credits_the_mentor(client, auth_headers, see
     assert res.status_code == 200, res.text
     assert res.json()["creditStatus"] == "CREDITED"
     assert len(calls) == 1
-    mentor_id, amount, booking_id = calls[0]
+    _mentor_id, amount, _booking_id = calls[0]
     assert amount == seeded_booking.price_paid
 
 
@@ -213,7 +213,7 @@ async def test_completing_a_booking_still_succeeds_when_credit_fails(
     """The session already happened — a wallet-side failure must not
     block the booking from being marked COMPLETED, only be surfaced via
     creditStatus for manual follow-up."""
-    from app.clients.identity_client import IdentityClient, BookingPaymentError
+    from app.clients.identity_client import BookingPaymentError, IdentityClient
 
     async def failing_credit(mentor_id, amount, booking_id):
         raise BookingPaymentError(503, "Could not reach the payments service.")

@@ -1,28 +1,32 @@
+import os
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
-from contextlib import asynccontextmanager
+from fastapi.staticfiles import StaticFiles
 from slowapi.errors import RateLimitExceeded
-import os
 
 # Must run before ANY app.core.config import, anywhere — this is what
 # populates the environment Settings() reads from. See the module
 # docstring in aws_secrets.py: a complete no-op unless
 # USE_AWS_SECRETS=true is set, so local dev is unaffected by default.
 from app.core.aws_secrets import load_secrets_into_environment
+
 load_secrets_into_environment()
 
-from app.core.database import Base, engine
 from app.core.config import settings
-from app.core.rate_limit import limiter
+from app.core.database import Base, engine
 from app.core.exceptions import register_exception_handlers
-
+from app.core.rate_limit import limiter
 from app.modules.auth.router import router as auth_router
-from app.modules.users.router import router as users_router, admin_router as users_admin_router
-from app.modules.profiles.router import router as profiles_router, internal_router as profiles_internal_router
-from app.modules.wallets.router import router as wallets_router, internal_router as wallets_internal_router
+from app.modules.profiles.router import internal_router as profiles_internal_router
+from app.modules.profiles.router import router as profiles_router
 from app.modules.transactions.router import router as transactions_router
+from app.modules.users.router import admin_router as users_admin_router
+from app.modules.users.router import router as users_router
+from app.modules.wallets.router import internal_router as wallets_internal_router
+from app.modules.wallets.router import router as wallets_router
 
 
 @asynccontextmanager

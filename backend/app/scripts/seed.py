@@ -15,15 +15,15 @@ import uuid
 
 from sqlalchemy import select
 
-from app.core.database import Base, engine, AsyncSessionLocal
-from app.core.security import hash_password
 from app.common.enums import UserRole
-from app.modules.users.models import User
-from app.modules.profiles.models import Profile
-from app.modules.wallets.models import Wallet
-from app.modules.skills.models import Skill
-from app.modules.reviews.models import Review
+from app.core.database import AsyncSessionLocal, Base, engine
+from app.core.security import hash_password
 from app.modules.bookings.models import Booking, BookingStatus
+from app.modules.profiles.models import Profile
+from app.modules.reviews.models import Review
+from app.modules.skills.models import Skill
+from app.modules.users.models import User
+from app.modules.wallets.models import Wallet
 
 # Windows defaults to ProactorEventLoop, which psycopg's async driver can't
 # use. uvicorn sets a compatible policy internally; this standalone script
@@ -77,8 +77,8 @@ SEED_SKILLS = [
     (
         "Angular Fundamentals",
         "Web Development",
-        "Learn Angular components, services, routing, forms, dependency "
-        "injection, and the structure of a modern Angular application.",
+        ("Learn Angular components, services, routing, forms, dependency "
+         "injection, and the structure of a modern Angular application."),
         "alice_dev",
         35,
         "60 min",
@@ -91,8 +91,8 @@ SEED_SKILLS = [
     (
         "Docker & Container Fundamentals",
         "DevOps",
-        "Learn containers, Dockerfiles, images, volumes, networks, and "
-        "Docker Compose for running multi-service applications locally.",
+        ("Learn containers, Dockerfiles, images, volumes, networks, and "
+         "Docker Compose for running multi-service applications locally."),
         "alice_dev",
         40,
         "75 min",
@@ -105,8 +105,8 @@ SEED_SKILLS = [
     (
         "REST API Design",
         "Web Development",
-        "Learn how to design clean REST APIs using resources, HTTP methods, "
-        "status codes, DTOs, validation, pagination, and error responses.",
+        ("Learn how to design clean REST APIs using resources, HTTP methods, "
+         "status codes, DTOs, validation, pagination, and error responses."),
         "alice_dev",
         40,
         "60 min",
@@ -119,8 +119,8 @@ SEED_SKILLS = [
     (
         "FastAPI Backend Development",
         "Programming",
-        "Build modern REST APIs with Python and FastAPI, including routing, "
-        "request validation, dependency injection, and API documentation.",
+        ("Build modern REST APIs with Python and FastAPI, including routing, "
+         "request validation, dependency injection, and API documentation."),
         "alice_dev",
         35,
         "60 min",
@@ -133,8 +133,8 @@ SEED_SKILLS = [
     (
         "AWS Cloud Fundamentals",
         "Cloud",
-        "Understand AWS regions, availability zones, IAM, S3, EC2, Lambda, "
-        "and the fundamentals of deploying applications to the cloud.",
+        ("Understand AWS regions, availability zones, IAM, S3, EC2, Lambda, "
+         "and the fundamentals of deploying applications to the cloud."),
         "alice_dev",
         45,
         "75 min",
@@ -147,8 +147,8 @@ SEED_SKILLS = [
     (
         "Technical Interview Preparation",
         "Career",
-        "Practice technical interview questions covering programming, "
-        "databases, APIs, system design, and software engineering concepts.",
+        ("Practice technical interview questions covering programming, "
+         "databases, APIs, system design, and software engineering concepts."),
         "alice_dev",
         35,
         "60 min",
@@ -161,8 +161,8 @@ SEED_SKILLS = [
     (
         "Machine Learning Fundamentals",
         "Data Science",
-        "Explore the fundamentals of machine learning including datasets, "
-        "features, training, testing, classification, and model evaluation.",
+        ("Explore the fundamentals of machine learning including datasets, "
+         "features, training, testing, classification, and model evaluation."),
         "alice_dev",
         50,
         "90 min",
@@ -175,8 +175,8 @@ SEED_SKILLS = [
     (
         "Intro to System Design",
         "Programming",
-        "A practical walkthrough of how to approach system design "
-        "interviews and real-world architecture decisions.",
+        ("A practical walkthrough of how to approach system design "
+         "interviews and real-world architecture decisions."),
         "alice_dev",
         45,
         "90 min",

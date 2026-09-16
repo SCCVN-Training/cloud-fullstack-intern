@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
-from app.modules.users.models import User
-from app.modules.transactions.service import TransactionService
 from app.modules.transactions.schema import TransactionListResponse
+from app.modules.transactions.service import TransactionService
+from app.modules.users.models import User
 
 # Nested under the wallet, not its own top-level resource — a transaction
 # only ever makes sense in the context of one wallet's history.

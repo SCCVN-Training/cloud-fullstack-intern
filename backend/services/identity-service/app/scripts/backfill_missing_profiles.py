@@ -12,11 +12,12 @@ Run from backend/:
 """
 import asyncio
 import sys
+
 from sqlalchemy import select
 
-from app.core.database import AsyncSessionLocal, engine
-from app.modules.users.models import User
+from app.core.database import AsyncSessionLocal
 from app.modules.profiles.models import Profile
+from app.modules.users.models import User
 
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())

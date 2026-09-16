@@ -2,6 +2,7 @@ import uuid
 
 from pydantic import BaseModel, EmailStr, Field
 
+
 ### REGISTER
 # Used by POST /auth/register
 class RegisterRequest(BaseModel):

@@ -1,23 +1,18 @@
+from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import ( 
-    APIRouter, 
-    Depends, 
-    Request,
-    status
-)
 
 from app.core.database import get_db
-from app.core.rate_limit import limiter
-from app.modules.users.models import User
-from app.modules.auth.service import AuthService
 from app.core.dependencies import get_current_user
-from app.modules.auth.schema import ( 
-    RegisterRequest, 
-    RegisterResponse, 
-    LoginRequest, 
+from app.core.rate_limit import limiter
+from app.modules.auth.schema import (
+    CurrentUserResponse,
+    LoginRequest,
     LoginResponse,
-    CurrentUserResponse
+    RegisterRequest,
+    RegisterResponse,
 )
+from app.modules.auth.service import AuthService
+from app.modules.users.models import User
 
 router = APIRouter(
     prefix='/auth',

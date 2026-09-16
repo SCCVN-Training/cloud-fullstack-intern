@@ -1,14 +1,15 @@
 import uuid
-from typing import List, Literal, Optional
+from typing import Literal
+
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.core.rate_limit import limiter
-from app.modules.users.models import User
-from app.modules.skills.schema import SkillCreate, SkillResponse, SkillListResponse
+from app.modules.skills.schema import SkillCreate, SkillListResponse, SkillResponse
 from app.modules.skills.service import SkillService
+from app.modules.users.models import User
 
 router = APIRouter(prefix="/skills", tags=["Skills"])
 
@@ -25,12 +26,12 @@ async def list_skills(
     request: Request,
     skip: int = Query(0, ge=0),
     limit: int = Query(20, ge=1, le=100),
-    search: Optional[str] = Query(None, description="Search by title or description"),
-    category: Optional[str] = Query(None, description="Filter by category"),
-    min_rating: Optional[float] = Query(None, ge=0, le=5, description="Minimum average rating"),
-    min_price: Optional[int] = Query(None, ge=0, description="Minimum price (inclusive)"),
-    max_price: Optional[int] = Query(None, ge=0, description="Maximum price (inclusive)"),
-    sort: Optional[SortOption] = Query("newest", description="Sort order"),
+    search: str | None = Query(None, description="Search by title or description"),
+    category: str | None = Query(None, description="Filter by category"),
+    min_rating: float | None = Query(None, ge=0, le=5, description="Minimum average rating"),
+    min_price: int | None = Query(None, ge=0, description="Minimum price (inclusive)"),
+    max_price: int | None = Query(None, ge=0, description="Maximum price (inclusive)"),
+    sort: SortOption | None = Query("newest", description="Sort order"),
     db: AsyncSession = Depends(get_db),
 ) -> SkillListResponse:
     """Get a paginated, filterable, sortable list of available skills."""
@@ -51,12 +52,12 @@ async def list_skills(
         sort=sort,
     )
 
-@router.get("/categories", response_model=List[str], status_code=status.HTTP_200_OK)
+@router.get("/categories", response_model=list[str], status_code=status.HTTP_200_OK)
 @limiter.limit("60/minute")
 async def list_categories(
     request: Request,
     db: AsyncSession = Depends(get_db),
-) -> List[str]:
+) -> list[str]:
     """Distinct category values, for populating the browse-page filter dropdown."""
     return await SkillService.get_categories(db)
 

@@ -25,7 +25,6 @@ Required IAM permissions on this function's execution role:
   bucket only (see the guide's least-privilege policy JSON).
 """
 import logging
-import os
 import urllib.parse
 
 import boto3

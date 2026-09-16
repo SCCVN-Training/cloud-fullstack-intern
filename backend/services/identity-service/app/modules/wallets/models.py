@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import UUID, Integer, ForeignKey, DateTime
+from sqlalchemy import UUID, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 

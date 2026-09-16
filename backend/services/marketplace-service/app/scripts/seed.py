@@ -21,11 +21,11 @@ import uuid
 
 from sqlalchemy import select
 
-from app.core.database import Base, engine, AsyncSessionLocal
+from app.core.database import AsyncSessionLocal, Base, engine
+from app.modules.bookings.models import Booking, BookingStatus
+from app.modules.reviews.models import Review
 from app.modules.skills.models import Skill
 from app.modules.skills.service import SkillService
-from app.modules.reviews.models import Review
-from app.modules.bookings.models import Booking, BookingStatus
 from app.scripts.seed_constants import ALICE_DEV_ID, BOB_LEARNER_ID
 
 if sys.platform == "win32":
@@ -42,40 +42,40 @@ BOB_ID = uuid.UUID(BOB_LEARNER_ID)
 SEED_SKILLS = [
     (
         "Angular Fundamentals", "Web Development",
-        "Learn Angular components, services, routing, forms, dependency "
-        "injection, and the structure of a modern Angular application.",
+        ("Learn Angular components, services, routing, forms, dependency "
+         "injection, and the structure of a modern Angular application."),
         45, "Intermediate",
         "Basic HTML, CSS, and TypeScript knowledge.",
         ["angular", "typescript", "frontend"],
     ),
     (
         "Docker & Container Fundamentals", "DevOps",
-        "Learn containers, Dockerfiles, images, volumes, networks, and "
-        "Docker Compose for running multi-service applications locally.",
+        ("Learn containers, Dockerfiles, images, volumes, networks, and "
+         "Docker Compose for running multi-service applications locally."),
         40, "Intermediate",
         "Basic command-line and application development knowledge.",
         ["docker", "containers", "devops"],
     ),
     (
         "REST API Design", "Web Development",
-        "Learn how to design clean REST APIs using resources, HTTP methods, "
-        "status codes, DTOs, validation, pagination, and error responses.",
+        ("Learn how to design clean REST APIs using resources, HTTP methods, "
+         "status codes, DTOs, validation, pagination, and error responses."),
         30, "Intermediate",
         "Basic understanding of HTTP and backend development.",
         ["rest", "api", "backend", "web-development"],
     ),
     (
         "FastAPI Backend Development", "Programming",
-        "Build modern REST APIs with Python and FastAPI, including routing, "
-        "request validation, dependency injection, and API documentation.",
+        ("Build modern REST APIs with Python and FastAPI, including routing, "
+         "request validation, dependency injection, and API documentation."),
         35, "Intermediate",
         "Basic Python knowledge and familiarity with HTTP APIs.",
         ["python", "fastapi", "backend", "api"],
     ),
     (
         "SQL & Database Design Basics", "Programming",
-        "Learn relational schema design, joins, indexes, and how to write "
-        "efficient, correct SQL queries.",
+        ("Learn relational schema design, joins, indexes, and how to write "
+         "efficient, correct SQL queries."),
         25, "Beginner",
         "None — this is an introductory session.",
         ["sql", "databases", "backend"],

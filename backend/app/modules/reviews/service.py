@@ -2,19 +2,19 @@ import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.users.models import User
-from app.modules.users.repository import UserRepository
-from app.modules.bookings.repository import BookingRepository
+from app.core.exceptions import (
+    BookingNotFoundException,
+    ForbiddenException,
+    ReviewAlreadyExistsException,
+    UserNotFoundException,
+)
 from app.modules.bookings.models import BookingStatus
+from app.modules.bookings.repository import BookingRepository
 from app.modules.reviews.models import Review
 from app.modules.reviews.repository import ReviewRepository
 from app.modules.reviews.schema import ReviewCreate, ReviewItem, ReviewSummary
-from app.core.exceptions import (
-    UserNotFoundException,
-    ForbiddenException,
-    BookingNotFoundException,
-    ReviewAlreadyExistsException,
-)
+from app.modules.users.models import User
+from app.modules.users.repository import UserRepository
 
 # Reviews shown inline on a profile are capped by default — a full,
 # paginated list is available via limit/offset for a dedicated

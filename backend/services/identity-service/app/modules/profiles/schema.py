@@ -1,6 +1,5 @@
 import uuid
 
-from typing import Optional
 from pydantic import BaseModel, Field
 
 from app.core.storage import get_avatar_url
@@ -16,10 +15,10 @@ class ProfileResponse(BaseModel):
     # from_model() below — this is the ONE user_name the API exposes,
     # not a raw column passthrough.
     user_name: str
-    bio: Optional[str] = None
-    avatar_url: Optional[str] = None
-    age: Optional[int] = None
-    gender: Optional[str] = None
+    bio: str | None = None
+    avatar_url: str | None = None
+    age: int | None = None
+    gender: str | None = None
 
     interests: list[str] = []
 
@@ -63,16 +62,16 @@ class ProfileUpdate(BaseModel):
     # Sets Profile.user_name (the display-name override) — NOT the
     # account's login handle. To change the login handle itself, use
     # PATCH /users/{id} (UserUpdate) instead.
-    user_name: Optional[str] = Field(None, max_length=100)
-    bio: Optional[str] = Field(None, max_length=500)
-    avatar_url: Optional[str] = Field(None, max_length=255)
-    age: Optional[int] = Field(None, ge=0, le=150)
-    gender: Optional[str] = Field(None, max_length=20)
-    interests: Optional[list[str]] = None
-    skills_learning: Optional[list[str]] = None
+    user_name: str | None = Field(None, max_length=100)
+    bio: str | None = Field(None, max_length=500)
+    avatar_url: str | None = Field(None, max_length=255)
+    age: int | None = Field(None, ge=0, le=150)
+    gender: str | None = Field(None, max_length=20)
+    interests: list[str] | None = None
+    skills_learning: list[str] | None = None
     # skills_taught intentionally NOT editable here — it's derived from
     # completed teaching sessions (built later), not user-entered.
-    is_onboarded: Optional[bool] = None
+    is_onboarded: bool | None = None
 
 
 # GET /internal/users/{id}/public — consumed by other services
@@ -85,9 +84,9 @@ class PublicProfileResponse(BaseModel):
     # override if set, else login handle) — already merged server-side,
     # so consumers never need to know two underlying columns exist.
     user_name: str
-    avatar_url: Optional[str] = None
-    bio: Optional[str] = None
-    title: Optional[str] = None
+    avatar_url: str | None = None
+    bio: str | None = None
+    title: str | None = None
 
     model_config = {
         "from_attributes": True

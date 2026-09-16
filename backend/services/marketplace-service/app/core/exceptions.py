@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
+
 # Base Exception
 class AppException(Exception):
     def __init__(
