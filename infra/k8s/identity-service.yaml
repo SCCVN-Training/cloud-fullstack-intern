@@ -20,6 +20,8 @@ spec:
           envFrom:
             - secretRef:
                 name: identity-secrets
+            - configMapRef:
+                name: identity-config
 ---
 apiVersion: v1
 kind: Service

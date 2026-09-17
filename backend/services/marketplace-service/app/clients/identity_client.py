@@ -5,6 +5,7 @@ from typing import TypedDict
 import httpx
 
 from app.core.config import settings
+from app.core.logging import request_id_ctx
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +76,7 @@ class IdentityClient:
         url = f"{settings.IDENTITY_SERVICE_URL}/internal/users/{user_id}/public"
         try:
             async with httpx.AsyncClient(timeout=cls._timeout) as client:
-                resp = await client.get(url)
+                resp = await client.get(url, headers={"X-Request-ID": request_id_ctx.get()})
                 if resp.status_code == 404:
                     return {**_UNKNOWN_PROFILE, "user_id": str(user_id)}
                 resp.raise_for_status()
@@ -108,7 +109,7 @@ class IdentityClient:
         url = f"{settings.IDENTITY_SERVICE_URL}/internal/users/{user_id}/public"
         try:
             async with httpx.AsyncClient(timeout=cls._timeout) as client:
-                resp = await client.get(url)
+                resp = await client.get(url, headers={"X-Request-ID": request_id_ctx.get()})
                 if resp.status_code == 404:
                     return False
                 resp.raise_for_status()
@@ -144,7 +145,9 @@ class IdentityClient:
 
         try:
             async with httpx.AsyncClient(timeout=cls._timeout) as client:
-                resp = await client.post(url, json=payload)
+                resp = await client.post(
+                    url, json=payload, headers={"X-Request-ID": request_id_ctx.get()}
+                )
         except httpx.RequestError as exc:
             logger.error(
                 "identity-service unreachable during wallet %s for booking %s: %s",
