@@ -47,20 +47,25 @@ This is the common case, since compute is deliberately destroyed between session
    $ecrPassword = aws ecr get-login-password --region ap-southeast-1
    kubectl create secret docker-registry ecr-secret --docker-server=455880746025.dkr.ecr.ap-southeast-1.amazonaws.com --docker-username=AWS --docker-password=$ecrPassword --docker-email=none@example.com
    ```
-4. **Recreate both application Secrets** (values in `skillverse/shared` plus the fields it's missing — see `cloud-environment-plan.md`):
+4. **Recreate both application Secrets** — only the values that are actually sensitive; `ALLOWED_ORIGINS`, `ALGORITHM`, and `ACCESS_TOKEN_EXPIRE_MINUTES` live in the ConfigMaps instead (see step 5) (values in `skillverse/shared` plus the fields it's missing — see `cloud-environment-plan.md`):
 
    ```
-      kubectl create secret generic identity-secrets --from-literal=SECRET_KEY=<SECRET_KEY> --from-literal=ALGORITHM=HS256 --from-literal=ACCESS_TOKEN_EXPIRE_MINUTES=30 "--from-literal=DATABASE_URL=<DATABASE_URL>" --from-literal=ALLOWED_ORIGINS=https://d3is4tc33i20xi.cloudfront.net --from-literal=USE_AWS_SECRETS=false --from-literal=STORAGE_BACKEND=s3 --from-literal=S3_REGION=ap-southeast-1 --from-literal=S3_BUCKET_NAME=skillverse-avatars-nhu-dev
+      kubectl create secret generic identity-secrets --from-literal=SECRET_KEY=<SECRET_KEY> "--from-literal=DATABASE_URL=<DATABASE_URL>" --from-literal=USE_AWS_SECRETS=false --from-literal=STORAGE_BACKEND=s3 --from-literal=S3_REGION=ap-southeast-1 --from-literal=S3_BUCKET_NAME=skillverse-avatars-nhu-dev
 
 
-      kubectl create secret generic marketplace-secrets --from-literal=SECRET_KEY=<SECRET_KEY> --from-literal=ALGORITHM=HS256 --from-literal=ACCESS_TOKEN_EXPIRE_MINUTES=30 "--from-literal=DATABASE_URL=<DATABASE_URL>" --from-literal=ALLOWED_ORIGINS=https://d3is4tc33i20xi.cloudfront.net --from-literal=USE_AWS_SECRETS=false
+      kubectl create secret generic marketplace-secrets --from-literal=SECRET_KEY=<SECRET_KEY> "--from-literal=DATABASE_URL=<DATABASE_URL>" --from-literal=USE_AWS_SECRETS=false
    ```
 
-5. **Re-apply the k8s manifests**:
+5. **Apply the ConfigMaps** (only needs updating if `ALLOWED_ORIGINS`/etc. actually change, not on every redeploy):
+   ```
+   kubectl apply -f infra/k8s/identity-config.yaml -f infra/k8s/marketplace-config.yaml
+   ```
+
+6. **Re-apply the k8s manifests**:
    ```
    kubectl apply -f infra\k8s\identity-service.yaml -f infra\k8s\marketplace-service.yaml -f infra\k8s\ingress.yaml
    ```
-6. **Verify**:
+7. **Verify**:
    ```
    kubectl get pods
    curl http://<new-instance-ip>/api/identity/health

@@ -1,274 +1,271 @@
-i-08030ddf91a50fc92	  0.301921] pci 0000:00:03.0: Video device with shadowed ROM at [mem 0x000c0000-0x000dffff]
-[    0.303182] pci 0000:00:04.0: [1d0f:8061] type 00 class 0x010802 PCIe Endpoint
-[    0.305877] pci 0000:00:04.0: BAR 0 [mem 0x80404000-0x80407fff]
-[    0.307427] pci 0000:00:05.0: [1d0f:ec20] type 00 class 0x020000 PCIe Endpoint
-[    0.308881] pci 0000:00:05.0: BAR 0 [mem 0x80400000-0x80403fff]
-[    0.317428] ACPI: PCI: Interrupt link LNKA configured for IRQ 10
-[    0.317981] ACPI: PCI: Interrupt link LNKB configured for IRQ 10
-[    0.318964] ACPI: PCI: Interrupt link LNKC configured for IRQ 11
-[    0.319981] ACPI: PCI: Interrupt link LNKD configured for IRQ 11
-[    0.320911] ACPI: PCI: Interrupt link LNKS configured for IRQ 9
-[    0.322242] iommu: Default domain type: Translated
-[    0.322724] iommu: DMA domain TLB invalidation policy: lazy mode
-[    0.324124] SCSI subsystem initialized
-[    0.324901] ACPI: bus type USB registered
-[    0.325544] usbcore: registered new interface driver usbfs
-[    0.325865] usbcore: registered new interface driver hub
-[    0.326755] usbcore: registered new device driver usb
-[    0.326887] pps_core: LinuxPPS API ver. 1 registered
-[    0.327639] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
-[    0.327861] PTP clock support registered
-[    0.328495] EDAC MC: Ver: 3.0.0
-[    0.328919] efivars: Registered efivars operations
-[    0.330022] NetLabel: Initializing
-[    0.330551] NetLabel:  domain hash size = 128
-[    0.330856] NetLabel:  protocols = UNLABELED CIPSOv4 CALIPSO
-[    0.331883] NetLabel:  unlabeled traffic allowed by default
-[    0.332902] mctp: management component transport protocol core
-[    0.333860] NET: Registered PF_MCTP protocol family
-[    0.334627] PCI: Using ACPI for IRQ routing
-[    0.336052] pci 0000:00:03.0: vgaarb: setting as boot VGA device
-[    0.336795] pci 0000:00:03.0: vgaarb: bridge control possible
-[    0.336851] pci 0000:00:03.0: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
-[    0.338862] vgaarb: loaded
-[    0.339955] hpet0: at MMIO 0xfed00000, IRQs 2, 8, 0, 0, 0, 0, 0, 0
-[    0.340859] hpet0: 8 comparators, 32-bit 62.500000 MHz counter
-[    0.342911] clocksource: Switched to clocksource kvm-clock
-[    0.344557] VFS: Disk quotas dquot_6.6.0
-[    0.345190] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
-[    0.346480] AppArmor: AppArmor Filesystem Enabled
-[    0.347422] pnp: PnP ACPI init
-[    0.348406] pnp: PnP ACPI: found 5 devices
-[    0.357233] clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
-[    0.358789] NET: Registered PF_INET protocol family
-[    0.359677] IP idents hash table entries: 32768 (order: 6, 262144 bytes, linear)
-[    0.378863] tcp_listen_portaddr_hash hash table entries: 1024 (order: 2, 16384 bytes, linear)
-[    0.380256] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
-[    0.381490] TCP established hash table entries: 16384 (order: 5, 131072 bytes, linear)
-[    0.382827] TCP bind hash table entries: 16384 (order: 7, 524288 bytes, linear)
-[    0.384012] TCP: Hash tables configured (established 16384 bind 16384)
-[    0.385088] MPTCP token hash table entries: 2048 (order: 4, 49152 bytes, linear)
-[    0.386237] UDP hash table entries: 1024 (order: 3, 32768 bytes, linear)
-[    0.387278] UDP-Lite hash table entries: 1024 (order: 3, 32768 bytes, linear)
-[    0.388414] NET: Registered PF_UNIX/PF_LOCAL protocol family
-[    0.389292] NET: Registered PF_XDP protocol family
-[    0.390039] pci_bus 0000:00: resource 4 [io  0x0000-0x0cf7 window]
-[    0.391036] pci_bus 0000:00: resource 5 [io  0x0d00-0xffff window]
-[    0.391976] pci_bus 0000:00: resource 6 [mem 0x000a0000-0x000bffff window]
-[    0.393018] pci_bus 0000:00: resource 7 [mem 0x80000000-0xfebfffff window]
-[    0.394058] pci_bus 0000:00: resource 8 [mem 0x100000000-0x2000ffffffff window]
-[    0.395237] pci 0000:00:00.0: Limiting direct PCI/PCI transfers
-[    0.396352] PCI: CLS 0 bytes, default 64
-[    0.397084] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x240937b9988, max_idle_ns: 440795218083 ns
-[    0.397108] Trying to unpack rootfs image as initramfs...
-[    0.399612] clocksource: Switched to clocksource tsc
-[    0.401604] Initialise system trusted keyrings
-[    0.402673] Key type blacklist registered
-[    0.404286] workingset: timestamp_bits=36 max_order=19 bucket_order=0
-[    0.405703] zbud: loaded
-[    0.406648] squashfs: version 4.0 (2009/01/31) Phillip Lougher
-[    0.410711] Freeing initrd memory: 14532K
-[    0.411468] fuse: init (API version 7.39)
-[    0.412301] integrity: Platform Keyring initialized
-[    0.413064] integrity: Machine keyring initialized
-[    0.426009] Key type asymmetric registered
-[    0.426688] Asymmetric key parser 'x509' registered
-[    0.427473] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 243)
-[    0.428764] io scheduler mq-deadline registered
-[    0.429715] shpchp: Standard Hot Plug PCI Controller Driver version: 0.4
-[    0.431009] input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
-[    0.432263] ACPI: button: Power Button [PWRF]
-[    0.432978] input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
-[    0.434188] ACPI: button: Sleep Button [SLPF]
-[    0.435462] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-[    0.461612] 00:04: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
-[    0.463673] Linux agpgart interface v0.103
-[    0.465944] loop: module loaded
-[    0.466813] Key type psk registered
-[    0.467856] ACPI: bus type drm_connector registered
-[    0.467919] nvme nvme0: pci function 0000:00:04.0
-[    0.468940] tun: Universal TUN/TAP device driver, 1.6
-[    0.469900] ACPI: \_SB_.LNKD: Enabled at IRQ 11
-[    0.471236] PPP generic driver version 2.4.2
-[    0.472120] i8042: PNP: PS/2 Controller [PNP0303:KBD,PNP0f13:MOU] at 0x60,0x64 irq 1,12
-[    0.473726] i8042: Warning: Keylock active
-[    0.476046] serio: i8042 KBD port at 0x60,0x64 irq 1
-[    0.476866] serio: i8042 AUX port at 0x60,0x64 irq 12
-[    0.478019] mousedev: PS/2 mouse device common for all mice
-[    0.479408] rtc_cmos 00:00: RTC can wake from S4
-[    0.481474] rtc_cmos 00:00: registered as rtc0
-[    0.482522] nvme nvme0: 2/0/0 default/read/poll queues
-[    0.482621] rtc_cmos 00:00: setting system clock to 2026-09-07T03:43:28 UTC (1788752608)
-[    0.484837] rtc_cmos 00:00: alarms up to one day, 114 bytes nvram
-[    0.485812] i2c_dev: i2c /dev entries driver
-[    0.486541] device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is disabled. Duplicate IMA measurements will not be recorded in the IMA log.
-[    0.488497] device-mapper: uevent: version 1.0.3
-[    0.489333] device-mapper: ioctl: 4.48.0-ioctl (2023-03-01) initialised: dm-devel@redhat.com
-[    0.490012]  nvme0n1: p1 p14 p15
-[    0.490727] intel_pstate: CPU model not supported
-[    0.492057] ledtrig-cpu: registered to indicate activity on CPUs
-[    0.493231] [drm] Initialized simpledrm 1.0.0 20200625 for simple-framebuffer.0 on minor 0
-[    0.496117] Console: switching to colour frame buffer device 100x37
-[    0.498255] simple-framebuffer simple-framebuffer.0: [drm] fb0: simpledrmdrmfb frame buffer device
-[    0.500036] drop_monitor: Initializing network drop monitor service
-[    0.501154] NET: Registered PF_INET6 protocol family
-[    0.502944] Segment Routing with IPv6
-[    0.503573] In-situ OAM (IOAM) with IPv6
-[    0.504237] NET: Registered PF_PACKET protocol family
-[    0.505092] Key type dns_resolver registered
-[    0.506266] No MBM correction factor available
-[    0.507050] IPI shorthand broadcast: enabled
-[    0.509585] sched_clock: Marking stable (365017070, 144198933)->(610262587, -101046584)
-[    0.511144] registered taskstats version 1
-[    0.512999] Loading compiled-in X.509 certificates
-[    0.515353] Loaded X.509 cert 'Build time autogenerated kernel key: 351e5f234a713ba6620db0391685dd9d47c3c4b7'
-[    0.517944] Loaded X.509 cert 'Canonical Ltd. Live Patch Signing 2025 Kmod: d541cef61dc7e793b7eb7e899970a2eef0b5dc8c'
-[    0.521487] Loaded X.509 cert 'Canonical Ltd. Live Patch Signing: 14df34d1a87cf37625abec039ef2bf521249b969'
-[    0.524729] Loaded X.509 cert 'Canonical Ltd. Kernel Module Signing 2025 Kmod: 4627603d2357a2a3f81006370894c221175893e9'
-[    0.527613] Loaded X.509 cert 'Canonical Ltd. Kernel Module Signing: 88f752e560a1e0737e31163a466ad7b70a850c19'
-[    0.529763] blacklist: Loading compiled-in revocation X.509 certificates
-[    0.531830] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing: 61482aa2830d0ab2ad5af10b7250da9033ddcef0'
-[    0.534621] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (2017): 242ade75ac4a15e50d50c84b0d45ff3eae707a03'
-[    0.537495] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (ESM 2018): 365188c1d374d6b07c3c8f240f8ef722433d6a8b'
-[    0.539876] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (2019): c0746fd6c5da3ae827864651ad66ae47fe24b3e8'
-[    0.542369] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (2021 v1): a8d54bbb3825cfb94fa13c9f8a594a195c107b8d'
-[    0.545277] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (2021 v2): 4cf046892d6fd3c9a5b03f98d845f90851dc6a8c'
-[    0.547846] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (2021 v3): 100437bb6de6e469b581e61cd66bce3ef4ed53af'
-[    0.550968] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (Ubuntu Core 2019): c1d57b8f6b743f23ee41f4f7ee292f06eecadfb9'
-[    0.558074] Key type .fscrypt registered
-[    0.559174] Key type fscrypt-provisioning registered
-[    0.561985] Key type encrypted registered
-[    0.563670] AppArmor: AppArmor sha256 policy hashing enabled
-[    0.565653] ima: No TPM chip found, activating TPM-bypass!
-[    0.566983] Loading compiled-in module X.509 certificates
-[    0.569296] Loaded X.509 cert 'Build time autogenerated kernel key: 351e5f234a713ba6620db0391685dd9d47c3c4b7'
-[    0.572167] ima: Allocated hash algorithm: sha256
-[    0.573341] ima: No architecture policies found
-[    0.575138] evm: Initialising EVM extended attributes:
-[    0.576339] evm: security.selinux
-[    0.577218] evm: security.SMACK64
-[    0.578065] evm: security.SMACK64EXEC
-[    0.578989] evm: security.SMACK64TRANSMUTE
-[    0.579939] evm: security.SMACK64MMAP
-[    0.580828] evm: security.apparmor
-[    0.581658] evm: security.ima
-[    0.582423] evm: security.capability
-[    0.583292] evm: HMAC attrs: 0x1
-[    0.584879] PM:   Magic number: 10:543:714
-[    0.590281] RAS: Correctable Errors collector initialized.
-[    0.591626] clk: Disabling unused clocks
-[    0.981948] input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input2
-[    0.984450] md: Waiting for all devices to be available before autodetect
-[    0.985557] md: If you don't use raid, use raid=noautodetect
-[    0.987253] md: Autodetecting RAID arrays.
-[    0.988465] md: autorun ...
-[    0.988974] md: ... autorun DONE.
-[    0.996408] EXT4-fs (nvme0n1p1): mounted filesystem 15f51552-10c4-4524-af97-d2b37585a385 ro with ordered data mode. Quota mode: none.
-[    0.998477] VFS: Mounted root (ext4 filesystem) readonly on device 259:1.
-[    1.000262] devtmpfs: mounted
-[    1.002891] Freeing unused decrypted memory: 2028K
-[    1.005615] Freeing unused kernel image (initmem) memory: 5040K
-[    1.007263] Write protecting the kernel read-only data: 36864k
-[    1.008480] Freeing unused kernel image (rodata/data gap) memory: 256K
-[    1.058459] x86/mm: Checked W+X mappings: passed, no W+X pages found.
-[    1.059480] x86/mm: Checking user space page tables
-[    1.107732] x86/mm: Checked W+X mappings: passed, no W+X pages found.
-[    1.108790] Run /sbin/init as init process
-[    1.251765] systemd[1]: Inserted module 'autofs4'
-[    1.281402] systemd[1]: systemd 249.11-0ubuntu3.22 running in system mode (+PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT +GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY -P11KIT -QRENCODE +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified)
-[    1.287296] systemd[1]: Detected virtualization amazon.
-[    1.288256] systemd[1]: Detected architecture x86-64.
+i-00521d3086bd848d9	00 class 0x020000 PCIe Endpoint
+[    0.304418] pci 0000:00:05.0: BAR 0 [mem 0x80400000-0x80403fff]
+[    0.312638] ACPI: PCI: Interrupt link LNKA configured for IRQ 10
+[    0.313520] ACPI: PCI: Interrupt link LNKB configured for IRQ 10
+[    0.314517] ACPI: PCI: Interrupt link LNKC configured for IRQ 11
+[    0.315515] ACPI: PCI: Interrupt link LNKD configured for IRQ 11
+[    0.316460] ACPI: PCI: Interrupt link LNKS configured for IRQ 9
+[    0.317777] iommu: Default domain type: Translated
+[    0.318406] iommu: DMA domain TLB invalidation policy: lazy mode
+[    0.319669] SCSI subsystem initialized
+[    0.320450] ACPI: bus type USB registered
+[    0.321126] usbcore: registered new interface driver usbfs
+[    0.321412] usbcore: registered new interface driver hub
+[    0.322246] usbcore: registered new device driver usb
+[    0.322432] pps_core: LinuxPPS API ver. 1 registered
+[    0.323211] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
+[    0.323407] PTP clock support registered
+[    0.324040] EDAC MC: Ver: 3.0.0
+[    0.324590] efivars: Registered efivars operations
+[    0.325669] NetLabel: Initializing
+[    0.326404] NetLabel:  domain hash size = 128
+[    0.327089] NetLabel:  protocols = UNLABELED CIPSOv4 CALIPSO
+[    0.327420] NetLabel:  unlabeled traffic allowed by default
+[    0.328414] mctp: management component transport protocol core
+[    0.329332] NET: Registered PF_MCTP protocol family
+[    0.329408] PCI: Using ACPI for IRQ routing
+[    0.330271] pci 0000:00:03.0: vgaarb: setting as boot VGA device
+[    0.330375] pci 0000:00:03.0: vgaarb: bridge control possible
+[    0.330399] pci 0000:00:03.0: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
+[    0.330403] vgaarb: loaded
+[    0.330852] hpet0: at MMIO 0xfed00000, IRQs 2, 8, 0, 0, 0, 0, 0, 0
+[    0.331399] hpet0: 8 comparators, 32-bit 62.500000 MHz counter
+[    0.336442] clocksource: Switched to clocksource kvm-clock
+[    0.338075] VFS: Disk quotas dquot_6.6.0
+[    0.338749] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+[    0.340091] AppArmor: AppArmor Filesystem Enabled
+[    0.340863] pnp: PnP ACPI init
+[    0.341821] pnp: PnP ACPI: found 5 devices
+[    0.349952] clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
+[    0.351386] NET: Registered PF_INET protocol family
+[    0.352255] IP idents hash table entries: 32768 (order: 6, 262144 bytes, linear)
+[    0.370037] tcp_listen_portaddr_hash hash table entries: 1024 (order: 2, 16384 bytes, linear)
+[    0.371482] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+[    0.372721] TCP established hash table entries: 16384 (order: 5, 131072 bytes, linear)
+[    0.374063] TCP bind hash table entries: 16384 (order: 7, 524288 bytes, linear)
+[    0.375260] TCP: Hash tables configured (established 16384 bind 16384)
+[    0.376326] MPTCP token hash table entries: 2048 (order: 4, 49152 bytes, linear)
+[    0.377484] UDP hash table entries: 1024 (order: 3, 32768 bytes, linear)
+[    0.378547] UDP-Lite hash table entries: 1024 (order: 3, 32768 bytes, linear)
+[    0.379718] NET: Registered PF_UNIX/PF_LOCAL protocol family
+[    0.380593] NET: Registered PF_XDP protocol family
+[    0.381346] pci_bus 0000:00: resource 4 [io  0x0000-0x0cf7 window]
+[    0.382328] pci_bus 0000:00: resource 5 [io  0x0d00-0xffff window]
+[    0.383271] pci_bus 0000:00: resource 6 [mem 0x000a0000-0x000bffff window]
+[    0.384337] pci_bus 0000:00: resource 7 [mem 0x80000000-0xfebfffff window]
+[    0.385386] pci_bus 0000:00: resource 8 [mem 0x100000000-0x2000ffffffff window]
+[    0.386571] pci 0000:00:00.0: Limiting direct PCI/PCI transfers
+[    0.387572] PCI: CLS 0 bytes, default 64
+[    0.388318] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x240933eba6e, max_idle_ns: 440795246008 ns
+[    0.388332] Trying to unpack rootfs image as initramfs...
+[    0.390751] clocksource: Switched to clocksource tsc
+[    0.392290] Initialise system trusted keyrings
+[    0.393263] Key type blacklist registered
+[    0.394477] workingset: timestamp_bits=36 max_order=19 bucket_order=0
+[    0.395934] zbud: loaded
+[    0.396841] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    0.398295] fuse: init (API version 7.39)
+[    0.399390] integrity: Platform Keyring initialized
+[    0.400547] integrity: Machine keyring initialized
+[    0.401840] Freeing initrd memory: 14532K
+[    0.414026] Key type asymmetric registered
+[    0.414704] Asymmetric key parser 'x509' registered
+[    0.415506] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 243)
+[    0.416747] io scheduler mq-deadline registered
+[    0.417672] shpchp: Standard Hot Plug PCI Controller Driver version: 0.4
+[    0.418851] input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+[    0.420147] ACPI: button: Power Button [PWRF]
+[    0.420876] input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
+[    0.422058] ACPI: button: Sleep Button [SLPF]
+[    0.423128] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[    0.449097] 00:04: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+[    0.451090] Linux agpgart interface v0.103
+[    0.453354] loop: module loaded
+[    0.454098] Key type psk registered
+[    0.455076] ACPI: bus type drm_connector registered
+[    0.455141] nvme nvme0: pci function 0000:00:04.0
+[    0.456211] tun: Universal TUN/TAP device driver, 1.6
+[    0.457181] ACPI: \_SB_.LNKD: Enabled at IRQ 11
+[    0.457700] PPP generic driver version 2.4.2
+[    0.459241] i8042: PNP: PS/2 Controller [PNP0303:KBD,PNP0f13:MOU] at 0x60,0x64 irq 1,12
+[    0.460812] i8042: Warning: Keylock active
+[    0.462642] serio: i8042 KBD port at 0x60,0x64 irq 1
+[    0.463408] serio: i8042 AUX port at 0x60,0x64 irq 12
+[    0.464546] mousedev: PS/2 mouse device common for all mice
+[    0.465543] rtc_cmos 00:00: RTC can wake from S4
+[    0.467514] rtc_cmos 00:00: registered as rtc0
+[    0.468545] rtc_cmos 00:00: setting system clock to 2026-09-16T06:31:25 UTC (1789540285)
+[    0.469349] nvme nvme0: 2/0/0 default/read/poll queues
+[    0.470044] rtc_cmos 00:00: alarms up to one day, 114 bytes nvram
+[    0.471835] i2c_dev: i2c /dev entries driver
+[    0.472584] device-mapper: core: CONFIG_IMA_DISABLE_HTABLE is disabled. Duplicate IMA measurements will not be recorded in the IMA log.
+[    0.474568] device-mapper: uevent: version 1.0.3
+[    0.475375] device-mapper: ioctl: 4.48.0-ioctl (2023-03-01) initialised: dm-devel@redhat.com
+[    0.476801] intel_pstate: CPU model not supported
+[    0.477574] ledtrig-cpu: registered to indicate activity on CPUs
+[    0.478785] [drm] Initialized simpledrm 1.0.0 20200625 for simple-framebuffer.0 on minor 0
+[    0.479550]  nvme0n1: p1 p14 p15
+[    0.482080] Console: switching to colour frame buffer device 100x37
+[    0.484255] simple-framebuffer simple-framebuffer.0: [drm] fb0: simpledrmdrmfb frame buffer device
+[    0.485919] drop_monitor: Initializing network drop monitor service
+[    0.487061] NET: Registered PF_INET6 protocol family
+[    0.488808] Segment Routing with IPv6
+[    0.489456] In-situ OAM (IOAM) with IPv6
+[    0.490138] NET: Registered PF_PACKET protocol family
+[    0.491041] Key type dns_resolver registered
+[    0.492171] No MBM correction factor available
+[    0.492943] IPI shorthand broadcast: enabled
+[    0.495474] sched_clock: Marking stable (350003197, 145433418)->(601533142, -106096527)
+[    0.497001] registered taskstats version 1
+[    0.498964] Loading compiled-in X.509 certificates
+[    0.500787] Loaded X.509 cert 'Build time autogenerated kernel key: 351e5f234a713ba6620db0391685dd9d47c3c4b7'
+[    0.503321] Loaded X.509 cert 'Canonical Ltd. Live Patch Signing 2025 Kmod: d541cef61dc7e793b7eb7e899970a2eef0b5dc8c'
+[    0.506643] Loaded X.509 cert 'Canonical Ltd. Live Patch Signing: 14df34d1a87cf37625abec039ef2bf521249b969'
+[    0.509705] Loaded X.509 cert 'Canonical Ltd. Kernel Module Signing 2025 Kmod: 4627603d2357a2a3f81006370894c221175893e9'
+[    0.512626] Loaded X.509 cert 'Canonical Ltd. Kernel Module Signing: 88f752e560a1e0737e31163a466ad7b70a850c19'
+[    0.514749] blacklist: Loading compiled-in revocation X.509 certificates
+[    0.516506] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing: 61482aa2830d0ab2ad5af10b7250da9033ddcef0'
+[    0.518728] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (2017): 242ade75ac4a15e50d50c84b0d45ff3eae707a03'
+[    0.521075] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (ESM 2018): 365188c1d374d6b07c3c8f240f8ef722433d6a8b'
+[    0.523651] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (2019): c0746fd6c5da3ae827864651ad66ae47fe24b3e8'
+[    0.526581] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (2021 v1): a8d54bbb3825cfb94fa13c9f8a594a195c107b8d'
+[    0.529527] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (2021 v2): 4cf046892d6fd3c9a5b03f98d845f90851dc6a8c'
+[    0.531970] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (2021 v3): 100437bb6de6e469b581e61cd66bce3ef4ed53af'
+[    0.534553] Loaded X.509 cert 'Canonical Ltd. Secure Boot Signing (Ubuntu Core 2019): c1d57b8f6b743f23ee41f4f7ee292f06eecadfb9'
+[    0.541541] Key type .fscrypt registered
+[    0.542606] Key type fscrypt-provisioning registered
+[    0.545359] Key type encrypted registered
+[    0.546475] AppArmor: AppArmor sha256 policy hashing enabled
+[    0.548638] ima: No TPM chip found, activating TPM-bypass!
+[    0.550371] Loading compiled-in module X.509 certificates
+[    0.553032] Loaded X.509 cert 'Build time autogenerated kernel key: 351e5f234a713ba6620db0391685dd9d47c3c4b7'
+[    0.555960] ima: Allocated hash algorithm: sha256
+[    0.557108] ima: No architecture policies found
+[    0.558497] evm: Initialising EVM extended attributes:
+[    0.559787] evm: security.selinux
+[    0.560660] evm: security.SMACK64
+[    0.561522] evm: security.SMACK64EXEC
+[    0.562443] evm: security.SMACK64TRANSMUTE
+[    0.563379] evm: security.SMACK64MMAP
+[    0.564458] evm: security.apparmor
+[    0.565324] evm: security.ima
+[    0.566100] evm: security.capability
+[    0.566935] evm: HMAC attrs: 0x1
+[    0.568585] PM:   Magic number: 10:333:519
+[    0.573764] RAS: Correctable Errors collector initialized.
+[    0.575055] clk: Disabling unused clocks
+[    0.973974] input: AT Translated Set 2 keyboard as /devices/platform/i8042/serio0/input/input2
+[    0.976357] md: Waiting for all devices to be available before autodetect
+[    0.977466] md: If you don't use raid, use raid=noautodetect
+[    0.978361] md: Autodetecting RAID arrays.
+[    0.979462] md: autorun ...
+[    0.980070] md: ... autorun DONE.
+[    0.987050] EXT4-fs (nvme0n1p1): mounted filesystem 15f51552-10c4-4524-af97-d2b37585a385 ro with ordered data mode. Quota mode: none.
+[    0.989097] VFS: Mounted root (ext4 filesystem) readonly on device 259:1.
+[    0.990853] devtmpfs: mounted
+[    0.993343] Freeing unused decrypted memory: 2028K
+[    0.995889] Freeing unused kernel image (initmem) memory: 5040K
+[    0.997406] Write protecting the kernel read-only data: 36864k
+[    0.998569] Freeing unused kernel image (rodata/data gap) memory: 256K
+[    1.049093] x86/mm: Checked W+X mappings: passed, no W+X pages found.
+[    1.050102] x86/mm: Checking user space page tables
+[    1.098832] x86/mm: Checked W+X mappings: passed, no W+X pages found.
+[    1.100495] Run /sbin/init as init process
+[    1.239484] systemd[1]: Inserted module 'autofs4'
+[    1.269764] systemd[1]: systemd 249.11-0ubuntu3.22 running in system mode (+PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT +GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY -P11KIT -QRENCODE +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified)
+[    1.275651] systemd[1]: Detected virtualization amazon.
+[    1.276959] systemd[1]: Detected architecture x86-64.
 
 Welcome to [1mUbuntu 22.04.5 LTS[0m!
 
-[    1.291749] systemd[1]: Hostname set to <ubuntu>.
-[    1.296929] systemd[1]: Initializing machine ID from VM UUID.
-[    1.297967] systemd[1]: Installed transient /etc/machine-id file.
-[    1.373183] block nvme0n1: the capability attribute has been deprecated.
-[    1.492737] systemd[1]: Configuration file /run/systemd/system/netplan-ovs-cleanup.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
-[    1.530745] systemd[1]: /lib/systemd/system/snapd.service:23: Unknown key name 'RestartMode' in section 'Service', ignoring.
-[    1.659879] systemd[1]: Queued start job for default target Graphical Interface.
-[    1.666835] systemd[1]: Created slice Slice /system/modprobe.
+[    1.280374] systemd[1]: Hostname set to <ubuntu>.
+[    1.285185] systemd[1]: Initializing machine ID from VM UUID.
+[    1.286199] systemd[1]: Installed transient /etc/machine-id file.
+[    1.362360] block nvme0n1: the capability attribute has been deprecated.
+[    1.472707] systemd[1]: Configuration file /run/systemd/system/netplan-ovs-cleanup.service is marked world-inaccessible. This has no effect as configuration data is accessible via APIs without restrictions. Proceeding anyway.
+[    1.511120] systemd[1]: /lib/systemd/system/snapd.service:23: Unknown key name 'RestartMode' in section 'Service', ignoring.
+[    1.640910] systemd[1]: Queued start job for default target Graphical Interface.
+[    1.649982] systemd[1]: Created slice Slice /system/modprobe.
 [[0;32m  OK  [0m] Created slice [0;1;39mSlice /system/modprobe[0m.
-[    1.669822] systemd[1]: Created slice Slice /system/serial-getty.
+[    1.652765] systemd[1]: Created slice Slice /system/serial-getty.
 [[0;32m  OK  [0m] Created slice [0;1;39mSlice /system/serial-getty[0m.
-[    1.673240] systemd[1]: Created slice Slice /system/systemd-fsck.
+[    1.655549] systemd[1]: Created slice Slice /system/systemd-fsck.
 [[0;32m  OK  [0m] Created slice [0;1;39mSlice /system/systemd-fsck[0m.
-[    1.676482] systemd[1]: Created slice User and Session Slice.
+[    1.658531] systemd[1]: Created slice User and Session Slice.
 [[0;32m  OK  [0m] Created slice [0;1;39mUser and Session Slice[0m.
-[    1.678938] systemd[1]: Started Forward Password Requests to Wall Directory Watch.
+[    1.661293] systemd[1]: Started Forward Password Requests to Wall Directory Watch.
 [[0;32m  OK  [0m] Started [0;1;39mForward Password R…uests to Wall Directory Watch[0m.
-[    1.682514] systemd[1]: Set up automount Arbitrary Executable File Formats File System Automount Point.
+[    1.664307] systemd[1]: Set up automount Arbitrary Executable File Formats File System Automount Point.
 [[0;32m  OK  [0m] Set up automount [0;1;39mArbitrary…s File System Automount Point[0m.
-[    1.686082] systemd[1]: Reached target Slice Units.
+[    1.668033] systemd[1]: Reached target Slice Units.
 [[0;32m  OK  [0m] Reached target [0;1;39mSlice Units[0m.
-[    1.688175] systemd[1]: Reached target Mounting snaps.
+[    1.669957] systemd[1]: Reached target Mounting snaps.
 [[0;32m  OK  [0m] Reached target [0;1;39mMounting snaps[0m.
-[    1.690137] systemd[1]: Reached target Swaps.
+[    1.671875] systemd[1]: Reached target Swaps.
 [[0;32m  OK  [0m] Reached target [0;1;39mSwaps[0m.
-[    1.692152] systemd[1]: Reached target System Time Set.
+[    1.673623] systemd[1]: Reached target System Time Set.
 [[0;32m  OK  [0m] Reached target [0;1;39mSystem Time Set[0m.
-[    1.694249] systemd[1]: Reached target Local Verity Protected Volumes.
+[    1.675993] systemd[1]: Reached target Local Verity Protected Volumes.
 [[0;32m  OK  [0m] Reached target [0;1;39mLocal Verity Protected Volumes[0m.
-[    1.696854] systemd[1]: Listening on Device-mapper event daemon FIFOs.
+[    1.678881] systemd[1]: Listening on Device-mapper event daemon FIFOs.
 [[0;32m  OK  [0m] Listening on [0;1;39mDevice-mapper event daemon FIFOs[0m.
-[    1.699515] systemd[1]: Listening on LVM2 poll daemon socket.
+[    1.681410] systemd[1]: Listening on LVM2 poll daemon socket.
 [[0;32m  OK  [0m] Listening on [0;1;39mLVM2 poll daemon socket[0m.
-[    1.701851] systemd[1]: Listening on multipathd control socket.
+[    1.684150] systemd[1]: Listening on multipathd control socket.
 [[0;32m  OK  [0m] Listening on [0;1;39mmultipathd control socket[0m.
-[    1.704298] systemd[1]: Listening on Syslog Socket.
+[    1.686919] systemd[1]: Listening on Syslog Socket.
 [[0;32m  OK  [0m] Listening on [0;1;39mSyslog Socket[0m.
-[    1.706327] systemd[1]: Listening on fsck to fsckd communication Socket.
+[    1.689466] systemd[1]: Listening on fsck to fsckd communication Socket.
 [[0;32m  OK  [0m] Listening on [0;1;39mfsck to fsckd communication Socket[0m.
-[    1.708898] systemd[1]: Listening on initctl Compatibility Named Pipe.
+[    1.691966] systemd[1]: Listening on initctl Compatibility Named Pipe.
 [[0;32m  OK  [0m] Listening on [0;1;39minitctl Compatibility Named Pipe[0m.
-[    1.711628] systemd[1]: Listening on Journal Audit Socket.
+[    1.694539] systemd[1]: Listening on Journal Audit Socket.
 [[0;32m  OK  [0m] Listening on [0;1;39mJournal Audit Socket[0m.
-[    1.713840] systemd[1]: Listening on Journal Socket (/dev/log).
+[    1.696779] systemd[1]: Listening on Journal Socket (/dev/log).
 [[0;32m  OK  [0m] Listening on [0;1;39mJournal Socket (/dev/log)[0m.
-[    1.716284] systemd[1]: Listening on Journal Socket.
+[    1.699091] systemd[1]: Listening on Journal Socket.
 [[0;32m  OK  [0m] Listening on [0;1;39mJournal Socket[0m.
-[    1.718380] systemd[1]: Listening on Network Service Netlink Socket.
+[    1.701505] systemd[1]: Listening on Network Service Netlink Socket.
 [[0;32m  OK  [0m] Listening on [0;1;39mNetwork Service Netlink Socket[0m.
-[    1.721527] systemd[1]: Listening on udev Control Socket.
+[    1.704621] systemd[1]: Listening on udev Control Socket.
 [[0;32m  OK  [0m] Listening on [0;1;39mudev Control Socket[0m.
-[    1.723735] systemd[1]: Listening on udev Kernel Socket.
+[    1.706748] systemd[1]: Listening on udev Kernel Socket.
 [[0;32m  OK  [0m] Listening on [0;1;39mudev Kernel Socket[0m.
-[    1.735405] systemd[1]: Mounting Huge Pages File System...
+[    1.714602] systemd[1]: Mounting Huge Pages File System...
          Mounting [0;1;39mHuge Pages File System[0m...
-[    1.739919] systemd[1]: Mounting POSIX Message Queue File System...
+[    1.717768] systemd[1]: Mounting POSIX Message Queue File System...
          Mounting [0;1;39mPOSIX Message Queue File System[0m...
-[    1.743773] systemd[1]: Mounting Kernel Debug File System...
+[    1.722298] systemd[1]: Mounting Kernel Debug File System...
          Mounting [0;1;39mKernel Debug File System[0m...
-[    1.748582] systemd[1]: Mounting Kernel Trace File System...
+[    1.725633] systemd[1]: Mounting Kernel Trace File System...
          Mounting [0;1;39mKernel Trace File System[0m...
-[    1.753743] systemd[1]: Starting Journal Service...
+[    1.730558] systemd[1]: Starting Journal Service...
          Starting [0;1;39mJournal Service[0m...
-[    1.758369] systemd[1]: Starting Set the console keyboard layout...
+[    1.735068] systemd[1]: Starting Set the console keyboard layout...
          Starting [0;1;39mSet the console keyboard layout[0m...
-[    1.764940] systemd[1]: Starting Create List of Static Device Nodes...
+[    1.740218] systemd[1]: Starting Create List of Static Device Nodes...
          Starting [0;1;39mCreate List of Static Device Nodes[0m...
-[    1.769708] systemd[1]: Starting Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling...
+[    1.744631] systemd[1]: Starting Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling...
          Starting [0;1;39mMonitoring of LVM…meventd or progress polling[0m...
-[    1.775222] systemd[1]: Condition check resulted in LXD - agent being skipped.
-[    1.786407] systemd[1]: Starting Load Kernel Module configfs...
+[    1.749141] systemd[1]: Condition check resulted in LXD - agent being skipped.
+[    1.756514] systemd[1]: Starting Load Kernel Module configfs...
          Starting [0;1;39mLoad Kernel Module configfs[0m...
-[    1.792785] systemd[1]: Starting Load Kernel Module drm...
+[    1.767406] systemd[1]: Starting Load Kernel Module drm...
          Starting [0;1;39mLoad Kernel Module drm[0m...
-[    1.807361] systemd[1]: Starting Load Kernel Module efi_pstore...
+[    1.778192] systemd[1]: Starting Load Kernel Module efi_pstore...
          Starting [0;1;39mLoad Kernel Module efi_pstore[0m...
-[    1.814886] systemd[1]: Starting Load Kernel Module fuse...
+[    1.787036] systemd[1]: Starting Load Kernel Module fuse...
          Starting [0;1;39mLoad Kernel Module fuse[0m...
-[    1.818149] systemd[1]: Condition check resulted in OpenVSwitch configuration for cleanup being skipped.
-[    1.823696] pstore: Using crash dump compression: deflate
-[    1.824782] systemd[1]: Starting File System Check on Root Device...
+[    1.792314] systemd[1]: Condition check resulted in OpenVSwitch configuration for cleanup being skipped.
+[    1.797607] pstore: Using crash dump compression: deflate
+[    1.806682] pstore: Registered efi_pstore as persistent store backend
+[    1.808880] systemd[1]: Starting File System Check on Root Device...
          Starting [0;1;39mFile System Check on Root Device[0m...
-[    1.830355] pstore: Registered efi_pstore as persistent store backend
-[    1.839318] systemd[1]: Starting Load Kernel Modules...
+[    1.820682] systemd[1]: Starting Load Kernel Modules...
          Starting [0;1;39mLoad Kernel Modules[0m...
-[    1.843976] systemd[1]: Starting Coldplug All udev Devices...
+[    1.827246] systemd[1]: Starting Coldplug All udev Devices...
          Starting [0;1;39mColdplug All udev Devices[0m...
-[    1.849880] systemd[1]: Started Journal Service.
+[    1.835668] systemd[1]: Started Journal Service.
 [[0;32m  OK  [0m] Started [0;1;39mJournal Service[0m.
 [[0;32m  OK  [0m] Mounted [0;1;39mHuge Pages File System[0m.
 [[0;32m  OK  [0m] Mounted [0;1;39mPOSIX Message Queue File System[0m.
@@ -279,14 +276,14 @@ Welcome to [1mUbuntu 22.04.5 LTS[0m!
 [[0;32m  OK  [0m] Finished [0;1;39mLoad Kernel Module drm[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mLoad Kernel Module efi_pstore[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mLoad Kernel Module fuse[0m.
-[[0;32m  OK  [0m] Finished [0;1;39mFile System Check on Root Device[0m.
          Mounting [0;1;39mFUSE Control File System[0m...
          Mounting [0;1;39mKernel Configuration File System[0m...
 [[0;32m  OK  [0m] Started [0;1;39mFile System Check Daemon to report status[0m.
-         Starting [0;1;39mRemount Root and Kernel File Systems[0m...
+[[0;32m  OK  [0m] Finished [0;1;39mFile System Check on Root Device[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mLoad Kernel Modules[0m.
 [[0;32m  OK  [0m] Mounted [0;1;39mFUSE Control File System[0m.
 [[0;32m  OK  [0m] Mounted [0;1;39mKernel Configuration File System[0m.
+         Starting [0;1;39mRemount Root and Kernel File Systems[0m...
          Starting [0;1;39mApply Kernel Variables[0m...
 [[0;32m  OK  [0m] Finished [0;1;39mSet the console keyboard layout[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mApply Kernel Variables[0m.
@@ -337,8 +334,8 @@ Welcome to [1mUbuntu 22.04.5 LTS[0m!
 [[0;32m  OK  [0m] Finished [0;1;39mCreate final runt…e dir for shutdown pivot root[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mTell Plymouth To Write Out Runtime Data[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mUncomplicated firewall[0m.
-         Mounting [0;1;39mArbitrary Executable File Formats File System[0m...
 [[0;32m  OK  [0m] Finished [0;1;39mCreate Volatile Files and Directories[0m.
+         Mounting [0;1;39mArbitrary Executable File Formats File System[0m...
          Starting [0;1;39mRecord System Boot/Shutdown in UTMP[0m...
 [[0;32m  OK  [0m] Mounted [0;1;39mArbitrary Executable File Formats File System[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mSet Up Additional Binary Formats[0m.
@@ -348,7 +345,7 @@ Welcome to [1mUbuntu 22.04.5 LTS[0m!
          Starting [0;1;39mLoad AppArmor pro…managed internally by snapd[0m...
          Starting [0;1;39mCloud-init: Local Stage (pre-network)[0m...
 [[0;32m  OK  [0m] Finished [0;1;39mLoad AppArmor pro…s managed internally by snapd[0m.
-[    3.549218] cloud-init[313]: Cloud-init v. 26.1-0ubuntu1~22.04.1 running 'init-local' at Mon, 07 Sep 2026 03:43:31 +0000. Up 3.52 seconds.
+[    3.528174] cloud-init[315]: Cloud-init v. 26.1-0ubuntu1~22.04.1 running 'init-local' at Wed, 16 Sep 2026 06:31:28 +0000. Up 3.50 seconds.
 [[0;32m  OK  [0m] Finished [0;1;39mCloud-init: Local Stage (pre-network)[0m.
 [[0;32m  OK  [0m] Reached target [0;1;39mPreparation for Network[0m.
          Starting [0;1;39mNetwork Configuration[0m...
@@ -360,84 +357,84 @@ Welcome to [1mUbuntu 22.04.5 LTS[0m!
 [[0;32m  OK  [0m] Reached target [0;1;39mHost and Network Name Lookups[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mWait for Network to be Configured[0m.
          Starting [0;1;39mCloud-init: Network Stage[0m...
-[    5.620536] cloud-init[356]: Cloud-init v. 26.1-0ubuntu1~22.04.1 running 'init' at Mon, 07 Sep 2026 03:43:33 +0000. Up 5.59 seconds.
-[    5.632733] cloud-init[356]: ci-info: +++++++++++++++++++++++++++++++++++++Net device info++++++++++++++++++++++++++++++++++++++
-[    5.634856] cloud-init[356]: ci-info: +--------+------+---------------------------+---------------+--------+-------------------+
-[    5.636843] cloud-init[356]: ci-info: | Device |  Up  |          Address          |      Mask     | Scope  |     Hw-Address    |
-[    5.638824] cloud-init[356]: ci-info: +--------+------+---------------------------+---------------+--------+-------------------+
-[    5.640821] cloud-init[356]: ci-info: |  ens5  | True |       172.31.29.113       | 255.255.240.0 | global | 02:b3:0f:6e:85:87 |
-[    5.642788] cloud-init[356]: ci-info: |  ens5  | True | fe80::b3:fff:fe6e:8587/64 |       .       |  link  | 02:b3:0f:6e:85:87 |
-[    5.644746] cloud-init[356]: ci-info: |   lo   | True |         127.0.0.1         |   255.0.0.0   |  host  |         .         |
-[    5.646712] cloud-init[356]: ci-info: |   lo   | True |          ::1/128          |       .       |  host  |         .         |
-[    5.648643] cloud-init[356]: ci-info: +--------+------+---------------------------+---------------+--------+-------------------+
-[    5.650578] cloud-init[356]: ci-info: ++++++++++++++++++++++++++++++Route IPv4 info++++++++++++++++++++++++++++++
-[    5.652314] cloud-init[356]: ci-info: +-------+-------------+-------------+-----------------+-----------+-------+
-[    5.654087] cloud-init[356]: ci-info: | Route | Destination |   Gateway   |     Genmask     | Interface | Flags |
-[    5.655835] cloud-init[356]: ci-info: +-------+-------------+-------------+-----------------+-----------+-------+
-[    5.657604] cloud-init[356]: ci-info: |   0   |   0.0.0.0   | 172.31.16.1 |     0.0.0.0     |    ens5   |   UG  |
-[    5.659387] cloud-init[356]: ci-info: |   1   |  172.31.0.2 | 172.31.16.1 | 255.255.255.255 |    ens5   |  UGH  |
-[    5.661139] cloud-init[356]: ci-info: |   2   | 172.31.16.0 |   0.0.0.0   |  255.255.240.0  |    ens5   |   U   |
-[    5.662884] cloud-init[356]: ci-info: |   3   | 172.31.16.1 |   0.0.0.0   | 255.255.255.255 |    ens5   |   UH  |
-[    5.664603] cloud-init[356]: ci-info: +-------+-------------+-------------+-----------------+-----------+-------+
-[    5.666341] cloud-init[356]: ci-info: +++++++++++++++++++Route IPv6 info+++++++++++++++++++
-[    5.667780] cloud-init[356]: ci-info: +-------+-------------+---------+-----------+-------+
-[    5.669196] cloud-init[356]: ci-info: | Route | Destination | Gateway | Interface | Flags |
-[    5.670633] cloud-init[356]: ci-info: +-------+-------------+---------+-----------+-------+
-[    5.672064] cloud-init[356]: ci-info: |   1   |  fe80::/64  |    ::   |    ens5   |   U   |
-[    5.673491] cloud-init[356]: ci-info: |   3   |    local    |    ::   |    ens5   |   U   |
-[    5.674973] cloud-init[356]: ci-info: |   4   |  multicast  |    ::   |    ens5   |   U   |
-[    5.676392] cloud-init[356]: ci-info: +-------+-------------+---------+-----------+-------+
-[    6.398131] cloud-init[356]: Generating public/private rsa key pair.
-[    6.399606] cloud-init[356]: Your identification has been saved in /etc/ssh/ssh_host_rsa_key
-[    6.401237] cloud-init[356]: Your public key has been saved in /etc/ssh/ssh_host_rsa_key.pub
-[    6.402819] cloud-init[356]: The key fingerprint is:
-[    6.403781] cloud-init[356]: SHA256:Fph3ChvK/nmpOeQmAwj5Wa3oppEcvEq4ssxhdVjmjPw root@ip-172-31-29-113
-[    6.405401] cloud-init[356]: The key's randomart image is:
-[    6.406457] cloud-init[356]: +---[RSA 3072]----+
-[    6.407357] cloud-init[356]: |                 |
-[    6.408245] cloud-init[356]: |       o         |
-[    6.409128] cloud-init[356]: | .   += o .      |
-[    6.410027] cloud-init[356]: |+ ..O..= +       |
-[    6.410950] cloud-init[356]: |.= Oo=. S        |
-[    6.411857] cloud-init[356]: |+.O.+ ..         |
-[    6.412765] cloud-init[356]: |+B ..E   .       |
-[    6.413677] cloud-init[356]: |Bo+ o.+oo        |
-[    6.414592] cloud-init[356]: |**   +=+         |
-[    6.415484] cloud-init[356]: +----[SHA256]-----+
-[    6.416392] cloud-init[356]: Generating public/private ecdsa key pair.
-[    6.417606] cloud-init[356]: Your identification has been saved in /etc/ssh/ssh_host_ecdsa_key
-[    6.419183] cloud-init[356]: Your public key has been saved in /etc/ssh/ssh_host_ecdsa_key.pub
-[    6.420716] cloud-init[356]: The key fingerprint is:
-[    6.421676] cloud-init[356]: SHA256:DHWjmRbIEQgFuS/aDVaESzOLb9OEAwjNEKR+CrZ1zbw root@ip-172-31-29-113
-[    6.423308] cloud-init[356]: The key's randomart image is:
-[    6.424341] cloud-init[356]: +---[ECDSA 256]---+
-[    6.425240] cloud-init[356]: |B*o*.oo+o o      |
-[    6.426146] cloud-init[356]: |+ O o o. * .     |
-[    6.427077] cloud-init[356]: |.+ O  . =        |
-[    6.427973] cloud-init[356]: |o * o ++         |
-[    6.428910] cloud-init[356]: |.+ O . +S        |
-[    6.429850] cloud-init[356]: |o % +   .        |
-[    6.430760] cloud-init[356]: | B =   E         |
-[    6.431660] cloud-init[356]: |. . .            |
-[    6.432571] cloud-init[356]: |                 |
-[    6.433475] cloud-init[356]: +----[SHA256]-----+
-[    6.434402] cloud-init[356]: Generating public/private ed25519 key pair.
-[    6.435639] cloud-init[356]: Your identification has been saved in /etc/ssh/ssh_host_ed25519_key
-[    6.437192] cloud-init[356]: Your public key has been saved in /etc/ssh/ssh_host_ed25519_key.pub
-[    6.438754] cloud-init[356]: The key fingerprint is:
-[    6.439740] cloud-init[356]: SHA256:8XOAnmXW1+1p5ToBBNfLTASKEPMih0ZgaHR4+3sdFAU root@ip-172-31-29-113
-[    6.441393] cloud-init[356]: The key's randomart image is:
-[    6.442458] cloud-init[356]: +--[ED25519 256]--+
-[    6.443385] cloud-init[356]: |.o+o. +. E+o++.  |
-[    6.444316] cloud-init[356]: |.+.o . + + =  o..|
-[    6.445265] cloud-init[356]: |. . = o = B o+..+|
-[    6.446232] cloud-init[356]: |   o o o O . o+oo|
-[    6.447206] cloud-init[356]: |    .   S o . .oo|
-[    6.448134] cloud-init[356]: |     .   . o  .o |
-[    6.449109] cloud-init[356]: |      . . .   o  |
-[    6.450050] cloud-init[356]: |     . . .     . |
-[    6.450971] cloud-init[356]: |      .          |
-[    6.451946] cloud-init[356]: +----[SHA256]-----+
+[    5.551534] cloud-init[357]: Cloud-init v. 26.1-0ubuntu1~22.04.1 running 'init' at Wed, 16 Sep 2026 06:31:30 +0000. Up 5.52 seconds.
+[    5.562366] cloud-init[357]: ci-info: ++++++++++++++++++++++++++++++++++++++Net device info++++++++++++++++++++++++++++++++++++++
+[    5.564662] cloud-init[357]: ci-info: +--------+------+----------------------------+---------------+--------+-------------------+
+[    5.566747] cloud-init[357]: ci-info: | Device |  Up  |          Address           |      Mask     | Scope  |     Hw-Address    |
+[    5.569060] cloud-init[357]: ci-info: +--------+------+----------------------------+---------------+--------+-------------------+
+[    5.571122] cloud-init[357]: ci-info: |  ens5  | True |       172.31.19.210        | 255.255.240.0 | global | 02:ff:eb:46:6c:0f |
+[    5.573365] cloud-init[357]: ci-info: |  ens5  | True | fe80::ff:ebff:fe46:6c0f/64 |       .       |  link  | 02:ff:eb:46:6c:0f |
+[    5.575417] cloud-init[357]: ci-info: |   lo   | True |         127.0.0.1          |   255.0.0.0   |  host  |         .         |
+[    5.577658] cloud-init[357]: ci-info: |   lo   | True |          ::1/128           |       .       |  host  |         .         |
+[    5.579679] cloud-init[357]: ci-info: +--------+------+----------------------------+---------------+--------+-------------------+
+[    5.581673] cloud-init[357]: ci-info: ++++++++++++++++++++++++++++++Route IPv4 info++++++++++++++++++++++++++++++
+[    5.583700] cloud-init[357]: ci-info: +-------+-------------+-------------+-----------------+-----------+-------+
+[    5.585669] cloud-init[357]: ci-info: | Route | Destination |   Gateway   |     Genmask     | Interface | Flags |
+[    5.587466] cloud-init[357]: ci-info: +-------+-------------+-------------+-----------------+-----------+-------+
+[    5.589414] cloud-init[357]: ci-info: |   0   |   0.0.0.0   | 172.31.16.1 |     0.0.0.0     |    ens5   |   UG  |
+[    5.591194] cloud-init[357]: ci-info: |   1   |  172.31.0.2 | 172.31.16.1 | 255.255.255.255 |    ens5   |  UGH  |
+[    5.593106] cloud-init[357]: ci-info: |   2   | 172.31.16.0 |   0.0.0.0   |  255.255.240.0  |    ens5   |   U   |
+[    5.594891] cloud-init[357]: ci-info: |   3   | 172.31.16.1 |   0.0.0.0   | 255.255.255.255 |    ens5   |   UH  |
+[    5.596770] cloud-init[357]: ci-info: +-------+-------------+-------------+-----------------+-----------+-------+
+[    5.598547] cloud-init[357]: ci-info: +++++++++++++++++++Route IPv6 info+++++++++++++++++++
+[    5.600043] cloud-init[357]: ci-info: +-------+-------------+---------+-----------+-------+
+[    5.601535] cloud-init[357]: ci-info: | Route | Destination | Gateway | Interface | Flags |
+[    5.603057] cloud-init[357]: ci-info: +-------+-------------+---------+-----------+-------+
+[    5.604505] cloud-init[357]: ci-info: |   1   |  fe80::/64  |    ::   |    ens5   |   U   |
+[    5.605987] cloud-init[357]: ci-info: |   3   |    local    |    ::   |    ens5   |   U   |
+[    5.607543] cloud-init[357]: ci-info: |   4   |  multicast  |    ::   |    ens5   |   U   |
+[    5.608992] cloud-init[357]: ci-info: +-------+-------------+---------+-----------+-------+
+[    7.449306] cloud-init[357]: Generating public/private rsa key pair.
+[    7.450590] cloud-init[357]: Your identification has been saved in /etc/ssh/ssh_host_rsa_key
+[    7.452110] cloud-init[357]: Your public key has been saved in /etc/ssh/ssh_host_rsa_key.pub
+[    7.453586] cloud-init[357]: The key fingerprint is:
+[    7.454541] cloud-init[357]: SHA256:PC8DFi35gi0xhBBqAXRoBRedFeaa16Lv+/cMeNnQy70 root@ip-172-31-19-210
+[    7.456100] cloud-init[357]: The key's randomart image is:
+[    7.457087] cloud-init[357]: +---[RSA 3072]----+
+[    7.457903] cloud-init[357]: |**+*+ o+.        |
+[    7.458764] cloud-init[357]: |.o=. ooo         |
+[    7.459605] cloud-init[357]: |o.  o +..        |
+[    7.460436] cloud-init[357]: |.    =o=.   .    |
+[    7.461289] cloud-init[357]: |    oo=oS. . .   |
+[    7.462157] cloud-init[357]: |     ooo.o. = o  |
+[    7.463009] cloud-init[357]: |     .  o..+ + . |
+[    7.463864] cloud-init[357]: |      .  o..o   .|
+[    7.464700] cloud-init[357]: |      .+o.. .o E |
+[    7.465526] cloud-init[357]: +----[SHA256]-----+
+[    7.466377] cloud-init[357]: Generating public/private ecdsa key pair.
+[    7.467490] cloud-init[357]: Your identification has been saved in /etc/ssh/ssh_host_ecdsa_key
+[    7.468964] cloud-init[357]: Your public key has been saved in /etc/ssh/ssh_host_ecdsa_key.pub
+[    7.470469] cloud-init[357]: The key fingerprint is:
+[    7.471385] cloud-init[357]: SHA256:KjPz+5sd7KdvaPBF1hJ/Hq83pyCpGRDnzN5+0Bdkem4 root@ip-172-31-19-210
+[    7.472928] cloud-init[357]: The key's randomart image is:
+[    7.473892] cloud-init[357]: +---[ECDSA 256]---+
+[    7.474741] cloud-init[357]: |                 |
+[    7.475590] cloud-init[357]: |            . o  |
+[    7.476441] cloud-init[357]: |      . .    B   |
+[    7.477298] cloud-init[357]: |       *    = =..|
+[    7.478161] cloud-init[357]: |      . S  + + +o|
+[    7.478996] cloud-init[357]: |       +.o..o E o|
+[    7.479854] cloud-init[357]: |    = . oo*+.o . |
+[    7.480676] cloud-init[357]: |     *   O+o+...o|
+[    7.481534] cloud-init[357]: |      oo*o=*. .oo|
+[    7.482371] cloud-init[357]: +----[SHA256]-----+
+[    7.483226] cloud-init[357]: Generating public/private ed25519 key pair.
+[    7.484345] cloud-init[357]: Your identification has been saved in /etc/ssh/ssh_host_ed25519_key
+[    7.485832] cloud-init[357]: Your public key has been saved in /etc/ssh/ssh_host_ed25519_key.pub
+[    7.487328] cloud-init[357]: The key fingerprint is:
+[    7.488229] cloud-init[357]: SHA256:ZGKfW31wDcppunRDcX1isAWvtJCakFh1pqjZOIHZtLc root@ip-172-31-19-210
+[    7.489769] cloud-init[357]: The key's randomart image is:
+[    7.490731] cloud-init[357]: +--[ED25519 256]--+
+[    7.491589] cloud-init[357]: |    . ... o +o+. |
+[    7.492432] cloud-init[357]: |   = + o + o Oooo|
+[    7.493267] cloud-init[357]: |  o = B + o X.o.o|
+[    7.494111] cloud-init[357]: |     O B + B =   |
+[    7.494948] cloud-init[357]: |    = E S + * .  |
+[    7.495785] cloud-init[357]: |     .   + o o   |
+[    7.496618] cloud-init[357]: |        . .      |
+[    7.497446] cloud-init[357]: |                 |
+[    7.498265] cloud-init[357]: |                 |
+[    7.499089] cloud-init[357]: +----[SHA256]-----+
 [[0;32m  OK  [0m] Finished [0;1;39mCloud-init: Network Stage[0m.
 [[0;32m  OK  [0m] Reached target [0;1;39mCloud-config availability[0m.
 [[0;32m  OK  [0m] Reached target [0;1;39mNetwork is Online[0m.
@@ -477,14 +474,8 @@ Welcome to [1mUbuntu 22.04.5 LTS[0m!
          Starting [0;1;39mUser Login Management[0m...
          Starting [0;1;39mPermit User Sessions[0m...
 [[0;32m  OK  [0m] Finished [0;1;39mRemove Stale Onli…ext4 Metadata Check Snapshots[0m.
-[[0;32m  OK  [0m] Finished [0;1;39mPermit User Sessions[0m.
-         Starting [0;1;39mHold until boot process finishes up[0m...
-         Starting [0;1;39mTerminate Plymouth Boot Screen[0m...
-[[0;32m  OK  [0m] Started [0;1;39mSystem Logging Service[0m.
-[[0;32m  OK  [0m] Finished [0;1;39mHold until boot process finishes up[0m.
-[[0;32m  OK  [0m] Finished [0;1;39mTerminate Plymouth Boot Screen[0m.
 [[0;32m  OK  [0m] Started [0;1;39mchrony, an NTP client/server[0m.
-[[0;32m  OK  [0m] Finished [0;1;39mRecord successful boot for GRUB[0m.
+[[0;32m  OK  [0m] Finished [0;1;39mPermit User Sessions[0m.
 [[0;32m  OK  [0m] Reached target [0;1;39mSystem Time Synchronized[0m.
 [[0;32m  OK  [0m] Started [0;1;39mDaily apt download activities[0m.
 [[0;32m  OK  [0m] Started [0;1;39mDaily apt upgrade and clean activities[0m.
@@ -496,260 +487,268 @@ Welcome to [1mUbuntu 22.04.5 LTS[0m!
 [[0;32m  OK  [0m] Started [0;1;39mMessage of the Day[0m.
 [[0;32m  OK  [0m] Started [0;1;39mCheck to see wheth…w version of Ubuntu available[0m.
 [[0;32m  OK  [0m] Reached target [0;1;39mTimer Units[0m.
+         Starting [0;1;39mHold until boot process finishes up[0m...
+         Starting [0;1;39mTerminate Plymouth Boot Screen[0m...
+[[0;32m  OK  [0m] Started [0;1;39mSystem Logging Service[0m.
+[[0;32m  OK  [0m] Finished [0;1;39mRecord successful boot for GRUB[0m.
+[[0;32m  OK  [0m] Finished [0;1;39mHold until boot process finishes up[0m.
+[[0;32m  OK  [0m] Finished [0;1;39mTerminate Plymouth Boot Screen[0m.
          Starting [0;1;39mGRUB failed boot detection[0m...
 [[0;32m  OK  [0m] Started [0;1;39mSerial Getty on ttyS0[0m.
          Starting [0;1;39mSet console scheme[0m...
          Starting [0;1;39mHostname Service[0m...
 [[0;32m  OK  [0m] Started [0;1;39mLSB: automatic crash report generation[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mSet console scheme[0m.
+[[0;32m  OK  [0m] Started [0;1;39mUser Login Management[0m.
 [[0;32m  OK  [0m] Created slice [0;1;39mSlice /system/getty[0m.
 [[0;32m  OK  [0m] Started [0;1;39mGetty on tty1[0m.
 [[0;32m  OK  [0m] Reached target [0;1;39mLogin Prompts[0m.
-[[0;32m  OK  [0m] Finished [0;1;39mGRUB failed boot detection[0m.
-[[0;32m  OK  [0m] Started [0;1;39mUser Login Management[0m.
 [[0;32m  OK  [0m] Started [0;1;39mUnattended Upgrades Shutdown[0m.
-[[0;32m  OK  [0m] Started [0;1;39mDispatcher daemon for systemd-networkd[0m.
+[[0;32m  OK  [0m] Finished [0;1;39mGRUB failed boot detection[0m.
 [[0;32m  OK  [0m] Started [0;1;39mHostname Service[0m.
          Starting [0;1;39mAuthorization Manager[0m...
+[[0;32m  OK  [0m] Started [0;1;39mDispatcher daemon for systemd-networkd[0m.
 [[0;32m  OK  [0m] Started [0;1;39mAuthorization Manager[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mEC2 Instance Connect Host Key Harvesting[0m.
-[[0;32m  OK  [0m] Started [0;1;39mSnap Daemon[0m.
 [[0;32m  OK  [0m] Finished [0;1;39mPollinate to seed…seudo random number generator[0m.
          Starting [0;1;39mOpenBSD Secure Shell server[0m...
 [[0;32m  OK  [0m] Started [0;1;39mOpenBSD Secure Shell server[0m.
-[[0;32m  OK  [0m] Started [0;1;39msnap.lxd.hook.inst…-465a-bf0f-5c977e6f9125.scope[0m.
-[[0;32m  OK  [0m] Listening on [0;1;39mSocket unix for snap application lxd.daemon[0m.
+[[0;32m  OK  [0m] Started [0;1;39mSnap Daemon[0m.
+[[0;32m  OK  [0m] Started [0;1;39msnap.lxd.hook.inst…-40cd-bc1f-1b187cbedc33.scope[0m.
 [[0;32m  OK  [0m] Listening on [0;1;39mSocket unix f…p application lxd.user-daemon[0m.
+[[0;32m  OK  [0m] Listening on [0;1;39mSocket unix for snap application lxd.daemon[0m.
          Starting [0;1;39mService for snap application lxd.activate[0m...
 [[0;32m  OK  [0m] Finished [0;1;39mService for snap application lxd.activate[0m.
-[[0;32m  OK  [0m] Started [0;1;39msnap.lxd.hook.conf…-43b1-ae7f-fa90a8c64282.scope[0m.
+[[0;32m  OK  [0m] Started [0;1;39msnap.lxd.hook.conf…-4082-bb67-0c8967542e80.scope[0m.
 [[0;32m  OK  [0m] Started [0;1;39mService for snap a…on-ssm-agent.amazon-ssm-agent[0m.
          Starting [0;1;39mTime & Date Service[0m...
 [[0;32m  OK  [0m] Started [0;1;39mTime & Date Service[0m.
 
-Ubuntu 22.04.5 LTS ip-172-31-29-113 ttyS0
+Ubuntu 22.04.5 LTS ip-172-31-19-210 ttyS0
 
-ip-172-31-29-113 login: 2026/09/07 03:43:41Z: Amazon SSM Agent v3.3.4793.0 is running
-2026/09/07 03:43:41Z: OsProductName: Ubuntu
-2026/09/07 03:43:41Z: OsVersion: 22.04
-[   14.742727] cloud-init[1170]: Cloud-init v. 26.1-0ubuntu1~22.04.1 running 'modules:config' at Mon, 07 Sep 2026 03:43:44 +0000. Up 14.69 seconds.
-[   15.677859] cloud-init[1186]: Cloud-init v. 26.1-0ubuntu1~22.04.1 running 'modules:final' at Mon, 07 Sep 2026 03:43:45 +0000. Up 15.63 seconds.
-[   15.839188] cloud-init[1186]: [INFO]  Finding release for channel stable
-[   17.201442] cloud-init[1186]: [INFO]  Using v1.36.4+k3s1 as release
-[   17.202923] cloud-init[1186]: [INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.36.4%2Bk3s1/sha256sum-amd64.txt
-[   17.865804] cloud-init[1186]: [INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.36.4%2Bk3s1/k3s
-[   20.463136] cloud-init[1186]: [INFO]  Verifying binary download
-[   21.048313] cloud-init[1186]: [INFO]  Installing k3s to /usr/local/bin/k3s
-[   21.112375] cloud-init[1186]: [INFO]  Skipping installation of SELinux RPM
-[   21.113959] cloud-init[1186]: [INFO]  Creating /usr/local/bin/kubectl symlink to k3s
-[   21.117129] cloud-init[1186]: [INFO]  Creating /usr/local/bin/crictl symlink to k3s
-[   21.119707] cloud-init[1186]: [INFO]  Creating /usr/local/bin/ctr symlink to k3s
-[   21.121896] cloud-init[1186]: [INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
-[   21.125072] cloud-init[1186]: [INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
-[   21.205011] cloud-init[1186]: [INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
-[   21.272702] cloud-init[1186]: [INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
-[   21.276860] cloud-init[1186]: [INFO]  systemd: Enabling k3s unit
-[   21.280755] cloud-init[1186]: Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
-[   24.090579] cloud-init[1186]: [INFO]  systemd: Starting k3s
+ip-172-31-19-210 login: [   14.474514] cloud-init[1163]: Cloud-init v. 26.1-0ubuntu1~22.04.1 running 'modules:config' at Wed, 16 Sep 2026 06:31:39 +0000. Up 14.34 seconds.
+2026/09/16 06:31:42Z: Amazon SSM Agent v3.3.4793.0 is running
+2026/09/16 06:31:42Z: OsProductName: Ubuntu
+2026/09/16 06:31:42Z: OsVersion: 22.04
+[   15.540646] cloud-init[1186]: Cloud-init v. 26.1-0ubuntu1~22.04.1 running 'modules:final' at Wed, 16 Sep 2026 06:31:42 +0000. Up 15.49 seconds.
+[   15.808959] cloud-init[1186]: [INFO]  Finding release for channel stable
+[   17.053157] cloud-init[1186]: [INFO]  Using v1.36.4+k3s1 as release
+[   17.053515] cloud-init[1186]: [INFO]  Downloading hash https://github.com/k3s-io/k3s/releases/download/v1.36.4%2Bk3s1/sha256sum-amd64.txt
+[   17.501605] cloud-init[1186]: [INFO]  Downloading binary https://github.com/k3s-io/k3s/releases/download/v1.36.4%2Bk3s1/k3s
+[   18.720971] cloud-init[1186]: [INFO]  Verifying binary download
+[   19.139122] cloud-init[1186]: [INFO]  Installing k3s to /usr/local/bin/k3s
+[   19.149912] cloud-init[1186]: [INFO]  Skipping installation of SELinux RPM
+[   19.151425] cloud-init[1186]: [INFO]  Creating /usr/local/bin/kubectl symlink to k3s
+[   19.153344] cloud-init[1186]: [INFO]  Creating /usr/local/bin/crictl symlink to k3s
+[   19.155850] cloud-init[1186]: [INFO]  Creating /usr/local/bin/ctr symlink to k3s
+[   19.157880] cloud-init[1186]: [INFO]  Creating killall script /usr/local/bin/k3s-killall.sh
+[   19.161915] cloud-init[1186]: [INFO]  Creating uninstall script /usr/local/bin/k3s-uninstall.sh
+[   19.176727] cloud-init[1186]: [INFO]  env: Creating environment file /etc/systemd/system/k3s.service.env
+[   19.185723] cloud-init[1186]: [INFO]  systemd: Creating service file /etc/systemd/system/k3s.service
+[   19.189468] cloud-init[1186]: [INFO]  systemd: Enabling k3s unit
+[   19.194146] cloud-init[1186]: Created symlink /etc/systemd/system/multi-user.target.wants/k3s.service → /etc/systemd/system/k3s.service.
+[   20.157636] cloud-init[1186]: [INFO]  systemd: Starting k3s
          Starting [0;1;39mLightweight Kubernetes[0m...
 [[0;32m  OK  [0m] Started [0;1;39mLightweight Kubernetes[0m.
-[   50.976470] cloud-init[1186]: -----BEGIN KUBECONFIG-----
-[   50.982509] cloud-init[1186]: H4sICBQznmoAA2szcy55YW1sAJVW0XajOBJ976/ID/SMALu3nXP6ocESNjZy
-[   50.982702] cloud-init[1186]: JCQBesPIE2wJTBwSY3/9lpNMT/eenTO7fpGFqBK6de8tVf1e7U7P+2N3f/fq
-[   50.983270] cloud-init[1186]: fardy/MA8/tPn+8+/t9/uoNfvTsN+z/2dTXsPlcvQ3M87YfLZ1MN1f3dOkPD
-[   50.983561] cloud-init[1186]: OvMiLk0i9uGcq0RmUicMEcnf1tAQWS/JZGIrS+dMLS8akQDmoUYuYpKHGUo6
-[   50.984565] cloud-init[1186]: HZBj5fcPkhDOMXlieU8lUkG2MJoTzaXkmLXNRQhKTZxeVGdXOvbynRwL0TYQ
-[   50.984848] cloud-init[1186]: I68C8S5FU5mJZMMJxMbNQVjvKS/Mg8L4KiRPUjzFTJCiiulGFL02aCaZCCnH
-[   50.985297] cloud-init[1186]: 9iwsD1PWF5UlT0JRYlAT5JLnUhHMcXKsLbqKgh9Sp6f/tLfyeKhw0pUf54pc
-[   50.985724] cloud-init[1186]: yOHMkfbNWMXDk/BCLmBu0HTOJJHrK59UnfVLlBw2celDrGS+SsXceEr2VW6T
-[   50.986166] cloud-init[1186]: s4qf/Vy5hM7Ls7HJQQbLVVpQWrtwqvxZVkp3FB5dCzkJslwicdCAXRqkLTky
-[   50.986585] cloud-init[1186]: J0+106SW6sAR6UpFXlPsAsA1FIC/cHopRROxvJxw1kNdvDkrCDeIv2NwCCVT
-[   50.987016] cloud-init[1186]: ZLlGSagKExqkonXQhxr/GcsJbw1XqlFcqkIe+JB2hLBcUahfQAMKPJhRFbun
-[   50.987430] cloud-init[1186]: zHoB843O5PCaW/elOoSEFSbhJAlgzJh0nTyoMiWN3apGbgUXFA9NqcJUdvpB
-[   50.987868] cloud-init[1186]: k6aoUB9DzngTp6s8ryd8TtZakInxZ/NMNpYuCMmxKjYLLsxVjZnHSb3g6ywf
-[   50.988327] cloud-init[1186]: CpObczWnfHsgm0w1lzomadnxCbsuVx98JsKyR4ZUprCLM0mhlvKNy2t2/PYm
-[   50.988766] cloud-init[1186]: iufd6RUEctcMQ/98//vv3tffvEnw27++/uZ76P7LZBLAa13V7u7vzO6P6sUN
-[   50.989206] cloud-init[1186]: n+pjN+zG4V1g7/8/BPahth9v3h6+PP/65D9yvZxOu274/GeeHwt235n7u+jY
-[   50.989619] cloud-init[1186]: /bF//HTL8bbdr8EfyT/23r/l+Unj/7eyT+/K5u4nZSe6aFpux1ajWbmDWv23
-[   50.990075] cloud-init[1186]: ihvkvvC8oezQLECVwBwSGM+uyqLf7Cyoq6ON8rSncTpWzilWNJtdWyPR9Won
-[   50.990534] cloud-init[1186]: p09SEIjlJXAvSa2Hq8BAHJmCkoG503zrNVhhe1P+yZz7X9cCA6pXJahQcYRH
-[   50.991098] cloud-init[1186]: JdW8wt5DeaXPu5YvVMcftoIcYZ5tY/oiiiZWmEjWmo2ySSgUxxmeeFGbXmU7
-[   50.991219] cloud-init[1186]: 7tUiPOa2Hus4eWKup8x6C9a5kXuU0rkDTNSCIfpjDgpagvMkTCYPOQmPBg0+
-[   50.991636] cloud-init[1186]: z6eqItTyw/fVbm4EMDDN8BlRpLutouMmnuZV4Y5ZPFxNPLnw63KslBsFfpxK
-[   50.992097] cloud-init[1186]: oSSPzaZSPc4Xj9M0CFf6QNnOPo6VTCesSzJx7kPjlZMMj4vKUcysoUzwN+w1
-[   50.992517] cloud-init[1186]: 5gGXy1fjkXc1tjMMNY00YJURCrUBB5bDzcEugAHhNuEl4iG4ZRvZDxdAHuHw
-[   50.992951] cloud-init[1186]: TPkmUkTHwt74AjXG50m1/+rreIQzKiUD7XRcB+D0a8jV1XkDHJqxm9Oy3Gwy
-[   50.993394] cloud-init[1186]: C6OtVyx3hAk3yDzRsuW49r0VbZ9HLc1SSt1n1kS5nRHhT9OtJJS2ctRxItKO
-[   50.993594] cloud-init[1186]: SuapeabIfGuXZzijzaxzNTFJdu6ZRvYM7j5KFwoe03TrVJ9dQ78szMEQ8rRG
-[   50.993812] cloud-init[1186]: zyce17MHdnxXvVQbHv2NBvbvI7NqkcnJ37hGTzPpIi35HGKztL05KHS/3CTs
-[   50.994054] cloud-init[1186]: dtZ3XH90hpsr/0MX0mnXnCPXF1SEqULTI8SQFM2wvtINcP4CPFcQeyzRlIJ2
-[   50.994265] cloud-init[1186]: AgEdKUUezkS44Rj47r91xy8f3fH8V3fEK+X3sL8neGGWxnNYuVtX5lG1SCjk
-[   50.994481] cloud-init[1186]: QLlIJjX5h709I9/449P3cwHuEjD4pd7Si1hnNoBJCPq55vPvFzrXF+k5raRu
-[   50.994695] cloud-init[1186]: YQ1VhaHm2ryynE6U0lEu3QEwhi7w+Cra6SU6qHbbDkV5mfkqbmLZselOJcm2
-[   50.994921] cloud-init[1186]: +34SuRdtch7x/TNK/a8X0Rmtrs5XfvK8K6Du1zABvgP+sw+e4wnUo91guYKR
-[   50.995175] cloud-init[1186]: wneNsjD4HYPlGfTPs2gWMaVunYqw/ewLy//UCEZc6k4qCbyCZo9ILwozXSP7
-[   50.995406] cloud-init[1186]: uvKnVdk1y+33ntQH+pLLWWAQ7eAs663XJ7v2eL55XybhUgCjbE1SYZJsr6qs
-[   50.995589] cloud-init[1186]: iqTLDxysjsvSjkmWDUcTj6WwA9xcVJX5o7111grTqXDmJYX9tpj0XGJfe8l8
-[   50.995805] cloud-init[1186]: J81EQq15cQzSq+nUojmBltvUogv3x2rrws0WtFIelldZkGtpG/U/8f7x27ef
-[   50.996051] cloud-init[1186]: O4jd/c2dkLBLyKR1ObCBLPFA8r+6x7JENJRAbVCLyvDsFVz5Kb1SXcqxy5T5
-[   50.996256] cloud-init[1186]: wj2S1C31DThWOtdeLRkq8zHYzpNU5K5XSgEzZj85q13dKpPFMwWs5NCRCM3T
-[   50.996477] cloud-init[1186]: U4bJuAFnlUiv4F4hswVPwB2uZaCfas/McztcdjkvBHyfVnSatlqXbVJkrXut
-[   50.996692] cloud-init[1186]: /XLk3/tnIWdhavuTaPUy9dVpG80Oa+S1CrnUILgpCXBI1wRlQPmDQL/cJbhM
-[   50.996911] cloud-init[1186]: HyVJEmVvCIZrruxf94l/A5wKiGOJCwAA
-[   50.997143] cloud-init[1186]: -----END KUBECONFIG-----
+[   30.096125] cloud-init[1186]: -----BEGIN KUBECONFIG-----
+[   30.099613] cloud-init[1186]: H4sICN03qmoAA2szcy55YW1sAJVWW3OjOBZ+71+RP9AzEtipcarmIWBkGxvZ
+[   30.101151] cloud-init[1186]: ErqA3jCigy2BiUN84devnLh7u7d2qndd5QIhzhE657uo6HaiOr7tDu3Twwl+
+[   30.102609] cloud-init[1186]: Ke37W+/GT1++Ptzvn748uF9ZHfvdt11Z9NXX4r2vD8ddf/2qi754eliloF+l
+[   30.104091] cloud-init[1186]: MKRcx2wXTKmIecpVTADi9GMO9KGBccpjUxk8JWJxVQD5bhwoYEPCaZCCuFU+
+[   30.105558] cloud-init[1186]: OhRet+EIURqhVyI7zIHw07lWFCnKOY1IU18Zw1jPkqtozVLNoKz4JWNN7WL4
+[   30.107058] cloud-init[1186]: wAA9JnwckazDInKxs3rPDHyVmd6IiF8Zp6IykIuszooZXrOsUxpMOHXvUyQe
+[   30.108494] cloud-init[1186]: mXDzz11WGPTKBEYa1L7kVHKBIhrFh9KAgWV0n1g1/t3aAtJARHGb3/cV2oC6
+[   30.109975] cloud-init[1186]: PYfK05di1r8yGFDmxhqMp4QjxvnYL6Y6J21n8axGlFOSWxum1q3vi37bHEZV
+[   30.111489] cloud-init[1186]: VF9KW091G5xF2BelcTUAcO5i+tSaS2poss2eL9yMlzlPTvmuXxMJN6mcDLyl
+[   30.113036] cloud-init[1186]: r5TDFZOLaynUftvWpySyvqtrwFz9mVULzuqQyHxESef6AqckQ1QD+lmDfcCJ
+[   30.114494] cloud-init[1186]: QIsViAOR6UADEa78LlDR91iKaKOpEN1eA2yKTOfMtyeaPXvJQBfKU/uw6Y9S
+[   30.115964] cloud-init[1186]: jrHMsE88rVLen6Sxj8U+QCTTMUU4cNeUc3tw69fbqOtLoLEU9ZE041kS9Ts6
+[   30.117406] cloud-init[1186]: G13Yrk/KKboUtrsuQb7UtvQKKBLW4nSb2SWRNhB+HEhkxrnprmlTHjGKLmqo
+[   30.118847] cloud-init[1186]: CQ37Qyn/Guf+M6QGDkrmg5hd3qiPliW3EWdgEu4+cUtdPxcRRtzSmBrrsEvR
+[   30.120330] cloud-init[1186]: J97B8oMYb9Xx5EjyUPd99/b055/j0R+e+8OR94cH/afH0ch377VFUz096Opb
+[   30.121776] cloud-init[1186]: 8W77L+Wh7atL/8myz/s7y+6U+/Hm7eH7269P/iPX+/FYtf3X73l+TJhdq58e
+[   30.123186] cloud-init[1186]: wkP7bffy5ZbjY7lfg+/J72vvPvL8RPT/m97H4oPe1P5E75i4tvP587Vq7Ctl
+[   30.124611] cloud-init[1186]: 9X9tuwb2kcoak309JwwJypGvoVnmWbeujKNYi2sBFVRR4lpuBcnqddWUkFnq
+[   30.126051] cloud-init[1186]: 4AkfaXaLpbkDYJwYGBV+vS5MdHH0RgmHcgvrSERmcPQ/Onr/OudrTCOROyoK
+[   30.127559] cloud-init[1186]: CqKL4GJaRHCTD/itauhctHSzZejgxul2ht9ZVs9EhDhp9FqYOHCSEaXRCIZN
+[   30.128970] cloud-init[1186]: MvDmshPz4CBNeSln8SuxHSbmRk97oRBjPLWuJmJOAP4xdjRaEBbEhMcbzOEi
+[   30.130431] cloud-init[1186]: F0rp4QXgrLxW7WG59K2lczpSQJ9VU69l2Lfcxo9Jo4+5X0db/jJmzPZU0BMD
+[   30.131855] cloud-init[1186]: apWbOBQRrBMfr4VE9XpaGzrUNclop7IcsimdY9LF66g86uz5WlgcEaMxYfSj
+[   30.133251] cloud-init[1186]: 9iqiPuWLk4bok5LNJHI9DRUYyxRh1xsnw7y/ydjV1QBRE9Mc0MBJZhOauxQA
+[   30.134690] cloud-init[1186]: iKh7JjwdciM2cl8fyGAthhHkXixIG6/oIAomOkEs7Vw9Vy5XW8raYWhCbnJL
+[   30.136105] cloud-init[1186]: pF6nxl1NeaMzIsxRHKBN4mqOG+AlsJPa0w4HsNADPspMJHpQeyzQKGG15bNx
+[   30.137531] cloud-init[1186]: IjlcKgOnqcuHPZy5XjTCG3MlD5fluTuvAMywSMba/OU7mUF5ZtkSdO/lXAnC
+[   30.138957] cloud-init[1186]: u33SXKz7qsmGHD5wvuJiTcN/4MBdMogR85SPXggQqYjsLOXY2QD/jCcdTrkN
+[   30.140377] cloud-init[1186]: 1aybutjU9dD131mg1DG57fWzrj/s4SbNv7EilbT1ObRdhlmQCDA+uBiUgElU
+[   30.141798] cloud-init[1186]: DGjtbPRmabfYQw7G2HHHZ9DNO46Im00hMRLeh0U+flqks8AfFvmyFF7n1oeM
+[   30.143193] cloud-init[1186]: ZnqhoY2EvVkzDYt5jBMAgWTxqES/WRtq/oEfD3/u69wRJ+/hL/3mMCStXrua
+[   30.144572] cloud-init[1186]: BFwiJJlI8eyykDau831tnf07PXCmMnd26k02fGqufE4G6mwFg4nJM70MG/Um
+[   30.146055] cloud-init[1186]: MnEu07/8Yq83FMBYzfPjEiKb+/FjxdXg9GLlZJ4mETixTIR81q8E0IvtEMQO
+[   30.147485] cloud-init[1186]: 767+kzvOo5HrR7OO+NJdsfuuC8909FmDxdnhlabhJCRC+I4jiOwmj0R+50gE
+[   30.148926] cloud-init[1186]: KFctFyKlM9g47Hlyzs8Mij7hqK5kDcW54xSqQDB6dLtqJberLeziqjmcb9qX
+[   30.150370] cloud-init[1186]: OlRpp6HcoFhBclSteN8OIiBystRevCoiPWhO6xLUi2TXR7rt1HbWn8JGR2uh
+[   30.151849] cloud-init[1186]: x3wvyJpTnwA7c1eYCloLo+eCd4OAYuaOL6aSl5XLeymjl1POReeOQEUy4NDh
+[   30.153268] cloud-init[1186]: TulpnP/PFnh3DlP9w4EQkWtAuLHyFrmIeiT/7RqLHOCAO0inXIy2SI/dASUQ
+[   30.154694] cloud-init[1186]: e+txoaZcijn2alg1KJdInSgjo5wFbw6hrQaKbWFQqJk9uar8pKhmeetIOpsI
+[   30.156131] cloud-init[1186]: h0bqnAhhr/fVPJCFoY9FM45yGxAMDoANeE4kelsCflF7FVJTk5zjtLoplszP
+[   30.157572] cloud-init[1186]: 1T5W3ExajByqzp1TOjgqG+EnIj6XbTdKZvFoC5Jrus9Pha/avOlftbfwcDOm
+[   30.159060] cloud-init[1186]: GwaW9zogZsgL5ckLR3EszE0xghUV5q4Ih7+//At1YCPBhgsAAA==
+[   30.160417] cloud-init[1186]: -----END KUBECONFIG-----
 [[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer container kubepods.slice[0m.
-[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…iner kubepods-burstable.slice[0m.
 [[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…ner kubepods-besteffort.slice[0m.
-[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…_428a_9671_8ad4c5908ea8.slice[0m.
-[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…_4793_8ef7_7923d6beb2e1.slice[0m.
-[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…_429c_8a3f_9768939c660e.slice[0m.
-[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…_49f0_8661_bde349ee3006.slice[0m.
-[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…_40a7_9f09_1e99674b5aa5.slice[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…7c32728b21e7b8cbf852f1a7ce7f2[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…8b43d44ce7c04fda4eda79ef101b0[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…fe0fc74f040ca1fb72f91ea51960e[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…f80ed72b81abcd622e93c48c48833[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…e782c6b53db686da48004b37e8cc7[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…d1023ecfd6998ba8b7360d9ac6f16[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…d35fa5a64416be53accc8b9c1869f[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…09c41dadb535bef29d3dc6b724abd[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…98871cc35994880fe456484ae7a30[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…83f411170773ca66519d90b84a377[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…a56f072d7d311394f04f335920761[0m.
-[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…bd4b044f3173a5ccdc1d738e0d4a4[0m.
-[[0;32m  OK  [0m] Removed slice [0;1;39mlibcontainer…_49f0_8661_bde349ee3006.slice[0m.
-[  140.986169] cloud-init[1186]: -----BEGIN SSM AGENT LOG-----
-[  140.988628] cloud-init[1186]: 2026-09-07 03:43:39.4478 WARN Error adding the directory '/etc/amazon/ssm' to watcher: no such file or directory
-[  140.990996] cloud-init[1186]: 2026-09-07 03:43:39.4479 INFO Proxy environment variables:
-[  140.992545] cloud-init[1186]: 2026-09-07 03:43:39.4479 INFO https_proxy:
-[  140.993804] cloud-init[1186]: 2026-09-07 03:43:39.4479 INFO http_proxy:
+[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…iner kubepods-burstable.slice[0m.
+[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…_4758_9e9c_603fb4681ff1.slice[0m.
+[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…_41af_8a1c_fb30944a6919.slice[0m.
+[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…_45d2_a724_33bcf331243d.slice[0m.
+[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…_4db6_9a90_422d54b5e503.slice[0m.
+[[0;32m  OK  [0m] Created slice [0;1;39mlibcontainer…_46a6_95cf_b4a1d1c8f118.slice[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…001c6c57fd24a11b6c31824b7b462[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…90a9fe405a614d59f4093b57a5951[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…afe109328729eda04652fd30aa956[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…d65e2291187b83ec4923d00ac15d9[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…d00ee849790147af0d5677c93fde7[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…29d482deace99bca2402781c4a97e[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…c9005779e1ee06aaa0ff619af0010[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…728bdaa4e9efb4e8db53e7cce3fd3[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…cad2c67aac620a2343dd675bda1fc[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…b7519f72ed24b54e7b4d9485be211[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…7c2a693740f3de79cf523bd698046[0m.
+[[0;32m  OK  [0m] Started [0;1;39mlibcontainer conta…52d7ae64290ecc083eaa7c559acd8[0m.
+[[0;32m  OK  [0m] Removed slice [0;1;39mlibcontainer…_4db6_9a90_422d54b5e503.slice[0m.
+[  120.104499] cloud-init[1186]: -----BEGIN SSM AGENT LOG-----
+[  120.107433] cloud-init[1186]: 2026-09-16 06:31:37.5060 WARN Error adding the directory '/etc/amazon/ssm' to watcher: no such file or directory
+[  120.107662] cloud-init[1186]: 2026-09-16 06:31:37.5099 INFO Proxy environment variables:
+[  120.107808] cloud-init[1186]: 2026-09-16 06:31:37.5099 INFO https_proxy:
+[  120.108062] cloud-init[1186]: 2026-09-16 06:31:37.5099 INFO http_proxy:
+[  120.108274] cloud-init[1186]: 2026-09-16 06:31:37.5099 INFO no_proxy:
+[  120.108466] cloud-init[1186]: 2026-09-16 06:31:37.5099 INFO Checking if agent identity type OnPrem can be assumed
+[  120.108687] cloud-init[1186]: 2026-09-16 06:31:37.5100 INFO Checking if agent identity type EC2 can be assumed
+[  120.108919] cloud-init[1186]: 2026-09-16 06:31:37.5487 INFO Agent will take identity from EC2
+[  120.109384] cloud-init[1186]: 2026-09-16 06:31:37.5517 INFO Telemetry initialized
+[  120.109592] cloud-init[1186]: 2026-09-16 06:31:37.5525 INFO [amazon-ssm-agent] amazon-ssm-agent - v3.3.4793.0
+[  120.109809] cloud-init[1186]: 2026-09-16 06:31:37.5526 INFO [amazon-ssm-agent] OS: linux, Arch: amd64
+[  120.110429] cloud-init[1186]: 2026-09-16 06:31:37.5526 INFO [amazon-ssm-agent] Starting Core Agent
+[  120.110641] cloud-init[1186]: 2026-09-16 06:31:37.5526 INFO [amazon-ssm-agent] Registrar detected. Attempting registration
+[  120.110850] cloud-init[1186]: 2026-09-16 06:31:37.5526 INFO [Registrar] Starting registrar module
+[  120.111289] cloud-init[1186]: 2026-09-16 06:31:37.5554 INFO [EC2Identity] Checking disk for registration info
+[  120.111559] cloud-init[1186]: 2026-09-16 06:31:37.5554 INFO [EC2Identity] No registration info found for ec2 instance, attempting registration
+[  120.111725] cloud-init[1186]: 2026-09-16 06:31:37.5554 INFO [EC2Identity] Generating registration keypair
+[  120.111920] cloud-init[1186]: 2026-09-16 06:31:37.9382 INFO [EC2Identity] Checking write access before registering
+[  120.112384] cloud-init[1186]: 2026-09-16 06:31:37.9387 INFO [EC2Identity] Registering EC2 instance with Systems Manager
+[  120.112592] cloud-init[1186]: 2026-09-16 06:31:37.9791 INFO [EC2Identity] EC2 registration was successful.
+[  120.112812] cloud-init[1186]: 2026-09-16 06:31:37.9792 INFO [amazon-ssm-agent] Registration attempted. Resuming core agent startup.
+[  120.113040] cloud-init[1186]: 2026-09-16 06:31:37.9792 INFO [CredentialRefresher] credentialRefresher has started
+[  120.113246] cloud-init[1186]: 2026-09-16 06:31:37.9793 INFO [CredentialRefresher] Starting credentials refresher loop
+[  120.113463] cloud-init[1186]: 2026-09-16 06:31:38.0072 INFO EC2RoleProvider Successfully connected with instance profile role credentials
+[  120.113675] cloud-init[1186]: 2026-09-16 06:31:38.0075 INFO [CredentialRefresher] Credentials ready
+[  120.113894] cloud-init[1186]: 2026-09-16 06:31:38.0084 INFO [CredentialRefresher] Next credential rotation will be in 29.999980821433333 minutes
+[  120.114368] cloud-init[1186]: 2026-09-16 06:31:39.0290 INFO [amazon-ssm-agent] [LongRunningWorkerContainer] [WorkerProvider] Worker ssm-agent-worker is not running, starting worker process
+[  120.114572] cloud-init[1186]: 2026-09-16 06:31:39.0321 INFO [amazon-ssm-agent] [LongRunningWorkerContainer] [WorkerProvider] Worker ssm-agent-worker (pid:1154) started
+[  120.114779] cloud-init[1186]: 2026-09-16 06:31:39.0322 INFO [amazon-ssm-agent] [LongRunningWorkerContainer] Monitor long running worker health every 60 seconds
+[  120.115010] cloud-init[1186]: 2026-09-16 06:31:42.2964 WARN Error adding the directory '/etc/amazon/ssm' to watcher: no such file or directory
+[  120.115238] cloud-init[1186]: 2026-09-16 06:31:42.3076 INFO [ssm-agent-worker] Checking if agent identity type OnPrem can be assumed
+[  120.115436] cloud-init[1186]: 2026-09-16 06:31:42.3078 INFO [ssm-agent-worker] Checking if agent identity type EC2 can be assumed
+[  120.115656] cloud-init[1186]: 2026-09-16 06:31:42.3633 INFO [ssm-agent-worker] Agent will take identity from EC2
+[  120.115865] cloud-init[1186]: 2026-09-16 06:31:42.3640 WARN [ssm-agent-worker] Unable to reading dynamic configuration file:%!(EXTRA *fs.PathError=open /var/lib/amazon/ssm/dynamicconfig/telemetry_dynamic_config.json: no such file or directory)
+[  120.116289] cloud-init[1186]: 2026-09-16 06:31:42.3643 INFO [ssm-agent-worker] Initial telemetry configuration retrieved:
+[  120.116741] cloud-init[1186]: 2026-09-16 06:31:42.3644 INFO [ssm-agent-worker] Configuration for namespace default: {"telemetryDisabledTillEpoch":0,"percentageLimit":1,"maxRolls":10,"maxRollSize":2048,"exportPeriodMinutes":5}
+[  120.116956] cloud-init[1186]: 2026-09-16 06:31:42.3644 INFO [ssm-agent-worker] Starting TelemetryDynamicConfiguration File Watcher On: /var/lib/amazon/ssm/dynamicconfig/telemetry_dynamic_config.json
+[  120.117371] cloud-init[1186]: 2026-09-16 06:31:42.3644 INFO [ssm-agent-worker] Starting TelemetryDynamicConfiguration File Watcher on directory: /var/lib/amazon/ssm/dynamicconfig
+[  120.168863] cloud-init[1186]: 2026-09-16 06:31:42.3644 INFO [ssm-agent-worker] Telemetry initialized
+[  120.169105] cloud-init[1186]: 2026-09-16 06:31:42.3699 INFO [ssm-agent-worker] Dial to Core Agent broadcast channel
 ci-info: +++++++++++++++++++++++++++++++++Authorized keys from /home/ubuntu/.ssh/authorized_keys for user ubuntu+++++++++++++++++++++++++++++++++
 ci-info: +---------+-------------------------------------------------------------------------------------------------+---------+----------------+
 ci-info: | Keytype |                                       Fingerprint (sha256)                                      | Options |    Comment     |
 ci-info: +---------+-------------------------------------------------------------------------------------------------+---------+----------------+
+[  120.171130] cloud-init[1186]: 2026-09-16 06:31:42.3700 INFO [ssm-agent-worker] Dial to Core Agent broadcast channel
+[  120.171477] cloud-init[1186]: 2026-09-16 06:31:42.3701 INFO [ssm-agent-worker] Create new startup processor
+[  120.171629] cloud-init[1186]: 2026-09-16 06:31:42.3758 INFO [ssm-agent-worker] Start to listen to Core Agent termination channel
+[  120.171889] cloud-init[1186]: 2026-09-16 06:31:42.3759 INFO [ssm-agent-worker] Start to listen to Core Agent health channel
+[  120.172079] cloud-init[1186]: 2026-09-16 06:31:42.3825 INFO [ssm-agent-worker] [StartupProcessor] Executing startup processor tasks
+[  120.172235] cloud-init[1186]: 2026-09-16 06:31:42.3843 INFO [ssm-agent-worker] [StartupProcessor] Write to serial port: Amazon SSM Agent v3.3.4793.0 is running
+[  120.172455] cloud-init[1186]: 2026-09-16 06:31:42.3844 INFO [ssm-agent-worker] [StartupProcessor] Write to serial port: OsProductName: Ubuntu
+[  120.172676] cloud-init[1186]: 2026-09-16 06:31:42.3844 INFO [ssm-agent-worker] [StartupProcessor] Write to serial port: OsVersion: 22.04
 ci-info: | ssh-rsa | e7:bc:11:97:ec:40:aa:13:8c:14:9f:42:e9:c6:a8:81:1d:48:8f:2b:44:46:9e:7c:1a:ef:ce:07:fc:8a:d8:d9 |    -    | skillverse-key |
 ci-info: +---------+-------------------------------------------------------------------------------------------------+---------+----------------+
-[  141.008139] cloud-init[1186]: 2026-09-07 03:43:39.4479 INFO no_proxy:
-[  141.010266] cloud-init[1186]: 2026-09-07 03:43:39.4479 INFO Checking if agent identity type OnPrem can be assumed
-[  141.013141] cloud-init[1186]: 2026-09-07 03:43:39.4480 INFO Checking if agent identity type EC2 can be assumed
-[  141.015043] cloud-init[1186]: 2026-09-07 03:43:39.4849 INFO Agent will take identity from EC2
-[  141.016683] cloud-init[1186]: 2026-09-07 03:43:39.4879 INFO Telemetry initialized
-[  141.018135] cloud-init[1186]: 2026-09-07 03:43:39.4886 INFO [amazon-ssm-agent] amazon-ssm-agent - v3.3.4793.0
-[  141.019922] cloud-init[1186]: 2026-09-07 03:43:39.4886 INFO [amazon-ssm-agent] OS: linux, Arch: amd64
-[  141.021601] cloud-init[1186]: 2026-09-07 03:43:39.4886 INFO [amazon-ssm-agent] Starting Core Agent
-[  141.023250] cloud-init[1186]: 2026-09-07 03:43:39.4886 INFO [amazon-ssm-agent] Registrar detected. Attempting registration
-[  141.025192] cloud-init[1186]: 2026-09-07 03:43:39.4886 INFO [Registrar] Starting registrar module
-[  141.026826] cloud-init[1186]: 2026-09-07 03:43:39.4900 INFO [EC2Identity] Checking disk for registration info
-[  141.028604] cloud-init[1186]: 2026-09-07 03:43:39.4900 INFO [EC2Identity] No registration info found for ec2 instance, attempting registration
-[  141.030933] cloud-init[1186]: 2026-09-07 03:43:39.4900 INFO [EC2Identity] Generating registration keypair
-[  141.032643] cloud-init[1186]: 2026-09-07 03:43:39.6508 INFO [EC2Identity] Checking write access before registering
-[  141.034497] cloud-init[1186]: 2026-09-07 03:43:39.6513 INFO [EC2Identity] Registering EC2 instance with Systems Manager
-[  141.036380] cloud-init[1186]: 2026-09-07 03:43:39.6947 INFO [EC2Identity] EC2 registration was successful.
-[  141.038091] cloud-init[1186]: 2026-09-07 03:43:39.6947 INFO [amazon-ssm-agent] Registration attempted. Resuming core agent startup.
-[  141.040171] cloud-init[1186]: 2026-09-07 03:43:39.6948 INFO [CredentialRefresher] credentialRefresher has started
-[  141.043148] cloud-init[1186]: 2026-09-07 03:43:39.6948 INFO [CredentialRefresher] Starting credentials refresher loop
-[  141.047390] cloud-init[1186]: 2026-09-07 03:43:39.7218 INFO EC2RoleProvider Successfully connected with instance profile role credentials
-[  141.049633] cloud-init[1186]: 2026-09-07 03:43:39.7221 INFO [CredentialRefresher] Credentials ready
-[  141.051321] cloud-init[1186]: 2026-09-07 03:43:39.7223 INFO [CredentialRefresher] Next credential rotation will be in 29.999992207716666 minutes
-<14>Sep  7 03:45:50 cloud-init: #############################################################
-<14>Sep  7 03:45:50 cloud-init: -----BEGIN SSH HOST KEY FINGERPRINTS-----
-<14>Sep  7 03:45:50 cloud-init: 256 SHA256:DHWjmRbIEQgFuS/aDVaESzOLb9OEAwjNEKR+CrZ1zbw root@ip-172-31-29-113 (ECDSA)
-<14>Sep  7 03:45:50 cloud-init: 256 SHA256:8XOAnmXW1+1p5ToBBNfLTASKEPMih0ZgaHR4+3sdFAU root@ip-172-31-29-113 (ED25519)
-<14>Sep  7 03:45:50 cloud-init: 3072 SHA256:Fph3ChvK/nmpOeQmAwj5Wa3oppEcvEq4ssxhdVjmjPw root@ip-172-31-29-113 (RSA)
-<14>Sep  7 03:45:50 cloud-init: -----END SSH HOST KEY FINGERPRINTS-----
-<14>Sep  7 03:45:50 cloud-init: #############################################################
+[  120.175020] cloud-init[1186]: 2026-09-16 06:31:42.4088 INFO [ssm-agent-worker] [MessageService] Appending MGSInteractor to MessageService interactors
+[  120.175301] cloud-init[1186]: 2026-09-16 06:31:42.4089 INFO [ssm-agent-worker] [MessageService] Appending MDSInteractor to MessageService interactors
+[  120.175470] cloud-init[1186]: 2026-09-16 06:31:42.4095 INFO [ssm-agent-worker] [LongRunningPluginsManager] registered plugins: {}
+[  120.175679] cloud-init[1186]: 2026-09-16 06:31:42.4095 INFO [ssm-agent-worker] Initializing bookkeeping folders
+[  120.175878] cloud-init[1186]: 2026-09-16 06:31:42.4097 INFO [ssm-agent-worker] removing the completed state files
+[  120.176321] cloud-init[1186]: 2026-09-16 06:31:42.4098 INFO [ssm-agent-worker] Initializing bookkeeping folders for long running plugins
+[  120.176539] cloud-init[1186]: 2026-09-16 06:31:42.4099 INFO [ssm-agent-worker] Initializing replies folder for MDS reply requests that couldn't reach the service
+[  120.176756] cloud-init[1186]: 2026-09-16 06:31:42.4099 INFO [ssm-agent-worker] Initializing replies folder for MGS reply requests that couldn't reach the service
+[  120.177394] cloud-init[1186]: 2026-09-16 06:31:42.4100 INFO [ssm-agent-worker] Initializing healthcheck folders for long running plugins
+[  120.177628] cloud-init[1186]: 2026-09-16 06:31:42.4100 INFO [ssm-agent-worker] Initializing locations for inventory plugin
+[  120.177790] cloud-init[1186]: 2026-09-16 06:31:42.4100 INFO [ssm-agent-worker] Initializing default location for custom inventory
+[  120.178236] cloud-init[1186]: 2026-09-16 06:31:42.4101 INFO [ssm-agent-worker] Initializing default location for file inventory
+[  120.178468] cloud-init[1186]: 2026-09-16 06:31:42.4101 INFO [ssm-agent-worker] Initializing default location for role inventory
+[  120.179188] cloud-init[1186]: 2026-09-16 06:31:42.4102 INFO [ssm-agent-worker] Init the cloudwatchlogs publisher
+[  120.179315] cloud-init[1186]: 2026-09-16 06:31:42.4102 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform independent plugin aws:softwareInventory
+[  120.180180] cloud-init[1186]: 2026-09-16 06:31:42.4102 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform independent plugin aws:configureDocker
+[  120.180392] cloud-init[1186]: 2026-09-16 06:31:42.4102 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform independent plugin aws:runDockerAction
+[  120.232551] cloud-init[1186]: 2026-09-16 06:31:42.4102 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform independent plugin aws:refreshAssociation
+[  120.233387] cloud-init[1186]: 2026-09-16 06:31:42.4102 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform independent plugin aws:configurePackage
+[  120.233532] cloud-init[1186]: 2026-09-16 06:31:42.4103 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform independent plugin aws:downloadContent
+[  120.233721] cloud-init[1186]: 2026-09-16 06:31:42.4104 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform independent plugin aws:runDocument
+[  120.235020] cloud-init[1186]: 2026-09-16 06:31:42.4104 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform independent plugin aws:runPowerShellScript
+[  120.235293] cloud-init[1186]: 2026-09-16 06:31:42.4104 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform independent plugin aws:updateSsmAgent
+[  120.235429] cloud-init[1186]: 2026-09-16 06:31:42.4104 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform dependent plugin aws:runShellScript
+[  120.235632] cloud-init[1186]: 2026-09-16 06:31:42.4104 INFO [ssm-agent-worker] [instanceID=i-00521d3086bd848d9] Successfully loaded platform dependent plugin aws:domainJoin
+[  120.235834] cloud-init[1186]: 2026-09-16 06:31:42.4104 INFO [ssm-agent-worker] ssm-agent-worker - v3.3.4793.0
+[  120.236067] cloud-init[1186]: 2026-09-16 06:31:42.4104 INFO [ssm-agent-worker] OS: linux, Arch: amd64
+[  120.237035] cloud-init[1186]: 2026-09-16 06:31:42.4110 INFO [ssm-agent-worker] [MessageService] [MessageHandler] initializing message handler
+[  120.237388] cloud-init[1186]: 2026-09-16 06:31:42.4111 INFO [ssm-agent-worker] [MessageService] [MessageHandler] [Idempotency] Successfully created Idempotent directory
+[  120.237533] cloud-init[1186]: 2026-09-16 06:31:42.4111 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] Starting message polling
+[  120.237734] cloud-init[1186]: 2026-09-16 06:31:42.4111 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] Starting send failed replies to MDS
+[  120.239013] cloud-init[1186]: 2026-09-16 06:31:42.4111 INFO [ssm-agent-worker] [MessageService] supported workers for the interactor MDSInteractor: [ssm-document-worker]
+[  120.239246] cloud-init[1186]: 2026-09-16 06:31:42.4115 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] MDS Polling job started.
+[  120.239414] cloud-init[1186]: 2026-09-16 06:31:42.4116 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] SSM Agent is trying to setup control channel for MGSInteractor
+[  120.239629] cloud-init[1186]: 2026-09-16 06:31:42.4117 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] agent telemetry cloudwatch metrics disabled
+[  120.239919] cloud-init[1186]: 2026-09-16 06:31:42.4117 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Setting up websocket for controlchannel for instance: i-00521d3086bd848d9, requestId: 7cd5c3a9-fea2-4604-8fec-5970e5639ec7
+[  120.240071] cloud-init[1186]: 2026-09-16 06:31:42.4122 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] listen reply thread started
+[  120.242020] cloud-init[1186]: 2026-09-16 06:31:42.4124 INFO [ssm-agent-worker] [OfflineService] Starting document processing engine...
+[  120.242204] cloud-init[1186]: 2026-09-16 06:31:42.4125 INFO [ssm-agent-worker] [OfflineService] Scheduling message polling
+[  120.242385] cloud-init[1186]: 2026-09-16 06:31:42.4125 INFO [ssm-agent-worker] [OfflineService] Starting send replies to MDS
+[  120.242578] cloud-init[1186]: 2026-09-16 06:31:42.4125 INFO [ssm-agent-worker] [LongRunningPluginsManager] starting long running plugin manager
+[  120.242788] cloud-init[1186]: 2026-09-16 06:31:42.4126 INFO [ssm-agent-worker] [LongRunningPluginsManager] there aren't any long running plugin to execute
+[  120.243138] cloud-init[1186]: 2026-09-16 06:31:42.4126 INFO [ssm-agent-worker] [LongRunningPluginsManager] There are no long running plugins currently getting executed - skipping their healthcheck
+[  120.243243] cloud-init[1186]: 2026-09-16 06:31:42.4128 INFO [ssm-agent-worker] [HealthCheck] HealthCheck reporting agent health.
+[  120.243633] cloud-init[1186]: 2026-09-16 06:31:42.4128 INFO [ssm-agent-worker] [HealthCheck] Agent does not have an explicit provider.
+[  120.245304] cloud-init[1186]: 2026-09-16 06:31:42.4193 INFO [ECSIdentity] Agent not taking ECS identity: Could not fetch metadata endpoint
+[  120.245562] cloud-init[1186]: 2026-09-16 06:31:42.4458 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Opening websocket connection to: wss://ssmmessages.ap-southeast-1.amazonaws.com/v1/control-channel/i-00521d3086bd848d9?role=subscribe&stream=input
+[  120.297332] cloud-init[1186]: 2026-09-16 06:31:42.4707 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Successfully opened websocket connection to: 47.128.5.246:443
+[  120.297538] cloud-init[1186]: 2026-09-16 06:31:42.4708 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Starting websocket pinger
+[  120.297706] cloud-init[1186]: 2026-09-16 06:31:42.4709 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Starting websocket listener
+[  120.297922] cloud-init[1186]: 2026-09-16 06:31:42.4709 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Setting up agent telemetry scheduler
+[  120.298352] cloud-init[1186]: 2026-09-16 06:31:42.4710 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Set up control channel successfully
+[  120.298814] cloud-init[1186]: 2026-09-16 06:31:42.4710 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] SSM Connection channel status is set to ssmmessages
+[  120.299033] cloud-init[1186]: 2026-09-16 06:31:42.4710 INFO [ssm-agent-worker] [MessageService] supported workers for the interactor MGSInteractor: [ssm-document-worker ssm-session-worker]
+[  120.299223] cloud-init[1186]: 2026-09-16 06:31:42.4710 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] MDS Polling stop job started.
+[  120.299448] cloud-init[1186]: 2026-09-16 06:31:42.4718 INFO [ssm-agent-worker] [MessageService] [SessionProcessorWrapper] listening session reply.
+[  120.299642] cloud-init[1186]: 2026-09-16 06:32:05.3840 INFO [ssm-agent-worker] [MessageService] [Association] No associations on boot. Requerying for associations after 30 seconds.
+[  120.299861] cloud-init[1186]: 2026-09-16 06:32:35.5101 INFO [ssm-agent-worker] [MessageService] [Association] Schedule manager refreshed with 0 associations, 0 new associations associated
+[  120.300267] cloud-init[1186]: 2026-09-16 06:32:40.1597 INFO [CredentialRefresher] Next credential rotation will be in 28.96412541873333 minutes
+[  120.300633] cloud-init[1186]: 2026-09-16 06:32:42.4654 INFO [ssm-agent-worker] [HealthCheck] HealthCheck reporting agent health.
+[  120.300882] cloud-init[1186]: 2026-09-16 06:32:42.4655 INFO [ssm-agent-worker] [HealthCheck] Agent does not have an explicit provider.
+[  120.301133] cloud-init[1186]: 2026-09-16 06:32:42.4721 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] Moving to stop poll job after a minute
+[  120.301340] cloud-init[1186]: 2026-09-16 06:32:42.4722 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] Sent termination signal to message poll job.
+[  120.301552] cloud-init[1186]: 2026-09-16 06:32:42.4722 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] MDS Polling job stopped.
+[  120.301775] cloud-init[1186]: 2026-09-16 06:32:42.4722 INFO [ECSIdentity] Agent not taking ECS identity: Could not fetch metadata endpoint
+[  120.302007] cloud-init[1186]: -----END SSM AGENT LOG-----
+<14>Sep 16 06:33:27 cloud-init: #############################################################
+<14>Sep 16 06:33:27 cloud-init: -----BEGIN SSH HOST KEY FINGERPRINTS-----
+<14>Sep 16 06:33:27 cloud-init: 256 SHA256:KjPz+5sd7KdvaPBF1hJ/Hq83pyCpGRDnzN5+0Bdkem4 root@ip-172-31-19-210 (ECDSA)
+<14>Sep 16 06:33:27 cloud-init: 256 SHA256:ZGKfW31wDcppunRDcX1isAWvtJCakFh1pqjZOIHZtLc root@ip-172-31-19-210 (ED25519)
+<14>Sep 16 06:33:27 cloud-init: 3072 SHA256:PC8DFi35gi0xhBBqAXRoBRedFeaa16Lv+/cMeNnQy70 root@ip-172-31-19-210 (RSA)
+<14>Sep 16 06:33:27 cloud-init: -----END SSH HOST KEY FINGERPRINTS-----
+<14>Sep 16 06:33:27 cloud-init: #############################################################
 -----BEGIN SSH HOST KEY KEYS-----
-ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBHXkznL2uS5/U7OglsEH7/tb8LMriK5ity4cM0C4bOs9HvftJG2u0Yc7B27Tk+Fp9PG3chfz29pVV3ne4ZDdcSs= root@ip-172-31-29-113
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH1V5xySHqFfnthyDtbz79ZZhxNDa7cNyOCnCz3uKV62 root@ip-172-31-29-113
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDjvs7MU1LWYqkGZBbGeoDuSLJzj57m3XOMrCB9M9X6yKqmRPdVGS+FdGYkPvYW1ZSK1bm9Vi/YUT6fWWfgvXiEWTrU8zGDgiSAwRklhv0AwpRCXk5EBIFi2GerqSLAIYIQUuG7rSvlIr0umwEcAeyDRmrdsD86d3H84x/ELMgy5EGeSpZTgPv5kRBnntBqXK69wT7d9dpHvGP6+HHPxbhv3YeRPGNuaFKLp7PjghhvxteLhg31jvJaC5c1aNMZpTL609eaVJKxeCv1QHZ9TjLF9Tg8a1lXti2ubzP3+ZO5kfSKpgN5FPS9MNk+e2nu6rv5HFj1eiZJ7o0BPUDDm09+hFbd2Qwfr8scdLunaiorVyziGA+DT66zBAqE+yi4yf4J9+yCqnI5HkynBMVDF/5Lq5kqG94WkFkCVdtWhDmhjLpaHHqwStHJvRg43iRYMkWva4QSh7s0CL3t/JaRFgdZrcuKfmHKnEmpFK2+03tAm6HmlFbo8CCFqKiIgsE5aCM= root@ip-172-31-29-113
+ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLKOOrfTRngUC9OpA0bfs/q8aGSNAwcWlrR7Qh1WYYgXUMut0k4E9kBExfZsvD+KKsHB4bAkEW16br8rqH+WKjQ= root@ip-172-31-19-210
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMHxOwusiXQ1N052TZnV80RQsWHgb+n2tpr6+zkZq7c3 root@ip-172-31-19-210
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC/P+92Cw9AYX8b83q0vYOdWvitRbz0Z0nlK3N+82hCRUhnI8B2eFderkid8QDSB/iLPPdOnbqPIQNeV27AyFWYb+Ih0pGTjZlJyrKqNnTr2XPhY8gdCSnILm+ps1UG2P+I6MOAYhwzyd7RqH1JNIWEEB4OmzwSLsVYV10AE0FgEzmAEAc6SKm9lhJmKYYczQzj0hcgAhGfrKZy8m2yElGttaRTHshom3WvG6AZFVjukcuifY4jrnCfiAJ0dva/sOV0+ARz3u/K/EFgZEGtrg0A9ZFjWCUZ1BNoyk3UEj00aZFh8V2wcivUpD4tCPWtomQ8EDpupBeD7TVH2nIeAv/QAy2Iy70ya8/O9TP5O3GrwPn5uVAqPITaGkd5+kfs0k0uS+6oN8w69QEqb6F7M8QmUdNw3HfhTQZKM/stsmkrZ9k43+MiCfH8X9wq/M0pYCUxy39RUo/1iqTi4qr6/6gSXGljN0eqF5ZlsShMS5ezfF9TEsoJYtviEl5BDRbTOcE= root@ip-172-31-19-210
 -----END SSH HOST KEY KEYS-----
-[  141.076155] cloud-init[1186]: 2026-09-07 03:43:40.7412 INFO [amazon-ssm-agent] [LongRunningWorkerContainer] [WorkerProvider] Worker ssm-agent-worker is not running, starting worker process
-[  141.079050] cloud-init[1186]: 2026-09-07 03:43:40.7433 INFO [amazon-ssm-agent] [LongRunningWorkerContainer] [WorkerProvider] Worker ssm-agent-worker (pid:1149) started
-[  141.081630] cloud-init[1186]: 2026-09-07 03:43:40.7433 INFO [amazon-ssm-agent] [LongRunningWorkerContainer] Monitor long running worker health every 60 seconds
-[  141.084101] cloud-init[1186]: 2026-09-07 03:43:41.4298 WARN Error adding the directory '/etc/amazon/ssm' to watcher: no such file or directory
-[  141.086355] cloud-init[1186]: 2026-09-07 03:43:41.4340 INFO [ssm-agent-worker] Checking if agent identity type OnPrem can be assumed
-[  141.088425] cloud-init[1186]: 2026-09-07 03:43:41.4342 INFO [ssm-agent-worker] Checking if agent identity type EC2 can be assumed
-[  141.090485] cloud-init[1186]: 2026-09-07 03:43:41.4750 INFO [ssm-agent-worker] Agent will take identity from EC2
-[  141.092305] cloud-init[1186]: 2026-09-07 03:43:41.4759 WARN [ssm-agent-worker] Unable to reading dynamic configuration file:%!(EXTRA *fs.PathError=open /var/lib/amazon/ssm/dynamicconfig/telemetry_dynamic_config.json: no such file or directory)
-[  141.095870] cloud-init[1186]: 2026-09-07 03:43:41.4761 INFO [ssm-agent-worker] Initial telemetry configuration retrieved:
-[  141.097741] cloud-init[1186]: 2026-09-07 03:43:41.4761 INFO [ssm-agent-worker] Configuration for namespace default: {"telemetryDisabledTillEpoch":0,"percentageLimit":1,"maxRolls":10,"maxRollSize":2048,"exportPeriodMinutes":5}
-[  141.101130] cloud-init[1186]: 2026-09-07 03:43:41.4761 INFO [ssm-agent-worker] Starting TelemetryDynamicConfiguration File Watcher On: /var/lib/amazon/ssm/dynamicconfig/telemetry_dynamic_config.json
-[  141.104166] cloud-init[1186]: 2026-09-07 03:43:41.4761 INFO [ssm-agent-worker] Starting TelemetryDynamicConfiguration File Watcher on directory: /var/lib/amazon/ssm/dynamicconfig
-[  141.106918] cloud-init[1186]: 2026-09-07 03:43:41.4762 INFO [ssm-agent-worker] Telemetry initialized
-[  141.108569] cloud-init[1186]: 2026-09-07 03:43:41.4820 INFO [ssm-agent-worker] Dial to Core Agent broadcast channel
-[  141.110443] cloud-init[1186]: 2026-09-07 03:43:41.4820 INFO [ssm-agent-worker] Create new startup processor
-[  141.112186] cloud-init[1186]: 2026-09-07 03:43:41.4827 INFO [ssm-agent-worker] Dial to Core Agent broadcast channel
-[  141.114270] cloud-init[1186]: 2026-09-07 03:43:41.4833 INFO [ssm-agent-worker] Start to listen to Core Agent health channel
-[  141.116273] cloud-init[1186]: 2026-09-07 03:43:41.4834 INFO [ssm-agent-worker] Start to listen to Core Agent termination channel
-[  141.118348] cloud-init[1186]: 2026-09-07 03:43:41.4861 INFO [ssm-agent-worker] [StartupProcessor] Executing startup processor tasks
-[  141.120431] cloud-init[1186]: 2026-09-07 03:43:41.4864 INFO [ssm-agent-worker] [StartupProcessor] Write to serial port: Amazon SSM Agent v3.3.4793.0 is running
-[  141.122902] cloud-init[1186]: 2026-09-07 03:43:41.4864 INFO [ssm-agent-worker] [StartupProcessor] Write to serial port: OsProductName: Ubuntu
-[  141.125209] cloud-init[1186]: 2026-09-07 03:43:41.4864 INFO [ssm-agent-worker] [StartupProcessor] Write to serial port: OsVersion: 22.04
-[  141.127295] cloud-init[1186]: 2026-09-07 03:43:41.5114 INFO [ssm-agent-worker] [MessageService] Appending MGSInteractor to MessageService interactors
-[  141.129613] cloud-init[1186]: 2026-09-07 03:43:41.5115 INFO [ssm-agent-worker] [MessageService] Appending MDSInteractor to MessageService interactors
-[  141.131943] cloud-init[1186]: 2026-09-07 03:43:41.5119 INFO [ssm-agent-worker] [LongRunningPluginsManager] registered plugins: {}
-[  141.134094] cloud-init[1186]: 2026-09-07 03:43:41.5120 INFO [ssm-agent-worker] Initializing bookkeeping folders
-[  141.135961] cloud-init[1186]: 2026-09-07 03:43:41.5121 INFO [ssm-agent-worker] removing the completed state files
-[  141.137799] cloud-init[1186]: 2026-09-07 03:43:41.5122 INFO [ssm-agent-worker] Initializing bookkeeping folders for long running plugins
-[  141.139969] cloud-init[1186]: 2026-09-07 03:43:41.5123 INFO [ssm-agent-worker] Initializing replies folder for MDS reply requests that couldn't reach the service
-[  141.142477] cloud-init[1186]: 2026-09-07 03:43:41.5123 INFO [ssm-agent-worker] Initializing replies folder for MGS reply requests that couldn't reach the service
-[  141.144973] cloud-init[1186]: 2026-09-07 03:43:41.5123 INFO [ssm-agent-worker] Initializing healthcheck folders for long running plugins
-[  141.147182] cloud-init[1186]: 2026-09-07 03:43:41.5124 INFO [ssm-agent-worker] Initializing locations for inventory plugin
-[  141.149156] cloud-init[1186]: 2026-09-07 03:43:41.5124 INFO [ssm-agent-worker] Initializing default location for custom inventory
+[  120.349788] cloud-init[1186]: Cloud-init v. 26.1-0ubuntu1~22.04.1 finished at Wed, 16 Sep 2026 06:33:27 +0000. Datasource DataSourceEc2Local.  Up 120.34 seconds
 [[0;32m  OK  [0m] Finished [0;1;39mCloud-init: Final Stage[0m.
 [[0;32m  OK  [0m] Reached target [0;1;39mCloud-init target[0m.
-[  141.153133] cloud-init[1186]: 2026-09-07 03:43:41.5124 INFO [ssm-agent-worker] Initializing default location for file inventory
-[  141.153248] cloud-init[1186]: 2026-09-07 03:43:41.5125 INFO [ssm-agent-worker] Initializing default location for role inventory
-[  141.153808] cloud-init[1186]: 2026-09-07 03:43:41.5125 INFO [ssm-agent-worker] Init the cloudwatchlogs publisher
-[  141.153894] cloud-init[1186]: 2026-09-07 03:43:41.5125 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform independent plugin aws:configureDocker
-[  141.154338] cloud-init[1186]: 2026-09-07 03:43:41.5125 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform independent plugin aws:refreshAssociation
-[  141.154551] cloud-init[1186]: 2026-09-07 03:43:41.5125 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform independent plugin aws:downloadContent
-[  141.154777] cloud-init[1186]: 2026-09-07 03:43:41.5125 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform independent plugin aws:runDocument
-[  141.154993] cloud-init[1186]: 2026-09-07 03:43:41.5125 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform independent plugin aws:softwareInventory
-[  141.155238] cloud-init[1186]: 2026-09-07 03:43:41.5125 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform independent plugin aws:updateSsmAgent
-[  141.155452] cloud-init[1186]: 2026-09-07 03:43:41.5125 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform independent plugin aws:runDockerAction
-[  141.155684] cloud-init[1186]: 2026-09-07 03:43:41.5125 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform independent plugin aws:configurePackage
-[  141.155906] cloud-init[1186]: 2026-09-07 03:43:41.5126 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform independent plugin aws:runPowerShellScript
-[  141.156142] cloud-init[1186]: 2026-09-07 03:43:41.5126 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform dependent plugin aws:runShellScript
-[  141.156362] cloud-init[1186]: 2026-09-07 03:43:41.5126 INFO [ssm-agent-worker] [instanceID=i-08030ddf91a50fc92] Successfully loaded platform dependent plugin aws:domainJoin
-[  141.156574] cloud-init[1186]: 2026-09-07 03:43:41.5126 INFO [ssm-agent-worker] ssm-agent-worker - v3.3.4793.0
-[  141.156795] cloud-init[1186]: 2026-09-07 03:43:41.5126 INFO [ssm-agent-worker] OS: linux, Arch: amd64
-[  141.157025] cloud-init[1186]: 2026-09-07 03:43:41.5130 INFO [ssm-agent-worker] [HealthCheck] HealthCheck reporting agent health.
-[  141.157454] cloud-init[1186]: 2026-09-07 03:43:41.5131 INFO [ssm-agent-worker] [HealthCheck] Agent does not have an explicit provider.
-[  141.157906] cloud-init[1186]: 2026-09-07 03:43:41.5133 INFO [ssm-agent-worker] [MessageService] [MessageHandler] initializing message handler
-[  141.158140] cloud-init[1186]: 2026-09-07 03:43:41.5134 INFO [ssm-agent-worker] [MessageService] [MessageHandler] [Idempotency] Successfully created Idempotent directory
-[  141.158351] cloud-init[1186]: 2026-09-07 03:43:41.5135 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] Starting message polling
-[  141.158575] cloud-init[1186]: 2026-09-07 03:43:41.5135 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] Starting send failed replies to MDS
-[  141.158794] cloud-init[1186]: 2026-09-07 03:43:41.5135 INFO [ssm-agent-worker] [MessageService] supported workers for the interactor MDSInteractor: [ssm-document-worker]
-[  141.159034] cloud-init[1186]: 2026-09-07 03:43:41.5139 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] MDS Polling job started.
-[  141.159252] cloud-init[1186]: 2026-09-07 03:43:41.5139 INFO [ssm-agent-worker] [LongRunningPluginsManager] starting long running plugin manager
-[  141.159455] cloud-init[1186]: 2026-09-07 03:43:41.5140 INFO [ssm-agent-worker] [LongRunningPluginsManager] there aren't any long running plugin to execute
-[  141.159667] cloud-init[1186]: 2026-09-07 03:43:41.5140 INFO [ssm-agent-worker] [LongRunningPluginsManager] There are no long running plugins currently getting executed - skipping their healthcheck
-[  141.159910] cloud-init[1186]: 2026-09-07 03:43:41.5141 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] SSM Agent is trying to setup control channel for MGSInteractor
-[  141.160109] cloud-init[1186]: 2026-09-07 03:43:41.5143 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] agent telemetry cloudwatch metrics disabled
-[  141.212660] cloud-init[1186]: 2026-09-07 03:43:41.5143 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Setting up websocket for controlchannel for instance: i-08030ddf91a50fc92, requestId: 50dc7bd4-37b0-41df-a20d-baee0920421a
-[  141.212830] cloud-init[1186]: 2026-09-07 03:43:41.5143 INFO [ssm-agent-worker] [OfflineService] Starting document processing engine...
-[  141.212950] cloud-init[1186]: 2026-09-07 03:43:41.5144 INFO [ssm-agent-worker] [OfflineService] Scheduling message polling
-[  141.213376] cloud-init[1186]: 2026-09-07 03:43:41.5144 INFO [ssm-agent-worker] [OfflineService] Starting send replies to MDS
-[  141.213989] cloud-init[1186]: 2026-09-07 03:43:41.5147 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] listen reply thread started
-[  141.214333] cloud-init[1186]: 2026-09-07 03:43:41.5256 INFO [ECSIdentity] Agent not taking ECS identity: Could not fetch metadata endpoint
-[  141.214519] cloud-init[1186]: 2026-09-07 03:43:41.5455 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Opening websocket connection to: wss://ssmmessages.ap-southeast-1.amazonaws.com/v1/control-channel/i-08030ddf91a50fc92?role=subscribe&stream=input
-[  141.214732] cloud-init[1186]: 2026-09-07 03:43:41.5695 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Successfully opened websocket connection to: 47.128.7.77:443
-[  141.214948] cloud-init[1186]: 2026-09-07 03:43:41.5696 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Starting websocket pinger
-[  141.215180] cloud-init[1186]: 2026-09-07 03:43:41.5696 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Starting websocket listener
-[  141.215390] cloud-init[1186]: 2026-09-07 03:43:41.5696 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Setting up agent telemetry scheduler
-[  141.215608] cloud-init[1186]: 2026-09-07 03:43:41.5696 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] Set up control channel successfully
-[  141.216058] cloud-init[1186]: 2026-09-07 03:43:41.5696 INFO [ssm-agent-worker] [MessageService] [MGSInteractor] SSM Connection channel status is set to ssmmessages
-[  141.216249] cloud-init[1186]: 2026-09-07 03:43:41.5697 INFO [ssm-agent-worker] [MessageService] supported workers for the interactor MGSInteractor: [ssm-document-worker ssm-session-worker]
-[  141.216483] cloud-init[1186]: 2026-09-07 03:43:41.5698 INFO [ssm-agent-worker] [MessageService] [SessionProcessorWrapper] listening session reply.
-[  141.216972] cloud-init[1186]: 2026-09-07 03:43:41.5698 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] MDS Polling stop job started.
-[  141.217136] cloud-init[1186]: 2026-09-07 03:43:56.6813 INFO [ssm-agent-worker] [MessageService] [Association] No associations on boot. Requerying for associations after 30 seconds.
-[  141.217352] cloud-init[1186]: 2026-09-07 03:44:26.7509 INFO [ssm-agent-worker] [MessageService] [Association] Schedule manager refreshed with 0 associations, 0 new associations associated
-[  141.217581] cloud-init[1186]: 2026-09-07 03:44:40.9195 INFO [CredentialRefresher] Next credential rotation will be in 28.980039334533334 minutes
-[  141.217945] cloud-init[1186]: 2026-09-07 03:44:42.7948 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] Moving to stop poll job after a minute
-[  141.218029] cloud-init[1186]: 2026-09-07 03:44:42.7948 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] Sent termination signal to message poll job.
-[  141.218254] cloud-init[1186]: 2026-09-07 03:44:42.7948 INFO [ssm-agent-worker] [MessageService] [MDSInteractor] MDS Polling job stopped.
-[  141.218473] cloud-init[1186]: 2026-09-07 03:45:40.9344 INFO [CredentialRefresher] Next credential rotation will be in 27.979790581266666 minutes
-[  141.218689] cloud-init[1186]: -----END SSM AGENT LOG-----
-[  141.218912] cloud-init[1186]: Cloud-init v. 26.1-0ubuntu1~22.04.1 finished at Mon, 07 Sep 2026 03:45:50 +0000. Datasource DataSourceEc2Local.  Up 141.05 seconds
-	2026-09-07T03:50:29+00:00
+	2026-09-16T06:39:38+00:00

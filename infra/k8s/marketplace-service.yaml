@@ -20,6 +20,8 @@ spec:
           envFrom:
             - secretRef:
                 name: marketplace-secrets
+            - configMapRef:
+                name: marketplace-config
 ---
 apiVersion: v1
 kind: Service

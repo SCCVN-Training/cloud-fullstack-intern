@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: marketplace-config
+data:
+  ALLOWED_ORIGINS: "https://d3is4tc33i20xi.cloudfront.net"
+  ALGORITHM: "HS256"
+  ACCESS_TOKEN_EXPIRE_MINUTES: "30"

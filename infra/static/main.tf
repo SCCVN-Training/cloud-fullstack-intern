@@ -47,7 +47,7 @@ variable "dynamic_state_bucket" {
 
 resource "aws_s3_bucket" "frontend" {
   bucket = var.frontend_bucket_name
-}
+}v
 
 resource "aws_s3_bucket_public_access_block" "frontend" {
   bucket                  = aws_s3_bucket.frontend.id

@@ -14,7 +14,10 @@ load_secrets_into_environment()
 from app.core.config import settings
 from app.core.database import Base, engine
 from app.core.exceptions import register_exception_handlers
+from app.core.logging import CorrelationIdMiddleware, configure_logging
 from app.core.rate_limit import limiter
+
+configure_logging("marketplace-service")
 from app.modules.bookings.router import router as bookings_router
 from app.modules.reviews.router import (
     booking_reviews_router,
@@ -68,6 +71,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(CorrelationIdMiddleware)
 
 app.include_router(skills_router)
 app.include_router(bookings_router)

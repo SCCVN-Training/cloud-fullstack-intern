@@ -18,7 +18,10 @@ load_secrets_into_environment()
 from app.core.config import settings
 from app.core.database import Base, engine
 from app.core.exceptions import register_exception_handlers
+from app.core.logging import CorrelationIdMiddleware, configure_logging
 from app.core.rate_limit import limiter
+
+configure_logging("identity-service")
 from app.modules.auth.router import router as auth_router
 from app.modules.profiles.router import internal_router as profiles_internal_router
 from app.modules.profiles.router import router as profiles_router
@@ -79,6 +82,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(CorrelationIdMiddleware)
 
 app.include_router(auth_router)
 app.include_router(users_router)
