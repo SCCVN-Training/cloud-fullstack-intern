@@ -10,7 +10,7 @@ from app.modules.files.models import get_file_operations_tables_sql
 from app.modules.files.router import router as file_operations_router
 from app.modules.share.router import router as share_router
 from app.core.rate_limit import setup_rate_limiting
-
+from app.core.logging import setup_logging, CorrelationIdMiddleware
 import asyncio
 from app.core.events import listen_for_events
 from app.core.rabbitmq import rabbitmq_client
@@ -42,21 +42,30 @@ async def lifespan(app: FastAPI):
     await close_db_pool()
     await close_redis()
 
+setup_logging()
 app = FastAPI(title=settings.PROJECT_NAME + " - Storage Service", lifespan=lifespan)
 setup_rate_limiting(app)
+app.add_middleware(CorrelationIdMiddleware)
+
 
 # Register routes
 app.include_router(file_operations_router, prefix=settings.API_STR)
 app.include_router(share_router, prefix=settings.API_STR)
 
+import os
+
+cors_origins_str = os.getenv("CORS_ORIGINS", "http://localhost:4200")
+cors_origins = [origin.strip() for origin in cors_origins_str.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+@app.get("/")
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "project": settings.PROJECT_NAME, "service": "storage"}
